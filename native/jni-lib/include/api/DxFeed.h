@@ -29,7 +29,7 @@ namespace dxfeed {
   }
 
   struct DxFeed final {
-    static void initJavaVM(const char* javaHome, char** argv = nullptr, int vmArgsCount = 0);
+    static void initJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
     DxFeed(const DxFeed& other) = delete;
     DxFeed(DxFeed&& other) = delete;
     DxFeed& operator=(const DxFeed& other) = delete;

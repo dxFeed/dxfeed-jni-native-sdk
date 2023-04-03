@@ -45,11 +45,11 @@ namespace dxfeed {
       return "-Djava.class.path=" + result.string();
     }
 
-    void addJavaVMArgs(JavaVMOption* vmOptions, char** argv, int vmArgSize) {
-      for (int i = 0; i < vmArgSize; ++i) {
-        auto arg = argv[i];
+    void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
+      for (int i = 0; i < vmArgCount; ++i) {
+        auto arg = vmArgs[i];
         if (arg[0] == '-') { // VM args starts from '-'
-          vmOptions[i].optionString = arg;
+          vmOptions[i].optionString = const_cast<char*>(arg);
         } else {
           std::cout << "unknown VM arg: " << arg << std::endl;
         }
@@ -93,7 +93,7 @@ namespace dxfeed {
       std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
     }
 
-    void loadJavaVM(const char* javaHome, char** argv, const int vmArgsCount) {
+    void loadJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {
       internal::loadJVMLibrary(javaHome);
 
       auto runtimePath = fs::current_path();
@@ -104,7 +104,7 @@ namespace dxfeed {
       auto javaVmOptions = javaVmOptionsPtr.get();
       std::string classPath = buildClassPath(runtimePath);
       javaVmOptions[0].optionString = classPath.data();
-      addJavaVMArgs(javaVmOptions + 1, argv, vmArgsCount);
+      addJavaVMArgs(javaVmOptions + 1, consoleVmArgs, vmArgsCount);
 
       JavaVMInitArgs vmArgs;
       vmArgs.version = JNI_VERSION_1_8;

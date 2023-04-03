@@ -12,5 +12,5 @@ namespace dxfeed::internal {
   extern CreateJavaVM_t createJavaVM;
 
   void loadJVMLibrary(const char*);
-  void loadJavaVM(const char* javaHome,  char** argv = nullptr, int vmArgsCount = 0);
+  void loadJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
 }

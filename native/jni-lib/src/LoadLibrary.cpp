@@ -92,8 +92,8 @@ namespace dxfeed::internal {
     return symbol;
   }
 
-  void loadJVMLibrary(const char* java_home_utf8) {
-    auto javaHome = utf8ToPlatformString(java_home_utf8);
+  void loadJVMLibrary(const char* javaHomeUTF8) {
+    auto javaHome = utf8ToPlatformString(javaHomeUTF8);
     auto javaDllPath = recursivelyLookUpLibraryByName(javaHome, JAVA_DLL_NAME);
     bool file_exists = fs::exists(javaDllPath);
     auto size = file_exists && fs::is_regular_file(javaDllPath) ? static_cast<int64_t>(fs::file_size(javaDllPath)) : 0;

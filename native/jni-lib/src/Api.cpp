@@ -2,8 +2,8 @@
 #include "api/DxFeed.h"
 #include "api/Connection.h"
 
-void dxfeed_init(const char* javaHome, char** argv, const int vmArgsCount) {
-  dxfeed::DxFeed::initJavaVM(javaHome, argv, vmArgsCount);
+void dxfeed_init(const char* javaHome, const char** vmArgs, const int vmArgsCount) {
+  dxfeed::DxFeed::initJavaVM(javaHome, vmArgs, vmArgsCount);
 }
 
 void* dxfeed_get_instance() {

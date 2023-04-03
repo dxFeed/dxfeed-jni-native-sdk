@@ -5,7 +5,7 @@ extern "C" {
 
 typedef void(*dx_feed_listener)(const void *events, int count);
 
-void dxfeed_init(const char* javaHome, char** argv, int vmArgsCount);
+void dxfeed_init(const char* javaHome, const char** vmArgs, int vmArgsCount);
 void* dxfeed_get_instance();
 void* dxfeed_create_connection(void* feed, const char* address);
 void* dxfeed_create_subscription(void* connection, int eventType);

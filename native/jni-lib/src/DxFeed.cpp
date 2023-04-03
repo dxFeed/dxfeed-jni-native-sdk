@@ -6,8 +6,8 @@
 #include "api/utils/LoadLibrary.h"
 
 namespace dxfeed {
-  void dxfeed::DxFeed::initJavaVM(const char* javaHome, char** argv, const int vmArgsCount) {
-    dxfeed::internal::loadJavaVM(javaHome, argv, vmArgsCount);
+  void dxfeed::DxFeed::initJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {
+    dxfeed::internal::loadJavaVM(javaHome, consoleVmArgs, vmArgsCount);
   }
 
   DxFeed& dxfeed::DxFeed::getInstance() {
