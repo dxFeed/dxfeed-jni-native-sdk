@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <artifactId>graal-tutorial</artifactId>
+    <artifactId>dxfeed-jni-sdk</artifactId>
     <groupId>com.devexperts.qd</groupId>
-    <version>1.1-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -76,9 +76,30 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
+                            <includeGroupIds>
+                                com.devexperts.qd,
+                                com.devexperts.mdd
+                            </includeGroupIds>
                             <outputDirectory>
-                                ${project.build.directory}/libs
+                                ${project.basedir}/native/build/java-libs/libs
                             </outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${groupId}</groupId>
+                                    <artifactId>${artifactId}</artifactId>
+                                    <version>${version}</version>
+                                    <outputDirectory>${project.basedir}/native/build/java-libs</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

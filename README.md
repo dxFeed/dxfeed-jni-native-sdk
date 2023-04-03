@@ -5,6 +5,11 @@
 ```
 $ git clone https://github.com/dxFeed/dxfeed-jni-sdk.git
 $ cd dxfeed-jni-sdk
+$ mvn clean packge
+$ cd native
+$ sh build_release.sh
+$ cd build
+$ ./native_app $JAVA_HOME 127.0.0.1:6666 ETH/USD:GDAX -Xmx12G
 ```
 
 This package grants you access to [dxFeed market data](https://dxfeed.com/market-data/). The library
@@ -17,6 +22,8 @@ into your projects.
 ![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx-lightgrey)
 
 [![License](https://img.shields.io/badge/license-MPL--2.0-orange)](LICENSE)
+
+## Platform 
 
 ## Table of Contents
 
