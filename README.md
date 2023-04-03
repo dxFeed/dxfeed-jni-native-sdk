@@ -16,7 +16,7 @@ into your projects.
 
 ![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx-lightgrey)
 
-[![License](https://img.shields.io/badge/license-MPL--2.0-orange)](https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MPL--2.0-orange)](LICENSE)
 
 ## Table of Contents
 
