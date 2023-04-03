@@ -5,7 +5,7 @@
 ```
 $ git clone https://github.com/dxFeed/dxfeed-jni-sdk.git
 $ cd dxfeed-jni-sdk
-$ mvn clean packge
+$ mvn clean package
 $ cd native
 $ sh build_release.sh
 $ cd build
