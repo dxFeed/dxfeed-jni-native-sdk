@@ -23,7 +23,6 @@ namespace dxfeed {
     void addListener(Listener listener) const;
     void addSymbol(const std::string& symbol) const;
 //    void addSymbols(const std::vector <std::string>& symbols) const;
-    jobject getSub();
 
 
     // diagnostic

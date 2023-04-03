@@ -31,10 +31,6 @@ namespace dxfeed {
     onClose_(subscription_);
   }
 
-  jobject Subscription::getSub() {
-    return subscription_;
-  }
-
   void Subscription::addListener(Listener listener) const {
     auto& feed = dxfeed::DxFeed::getInstance();
     env_->CallStaticVoidMethod(feed.helperClass(), feed.addEventListenerMethod(),
