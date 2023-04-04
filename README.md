@@ -4,11 +4,10 @@
 </picture>
 
 This package grants you access to [dxFeed market data](https://dxfeed.com/market-data/). The library
-is designed as a С-library and was
-compiled using [Java Native Interface](https://docs.oracle.com/javase/8/docs/technotes/guides/jni/)
-and our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-summary.html), making
-it easily integrable
-into your projects.
+is designed as a С-library and directly invokes
+our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-summary.html) 
+using [Java Native Interface](https://docs.oracle.com/javase/8/docs/technotes/guides/jni/), making
+it easily integrable into your projects.
 
 :warning: It’s an **alpha** version and still under active development. **Don’t use it in a production environment.**
 
