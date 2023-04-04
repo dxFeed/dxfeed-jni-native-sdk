@@ -9,6 +9,7 @@ compiled using [Java Native Interface](https://docs.oracle.com/javase/8/docs/tec
 and our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-summary.html), making
 it easily integrable
 into your projects.
+
 :warning: It’s an **alpha** version and still under active development. **Don’t use it in a production environment.**
 
 ![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx-lightgrey)
@@ -18,6 +19,8 @@ into your projects.
 
 - [Overview](#overview)
     * [Reasons](#reasons)
+    * [Benefits](#Benefits)
+    * [Future development](#Future-development)
     * [Implementation details and usage](#Implementation-details-and-usage)
 - [Installation](#installation)
 - [Current State](#current-state)
