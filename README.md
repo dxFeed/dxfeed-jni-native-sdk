@@ -1,16 +1,7 @@
-# dxfeed-jni-native-sdk
-
-### How to run
-
-```
-$ git clone https://github.com/dxFeed/dxfeed-jni-native-sdk.git
-$ cd dxfeed-jni-native-sdk
-$ mvn clean package
-$ cd native
-$ sh build_release.sh
-$ cd build
-$ ./native_app $JAVA_HOME 127.0.0.1:6666 ETH/USD:GDAX -Xmx12G
-```
+<picture>
+ <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo_dark.svg">
+ <img alt="light" src="docs/images/logo_light.svg">
+</picture>
 
 This package grants you access to [dxFeed market data](https://dxfeed.com/market-data/). The library
 is designed as a С-library and was
@@ -18,12 +9,10 @@ compiled using [Java Native Interface](https://docs.oracle.com/javase/8/docs/tec
 and our flagship [dxFeed Java API](https://docs.dxfeed.com/dxfeed/api/overview-summary.html), making
 it easily integrable
 into your projects.
+:warning: It’s an **alpha** version and still under active development. **Don’t use it in a production environment.**
 
 ![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx-lightgrey)
-
 [![License](https://img.shields.io/badge/license-MPL--2.0-orange)](LICENSE)
-
-## Platform 
 
 ## Table of Contents
 
@@ -41,6 +30,18 @@ into your projects.
 
 Our Java API serves as the cornerstone of our technology, and with our SDK, you can seamlessly
 integrate it into any language, leveraging it as a native library for all desktop platforms.
+
+### Benefits
+
+- :rocket: Performance almost is same as for our best Java API
+- :milky_way: Wider functionality
+- :gemini: Identical programming interfaces to our best API
+- :thumbsup: Higher quality of support and service
+
+### Future development
+
+Our team is committed to continuously improving the library by regularly releasing updates to our
+Java API and implementing them in the native library.
 
 ### Implementation details and usage
 
@@ -182,6 +183,18 @@ Find useful information in our self-service dxFeed Knowledge Base:
 - [ ] [PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#PUBLISHER)
 - [ ] [STREAM_PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_PUBLISHER)
 - [ ] [ON_DEMAND_FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#ON_DEMAND_FEED)
+
+### How to run
+
+```
+$ git clone https://github.com/dxFeed/dxfeed-jni-native-sdk.git
+$ cd dxfeed-jni-native-sdk
+$ mvn clean package
+$ cd native
+$ sh build_release.sh
+$ cd build
+$ ./native_app $JAVA_HOME 127.0.0.1:6666 ETH/USD:GDAX -Xmx12G
+```
 
 ## Contribution
 
