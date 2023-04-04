@@ -1,1 +1,1 @@
-# dxfeed-jni-sdk
+# dxfeed-jni-native-sdk
