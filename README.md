@@ -3,8 +3,8 @@
 ### How to run
 
 ```
-$ git clone https://github.com/dxFeed/dxfeed-jni-sdk.git
-$ cd dxfeed-jni-sdk
+$ git clone https://github.com/dxFeed/dxfeed-jni-native-sdk.git
+$ cd dxfeed-jni-native-sdk
 $ mvn clean package
 $ cd native
 $ sh build_release.sh

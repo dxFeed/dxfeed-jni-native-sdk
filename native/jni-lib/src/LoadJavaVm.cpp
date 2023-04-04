@@ -19,7 +19,7 @@ namespace dxfeed {
     constexpr char PATH_SEPARATOR = '/';
     const char JNI_LIB_NAME[] = "native_jni.dylib";
 #endif
-    const char MY_JAR[] = "dxfeed-jni-sdk-0.0.1-SNAPSHOT.jar";
+    const char MY_JAR[] = "dxfeed-jni-native-sdk-0.0.1-SNAPSHOT.jar";
     const char* JARS[] = {
       "auther-api-442.jar",
       "dxfeed-api-3.313.jar",
