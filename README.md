@@ -11,7 +11,7 @@ it easily integrable into your projects.
 
 :warning: It’s an **alpha** version and still under active development. **Don’t use it in a production environment.**
 
-![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx-lightgrey)
+![Platform](https://img.shields.io/badge/platform-win--x64%20%7C%20linux--x64%20%7C%20osx--64%20%7C%20osx--arm64-green)
 [![License](https://img.shields.io/badge/license-MPL--2.0-orange)](LICENSE)
 
 ## Table of Contents
