@@ -8,7 +8,7 @@ class ByteBufferWrapper {
     private int pos = 0;
     private int totalBytes = 0;
     private final ByteBuffer[] byteChunks;
-    private ConcurrentHashMap<String, byte[]> cacheStringToBytes;
+    private final ConcurrentHashMap<String, byte[]> cacheStringToBytes;
     private byte[] data;
 
     ByteBufferWrapper(int quoteCount, ConcurrentHashMap<String, byte[]> cacheStringToBytes) {
