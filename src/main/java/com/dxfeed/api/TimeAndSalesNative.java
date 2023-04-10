@@ -20,7 +20,7 @@ class TimeAndSalesNative {
         for (int i = 0; i < quoteCount; ++i) {
             TimeAndSale quote = quoteList.get(i);
             String eventSymbol = quote.getEventSymbol();
-            byte eventSymbolLength = (byte) eventSymbol.length();
+            int eventSymbolLength = eventSymbol.length();
             long eventTime = quote.getEventTime();                                   // 8
             long index = quote.getIndex();                                           // 8
             int event_flags = quote.getEventFlags();                                 // 4
@@ -28,31 +28,31 @@ class TimeAndSalesNative {
             byte exchange_code = (byte) quote.getExchangeCode();                     // 1
             long quoteSize = quote.getSize();                                        // 8
 
-            int totalSize = (1 + eventSymbolLength) + (8) + (8) + (4) + (4) + (1) + (8) + (1 + 1 + 1);
+            int totalSize = (2 + eventSymbolLength) + (8) + (8) + (4) + (4) + (1) + (8) + (2 + 2 + 2);
             String exchangeSaleConditions = quote.getExchangeSaleConditions();
             if (exchangeSaleConditions != null) {
-                totalSize += (byte) exchangeSaleConditions.length();
+                totalSize += exchangeSaleConditions.length();
             }
             String buyer = quote.getBuyer();
             if (buyer != null) {
-                totalSize += (byte) buyer.length();
+                totalSize += buyer.length();
             }
             String seller = quote.getSeller();
             if (seller != null) {
-                totalSize += (byte) seller.length();
+                totalSize += seller.length();
             }
 
             pBytes.addChunk(i, totalSize);
-            pBytes.writeString(eventSymbol);             // 1 + eventSymbolLength
+            pBytes.writeString(eventSymbol);             // 4 + eventSymbolLength
             pBytes.writeLong(eventTime);                 // 8
             pBytes.writeLong(index);                     // 8
             pBytes.writeInt(event_flags);                // 4
             pBytes.writeInt(time_nano_part);             // 4
             pBytes.writeByte(exchange_code);             // 1
             pBytes.writeLong(quoteSize);                 // 8
-            pBytes.writeString(exchangeSaleConditions);  // 1 + exchangeSaleConditionsLength
-            pBytes.writeString(buyer);                   // 1 +  buyerLength
-            pBytes.writeString(seller);                  // 1 +  sellerLength
+            pBytes.writeString(exchangeSaleConditions);  // 4 + exchangeSaleConditionsLength
+            pBytes.writeString(buyer);                   // 4 +  buyerLength
+            pBytes.writeString(seller);                  // 4 +  sellerLength
 
             // DOUBLE DATA
             pDoubles.write(quote.getPrice());
