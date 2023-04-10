@@ -25,10 +25,9 @@ class ByteBufferWrapper {
 
     public void writeString(String value) {
         if (value == null || value.length() == 0) {
-            writeByte((byte) 0); // 0 as empty str
+            writeInt(0); // 0 as empty str
         } else {
-            byte length = (byte) value.length();
-            writeByte(length);
+            writeInt(value.length());
             byte[] strBytes = cacheStringToBytes.computeIfAbsent(value, k -> value.getBytes(StandardCharsets.UTF_8));
             writeBytes(strBytes);
         }

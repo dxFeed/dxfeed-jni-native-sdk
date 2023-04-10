@@ -67,7 +67,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
   auto pDoubleData = (double *)env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
   for (auto& quote : events) {
-    int8_t strSize = readByte(&pByteData);
+    int32_t strSize = readInt(&pByteData);
     quote.eventSymbol_ = pByteData;
     pByteData += strSize;
     quote.eventTime_ = readLong(&pByteData);
@@ -77,15 +77,15 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
     quote.exchangeCode_ = readByte(&pByteData);
     quote.size_ = readLong(&pByteData);
 
-    strSize = readByte(&pByteData);
+    strSize = readInt(&pByteData);
     quote.exchangeSaleConditions_ = strSize ? pByteData : "";
     pByteData += strSize;
 
-    strSize = readByte(&pByteData);
+    strSize = readInt(&pByteData);
     quote.buyer_ = strSize ? pByteData : "";
     pByteData += strSize;
 
-    strSize = readByte(&pByteData);
+    strSize = readInt(&pByteData);
     quote.seller_ = strSize ? pByteData : "";
     pByteData += strSize;
 
@@ -101,7 +101,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 }
 
 JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
+void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener11(jint size,
                                                                        jint byteLen, jbyte* jBytes, jint doubleLen,
                                                                        jdouble* jDoubles, jlong userCallback)
 {
