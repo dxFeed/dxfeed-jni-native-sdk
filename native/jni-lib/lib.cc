@@ -18,28 +18,25 @@ inline int8_t readByte(char** pData) {
   return readUByte<int8_t>(pData);
 }
 
-inline int16_t readInt16_t(char** pData) {
-  int16_t value = 0;
-  for (size_t n = 0; n < sizeof(int16_t); ++n) {
-    value += readUByte<int16_t>(pData) << (n * 8);
+template <typename PrimitiveT>
+inline PrimitiveT readPrimitive(char** pData) {
+  PrimitiveT value = 0;
+  for (size_t n = 0; n < sizeof(PrimitiveT); ++n) {
+    value += readUByte<PrimitiveT>(pData) << (n * 8);
   }
   return value;
+}
+
+inline int16_t readInt16_t(char** pData) {
+  return readPrimitive<int16_t>(pData);
 }
 
 inline int32_t readInt(char** pData) {
-  int32_t value = 0;
-  for (size_t n = 0; n < sizeof(int32_t); ++n) {
-    value += readUByte<int32_t>(pData) << (n * 8);
-  }
-  return value;
+  return readPrimitive<int32_t>(pData);
 }
 
 inline int64_t readLong(char** pData) {
-  int64_t value = 0;
-  for (size_t n = 0; n < sizeof(int64_t); ++n) {
-    value += readUByte<int64_t>(pData) << (n * 8);
-  }
-  return value;
+  return readPrimitive<int64_t>(pData);
 }
 
 inline double readDouble(double** pData) {
