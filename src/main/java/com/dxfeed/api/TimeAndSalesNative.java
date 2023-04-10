@@ -28,7 +28,7 @@ class TimeAndSalesNative {
             byte exchange_code = (byte) quote.getExchangeCode();                     // 1
             long quoteSize = quote.getSize();                                        // 8
 
-            int totalSize = (4 + eventSymbolLength) + (8) + (8) + (4) + (4) + (1) + (8) + (4 + 4 + 4);
+            int totalSize = (2 + eventSymbolLength) + (8) + (8) + (4) + (4) + (1) + (8) + (2 + 2 + 2);
             String exchangeSaleConditions = quote.getExchangeSaleConditions();
             if (exchangeSaleConditions != null) {
                 totalSize += exchangeSaleConditions.length();

@@ -17,6 +17,14 @@ inline int8_t readByte(char** pData) {
   return readUByte<int8_t>(pData);
 }
 
+inline int16_t readInt16_t(char** pData) {
+  int16_t value = 0;
+  for (size_t n = 0; n < sizeof(int16_t); ++n) {
+    value += readUByte<int16_t>(pData) << (n * 8);
+  }
+  return value;
+}
+
 inline int32_t readInt(char** pData) {
   int32_t value = 0;
   for (size_t n = 0; n < sizeof(int32_t); ++n) {
@@ -67,7 +75,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
   auto pDoubleData = (double *)env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
   for (auto& quote : events) {
-    int32_t strSize = readInt(&pByteData);
+    int16_t strSize = readInt16_t(&pByteData);
     quote.eventSymbol_ = pByteData;
     pByteData += strSize;
     quote.eventTime_ = readLong(&pByteData);
@@ -77,15 +85,15 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
     quote.exchangeCode_ = readByte(&pByteData);
     quote.size_ = readLong(&pByteData);
 
-    strSize = readInt(&pByteData);
+    strSize = readInt16_t(&pByteData);
     quote.exchangeSaleConditions_ = strSize ? pByteData : "";
     pByteData += strSize;
 
-    strSize = readInt(&pByteData);
+    strSize = readInt16_t(&pByteData);
     quote.buyer_ = strSize ? pByteData : "";
     pByteData += strSize;
 
-    strSize = readInt(&pByteData);
+    strSize = readInt16_t(&pByteData);
     quote.seller_ = strSize ? pByteData : "";
     pByteData += strSize;
 
@@ -101,7 +109,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 }
 
 JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener11(jint size,
+void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
                                                                        jint byteLen, jbyte* jBytes, jint doubleLen,
                                                                        jdouble* jDoubles, jlong userCallback)
 {
@@ -110,7 +118,7 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener11(jint si
   std::vector<TimeAndSale> events(size);
 
   for (auto& quote : events) {
-    int strSize = readByte(&pByteData);
+    int16_t strSize = readInt16_t(&pByteData);
     quote.eventSymbol_ = pByteData;
     pByteData += strSize;
     quote.eventTime_ = readLong(&pByteData);
@@ -120,15 +128,15 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener11(jint si
     quote.exchangeCode_ = readByte(&pByteData);
     quote.size_ = readLong(&pByteData);
 
-    strSize = readByte(&pByteData);
+    strSize = readInt16_t(&pByteData);
     quote.exchangeSaleConditions_ = pByteData;
     pByteData += strSize;
 
-    strSize = readByte(&pByteData);
+    strSize = readInt16_t(&pByteData);
     quote.buyer_ = strSize ? pByteData : "";
     pByteData += strSize;
 
-    strSize = readByte(&pByteData);
+    strSize = readInt16_t(&pByteData);
     quote.seller_ = strSize ? pByteData : "";
     pByteData += strSize;
 
