@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "headers/com_dxfeed_api_JniTest.h"
+#include "api/Api.h"
 #include "api/DxFeed.h"
 #include "api/utils/Diagnostic.h"
 
@@ -104,8 +105,10 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 
   env->ReleasePrimitiveArrayCritical(jDoubles, pDoubleData, 0);
   env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
-  const auto pListener = reinterpret_cast<dxfeed::perf::Receiver*>(userCallback);
-  pListener->operator()(events);
+  //  const auto pListener = reinterpret_cast<dxfeed::perf::Receiver*>(userCallback);
+  //  pListener->operator()(events);
+  auto pListener = reinterpret_cast<dx_feed_listener>(userCallback);
+  pListener(events.data(), size);
 }
 
 JNIEXPORT
@@ -144,8 +147,9 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
     quote.bidPrice_ = readDouble(&pDoubleData);
     quote.askPrice_ = readDouble(&pDoubleData);
   }
-
-  const auto pListener = reinterpret_cast<dxfeed::perf::Receiver*>(userCallback);
-  pListener->operator()(events);
+  //  const auto pListener = reinterpret_cast<dxfeed::perf::Receiver*>(userCallback);
+  //  pListener->operator()(events);
+  auto pListener = reinterpret_cast<dx_feed_listener>(userCallback);
+  pListener(events.data(), size);
 }
 }

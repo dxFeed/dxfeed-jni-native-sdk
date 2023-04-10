@@ -3,7 +3,7 @@
 
 extern "C" {
 
-typedef void(*dx_feed_listener)(const void *events, int count);
+typedef void(*dx_feed_listener)(const void *events, const int count);
 
 void dxfeed_init(const char* javaHome, const char** vmArgs, int vmArgsCount);
 void* dxfeed_get_instance();
