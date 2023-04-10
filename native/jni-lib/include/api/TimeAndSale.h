@@ -3,18 +3,18 @@
 #include <string>
 
 struct TimeAndSale {
-  std::string event_symbol;
-  int64_t event_time;
-  int64_t index;
-  int64_t event_flags;
-  int32_t time_nano_part;
-  int8_t exchange_code;
-  double price;
-  int64_t size;
-  double bid_price;
-  double ask_price;
-  std::string exchangeSaleConditions;
-  int32_t flags;
-  std::string buyer;
-  std::string seller;
+  std::string eventSymbol_;
+  int64_t eventTime_;
+  int64_t index_;
+  int64_t eventFlags_;
+  int32_t timeNanoPart_;
+  int8_t exchangeCode_;
+  double price_;
+  int64_t size_;
+  double bidPrice_;
+  double askPrice_;
+  std::string exchangeSaleConditions_;
+  int32_t flags_;
+  std::string buyer_;
+  std::string seller_;
 };

@@ -6,52 +6,52 @@
 namespace dxfeed::perf {
 
   Stopwatch::Stopwatch() :
-    _elapsed(0),
-    _startTimeStamp(0),
-    _isRunning(false)
+      elapsed_(0),
+      startTimeStamp_(0),
+      isRunning_(false)
   {
     reset();
   }
 
   void Stopwatch::start() {
     // Calling start on a running Stopwatch is a no-op.
-    if (!_isRunning) {
-      _startTimeStamp = getTimeStampInNanos();
-      _isRunning = true;
+    if (!isRunning_) {
+      startTimeStamp_ = getTimeStampInNanos();
+      isRunning_ = true;
     }
   }
 
   void Stopwatch::stop() {
     // Calling stop on a stopped Stopwatch is a no-op.
-    if (_isRunning) {
+    if (isRunning_) {
       int64_t endTimeStamp = getTimeStampInNanos();
-      int64_t elapsedThisPeriod = endTimeStamp - _startTimeStamp;
-      _elapsed += elapsedThisPeriod;
-      _isRunning = false;
+      int64_t elapsedThisPeriod = endTimeStamp - startTimeStamp_;
+      elapsed_ += elapsedThisPeriod;
+      isRunning_ = false;
 
-      if (_elapsed < 0) {
+      if (elapsed_ < 0) {
         // When measuring small time periods the Stopwatch.Elapsed*
         // properties can return negative values.  This is due to
         // bugs in the basic input/output system (BIOS) or the hardware
         // abstraction layer (HAL) on machines with variable-speed CPUs
         // (e.g. Intel SpeedStep).
 
-        _elapsed = 0;
+        elapsed_ = 0;
       }
     }
   }
 
   void Stopwatch::reset() {
-    _elapsed = 0;
-    _isRunning = false;
-    _startTimeStamp = 0;
+    elapsed_ = 0;
+    isRunning_ = false;
+    startTimeStamp_ = 0;
   }
 
   // Convenience method for replacing {sw.Reset(); sw.Start();} with a single sw.Restart()
   void Stopwatch::restart() {
-    _elapsed = 0;
-    _startTimeStamp = getTimeStampInNanos();
-    _isRunning = true;
+    elapsed_ = 0;
+    startTimeStamp_ = getTimeStampInNanos();
+    isRunning_ = true;
   }
 
   double Stopwatch::elapsedInSeconds() const {
@@ -65,12 +65,12 @@ namespace dxfeed::perf {
 
   // Get the elapsed ticks.
   int64_t Stopwatch::getElapsedTimeInNanos() const {
-    int64_t timeElapsed = _elapsed;
+    int64_t timeElapsed = elapsed_;
 
-    if (_isRunning) {
+    if (isRunning_) {
       // If the Stopwatch is running, add elapsed time since the Stopwatch is started last time.
       int64_t currentTimeStamp = getTimeStampInNanos();
-      int64_t elapsedUntilNow = currentTimeStamp - _startTimeStamp;
+      int64_t elapsedUntilNow = currentTimeStamp - startTimeStamp_;
       timeElapsed += elapsedUntilNow;
     }
     return timeElapsed;

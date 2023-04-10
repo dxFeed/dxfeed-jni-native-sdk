@@ -5,15 +5,15 @@
 namespace dxfeed::internal {
   JavaProperty::JavaProperty(jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName) {
     jstring property = jniEnv->NewStringUTF(propName);
-    _str = reinterpret_cast<jstring>(jniEnv->CallStaticObjectMethod(javaLangSystem, getPropertyMethodId, property));
-    if (_str) {
-      _cstr = jniEnv->GetStringUTFChars(_str, nullptr);
+    str_ = reinterpret_cast<jstring>(jniEnv->CallStaticObjectMethod(javaLangSystem, getPropertyMethodId, property));
+    if (str_) {
+      cstr_ = jniEnv->GetStringUTFChars(str_, nullptr);
     }
   }
 
   JavaProperty::~JavaProperty() {
-    if (_str) {
-      jniEnv->ReleaseStringUTFChars(_str, nullptr);
+    if (str_) {
+      jniEnv->ReleaseStringUTFChars(str_, nullptr);
     }
   }
 }

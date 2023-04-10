@@ -44,8 +44,8 @@ namespace dxfeed {
     DxFeed();
 
     JNIEnv* env_;
-    jclass javaHelperClass;
-    jmethodID addEventListenerHelperMethodId;
+    jclass javaHelperClass_;
+    jmethodID addEventListenerHelperMethodId_;
 
     static void onClose(jobject);
   };

@@ -7,11 +7,11 @@ namespace dxfeed::perf {
 //    static const int64_t NegativeZeroBits = BitConverter.DoubleToInt64Bits(-0.0);
 
   public:
-    static int32_t Abs(int32_t a) {
+    static int32_t abs(int32_t a) {
       return (a < 0) ? -a : a;
     }
 
-    static int32_t Div(int32_t a, int32_t b) {
+    static int32_t div(int32_t a, int32_t b) {
       if (a >= 0) {
         return a / b;
       }
@@ -23,7 +23,7 @@ namespace dxfeed::perf {
       return ((a + 1) / b) + 1;
     }
 
-    static int64_t FloorDiv(int64_t x, int64_t y) {
+    static int64_t floorDiv(int64_t x, int64_t y) {
       auto r = x / y;
 
       // If the signs are different and modulo not zero, round down.
@@ -34,11 +34,11 @@ namespace dxfeed::perf {
       return r;
     }
 
-    static int64_t FloorMod(int64_t x, int64_t y) {
-      return x - (FloorDiv(x, y) * y);
+    static int64_t floorMod(int64_t x, int64_t y) {
+      return x - (floorDiv(x, y) * y);
     }
 
-    static bool IsPowerOfTwo(int64_t x) {
+    static bool isPowerOfTwo(int64_t x) {
       return x > 0 && (x & (x - 1)) == 0;
     }
 
