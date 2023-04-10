@@ -2,9 +2,9 @@
 
 namespace dxfeed::perf {
   Timer::Timer(Diagnostic* diagnostic, TimerCallback callback, int64_t measurementInSeconds):
-    _diagnostic(diagnostic),
-    m_func(callback),
-    m_interval(measurementInSeconds)
+      diagnostic_(diagnostic),
+      callback_(callback),
+      timeInterval_(measurementInSeconds)
   {
     start();
   }
@@ -13,34 +13,24 @@ namespace dxfeed::perf {
  * Starting the timer.
  */
   void Timer::start() {
-    m_running = true;
-    m_thread = std::thread([&]() {
-      while (m_running) {
-        auto delta = std::chrono::steady_clock::now() + std::chrono::seconds(m_interval);
-        (_diagnostic->*m_func)();
+    isRunning_ = true;
+    thread_ = std::thread([&]() {
+      while (isRunning_) {
+        auto delta = std::chrono::steady_clock::now() + std::chrono::seconds(timeInterval_);
+        (diagnostic_->*callback_)();
         std::this_thread::sleep_until(delta);
       }
     });
-    m_thread.detach();
+    thread_.detach();
   }
 
   /*
    *  Stopping the timer and destroys the thread.
    */
   void Timer::stop() {
-    m_running = false;
-    m_thread.~thread();
+    isRunning_ = false;
+    thread_.~thread();
   }
-
-  /*
-   *  Restarts the timer. Needed if you set a new
-   *  timer interval for example.
-   */
-  void Timer::restart() {
-    stop();
-    start();
-  }
-
 
   void Timer::dispose() {
     stop();

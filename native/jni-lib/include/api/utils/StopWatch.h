@@ -5,9 +5,9 @@ namespace dxfeed::perf {
     constexpr static const int64_t MillisPerSecond = 1000000; // 10 ^ 6
     constexpr static const int64_t NanosPerSecond = MillisPerSecond * 1000; // 10 ^ 9
 
-    int64_t _elapsed;
-    int64_t _startTimeStamp;
-    bool _isRunning = false;
+    int64_t elapsed_;
+    int64_t startTimeStamp_;
+    bool isRunning_ = false;
 
   public:
     explicit Stopwatch();

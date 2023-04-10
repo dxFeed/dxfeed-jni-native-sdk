@@ -18,17 +18,17 @@ namespace dxfeed {
   DxFeed::DxFeed() :
     env_{jniEnv}
  {
-   javaHelperClass = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
-   addEventListenerHelperMethodId = jni::safeGetStaticMethodID(jniEnv, javaHelperClass, "addEventListener",
-                                                            "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
+   javaHelperClass_ = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
+   addEventListenerHelperMethodId_ = jni::safeGetStaticMethodID(jniEnv, javaHelperClass_, "addEventListener",
+                                                                "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
  }
 
   jclass DxFeed::helperClass() {
-    return javaHelperClass;
+    return javaHelperClass_;
   }
 
   jmethodID DxFeed::addEventListenerMethod() {
-    return addEventListenerHelperMethodId;
+    return addEventListenerHelperMethodId_;
   }
 
   void DxFeed::onClose(jobject clazz) {
