@@ -19,7 +19,7 @@ inline int8_t readByte(char** pData) {
 
 inline int32_t readInt(char** pData) {
   int32_t value = 0;
-  for (int n = 0; n < sizeof(int32_t); ++n) {
+  for (size_t n = 0; n < sizeof(int32_t); ++n) {
     value += readUByte<int32_t>(pData) << (n * 8);
   }
   return value;
@@ -27,7 +27,7 @@ inline int32_t readInt(char** pData) {
 
 inline int64_t readLong(char** pData) {
   int64_t value = 0;
-  for (int n = 0; n < sizeof(int64_t); ++n) {
+  for (size_t n = 0; n < sizeof(int64_t); ++n) {
     value += readUByte<int64_t>(pData) << (n * 8);
   }
   return value;
@@ -67,7 +67,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
   auto pDoubleData = (double *)env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
   for (auto& quote : events) {
-    int strSize = readByte(&pByteData);
+    int8_t strSize = readByte(&pByteData);
     quote.eventSymbol_ = pByteData;
     pByteData += strSize;
     quote.eventTime_ = readLong(&pByteData);
