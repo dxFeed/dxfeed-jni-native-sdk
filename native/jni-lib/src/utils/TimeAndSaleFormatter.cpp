@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <sstream>
 
 #include "api/utils/BitUtils.hpp"
-#include "api/utils/TimeAndSaleFormatter.h"
+#include "api/utils/TimeAndSaleFormatter.hpp"
 #include "api/utils/StringUtils.hpp"
 
 namespace dxfeed {

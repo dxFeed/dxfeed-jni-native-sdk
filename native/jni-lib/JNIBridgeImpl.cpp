@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <jni.h>
 #include <vector>
 #include <iostream>
 
-#include "headers/com_dxfeed_api_JniTest.h"
+#include "javah/com_dxfeed_api_JniTest.h"
 #include "api/Api.h"
-#include "api/DxFeed.h"
-#include "api/utils/Diagnostic.h"
+#include "api/DxFeed.hpp"
+#include "api/utils/Diagnostic.hpp"
 
 template <typename T>
 inline T readUByte(char** pData) {
@@ -45,13 +47,16 @@ inline double readDouble(double** pData) {
   return value;
 }
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 
 // https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/invocation.html#JNJI_OnLoad
 // -> register native method in created JNEEnv of VM when JNI lib is loaded
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+JNIEXPORT
+jint JNI_OnLoad(JavaVM* vm, void* reserved) {
   JNIEnv* env;
-  jint flag = vm->GetEnv((void**)&env, JNI_VERSION_1_8);
+  jint flag = vm->GetEnv((void**) &env, JNI_VERSION_1_8);
   if (flag == JNI_ERR) {
     std::cerr << "Error getting JNIEnv. Exiting..." << std::endl;
     return flag;
@@ -60,19 +65,20 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
   return JNI_VERSION_1_8;
 }
 
-void JNI_OnUnload(JavaVM *vm, void *reserved) {
+JNIEXPORT
+void JNI_OnUnload(JavaVM* vm, void* reserved) {
   std::cout << "JNI_OnUnload" << std::endl;
 }
 
 JNIEXPORT
 void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass, jint size,
-                                                               jbyteArray jBytes, jdoubleArray jDoubles, jlong userCallback)
-{
+                                                               jbyteArray jBytes, jdoubleArray jDoubles,
+                                                               jlong userCallback) {
   std::vector<TimeAndSale> events(size);
-  auto pByteData = (char *)env->GetPrimitiveArrayCritical(jBytes, nullptr);
-  auto pDoubleData = (double *)env->GetPrimitiveArrayCritical(jDoubles, nullptr);
+  auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
+  auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
-  for (auto& quote : events) {
+  for (auto& quote: events) {
     int16_t strSize = readInt16_t(&pByteData);
     quote.eventSymbol_ = pByteData;
     pByteData += strSize;
@@ -111,13 +117,12 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 JNIEXPORT
 void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
                                                                        jint byteLen, jbyte* jBytes, jint doubleLen,
-                                                                       jdouble* jDoubles, jlong userCallback)
-{
-  auto pByteData = (char*)jBytes;
-  auto pDoubleData = (double*)jDoubles;
+                                                                       jdouble* jDoubles, jlong userCallback) {
+  auto pByteData = (char*) jBytes;
+  auto pDoubleData = (double*) jDoubles;
   std::vector<TimeAndSale> events(size);
 
-  for (auto& quote : events) {
+  for (auto& quote: events) {
     int16_t strSize = readInt16_t(&pByteData);
     quote.eventSymbol_ = pByteData;
     pByteData += strSize;
@@ -149,4 +154,7 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
   auto pListener = reinterpret_cast<dx_feed_listener>(userCallback);
   pListener(events.data(), size);
 }
+
+#ifdef __cplusplus
 }
+#endif

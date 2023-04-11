@@ -1,13 +1,16 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_SUBSCRIPTION_H_
+#define DXFEED_JNI_NATIVE_SDK_SUBSCRIPTION_H_
 
 #include <jni.h>
 #include <string>
 #include <vector>
 
-#include "DxFeed.h"
+#include "DxFeed.hpp"
 #include "EventTypes.h"
-#include "utils/Diagnostic.h"
-#include "utils/TimeAndSaleFormatter.h"
+#include "utils/Diagnostic.hpp"
+#include "utils/TimeAndSaleFormatter.hpp"
 
 namespace dxfeed {
   struct Subscription final {
@@ -32,4 +35,6 @@ namespace dxfeed {
     JNIEnv* env_;
     const dxfeed::OnCloseHandler onClose_;
   };
-}
+} // namespace dxfeed
+
+#endif // DXFEED_JNI_NATIVE_SDK_SUBSCRIPTION_H_

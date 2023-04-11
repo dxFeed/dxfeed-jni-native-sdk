@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <sstream>
 #include <iostream>
 
-#include "api/utils/LoadLibrary.h"
+#include "api/utils/LoadLibrary.hpp"
 
 #if _MSC_VER && !__INTEL_COMPILER
 #include <Windows.h>

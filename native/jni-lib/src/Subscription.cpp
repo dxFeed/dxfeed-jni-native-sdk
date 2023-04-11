@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <jni.h>
 
-#include "api/Subscription.h"
-#include "api/DxFeed.h"
+#include "api/Subscription.hpp"
+#include "api/DxFeed.hpp"
 
 namespace dxfeed {
   const char* getEventClassType(EventType eventType) {

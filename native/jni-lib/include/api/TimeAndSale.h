@@ -1,4 +1,7 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_TIME_AND_SALE_H_
+#define DXFEED_JNI_NATIVE_SDK_TIME_AND_SALE_H_
 
 #include <string>
 
@@ -18,3 +21,5 @@ struct TimeAndSale {
   std::string buyer_;
   std::string seller_;
 };
+
+#endif // DXFEED_JNI_NATIVE_SDK_TIME_AND_SALE_H_

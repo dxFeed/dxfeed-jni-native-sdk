@@ -1,10 +1,13 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_PERFORMANCE_TIME_UTIL_H_
+#define DXFEED_JNI_NATIVE_SDK_PERFORMANCE_TIME_UTIL_H_
 
 #include <cstdint>
 #include <algorithm>
 #include <limits>
 
-#include "MathUtil.h"
+#include "MathUtil.hpp"
 
 namespace dxfeed::perf {
   struct TimeUtil {
@@ -27,4 +30,6 @@ namespace dxfeed::perf {
     static const int64_t HOUR = 60 * MINUTE;
     static const int64_t DAY = 24 * HOUR;
   };
-}
+} // namespace dxfeed::perf
+
+#endif // DXFEED_JNI_NATIVE_SDK_PERFORMANCE_TIME_UTIL_H_

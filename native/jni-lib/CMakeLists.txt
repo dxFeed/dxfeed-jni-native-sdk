@@ -24,25 +24,24 @@ message("JNI_COMMON_INCLUDE: ${JNI_INCLUDE}")
 include_directories(${PROJECT_NAME} INTERFACE ${JNI_INCLUDE})
 set(API_INCLUDE include)
 set(API_INCLUDE ${API_INCLUDE} PARENT_SCOPE)
-set(JNI_HEADERS_INCLUDE ../../target)
-include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE} ${JNI_HEADERS_INCLUDE})
+include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE})
 
 message("-- Linking native_lib")
 set(SOURCE_FILES
-        lib.cc
-        src/Api.cpp
-        src/Connection.cpp
-        src/DxFeed.cpp
-        src/JavaProperty.cpp
-        src/LoadJavaVm.cpp
-        src/LoadLibrary.cpp
-        src/Subscription.cpp
-        src/utils/StringUtils.cpp
-        src/utils/TimeAndSaleFormatter.cpp
-        src/utils/Diagnostic.cpp
-        src/utils/Timer.cpp
-        src/utils/StopWatch.cpp
-        src/utils/ProcessPriority.cpp
+    JNIBridgeImpl.cpp
+    src/Api.cpp
+    src/Connection.cpp
+    src/DxFeed.cpp
+    src/JavaProperty.cpp
+    src/LoadJavaVm.cpp
+    src/LoadLibrary.cpp
+    src/Subscription.cpp
+    src/utils/StringUtils.cpp
+    src/utils/TimeAndSaleFormatter.cpp
+    src/utils/Diagnostic.cpp
+    src/utils/Timer.cpp
+    src/utils/StopWatch.cpp
+    src/utils/ProcessPriority.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

@@ -1,13 +1,15 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_STRING_UTILS_H_
+#define DXFEED_JNI_NATIVE_SDK_STRING_UTILS_H_
+
 #include <chrono>
 #include <date/date.h>
 #include <string>
 #include <vector>
 
 namespace dxfeed {
-
-class StringUtils {
-  public:
+  struct StringUtils {
     /**
      * @brief Returns a vector string that contains the substrings in this instance
      * that are delimited by elements of a specified char.
@@ -77,4 +79,6 @@ class StringUtils {
     }
 };
 
-} // namespace dxfg
+}  // namespace dxfeed
+
+#endif // DXFEED_JNI_NATIVE_SDK_STRING_UTILS_H_
