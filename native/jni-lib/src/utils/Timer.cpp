@@ -1,4 +1,6 @@
-#include "api/utils/Diagnostic.h"
+// SPDX-License-Identifier: MPL-2.0
+
+#include "api/utils/Diagnostic.hpp"
 
 namespace dxfeed::perf {
   Timer::Timer(Diagnostic* diagnostic, TimerCallback callback, int64_t measurementInSeconds):

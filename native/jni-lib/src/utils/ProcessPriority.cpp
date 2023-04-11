@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #if _MSC_VER && !__INTEL_COMPILER
 #include <Windows.h>
 #include <cstdio>

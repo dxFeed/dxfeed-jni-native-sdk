@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <jni.h>
 #include <string>
 #include <iostream>
 
-#include "api/utils/LoadLibrary.h"
-#include "api/utils/JavaProperty.h"
+#include "api/utils/LoadLibrary.hpp"
+#include "api/utils/JavaProperty.hpp"
 
 namespace dxfeed {
   JNIEnv* jniEnv = nullptr;

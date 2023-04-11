@@ -1,6 +1,8 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <jni.h>
 
-#include "api/utils/JavaProperty.h"
+#include "api/utils/JavaProperty.hpp"
 
 namespace dxfeed::internal {
   JavaProperty::JavaProperty(jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName) {

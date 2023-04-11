@@ -1,4 +1,8 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_TIME_FORMATTER_H_
+#define DXFEED_JNI_NATIVE_SDK_TIME_FORMATTER_H_
+
 #include <cstdint>
 #include <string>
 #include <unordered_map>
@@ -48,4 +52,6 @@ class TimeAndSaleFormatter {
     static std::string toString(const TimeAndSale *e);
 };
 
-} // namespace dxfg
+} // namespace dxfeed
+
+#endif // DXFEED_JNI_NATIVE_SDK_TIME_FORMATTER_H_

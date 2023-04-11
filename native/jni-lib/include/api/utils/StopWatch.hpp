@@ -1,4 +1,7 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_PERFORMANCE_STOPWATCH_H_
+#define DXFEED_JNI_NATIVE_SDK_PERFORMANCE_STOPWATCH_H_
 
 namespace dxfeed::perf {
   class Stopwatch {
@@ -22,6 +25,6 @@ namespace dxfeed::perf {
     static int64_t getTimeStampInNanos();
     int64_t getElapsedTimeInNanos() const;
   };
-}
+}  // namespace dxfeed::perf
 
-
+#endif // DXFEED_JNI_NATIVE_SDK_PERFORMANCE_STOPWATCH_H_

@@ -1,4 +1,7 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_FEED_H_
+#define DXFEED_JNI_NATIVE_SDK_FEED_H_
 
 #include <string>
 
@@ -26,7 +29,7 @@ namespace dxfeed {
     jmethodID safeGetMethod(JNIEnv*, JMethodIdProvider, jclass, const char* methodName, const char* signature);
     jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
     jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
-  }
+  }  // namespace dxfeed::jni
 
   struct DxFeed final {
     static void initJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
@@ -49,4 +52,6 @@ namespace dxfeed {
 
     static void onClose(jobject);
   };
-}
+} // namespace dxfeed
+
+#endif // DXFEED_JNI_NATIVE_SDK_FEED_H_

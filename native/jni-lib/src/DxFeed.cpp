@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <stdexcept>
 #include <iostream>
 
-#include "api/DxFeed.h"
-#include "api/Connection.h"
-#include "api/utils/LoadLibrary.h"
+#include "api/DxFeed.hpp"
+#include "api/Connection.hpp"
+#include "api/utils/LoadLibrary.hpp"
 
 namespace dxfeed {
   void dxfeed::DxFeed::initJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {

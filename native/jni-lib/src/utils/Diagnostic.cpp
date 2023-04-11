@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <iostream>
 
-#include "api/utils/Diagnostic.h"
-#include "api/utils/TimeAndSaleFormatter.h"
-#include "api/utils/TimeUtil.h"
+#include "api/utils/Diagnostic.hpp"
+#include "api/utils/TimeAndSaleFormatter.hpp"
+#include "api/utils/TimeUtil.hpp"
 #include "api/utils/StringUtils.hpp"
 
 template<class T>

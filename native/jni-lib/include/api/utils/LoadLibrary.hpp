@@ -1,4 +1,7 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_INTERNAL_H_
+#define DXFEED_JNI_NATIVE_SDK_INTERNAL_H_
 
 #include <filesystem>
 #include <jni.h>
@@ -13,4 +16,6 @@ namespace dxfeed::internal {
 
   void loadJVMLibrary(const char*);
   void loadJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
-}
+}  // namespace dxfeed::internal
+
+#endif // DXFEED_JNI_NATIVE_SDK_INTERNAL_H_

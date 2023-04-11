@@ -1,11 +1,14 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_PERFORMANCE_DIAGNOSTIC_H_
+#define DXFEED_JNI_NATIVE_SDK_PERFORMANCE_DIAGNOSTIC_H_
 
 #include <cstdint>
 #include <thread>
 #include <iostream>
 #include <vector>
 
-#include "StopWatch.h"
+#include "StopWatch.hpp"
 #include "api/TimeAndSale.h"
 
 namespace dxfeed::perf {
@@ -53,4 +56,6 @@ namespace dxfeed::perf {
     int64_t lastEventLatency_ = 0;
     int64_t totalEventsCounter_ = 0;
   };
-}
+}  // namespace dxfeed::perf
+
+#endif // DXFEED_JNI_NATIVE_SDK_PERFORMANCE_DIAGNOSTIC_H_

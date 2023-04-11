@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include <cstdint>
 #include <chrono>
 
-#include "api/utils/StopWatch.h"
+#include "api/utils/StopWatch.hpp"
 
 namespace dxfeed::perf {
 

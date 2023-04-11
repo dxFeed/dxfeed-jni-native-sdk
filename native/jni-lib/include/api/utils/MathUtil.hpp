@@ -1,4 +1,7 @@
-#pragma once
+// SPDX-License-Identifier: MPL-2.0
+
+#ifndef DXFEED_JNI_NATIVE_SDK_PERFORMANCE_MATH_UTIL_H_
+#define DXFEED_JNI_NATIVE_SDK_PERFORMANCE_MATH_UTIL_H_
 
 #include <cstdint>
 
@@ -46,4 +49,6 @@ namespace dxfeed::perf {
 //      BitConverter.DoubleToInt64Bits(x) == NegativeZeroBits;
 //    }
   };
-}
+}  // namespace dxfeed::perf
+
+#endif // DXFEED_JNI_NATIVE_SDK_PERFORMANCE_MATH_UTIL_H_
