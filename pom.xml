@@ -81,7 +81,7 @@
                                 com.devexperts.mdd
                             </includeGroupIds>
                             <outputDirectory>
-                                ${project.basedir}/native/build/java-libs/libs
+                                ${project.basedir}/src/main/c/build/java-libs/libs
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -97,7 +97,7 @@
                                     <groupId>${groupId}</groupId>
                                     <artifactId>${artifactId}</artifactId>
                                     <version>${version}</version>
-                                    <outputDirectory>${project.basedir}/native/build/java-libs</outputDirectory>
+                                    <outputDirectory>${project.basedir}/src/main/c/build/java-libs</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
