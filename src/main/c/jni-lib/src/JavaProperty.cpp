@@ -2,20 +2,23 @@
 
 #include <jni.h>
 
-#include "dxfeed/utils/JavaProperty.hpp"
+#include "dxfeed/JavaProperty.hpp"
 
 namespace dxfeed::internal {
-  JavaProperty::JavaProperty(jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName) {
-    jstring property = jniEnv->NewStringUTF(propName);
-    str_ = reinterpret_cast<jstring>(jniEnv->CallStaticObjectMethod(javaLangSystem, getPropertyMethodId, property));
+  JavaProperty::JavaProperty(JNIEnv* env,jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName) :
+      env_(env)
+  {
+    jstring property = env_->NewStringUTF(propName);
+    str_ = reinterpret_cast<jstring>(env_->CallStaticObjectMethod(javaLangSystem, getPropertyMethodId, property));
     if (str_) {
-      cstr_ = jniEnv->GetStringUTFChars(str_, nullptr);
+      cstr_ = env_->GetStringUTFChars(str_, nullptr);
     }
   }
 
   JavaProperty::~JavaProperty() {
     if (str_) {
-      jniEnv->ReleaseStringUTFChars(str_, nullptr);
+      env_->ReleaseStringUTFChars(str_, nullptr);
     }
+    env_ = nullptr;
   }
 }

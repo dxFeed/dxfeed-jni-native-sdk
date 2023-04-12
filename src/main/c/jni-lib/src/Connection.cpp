@@ -3,6 +3,7 @@
 #include "api/EventTypes.h"
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/Connection.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
   jobject createDxEndpoint(JNIEnv* env) {
