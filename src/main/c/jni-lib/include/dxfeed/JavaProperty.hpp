@@ -6,11 +6,11 @@
 #include <jni.h>
 #include <iostream>
 
-#include "dxfeed/DxFeed.hpp"
+#include <jni.h>
 
 namespace dxfeed::internal {
   struct JavaProperty {
-    JavaProperty(jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName);
+    JavaProperty(JNIEnv* env, jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName);
     ~JavaProperty();
 
     friend std::ostream& operator<<(std::ostream& os, const JavaProperty& prop) {
@@ -22,6 +22,7 @@ namespace dxfeed::internal {
   private:
     const char* cstr_ = nullptr;
     jstring str_;
+    JNIEnv* env_;
   };
 }  // namespace dxfeed::internal
 

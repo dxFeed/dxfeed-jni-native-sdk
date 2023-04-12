@@ -4,6 +4,7 @@
 
 #include "dxfeed/Subscription.hpp"
 #include "dxfeed/DxFeed.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
   const char* getEventClassType(EventType eventType) {

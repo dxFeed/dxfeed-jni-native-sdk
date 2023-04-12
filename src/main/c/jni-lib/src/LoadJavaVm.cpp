@@ -5,7 +5,8 @@
 #include <iostream>
 
 #include "dxfeed/utils/LoadLibrary.hpp"
-#include "dxfeed/utils/JavaProperty.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/JavaProperty.hpp"
 
 namespace dxfeed {
   JNIEnv* jniEnv = nullptr;
@@ -59,15 +60,15 @@ namespace dxfeed {
     }
 
     void dumpJavaInfo(jclass pJclass, jmethodID methodId) {
-      auto vendor = JavaProperty { pJclass, methodId, "java.vendor"};
-      auto version = JavaProperty { pJclass, methodId, "java.version"};
-      auto versionDate = JavaProperty { pJclass, methodId, "java.version.date"};
-      auto runtimeName = JavaProperty { pJclass, methodId, "java.runtime.name"};
-      auto runtimeVersion = JavaProperty { pJclass, methodId, "java.runtime.version"};
-      auto vmName = JavaProperty { pJclass, methodId, "java.vm.name"};
-      auto vmVendor = JavaProperty { pJclass, methodId, "java.vm.vendor"};
-      auto vmVersion = JavaProperty { pJclass, methodId, "java.vm.version"};
-      auto vmInfo = JavaProperty { pJclass, methodId, "java.vm.info"};
+      auto vendor = JavaProperty { jniEnv, pJclass, methodId, "java.vendor"};
+      auto version = JavaProperty { jniEnv, pJclass, methodId, "java.version"};
+      auto versionDate = JavaProperty { jniEnv, pJclass, methodId, "java.version.date"};
+      auto runtimeName = JavaProperty { jniEnv, pJclass, methodId, "java.runtime.name"};
+      auto runtimeVersion = JavaProperty { jniEnv, pJclass, methodId, "java.runtime.version"};
+      auto vmName = JavaProperty { jniEnv, pJclass, methodId, "java.vm.name"};
+      auto vmVendor = JavaProperty { jniEnv, pJclass, methodId, "java.vm.vendor"};
+      auto vmVersion = JavaProperty { jniEnv, pJclass, methodId, "java.vm.version"};
+      auto vmInfo = JavaProperty { jniEnv, pJclass, methodId, "java.vm.info"};
 
       std::cout << "JAVA_HOME info:" << std::endl;
       std::cout << "\t" << vendor << " version \"" << version << "\" " << versionDate << std::endl;
@@ -87,12 +88,9 @@ namespace dxfeed {
       std::cout << "void System::getProperty(String path): " << getPropMethodId << "\n";
       dumpJavaInfo(javaLangSystemClazz, getPropMethodId);
 
-      jclass clazz = jni::safeFindClass(jniEnv, "com/dxfeed/api/JniTest");
+      jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
       std::cout << "\tclazz com/dxfeed/api/JniTest: " << clazz << std::endl;
-
-      jint res = jniEnv->RegisterNatives(clazz, methods, sizeof(methods)/sizeof(methods[0]));
-      auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
-      std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
+      jni::registerNativeMethods(jniEnv, clazz);
     }
 
     void loadJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {

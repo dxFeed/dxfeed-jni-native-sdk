@@ -36,12 +36,13 @@ set(SOURCE_FILES
     src/LoadJavaVm.cpp
     src/LoadLibrary.cpp
     src/Subscription.cpp
+    src/utils/Diagnostic.cpp
+    src/utils/JNIUtils.cpp
+    src/utils/ProcessPriority.cpp
+    src/utils/StopWatch.cpp
     src/utils/StringUtils.cpp
     src/utils/TimeAndSaleFormatter.cpp
-    src/utils/Diagnostic.cpp
     src/utils/Timer.cpp
-    src/utils/StopWatch.cpp
-    src/utils/ProcessPriority.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
