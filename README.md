@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 
 There are the following usage examples:
 
-* [dxEndpoint Subscription](native/main.cpp)
+* [dxEndpoint Subscription](src/main/c/main.cpp)
 
 ## Installation
 
