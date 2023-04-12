@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "../TimeAndSale.h"
+#include "api/TimeAndSale.h"
 
 namespace dxfeed {
 

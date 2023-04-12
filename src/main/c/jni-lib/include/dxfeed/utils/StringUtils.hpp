@@ -4,9 +4,10 @@
 #define DXFEED_JNI_NATIVE_SDK_STRING_UTILS_H_
 
 #include <chrono>
-#include <date/date.h>
 #include <string>
 #include <vector>
+
+#include <date/date.h>
 
 namespace dxfeed {
   struct StringUtils {

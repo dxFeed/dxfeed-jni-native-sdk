@@ -3,6 +3,8 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_PERFORMANCE_STOPWATCH_H_
 #define DXFEED_JNI_NATIVE_SDK_PERFORMANCE_STOPWATCH_H_
 
+#include <cstdint>
+
 namespace dxfeed::perf {
   class Stopwatch {
     constexpr static const int64_t MillisPerSecond = 1000000; // 10 ^ 6

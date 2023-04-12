@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "api/DxFeed.hpp"
-#include "api/Connection.hpp"
+#include "api/EventTypes.h"
+#include "dxfeed/DxFeed.hpp"
+#include "dxfeed/Connection.hpp"
 
 namespace dxfeed {
   jobject createDxEndpoint(JNIEnv* env) {

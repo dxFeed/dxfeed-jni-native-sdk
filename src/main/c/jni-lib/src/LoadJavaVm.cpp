@@ -4,8 +4,8 @@
 #include <string>
 #include <iostream>
 
-#include "api/utils/LoadLibrary.hpp"
-#include "api/utils/JavaProperty.hpp"
+#include "dxfeed/utils/LoadLibrary.hpp"
+#include "dxfeed/utils/JavaProperty.hpp"
 
 namespace dxfeed {
   JNIEnv* jniEnv = nullptr;

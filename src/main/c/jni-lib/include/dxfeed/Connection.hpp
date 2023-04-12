@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "Subscription.hpp"
-#include "EventTypes.h"
+#include "api/EventTypes.h"
 
 namespace dxfeed {
   struct Connection final {

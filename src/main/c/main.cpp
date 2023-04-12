@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <iostream>
+#include <thread>
 
 #include "api/Api.h"
-#include "api/Subscription.hpp"
-#include "api/Connection.hpp"
+#include "api/TimeAndSale.h"
+#include "dxfeed/utils/Diagnostic.hpp"
+#include "dxfeed/utils/TimeAndSaleFormatter.hpp"
 
 int main(int argc, char** argv) {
   dxfeed::perf::setProcessPriorityClass();
@@ -42,6 +44,6 @@ int main(int argc, char** argv) {
     // sleep then clean up
   std::chrono::hours hours(24); // time to sleep 24 hours
   std::this_thread::sleep_for(hours);
-  delete (dxfeed::Subscription*)subscription;
-  delete (dxfeed::Connection*) connection;
+  delete subscription;
+  delete connection;
 }
