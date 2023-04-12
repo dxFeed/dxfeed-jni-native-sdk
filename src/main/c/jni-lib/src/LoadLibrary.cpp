@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "api/utils/LoadLibrary.hpp"
+#include "dxfeed/utils/LoadLibrary.hpp"
 
 #if _MSC_VER && !__INTEL_COMPILER
 #include <Windows.h>

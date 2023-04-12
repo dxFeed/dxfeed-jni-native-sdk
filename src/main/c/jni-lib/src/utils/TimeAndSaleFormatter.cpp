@@ -2,9 +2,9 @@
 
 #include <sstream>
 
-#include "api/utils/BitUtils.hpp"
-#include "api/utils/TimeAndSaleFormatter.hpp"
-#include "api/utils/StringUtils.hpp"
+#include "dxfeed/utils/BitUtils.hpp"
+#include "dxfeed/utils/TimeAndSaleFormatter.hpp"
+#include "dxfeed/utils/StringUtils.hpp"
 
 namespace dxfeed {
 
@@ -58,4 +58,4 @@ std::string TimeAndSaleFormatter::toString(const TimeAndSale* e) {
     return ss.str();
 }
 
-} // namespace dxfg
+} // namespace dxfeed

@@ -3,9 +3,9 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "api/DxFeed.hpp"
-#include "api/Connection.hpp"
-#include "api/utils/LoadLibrary.hpp"
+#include "dxfeed/DxFeed.hpp"
+#include "dxfeed/Connection.hpp"
+#include "dxfeed/utils/LoadLibrary.hpp"
 
 namespace dxfeed {
   void dxfeed::DxFeed::initJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {

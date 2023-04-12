@@ -2,7 +2,7 @@
 
 #include <jni.h>
 
-#include "api/utils/JavaProperty.hpp"
+#include "dxfeed/utils/JavaProperty.hpp"
 
 namespace dxfeed::internal {
   JavaProperty::JavaProperty(jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName) {

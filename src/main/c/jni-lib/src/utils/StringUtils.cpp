@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-#include "api/utils/StringUtils.hpp"
+#include "dxfeed/utils/StringUtils.hpp"
 
 namespace dxfeed {
 
@@ -32,4 +32,4 @@ std::string StringUtils::encodeString(const char *string) { return string == nul
 
 std::string StringUtils::encodeString(const std::string& str) { return str.empty() ? "null" : str; }
 
-} // namespace dxfg
+} // namespace dxfeed

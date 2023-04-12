@@ -6,8 +6,8 @@
 
 #include "javah/com_dxfeed_api_JniTest.h"
 #include "api/Api.h"
-#include "api/DxFeed.hpp"
-#include "api/utils/Diagnostic.hpp"
+#include "dxfeed/DxFeed.hpp"
+#include "dxfeed/utils/Diagnostic.hpp"
 
 template <typename T>
 inline T readUByte(char** pData) {

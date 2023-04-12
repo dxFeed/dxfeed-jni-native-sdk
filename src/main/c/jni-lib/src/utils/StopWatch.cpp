@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <chrono>
 
-#include "api/utils/StopWatch.hpp"
+#include "dxfeed/utils/StopWatch.hpp"
 
 namespace dxfeed::perf {
 

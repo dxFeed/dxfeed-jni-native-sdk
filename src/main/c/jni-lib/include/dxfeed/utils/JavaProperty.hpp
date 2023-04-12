@@ -6,7 +6,7 @@
 #include <jni.h>
 #include <iostream>
 
-#include "../DxFeed.hpp"
+#include "dxfeed/DxFeed.hpp"
 
 namespace dxfeed::internal {
   struct JavaProperty {

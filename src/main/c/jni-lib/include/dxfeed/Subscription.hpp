@@ -8,9 +8,9 @@
 #include <vector>
 
 #include "DxFeed.hpp"
-#include "EventTypes.h"
-#include "utils/Diagnostic.hpp"
-#include "utils/TimeAndSaleFormatter.hpp"
+#include "api/EventTypes.h"
+#include "dxfeed/utils/Diagnostic.hpp"
+#include "dxfeed/utils/TimeAndSaleFormatter.hpp"
 
 namespace dxfeed {
   struct Subscription final {

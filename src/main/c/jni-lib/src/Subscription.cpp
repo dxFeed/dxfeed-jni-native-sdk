@@ -2,8 +2,8 @@
 
 #include <jni.h>
 
-#include "api/Subscription.hpp"
-#include "api/DxFeed.hpp"
+#include "dxfeed/Subscription.hpp"
+#include "dxfeed/DxFeed.hpp"
 
 namespace dxfeed {
   const char* getEventClassType(EventType eventType) {
