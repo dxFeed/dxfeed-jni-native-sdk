@@ -2,9 +2,9 @@
 
 #include <sstream>
 
-#include "dxfeed/utils/BitUtils.hpp"
-#include "dxfeed/utils/TimeAndSaleFormatter.hpp"
-#include "dxfeed/utils/StringUtils.hpp"
+#include "BitUtils.hpp"
+#include "TimeAndSaleFormatter.hpp"
+#include "StringUtils.hpp"
 
 namespace dxfeed {
 

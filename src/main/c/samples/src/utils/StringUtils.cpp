@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-#include "dxfeed/utils/StringUtils.hpp"
+#include "StringUtils.hpp"
 
 namespace dxfeed {
 

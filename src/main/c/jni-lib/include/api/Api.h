@@ -17,7 +17,7 @@ void* dxfg_create_connection(void* feed, const char* address);
 void* dxfg_create_subscription(void* connection, int eventType);
 void dxfg_add_symbol(void *subscription, const char *symbol);
 void dxfg_add_listener(void *subscription, dx_feed_listener listener);
-void dxfg_add_diagnostic_listener(void *subscription, int64_t diagnostic_listener);
+//void dxfg_add_diagnostic_listener(void *subscription, int64_t diagnostic_listener);
 
 #ifdef __cplusplus
 }
