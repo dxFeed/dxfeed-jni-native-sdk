@@ -8,6 +8,33 @@
 
 #include "TimeAndSaleFormatter.hpp"
 
+// todo: implement sample with API
+// void dxEndpointTimeSeriesSubscription(graal_isolatethread_t *thread) {
+//    printf("C: dxEndpointTimeSeriesSubscription BEGIN\n");
+//    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+//    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+//    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+//    dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
+//    dxfg_time_series_subscription_t* subscriptionTaS = dxfg_DXFeed_createTimeSeriesSubscription2(thread, feed, event_clazz_list);
+//    dxfg_CList_EventClazz_release(thread, event_clazz_list);
+//    dxfg_DXFeedTimeSeriesSubscription_setFromTime(thread, subscriptionTaS, 0);
+//    dxfg_feed_event_listener_t *listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+//    dxfg_Object_finalize(thread, listener, finalize, nullptr);
+//    dxfg_DXFeedSubscription_addEventListener(thread, &subscriptionTaS->sub, listener);
+//    dxfg_string_symbol_t symbolAAPL;
+//    symbolAAPL.supper.type = STRING;
+//    symbolAAPL.symbol = "AAPL";
+//    dxfg_DXFeedSubscription_setSymbol(thread, &subscriptionTaS->sub, &symbolAAPL.supper);
+//    usleep(2000000);
+//    dxfg_DXFeedSubscription_close(thread, subscriptionTaS);
+//    dxfg_DXEndpoint_close(thread, endpoint);
+//    dxfg_JavaObjectHandler_release(thread, &subscriptionTaS->sub.handler);
+//    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+//    dxfg_JavaObjectHandler_release(thread, &feed->handler);
+//    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
+//    printf("C: dxEndpointTimeSeriesSubscription END\n");
+//}
+
 int main(int argc, char** argv) {
   // load cmd args
   const int defaultArgSize = 4;

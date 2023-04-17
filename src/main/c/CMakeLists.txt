@@ -19,4 +19,4 @@ add_subdirectory(jni-lib)
 add_subdirectory(samples)
 
 add_custom_target(${PROJECT_NAME})
-add_dependencies(${PROJECT_NAME} native_jni sample)
+add_dependencies(${PROJECT_NAME} native_jni time_and_sale)

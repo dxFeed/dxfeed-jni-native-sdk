@@ -46,10 +46,4 @@ namespace dxfeed {
     jstring pSymbol = env_->NewStringUTF(symbol.c_str());
     env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
   }
-
-//  void Subscription::addDiagnosticListener(int64_t listener) const {
-//    auto& feed = dxfeed::DxFeed::getInstance();
-//    env_->CallStaticVoidMethod(feed.helperClass(), feed.addEventListenerMethod(),
-//                               subscription_, static_cast<jlong>(listener));
-//  }
 }
