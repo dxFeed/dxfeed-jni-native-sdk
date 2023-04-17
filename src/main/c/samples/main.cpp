@@ -6,21 +6,9 @@
 #include "api/Api.h"
 #include "api/TimeAndSale.h"
 
-#include "Diagnostic.hpp"
 #include "TimeAndSaleFormatter.hpp"
 
-void simpleListener(void* dxFeedSubscription) {
-  dxfg_add_listener(dxFeedSubscription, [](const void *events, int count) {
-    auto timeAndSaleList = reinterpret_cast<const TimeAndSale*>(events);
-    for (int i = 0; i < count; ++i) {
-      auto quote = std::make_shared<TimeAndSale>(timeAndSaleList[i]);
-      std::cout << dxfeed::TimeAndSaleFormatter::toString(quote.get()) << std::endl;
-    }
-  });
-}
-
 int main(int argc, char** argv) {
-  dxfeed::perf::setProcessPriorityClass();
   // load cmd args
   const int defaultArgSize = 4;
   if (argc < defaultArgSize) {
@@ -41,11 +29,13 @@ int main(int argc, char** argv) {
   auto subscription = dxfg_create_subscription(connection, 0);
 
   // add listener with user code
-
-  simpleListener(subscription);                                                 // Case 1 -> Simple Listener
-//  auto listener = std::make_unique<dxfeed::perf::Diagnostic>(2);                // Case 2 -> PerfTest Listener
-//  auto listener = std::make_unique<dxfeed::perf::Receiver>();      // Case 3 -> Receiver Listener
-//  dxfg_add_diagnostic_listener(subscription, reinterpret_cast<int64_t>(pDiagnostic->operator()));
+  dxfg_add_listener(subscription, [](const void *events, int count) {
+    auto timeAndSaleList = reinterpret_cast<const TimeAndSale*>(events);
+    for (int i = 0; i < count; ++i) {
+      auto quote = std::make_shared<TimeAndSale>(timeAndSaleList[i]);
+      std::cout << dxfeed::TimeAndSaleFormatter::toString(quote.get()) << std::endl;
+    }
+  });
 
   // add symbol to subscription
   dxfg_add_symbol(subscription, symbol);

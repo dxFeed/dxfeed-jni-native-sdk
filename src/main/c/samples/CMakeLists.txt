@@ -3,25 +3,35 @@ cmake_minimum_required(VERSION 3.15)
 set(CMAKE_CXX_STANDARD 17)
 project(sample)
 
-include(../Common.cmake)
-
-#set(JAVA_HOME /Users/Andrey.Mikhalev/Downloads/labsjdk-ce-11.0.18-jvmci-22.3-b13/Contents/Home)
-set(JAVA_HOME D:/Tools/labsjdk-ce-17.0.6-jvmci-22.3-b13)
+message("sample CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
 
 include_directories(${PROJECT_NAME} INTERFACE ../jni-lib/include)
 include_directories(${PROJECT_NAME} INTERFACE include)
-link_directories(../build)
+
+message("OUTPUT_PATH:" ${OUTPUT_PATH})
+
+link_directories(${OUTPUT_PATH})
+
+add_library(NATIVE_JNI_LIB SHARED IMPORTED)
+if (WIN32)
+  message("WIN")
+  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.dll)
+  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_IMPLIB ${OUTPUT_PATH}/native_jni.lib)
+elseif (APPLE)
+  message("APPLE")
+  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.dylib)
+elseif (UNIX)
+  message("UNIX")
+  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.so)
+endif()
 
 add_executable(${PROJECT_NAME}
     main.cpp
-    src/utils/ProcessPriority.cpp
     src/utils/StringUtils.cpp
     src/utils/TimeAndSaleFormatter.cpp
-    src/Diagnostic.cpp
-    src/StopWatch.cpp
-    src/Timer.cpp
 )
-target_link_libraries(${PROJECT_NAME} native_jni)
+
+target_link_libraries(${PROJECT_NAME} NATIVE_JNI_LIB)
 
 # ------------ LIB date ------------
 include(FetchContent)
