@@ -47,9 +47,9 @@ namespace dxfeed {
     env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
   }
 
-  void Subscription::addDiagnosticListener(int64_t listener) const {
-    auto& feed = dxfeed::DxFeed::getInstance();
-    env_->CallStaticVoidMethod(feed.helperClass(), feed.addEventListenerMethod(),
-                               subscription_, static_cast<jlong>(listener));
-  }
+//  void Subscription::addDiagnosticListener(int64_t listener) const {
+//    auto& feed = dxfeed::DxFeed::getInstance();
+//    env_->CallStaticVoidMethod(feed.helperClass(), feed.addEventListenerMethod(),
+//                               subscription_, static_cast<jlong>(listener));
+//  }
 }

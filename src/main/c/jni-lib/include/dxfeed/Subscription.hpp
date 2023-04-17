@@ -9,8 +9,6 @@
 
 #include "DxFeed.hpp"
 #include "api/EventTypes.h"
-#include "dxfeed/utils/Diagnostic.hpp"
-#include "dxfeed/utils/TimeAndSaleFormatter.hpp"
 
 namespace dxfeed {
   struct Subscription final {
@@ -29,7 +27,7 @@ namespace dxfeed {
 
 
     // diagnostic
-    void addDiagnosticListener(int64_t listener) const;
+//    void addDiagnosticListener(int64_t listener) const;
   private:
     jobject subscription_;
     JNIEnv* env_;

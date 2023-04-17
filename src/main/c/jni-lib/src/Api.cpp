@@ -29,7 +29,3 @@ void dxfg_add_listener(void *subscription, dx_feed_listener listener) {
   reinterpret_cast<dxfeed::Subscription *>(subscription)->addListener(reinterpret_cast<void (*)(const void *,
                                                                                                 size_t)>(listener));
 }
-
-void dxfg_add_diagnostic_listener(void *subscription, int64_t diagnostic_listener) {
-  reinterpret_cast<dxfeed::Subscription *>(subscription)->addDiagnosticListener(diagnostic_listener);
-}

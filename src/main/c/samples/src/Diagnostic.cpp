@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include "dxfeed/utils/Diagnostic.hpp"
-#include "dxfeed/utils/TimeAndSaleFormatter.hpp"
-#include "dxfeed/utils/TimeUtil.hpp"
-#include "dxfeed/utils/StringUtils.hpp"
+#include "Diagnostic.hpp"
+#include "StringUtils.hpp"
+#include "TimeAndSaleFormatter.hpp"
+#include "TimeUtil.hpp"
 
 template<class T>
 constexpr inline void hash_combine(std::size_t& seed, const T& v) {
