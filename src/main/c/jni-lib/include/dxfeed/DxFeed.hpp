@@ -8,16 +8,14 @@
 
 namespace dxfeed {
   typedef void(*OnCloseHandler)(jobject clazz);
+  void onClose(jobject);
 
   struct Connection; // forward declaration
 
   extern JNIEnv* jniEnv;
   extern JavaVM* javaVM;
 
-
-
   struct DxFeed final {
-    static void initJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
     DxFeed(const DxFeed& other) = delete;
     DxFeed(DxFeed&& other) = delete;
     DxFeed& operator=(const DxFeed& other) = delete;
@@ -35,7 +33,6 @@ namespace dxfeed {
     jclass javaHelperClass_;
     jmethodID addEventListenerHelperMethodId_;
 
-    static void onClose(jobject);
   };
 } // namespace dxfeed
 

@@ -34,6 +34,7 @@ set(SOURCE_FILES
     src/LoadLibrary.cpp
     src/Subscription.cpp
     src/utils/JNIUtils.cpp
+    src/DxEndpoint.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

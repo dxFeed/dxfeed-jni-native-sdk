@@ -4,13 +4,9 @@
 
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/Connection.hpp"
-#include "dxfeed/utils/LoadLibrary.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
-  void dxfeed::DxFeed::initJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {
-    dxfeed::internal::loadJavaVM(javaHome, consoleVmArgs, vmArgsCount);
-  }
 
   DxFeed& dxfeed::DxFeed::getInstance() {
     static DxFeed instance;
@@ -33,7 +29,7 @@ namespace dxfeed {
     return addEventListenerHelperMethodId_;
   }
 
-  void DxFeed::onClose(jobject clazz) {
+  void onClose(jobject clazz) {
     jniEnv->DeleteGlobalRef(clazz);
   }
 
