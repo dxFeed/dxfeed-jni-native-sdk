@@ -16,7 +16,9 @@ extern "C" {
  *  @{
  */
 
-typedef _jobject dxfg_java_object_handler;
+typedef struct dxfg_java_object_handler {
+  jobject dxfg_java_object_handle;
+} dxfg_java_object_handler;
 
 typedef struct dxfg_list {
     int32_t size;

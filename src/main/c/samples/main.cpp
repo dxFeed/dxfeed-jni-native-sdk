@@ -40,6 +40,8 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
     dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
     dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
     dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    printf("feed: %p END\n", feed);
+
 //    dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
 //    dxfg_time_series_subscription_t* subscriptionTaS = dxfg_DXFeed_createTimeSeriesSubscription2(thread, feed, event_clazz_list);
 //    dxfg_CList_EventClazz_release(thread, event_clazz_list);

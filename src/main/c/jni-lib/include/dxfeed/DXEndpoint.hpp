@@ -4,6 +4,7 @@
 #define DXFEED_JNI_SDK_DXENDPOINT_H_
 
 #include <jni.h>
+#include <cstdint>
 
 namespace dxfeed {
   typedef void(* OnCloseHandler)(jobject clazz);
@@ -13,16 +14,16 @@ namespace dxfeed {
     DxEndpoint(JNIEnv* env, dxfeed::OnCloseHandler onClose);
     ~DxEndpoint();
 
-    jobject connect(const char* address);
+    int32_t connect(const char* address);
     jobject getFeed(jobject DxEndpointConnected);
   private:
     jobject createDxEndpointBuilder();
     jobject createDxEndpoint(jobject dxEndpointBuilder);
 
-    JNIEnv* env_;
-    jclass dxEndpointClass_;
     jobject dxEndpoint_;
+    jclass dxEndpointClass_;
     const dxfeed::OnCloseHandler onClose_;
+    JNIEnv* env_;
   };
 }
 

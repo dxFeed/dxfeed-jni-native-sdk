@@ -4,23 +4,10 @@ project(native_jni)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if (WIN32)
-  # Set the DLLEXPORT variable to export symbols
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-  set(JNI_INCLUDE ${JNI_COMMON_INCLUDE} ${JNI_COMMON_INCLUDE}/win32)
-  set(JNI_INCLUDE ${JNI_INCLUDE} PARENT_SCOPE)
-elseif (APPLE)
-  set(JNI_INCLUDE ${JNI_COMMON_INCLUDE} ${JNI_COMMON_INCLUDE}/darwin)
-  set(JNI_INCLUDE ${JNI_INCLUDE} PARENT_SCOPE)
-elseif (UNIX)
-  set(JNI_INCLUDE ${JNI_COMMON_INCLUDE} ${JNI_COMMON_INCLUDE}/linux)
-  set(JNI_INCLUDE ${JNI_INCLUDE} PARENT_SCOPE)
-endif ()
-
-message("JNI_COMMON_INCLUDE: ${JNI_INCLUDE}")
+message("JNI_INCLUDE: ${JNI_INCLUDE}")
 include_directories(${PROJECT_NAME} INTERFACE ${JNI_INCLUDE})
+
 set(API_INCLUDE include)
-set(API_INCLUDE ${API_INCLUDE} PARENT_SCOPE)
 include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE})
 
 message("-- Linking native_lib")

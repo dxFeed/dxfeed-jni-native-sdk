@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#include <cstdint>
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
@@ -8,6 +9,7 @@ namespace dxfeed {
     env_{env},
     onClose_(onClose)
   {
+    dxEndpointClass_ = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
     jobject dxEndpointBuilder = createDxEndpointBuilder();
     dxEndpoint_ = env->NewGlobalRef(createDxEndpoint(dxEndpointBuilder));
   }
@@ -28,15 +30,17 @@ namespace dxfeed {
     return env_->CallObjectMethod(dxEndpointBuilder, buildId);
   }
 
-  jobject DxEndpoint::connect(const char* address) {
-    jclass dxEndpointClass = env_->GetObjectClass(dxEndpoint_);
-    jmethodID connectMethodId = jni::safeGetMethodID(env_, dxEndpointClass, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
+  int32_t DxEndpoint::connect(const char* address) {
+    jmethodID connectMethodId = jni::safeGetMethodID(env_, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
     jstring addr = env_->NewStringUTF(address);
-    return env_->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
+    jobject pJobject = env_->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
+    env_->DeleteGlobalRef(dxEndpoint_);
+    dxEndpoint_ = pJobject;
+    return 0;
   }
 
   jobject DxEndpoint::getFeed(jobject dxEndpointConnected) {
     jmethodID getFeedId = jni::safeGetMethodID(env_, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
-    return env_->CallObjectMethod(dxEndpointConnected, getFeedId);
+    return env_->CallObjectMethod(dxEndpoint_, getFeedId);
   }
 }

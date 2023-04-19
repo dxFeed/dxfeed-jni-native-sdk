@@ -21,7 +21,7 @@ extern "C" {
 /**
  * @brief Forward declarations.
  */
-typedef struct dxfg_feed_t dxfg_feed_t;
+//typedef struct dxfg_feed_t dxfg_feed_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html">Javadoc</a>

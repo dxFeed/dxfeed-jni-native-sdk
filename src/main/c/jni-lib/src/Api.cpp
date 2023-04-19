@@ -17,10 +17,12 @@ void* dxfg_get_instance() {
 
 void* dxfg_create_connection(void* feed, const char* address) {
 //  return reinterpret_cast<dxfeed::DxFeed*>(feed)->createConnection(address);
+  return nullptr;
 }
 
 void* dxfg_create_subscription(void* connection, int eventType) {
 //  return reinterpret_cast<dxfeed::Connection*>(connection)->createSubscription(static_cast<EventType>(eventType));
+  return nullptr;
 }
 
 void dxfg_add_symbol(void *subscription, const char *symbol) {
@@ -38,10 +40,11 @@ dxfg_endpoint_t* dxfg_DXEndpoint_create(graal_isolatethread_t* thread) {
   return reinterpret_cast<dxfg_endpoint_t*>(new dxfeed::DxEndpoint(dxfeed::jniEnv, dxfeed::onClose));
 }
 
-dxfg_endpoint_t* dxfg_DXEndpoint_connect(graal_isolatethread_t *thread, dxfg_endpoint_t* endpoint, const char *address) {
-  return reinterpret_cast<dxfg_endpoint_t*>((reinterpret_cast<dxfeed::DxEndpoint*>(endpoint)->connect(address)));
+int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t *thread, dxfg_endpoint_t* endpoint, const char *address) {
+  return reinterpret_cast<dxfeed::DxEndpoint*>(endpoint)->connect(address);
 }
 
 dxfg_feed_t* dxfg_DXEndpoint_getFeed(graal_isolatethread_t *thread, dxfg_endpoint_t* endpoint) {
-  return reinterpret_cast<dxfg_feed_t*>((reinterpret_cast<dxfeed::DxEndpoint*>(endpoint)->getFeed(endpoint)));
+  dxfeed::DxEndpoint* pEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
+  return reinterpret_cast<dxfg_feed_t*>((pEndpoint->getFeed(endpoint->dxfg_java_object_handle)));
 }

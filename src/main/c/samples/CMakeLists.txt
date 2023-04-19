@@ -7,6 +7,8 @@ message("sample CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
 
 include_directories(${PROJECT_NAME} INTERFACE ../jni-lib/include)
 include_directories(${PROJECT_NAME} INTERFACE include)
+
+message("JNI_INCLUDE: ${JNI_INCLUDE}")
 include_directories(${PROJECT_NAME} INTERFACE ${JNI_INCLUDE})
 
 message("OUTPUT_PATH:" ${OUTPUT_PATH})

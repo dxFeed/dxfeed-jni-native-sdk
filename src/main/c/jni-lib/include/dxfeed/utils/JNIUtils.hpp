@@ -6,7 +6,7 @@
 extern "C" JNIEXPORT void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass,
                                                                                     jint size, jbyteArray eventList,
                                                                                     jdoubleArray jDoubleData,
-                                                                                    jlong userCallback);
+                                                                                    jlong dxSubscription);
 namespace dxfeed::jni {
   namespace nativeMethods {
     static JNINativeMethod methods[] = {
