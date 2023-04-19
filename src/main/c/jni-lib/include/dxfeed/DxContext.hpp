@@ -8,34 +8,27 @@
 
 namespace dxfeed {
   typedef void(*OnCloseHandler)(jobject clazz);
-
-  struct Connection; // forward declaration
+  void onClose(jobject);
 
   extern JNIEnv* jniEnv;
   extern JavaVM* javaVM;
 
+  struct DxContext final {
+    DxContext(const DxContext& other) = delete;
+    DxContext(DxContext&& other) = delete;
+    DxContext& operator=(const DxContext& other) = delete;
+    DxContext& operator=(DxContext&& other) = delete;
 
-
-  struct DxFeed final {
-    static void initJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
-    DxFeed(const DxFeed& other) = delete;
-    DxFeed(DxFeed&& other) = delete;
-    DxFeed& operator=(const DxFeed& other) = delete;
-    DxFeed& operator=(DxFeed&& other) = delete;
-
-    static DxFeed& getInstance();
+    static DxContext& getInstance();
     jclass helperClass();
     jmethodID addEventListenerMethod();
 
-    Connection* createConnection(const std::string &address);
   private:
-    DxFeed();
+    DxContext();
 
     JNIEnv* env_;
     jclass javaHelperClass_;
     jmethodID addEventListenerHelperMethodId_;
-
-    static void onClose(jobject);
   };
 } // namespace dxfeed
 

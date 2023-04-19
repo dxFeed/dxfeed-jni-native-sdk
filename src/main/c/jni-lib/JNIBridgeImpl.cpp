@@ -5,8 +5,7 @@
 #include <iostream>
 
 #include "javah/com_dxfeed_api_JniTest.h"
-#include "api/Api.h"
-#include "api/TimeAndSale.h"
+#include "dxfeed/DxEventListener.hpp"
 
 template <typename T>
 inline T readUByte(char** pData) {
@@ -72,43 +71,50 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 JNIEXPORT
 void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass, jint size,
                                                                jbyteArray jBytes, jdoubleArray jDoubles,
-                                                               jlong userCallback) {
-  std::vector<TimeAndSale> events(size);
+                                                               jlong userCallback)
+{
+  std::vector<dxfg_time_and_sale_t*> events(size, new dxfg_time_and_sale_t);
   auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
   for (auto& quote: events) {
+    quote->market_event.event_type =  { dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE };
     int16_t strSize = readInt16_t(&pByteData);
-    quote.eventSymbol_ = pByteData;
+    quote->market_event.event_symbol = pByteData;
     pByteData += strSize;
-    quote.eventTime_ = readLong(&pByteData);
-    quote.index_ = readLong(&pByteData);
-    quote.eventFlags_ = readInt(&pByteData);
-    quote.timeNanoPart_ = readInt(&pByteData);
-    quote.exchangeCode_ = readByte(&pByteData);
-    quote.size_ = readLong(&pByteData);
+    quote->market_event.event_time = readLong(&pByteData);
+    quote->index = readLong(&pByteData);
+    quote->event_flags = readInt(&pByteData);
+    quote->time_nano_part = readInt(&pByteData);
+    quote->exchange_code = readByte(&pByteData); // todo: check type
+    quote->size = readLong(&pByteData); // todo: check type
 
     strSize = readInt16_t(&pByteData);
-    quote.exchangeSaleConditions_ = strSize ? pByteData : "";
-    pByteData += strSize;
-
-    strSize = readInt16_t(&pByteData);
-    quote.buyer_ = strSize ? pByteData : "";
+    quote->exchange_sale_conditions = strSize ? pByteData : "";
     pByteData += strSize;
 
     strSize = readInt16_t(&pByteData);
-    quote.seller_ = strSize ? pByteData : "";
+    quote->buyer = strSize ? pByteData : "";
     pByteData += strSize;
 
-    quote.price_ = readDouble(&pDoubleData);
-    quote.bidPrice_ = readDouble(&pDoubleData);
-    quote.askPrice_ = readDouble(&pDoubleData);
+    strSize = readInt16_t(&pByteData);
+    quote->seller = strSize ? pByteData : "";
+    pByteData += strSize;
+
+    quote->price = readDouble(&pDoubleData);
+    quote->bid_price = readDouble(&pDoubleData);
+    quote->ask_price = readDouble(&pDoubleData);
   }
 
   env->ReleasePrimitiveArrayCritical(jDoubles, pDoubleData, 0);
   env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
-  auto pListener = reinterpret_cast<dx_feed_listener>(userCallback);
-  pListener(events.data(), size);
+
+  // todo: pass data and parse in Listener each event? Could be different event_types in one EventListener?
+  auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
+  dxfg_event_type_list list = {
+      size, reinterpret_cast<dxfg_event_type_t**>(events.data())
+  };
+  pListener->callUserFunc(nullptr, &list);
 }
 
 JNIEXPORT
@@ -117,38 +123,42 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
                                                                        jdouble* jDoubles, jlong userCallback) {
   auto pByteData = (char*) jBytes;
   auto pDoubleData = (double*) jDoubles;
-  std::vector<TimeAndSale> events(size);
+  std::vector<dxfg_time_and_sale_t*> events(size, {});
 
   for (auto& quote: events) {
+    quote->market_event.event_type =  { dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE };
     int16_t strSize = readInt16_t(&pByteData);
-    quote.eventSymbol_ = pByteData;
+    quote->market_event.event_symbol = pByteData;
     pByteData += strSize;
-    quote.eventTime_ = readLong(&pByteData);
-    quote.index_ = readLong(&pByteData);
-    quote.eventFlags_ = readInt(&pByteData);
-    quote.timeNanoPart_ = readInt(&pByteData);
-    quote.exchangeCode_ = readByte(&pByteData);
-    quote.size_ = readLong(&pByteData);
+    quote->market_event.event_time = readLong(&pByteData);
+    quote->index = readLong(&pByteData);
+    quote->event_flags = readInt(&pByteData);
+    quote->time_nano_part = readInt(&pByteData);
+    quote->exchange_code = readByte(&pByteData); // todo: check type
+    quote->size = readLong(&pByteData); // todo: check type
 
     strSize = readInt16_t(&pByteData);
-    quote.exchangeSaleConditions_ = pByteData;
-    pByteData += strSize;
-
-    strSize = readInt16_t(&pByteData);
-    quote.buyer_ = strSize ? pByteData : "";
+    quote->exchange_sale_conditions = pByteData;
     pByteData += strSize;
 
     strSize = readInt16_t(&pByteData);
-    quote.seller_ = strSize ? pByteData : "";
+    quote->buyer = strSize ? pByteData : "";
     pByteData += strSize;
 
-    quote.price_ = readDouble(&pDoubleData);
-    quote.bidPrice_ = readDouble(&pDoubleData);
-    quote.askPrice_ = readDouble(&pDoubleData);
+    strSize = readInt16_t(&pByteData);
+    quote->seller = strSize ? pByteData : "";
+    pByteData += strSize;
+
+    quote->price = readDouble(&pDoubleData);
+    quote->bid_price = readDouble(&pDoubleData);
+    quote->ask_price = readDouble(&pDoubleData);
   }
 
-  auto pListener = reinterpret_cast<dx_feed_listener>(userCallback);
-  pListener(events.data(), size);
+  auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
+  dxfg_event_type_list list = {
+      size, reinterpret_cast<dxfg_event_type_t**>(events.data())
+  };
+  pListener->callUserFunc(nullptr, &list);
 }
 
 #ifdef __cplusplus

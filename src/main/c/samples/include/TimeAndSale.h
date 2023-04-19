@@ -3,7 +3,6 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_TIME_AND_SALE_H_
 #define DXFEED_JNI_NATIVE_SDK_TIME_AND_SALE_H_
 
-// todo: replace string with const char*
 #include <string>
 
 struct TimeAndSale {
