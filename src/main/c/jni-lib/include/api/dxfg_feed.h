@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_FEED_H_
-#define DXFEED_GRAAL_NATIVE_API_FEED_H_
+#ifndef DXFEED_JNI_NATIVE_API_FEED_H_
+#define DXFEED_JNI_NATIVE_API_FEED_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,4 +48,4 @@ int32_t                           dxfg_DXFeedTimeSeriesSubscription_setFromTime(
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_FEED_H_
+#endif // DXFEED_JNI_NATIVE_API_FEED_H_

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_GRAAL_NATIVE_API_ENDPOINT_H_
-#define DXFEED_GRAAL_NATIVE_API_ENDPOINT_H_
+#ifndef DXFEED_JNI_NATIVE_API_ENDPOINT_H_
+#define DXFEED_JNI_NATIVE_API_ENDPOINT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,4 +43,4 @@ dxfg_event_clazz_list_t*        dxfg_DXEndpoint_getEventTypes(graal_isolatethrea
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_API_ENDPOINT_H_
+#endif // DXFEED_JNI_NATIVE_API_ENDPOINT_H_
