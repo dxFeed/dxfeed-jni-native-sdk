@@ -3,31 +3,33 @@
 #include <jni.h>
 
 #include "dxfeed/Subscription.hpp"
-#include "dxfeed/DxFeed.hpp"
+#include "dxfeed/DxFeedContext.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
-  const char* getEventClassType(EventType eventType) {
+  const char* getEventClassType(dxfg_event_clazz_t eventType) {
     switch (eventType) {
-      case EventType::TimeAndSale:
+      case dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE:
         return "Lcom/dxfeed/event/market/TimeAndSale;";
+      case dxfg_event_clazz_t::DXFG_EVENT_QUOTE:
+        return "Lcom/dxfeed/event/market/Quote;";
     }
   }
 
-  jobject DxFeedCApi_createSubscription(JNIEnv* env, jobject dxFeed, EventType eventType) {
+  jobject createSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     const char* className = getEventClassType(eventType);
     jclass eventTypeClass = jni::safeFindClass(env, className);
-    jmethodID connectMethodId = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
-                                                 "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
-    return env->CallObjectMethod(dxFeed, connectMethodId, eventTypeClass);
+    jmethodID createSubscriptionId = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
+                                                          "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
+    return env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass);
   }
 
-  Subscription::Subscription(JNIEnv* env, jobject dxFeed, EventType eventType, dxfeed::OnCloseHandler onClose) :
+  Subscription::Subscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose) :
     env_{env},
     onClose_(onClose)
   {
-    subscription_ = env->NewGlobalRef(DxFeedCApi_createSubscription(env, dxFeed, eventType));
+    subscription_ = env->NewGlobalRef(createSubscription(env, dxFeed, eventType));
   }
 
   Subscription::~Subscription() {
@@ -35,8 +37,8 @@ namespace dxfeed {
   }
 
   void Subscription::addListener(Listener listener) const {
-    auto& feed = dxfeed::DxFeed::getInstance();
-    env_->CallStaticVoidMethod(feed.helperClass(), feed.addEventListenerMethod(),
+    auto& dxfgContext = dxfeed::DxfgContext::getInstance();
+    env_->CallStaticVoidMethod(dxfgContext.helperClass(), dxfgContext.addEventListenerMethod(),
                                subscription_, reinterpret_cast<jlong>(listener));
   }
 

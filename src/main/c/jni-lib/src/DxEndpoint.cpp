@@ -35,12 +35,13 @@ namespace dxfeed {
     jstring addr = env_->NewStringUTF(address);
     jobject pJobject = env_->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
     env_->DeleteGlobalRef(dxEndpoint_);
-    dxEndpoint_ = pJobject;
+    dxEndpoint_ = env_->NewGlobalRef(pJobject);
     return 0;
   }
 
-  jobject DxEndpoint::getFeed(jobject dxEndpointConnected) {
+  DxFeed* DxEndpoint::getFeed() {
     jmethodID getFeedId = jni::safeGetMethodID(env_, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
-    return env_->CallObjectMethod(dxEndpoint_, getFeedId);
+    jobject dxFeed = env_->CallObjectMethod(dxEndpoint_, getFeedId);
+    return new DxFeed(env_, dxFeed, onClose_);
   }
 }

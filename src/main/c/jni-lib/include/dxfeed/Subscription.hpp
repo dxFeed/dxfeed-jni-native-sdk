@@ -7,14 +7,15 @@
 #include <string>
 #include <vector>
 
-#include "DxFeed.hpp"
+#include "DxFeedContext.hpp"
 #include "api/EventTypes.h"
+#include "api/dxfg_events.h"
 
 namespace dxfeed {
   struct Subscription final {
     typedef void(Listener)(const void* events, std::size_t count);
 
-    Subscription(JNIEnv* env, jobject connection, EventType eventType, dxfeed::OnCloseHandler onClose);
+    Subscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose);
     Subscription(const Subscription& other) = delete;
     Subscription(Subscription&& other) = delete;
     Subscription& operator=(const Subscription& other) = delete;

@@ -1,39 +1,18 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <stdexcept>
-
-#include "dxfeed/DxFeed.hpp"
-#include "dxfeed/Connection.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/DxFeed.h"
 
 namespace dxfeed {
+  DxFeed::DxFeed(JNIEnv* env, jobject dxFeed, const dxfeed::OnCloseHandler onClose) :
+      env_(env),
+      dxFeed_(env->NewGlobalRef(dxFeed)),
+      onClose_(onClose) {}
 
-  DxFeed& dxfeed::DxFeed::getInstance() {
-    static DxFeed instance;
-    return instance;
+  DxFeed::~DxFeed() {
+    onClose_(dxFeed_);
   }
 
-  DxFeed::DxFeed() :
-    env_{jniEnv}
- {
-   javaHelperClass_ = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
-   addEventListenerHelperMethodId_ = jni::safeGetStaticMethodID(jniEnv, javaHelperClass_, "addEventListener",
-                                                                "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
- }
-
-  jclass DxFeed::helperClass() {
-    return javaHelperClass_;
-  }
-
-  jmethodID DxFeed::addEventListenerMethod() {
-    return addEventListenerHelperMethodId_;
-  }
-
-  void onClose(jobject clazz) {
-    jniEnv->DeleteGlobalRef(clazz);
-  }
-
-  Connection* DxFeed::createConnection(const std::string& address) {
-    return new Connection(env_, address, onClose);
+  Subscription* DxFeed::createSubscription(dxfg_event_clazz_t eventType) {
+    return new Subscription(env_, dxFeed_, eventType, onClose_);
   }
 }

@@ -10,24 +10,21 @@ namespace dxfeed {
   typedef void(*OnCloseHandler)(jobject clazz);
   void onClose(jobject);
 
-  struct Connection; // forward declaration
-
   extern JNIEnv* jniEnv;
   extern JavaVM* javaVM;
 
-  struct DxFeed final {
-    DxFeed(const DxFeed& other) = delete;
-    DxFeed(DxFeed&& other) = delete;
-    DxFeed& operator=(const DxFeed& other) = delete;
-    DxFeed& operator=(DxFeed&& other) = delete;
+  struct DxfgContext final {
+    DxfgContext(const DxfgContext& other) = delete;
+    DxfgContext(DxfgContext&& other) = delete;
+    DxfgContext& operator=(const DxfgContext& other) = delete;
+    DxfgContext& operator=(DxfgContext&& other) = delete;
 
-    static DxFeed& getInstance();
+    static DxfgContext& getInstance();
     jclass helperClass();
     jmethodID addEventListenerMethod();
 
-    Connection* createConnection(const std::string &address);
   private:
-    DxFeed();
+    DxfgContext();
 
     JNIEnv* env_;
     jclass javaHelperClass_;

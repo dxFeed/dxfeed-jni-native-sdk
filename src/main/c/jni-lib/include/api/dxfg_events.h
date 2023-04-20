@@ -29,12 +29,6 @@ typedef struct dxfg_string_symbol_t {
     const char *symbol;
 } dxfg_string_symbol_t;
 
-typedef struct dxfg_time_series_subscription_symbol_t {
-    dxfg_symbol_t supper;
-    dxfg_symbol_t *symbol;
-    int64_t from_time;
-} dxfg_time_series_subscription_symbol_t;
-
 typedef struct dxfg_symbol_list {
     int32_t size;
     dxfg_symbol_t **elements;

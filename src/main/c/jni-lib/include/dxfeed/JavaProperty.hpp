@@ -20,9 +20,9 @@ namespace dxfeed::internal {
       return os;
     }
   private:
-    const char* cstr_ = nullptr;
     jstring str_;
     JNIEnv* env_;
+    const char* cstr_ = nullptr;
   };
 }  // namespace dxfeed::internal
 

@@ -35,32 +35,31 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
 }
 
 // todo: implement sample with API
- void dxEndpointTimeSeriesSubscription(graal_isolatethread_t *thread) {
-    printf("C: dxEndpointTimeSeriesSubscription BEGIN\n");
-    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-    dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
-    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
-    printf("feed: %p END\n", feed);
+ void dxEndpointSubscription(graal_isolatethread_t *thread) {
+  printf("C: dxEndpointSubscription BEGIN\n");
+  dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+  dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+  dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
 
-//    dxfg_event_clazz_list_t* event_clazz_list = dxfg_DXEndpoint_getEventTypes(thread, endpoint);
-//    dxfg_time_series_subscription_t* subscriptionTaS = dxfg_DXFeed_createTimeSeriesSubscription2(thread, feed, event_clazz_list);
-//    dxfg_CList_EventClazz_release(thread, event_clazz_list);
-//    dxfg_DXFeedTimeSeriesSubscription_setFromTime(thread, subscriptionTaS, 0);
-//    dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
-//    dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);
-//    dxfg_DXFeedSubscription_addEventListener(thread, &subscriptionTaS->sub, listener);
-//    dxfg_string_symbol_t symbolAAPL;
-//    symbolAAPL.supper.type = STRING;
-//    symbolAAPL.symbol = "AAPL";
-//    dxfg_DXFeedSubscription_setSymbol(thread, &subscriptionTaS->sub, &symbolAAPL.supper);
-////    usleep(2000000);
-//    dxfg_DXFeedSubscription_close(thread, (dxfg_subscription_t*) subscriptionTaS);
-//    dxfg_DXEndpoint_close(thread, endpoint);
-//    dxfg_JavaObjectHandler_release(thread, &subscriptionTaS->sub.handler);
-//    dxfg_JavaObjectHandler_release(thread, &listener->handler);
-//    dxfg_JavaObjectHandler_release(thread, &feed->handler);
-//    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
-    printf("C: dxEndpointTimeSeriesSubscription END\n");
+  dxfg_subscription_t* subscriptionTimeAndSale = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_TIME_AND_SALE);
+//  dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+//  dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);
+//  dxfg_DXFeedSubscription_addEventListener(thread, subscriptionTimeAndSale, listener);
+
+  dxfg_string_symbol_t symbolAAPL;
+  symbolAAPL.supper.type = STRING;
+  symbolAAPL.symbol = "AAPL";
+
+//  dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
+//  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
+//  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
+//  usleep(2000000);
+//  dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
+//  dxfg_DXEndpoint_close(thread, endpoint);
+//  dxfg_JavaObjectHandler_release(thread, &subscriptionTimeAndSale->handler);
+//  dxfg_JavaObjectHandler_release(thread, &listener->handler);
+  dxfg_DXEndpoint_release(thread, endpoint);
+  printf("C: dxEndpointSubscription END\n");
 }
 
 int main(int argc, char** argv) {
@@ -80,7 +79,7 @@ int main(int argc, char** argv) {
   std::cout << "Connection to address:" << address << std::endl;
   dxfg_init(javaHomePath, jvmArgs, vmOptionsSize);
 
-  dxEndpointTimeSeriesSubscription(nullptr);
+  dxEndpointSubscription(nullptr);
 
 //  void* dxFeed = dxfg_get_instance();
 //  auto connection = dxfg_create_connection(dxFeed, address);

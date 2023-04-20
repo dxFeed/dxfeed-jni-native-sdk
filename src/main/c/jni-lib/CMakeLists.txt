@@ -14,14 +14,14 @@ message("-- Linking native_lib")
 set(SOURCE_FILES
     JNIBridgeImpl.cpp
     src/Api.cpp
-    src/Connection.cpp
+    src/DxEndpoint.cpp
     src/DxFeed.cpp
+    src/DxfgContext.cpp
     src/JavaProperty.cpp
     src/LoadJavaVm.cpp
     src/LoadLibrary.cpp
     src/Subscription.cpp
     src/utils/JNIUtils.cpp
-    src/DxEndpoint.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
