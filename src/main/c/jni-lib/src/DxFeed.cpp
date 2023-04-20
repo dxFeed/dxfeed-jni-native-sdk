@@ -12,7 +12,7 @@ namespace dxfeed {
     onClose_(dxFeed_);
   }
 
-  Subscription* DxFeed::createSubscription(dxfg_event_clazz_t eventType) {
-    return new Subscription(env_, dxFeed_, eventType, onClose_);
+  DxSubscription* DxFeed::createSubscription(dxfg_event_clazz_t eventType) {
+    return new DxSubscription(env_, dxFeed_, eventType, onClose_);
   }
 }

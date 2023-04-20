@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_JNI_SDK_DXENDPOINT_H_
-#define DXFEED_JNI_SDK_DXENDPOINT_H_
+#ifndef DXFEED_JNI_NATIVE_SDK_DXENDPOINT_H_
+#define DXFEED_JNI_NATIVE_SDK_DXENDPOINT_H_
 
 #include <jni.h>
 #include <cstdint>
@@ -30,9 +30,9 @@ namespace dxfeed {
 
     jobject dxEndpoint_ = nullptr;
     JNIEnv* env_ = nullptr;
-    jclass dxEndpointClass_ = nullptr;
     const dxfeed::OnCloseHandler onClose_ = nullptr;
+    jclass dxEndpointClass_ = nullptr;
   };
 }
 
-#endif //DXFEED_JNI_SDK_DXENDPOINT_H_
+#endif //DXFEED_JNI_NATIVE_SDK_DXENDPOINT_H_

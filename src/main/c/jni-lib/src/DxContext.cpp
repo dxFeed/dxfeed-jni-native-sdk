@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/DxFeedContext.hpp"
+#include "dxfeed/DxContext.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
 
-  DxfgContext& dxfeed::DxfgContext::getInstance() {
-    static DxfgContext instance;
+  DxContext& dxfeed::DxContext::getInstance() {
+    static DxContext instance;
     return instance;
   }
 
-  DxfgContext::DxfgContext() :
+  DxContext::DxContext() :
     env_{jniEnv}
  {
    javaHelperClass_ = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
@@ -18,11 +18,11 @@ namespace dxfeed {
                                                                 "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
  }
 
-  jclass DxfgContext::helperClass() {
+  jclass DxContext::helperClass() {
     return javaHelperClass_;
   }
 
-  jmethodID DxfgContext::addEventListenerMethod() {
+  jmethodID DxContext::addEventListenerMethod() {
     return addEventListenerHelperMethodId_;
   }
 

@@ -16,11 +16,11 @@ set(SOURCE_FILES
     src/Api.cpp
     src/DxEndpoint.cpp
     src/DxFeed.cpp
-    src/DxfgContext.cpp
+    src/DxSubscription.cpp
+    src/DxContext.cpp
     src/JavaProperty.cpp
     src/LoadJavaVm.cpp
     src/LoadLibrary.cpp
-    src/Subscription.cpp
     src/utils/JNIUtils.cpp
 )
 

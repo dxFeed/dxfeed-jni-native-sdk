@@ -2,7 +2,7 @@
 
 #include "api/Api.h"
 #include "api/dxfg_api.h"
-#include "dxfeed/DxFeedContext.hpp"
+#include "dxfeed/DxContext.hpp"
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/utils/LoadLibrary.hpp"
 
@@ -11,16 +11,16 @@ void dxfg_init(const char* javaHome, const char** vmArgs, const int vmArgsCount)
 }
 
 void* dxfg_get_instance() {
-  auto& dxfgContext = dxfeed::DxfgContext::getInstance();
+  auto& dxfgContext = dxfeed::DxContext::getInstance();
   return &dxfgContext;
 }
 
 void dxfg_add_symbol(void *subscription, const char *symbol) {
-//  reinterpret_cast<dxfeed::Subscription *>(subscription)->addSymbol(symbol);
+//  reinterpret_cast<dxfeed::DxSubscription *>(subscription)->addSymbol(symbol);
 }
 
 void dxfg_add_listener(void *subscription, dx_feed_listener listener) {
-//  reinterpret_cast<dxfeed::Subscription *>(subscription)->addListener(reinterpret_cast<void (*)(const void *,
+//  reinterpret_cast<dxfeed::DxSubscription *>(subscription)->addListener(reinterpret_cast<void (*)(const void *,
 //                                                                                                size_t)>(listener));
 }
 

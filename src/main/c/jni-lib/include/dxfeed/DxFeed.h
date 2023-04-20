@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef DXFEED_JNI_SDK_DXFEED_H_
-#define DXFEED_JNI_SDK_DXFEED_H_
+#ifndef DXFEED_JNI_NATIVE_SDK_DXFEED_H_
+#define DXFEED_JNI_NATIVE_SDK_DXFEED_H_
 
 #include "Subscription.hpp"
 #include "api/dxfg_events.h"
@@ -11,7 +11,12 @@ namespace dxfeed {
     DxFeed(JNIEnv* env, jobject obj, OnCloseHandler onClose);
     ~DxFeed();
 
-    Subscription* createSubscription(dxfg_event_clazz_t eventType);
+    DxFeed(const DxFeed& other) = delete;
+    DxFeed(DxFeed&& other) = delete;
+    DxFeed& operator=(const DxFeed& other) = delete;
+    DxFeed& operator=(DxFeed&& other) = delete;
+
+    DxSubscription* createSubscription(dxfg_event_clazz_t eventType);
   private:
     jobject dxFeed_ = nullptr;
     JNIEnv* env_ = nullptr;
@@ -20,4 +25,4 @@ namespace dxfeed {
 }
 
 
-#endif //DXFEED_JNI_SDK_DXFEED_H_
+#endif //DXFEED_JNI_NATIVE_SDK_DXFEED_H_

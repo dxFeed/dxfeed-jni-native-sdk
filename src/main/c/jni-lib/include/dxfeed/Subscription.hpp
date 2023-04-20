@@ -7,20 +7,21 @@
 #include <string>
 #include <vector>
 
-#include "DxFeedContext.hpp"
+#include "DxContext.hpp"
 #include "api/EventTypes.h"
 #include "api/dxfg_events.h"
 
 namespace dxfeed {
-  struct Subscription final {
+  struct DxSubscription final {
     typedef void(Listener)(const void* events, std::size_t count);
 
-    Subscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose);
-    Subscription(const Subscription& other) = delete;
-    Subscription(Subscription&& other) = delete;
-    Subscription& operator=(const Subscription& other) = delete;
-    Subscription& operator=(Subscription&& other) = delete;
-    ~Subscription();
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose);
+    ~DxSubscription();
+
+    DxSubscription(const DxSubscription& other) = delete;
+    DxSubscription(DxSubscription&& other) = delete;
+    DxSubscription& operator=(const DxSubscription& other) = delete;
+    DxSubscription& operator=(DxSubscription&& other) = delete;
 
     void addListener(Listener listener) const;
     void addSymbol(const std::string& symbol) const;

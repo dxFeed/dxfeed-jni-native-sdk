@@ -13,23 +13,22 @@ namespace dxfeed {
   extern JNIEnv* jniEnv;
   extern JavaVM* javaVM;
 
-  struct DxfgContext final {
-    DxfgContext(const DxfgContext& other) = delete;
-    DxfgContext(DxfgContext&& other) = delete;
-    DxfgContext& operator=(const DxfgContext& other) = delete;
-    DxfgContext& operator=(DxfgContext&& other) = delete;
+  struct DxContext final {
+    DxContext(const DxContext& other) = delete;
+    DxContext(DxContext&& other) = delete;
+    DxContext& operator=(const DxContext& other) = delete;
+    DxContext& operator=(DxContext&& other) = delete;
 
-    static DxfgContext& getInstance();
+    static DxContext& getInstance();
     jclass helperClass();
     jmethodID addEventListenerMethod();
 
   private:
-    DxfgContext();
+    DxContext();
 
     JNIEnv* env_;
     jclass javaHelperClass_;
     jmethodID addEventListenerHelperMethodId_;
-
   };
 } // namespace dxfeed
 
