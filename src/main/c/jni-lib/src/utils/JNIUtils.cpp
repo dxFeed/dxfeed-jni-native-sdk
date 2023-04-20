@@ -1,6 +1,5 @@
-//
-// Created by elmon on 13.04.2023.
-//
+// SPDX-License-Identifier: MPL-2.0
+
 #include <iostream>
 
 #include "dxfeed/utils/JNIUtils.hpp"
