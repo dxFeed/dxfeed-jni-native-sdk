@@ -3,7 +3,7 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_DXFEED_H_
 #define DXFEED_JNI_NATIVE_SDK_DXFEED_H_
 
-#include "Subscription.hpp"
+#include "DxSubscription.hpp"
 #include "api/dxfg_events.h"
 
 namespace dxfeed {

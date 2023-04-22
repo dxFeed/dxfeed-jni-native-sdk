@@ -10,11 +10,10 @@
 #include "DxContext.hpp"
 #include "api/EventTypes.h"
 #include "api/dxfg_events.h"
+#include "api/dxfg_subscription.h"
 
 namespace dxfeed {
   struct DxSubscription final {
-    typedef void(Listener)(const void* events, std::size_t count);
-
     DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose);
     ~DxSubscription();
 
@@ -23,9 +22,9 @@ namespace dxfeed {
     DxSubscription& operator=(const DxSubscription& other) = delete;
     DxSubscription& operator=(DxSubscription&& other) = delete;
 
-    void addListener(Listener listener) const;
+    void addListener(dxfg_feed_event_listener_t* listener) const;
     void addSymbol(const std::string& symbol) const;
-//    void addSymbols(const std::vector <std::string>& symbols) const;
+    void setSymbol(const std::string& symbol) const;
 
   private:
     jobject subscription_;

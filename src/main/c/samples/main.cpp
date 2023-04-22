@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "api/Api.h"
 #include "api/dxfg_api.h"
 
 void printEvent(const dxfg_event_type_t *pEvent) {
@@ -42,15 +41,15 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
 
   dxfg_subscription_t* subscriptionTimeAndSale = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_TIME_AND_SALE);
-//  dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+  dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
 //  dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);
-//  dxfg_DXFeedSubscription_addEventListener(thread, subscriptionTimeAndSale, listener);
+  dxfg_DXFeedSubscription_addEventListener(thread, subscriptionTimeAndSale, listener);
 
   dxfg_string_symbol_t symbolAAPL;
   symbolAAPL.supper.type = STRING;
   symbolAAPL.symbol = "AAPL";
 
-//  dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
+  dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
 //  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
 //  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
 //  usleep(2000000);

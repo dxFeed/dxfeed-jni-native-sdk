@@ -13,8 +13,9 @@ include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE})
 message("-- Linking native_lib")
 set(SOURCE_FILES
     JNIBridgeImpl.cpp
-    src/Api.cpp
+    src/dxfg_api.cpp
     src/DxEndpoint.cpp
+    src/DxEventListener.cpp
     src/DxFeed.cpp
     src/DxSubscription.cpp
     src/DxContext.cpp

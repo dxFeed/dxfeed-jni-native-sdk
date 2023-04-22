@@ -7,7 +7,7 @@
 #include <cstdint>
 #include "api/dxfg_endpoint.h"
 #include "api/dxfg_events.h"
-#include "Subscription.hpp"
+#include "DxSubscription.hpp"
 #include "DxFeed.h"
 
 namespace dxfeed {

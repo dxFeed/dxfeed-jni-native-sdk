@@ -30,15 +30,8 @@ typedef struct dxfg_subscription_t {
     dxfg_java_object_handler handler;
 } dxfg_subscription_t;
 
-/**
- * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedTimeSeriesSubscription.html">Javadoc</a>
- */
-typedef struct dxfg_time_series_subscription_t {
-    dxfg_subscription_t sub;
-} dxfg_time_series_subscription_t;
-
 typedef struct dxfg_feed_event_listener_t {
-    dxfg_java_object_handler handler;
+    dxfg_java_object_handler handler; // actually no Java object for listener. Is it a problem?
 } dxfg_feed_event_listener_t;
 
 typedef void (*dxfg_feed_event_listener_function)(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *user_data);

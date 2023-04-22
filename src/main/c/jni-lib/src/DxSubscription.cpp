@@ -2,7 +2,7 @@
 
 #include <jni.h>
 
-#include "dxfeed/Subscription.hpp"
+#include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/DxContext.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
@@ -32,7 +32,7 @@ namespace dxfeed {
     onClose_(subscription_);
   }
 
-  void DxSubscription::addListener(Listener listener) const {
+  void DxSubscription::addListener(dxfg_feed_event_listener_t* listener) const {
     auto& dxfgContext = dxfeed::DxContext::getInstance();
     env_->CallStaticVoidMethod(dxfgContext.helperClass(), dxfgContext.addEventListenerMethod(),
                                subscription_, reinterpret_cast<jlong>(listener));
@@ -41,6 +41,13 @@ namespace dxfeed {
   void DxSubscription::addSymbol(const std::string& symbol) const {
     jclass dxFeedSubscription = env_->GetObjectClass(subscription_);
     jmethodID addSymbolsMethodId = jni::safeGetMethodID(env_, dxFeedSubscription, "addSymbols", "(Ljava/lang/Object;)V");
+    jstring pSymbol = env_->NewStringUTF(symbol.c_str());
+    env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
+  }
+
+  void DxSubscription::setSymbol(const std::string& symbol) const {
+    jclass dxFeedSubscription = env_->GetObjectClass(subscription_);
+    jmethodID addSymbolsMethodId = jni::safeGetMethodID(env_, dxFeedSubscription, "setSymbols", "(Ljava/lang/Object;)V");
     jstring pSymbol = env_->NewStringUTF(symbol.c_str());
     env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
   }

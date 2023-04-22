@@ -30,6 +30,8 @@ typedef struct dxfg_endpoint_t {
   dxfg_java_object_handler handler;
 } dxfg_endpoint_t;
 
+void dxfg_init(const char* javaHome, const char** vmArgs, int vmArgsCount);
+
 dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance(graal_isolatethread_t *thread);
 dxfg_endpoint_t*                dxfg_DXEndpoint_create(graal_isolatethread_t *thread);
 int32_t                         dxfg_DXEndpoint_release(graal_isolatethread_t *thread, dxfg_endpoint_t* endpoint);
