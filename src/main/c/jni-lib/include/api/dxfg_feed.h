@@ -22,8 +22,6 @@ extern "C" {
  * @brief Forward declarations.
  */
 typedef struct dxfg_subscription_t dxfg_subscription_t;
-typedef struct dxfg_time_series_subscription_t dxfg_time_series_subscription_t;
-typedef struct dxfg_executor_t dxfg_executor_t;
 
 /**
  * @brief The DXFeed.
@@ -37,7 +35,6 @@ typedef struct dxfg_feed_t {
 dxfg_feed_t*                      dxfg_DXFeed_getInstance(graal_isolatethread_t *thread);
 dxfg_subscription_t*              dxfg_DXFeed_createSubscription(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_t eventClazz);
 dxfg_subscription_t*              dxfg_DXFeed_createSubscription2(graal_isolatethread_t *thread, dxfg_feed_t *feed, dxfg_event_clazz_list_t *eventClazzes);
-
 
 /** @} */ // end of Feed
 

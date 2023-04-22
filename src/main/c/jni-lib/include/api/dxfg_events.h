@@ -66,7 +66,6 @@ typedef struct dxfg_market_event_t {
  */
 typedef struct dxfg_time_and_sale_t {
     dxfg_market_event_t market_event;
-    //    dxfg_time_series_event_t time_series_event;
     int32_t event_flags;
     int64_t index;
     int32_t time_nano_part;

@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "DxContext.hpp"
-#include "api/EventTypes.h"
 #include "api/dxfg_events.h"
 #include "api/dxfg_subscription.h"
 
