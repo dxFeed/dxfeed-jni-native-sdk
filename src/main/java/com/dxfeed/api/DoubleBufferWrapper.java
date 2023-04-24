@@ -1,16 +1,11 @@
 package com.dxfeed.api;
 
-import java.nio.DoubleBuffer;
-
 public class DoubleBufferWrapper {
-    private final DoubleBuffer pDouble;
-    private double[] data;
-
+    private final double[] data;
     private int doublePos = 0;
 
     DoubleBufferWrapper(int quoteCount, int doubleValuesPerQuote) {
-        pDouble = DoubleBuffer.allocate(quoteCount * doubleValuesPerQuote);
-        data = pDouble.array();
+        data = new double[quoteCount * doubleValuesPerQuote];
     }
 
     public void write(double v) {
