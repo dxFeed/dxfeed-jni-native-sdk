@@ -43,10 +43,22 @@ dxfg_subscription_t* dxfg_DXFeed_createSubscription(graal_isolatethread_t*,
   return reinterpret_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(eventClazz));
 }
 
+int32_t dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t* subscription) {
+  auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(subscription);
+  delete pDxSubscription;
+  return 0;
+}
+
 dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t*,
                                                          dxfg_feed_event_listener_function user_func, void *user_data)
 {
   return reinterpret_cast<dxfg_feed_event_listener_t*>(new dxfeed::DxEventListener(user_func, user_data));
+}
+
+int32_t dxfg_DXFeedEventListener_release(graal_isolatethread_t*, dxfg_feed_event_listener_t* listener) {
+  auto* pListener = reinterpret_cast<dxfeed::DxEventListener*>(listener);
+  delete pListener;
+  return 0;
 }
 
 int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t*,
