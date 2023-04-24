@@ -62,7 +62,9 @@ int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t*, dxfg_subscript
   switch (symbol->type) {
     case STRING: {
       auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(symbol);
-      pDxSubscription->setSymbol(pSymbol->symbol);
+      // todo: investigate, why there no setSymbols method. Inlined?
+      //  for now use addSymbol instead of setSymbol
+      pDxSubscription->addSymbol(pSymbol->symbol);
       break;
     }
     default:
