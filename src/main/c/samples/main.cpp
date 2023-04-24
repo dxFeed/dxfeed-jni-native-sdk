@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "api/dxfg_api.h"
 
@@ -53,7 +55,8 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
 //  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
 //  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
-//  usleep(2000000);
+  std::chrono::minutes minutes(2); // time to sleep 24 hours
+  std::this_thread::sleep_for(minutes);
 //  dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
 //  dxfg_DXEndpoint_close(thread, endpoint);
 //  dxfg_JavaObjectHandler_release(thread, &subscriptionTimeAndSale->handler);
