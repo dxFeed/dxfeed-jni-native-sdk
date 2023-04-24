@@ -71,12 +71,14 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 JNIEXPORT
 void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass, jint size,
                                                                jbyteArray jBytes, jdoubleArray jDoubles,
+                                                               jbyteArray pEventTypes,
                                                                jlong userCallback)
 {
   std::vector<dxfg_time_and_sale_t*> events(size, new dxfg_time_and_sale_t);
   auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
+  // todo: read event based on pEventType
   for (auto& quote: events) {
     quote->market_event.event_type =  { dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE };
     int16_t strSize = readInt16_t(&pByteData);
@@ -109,7 +111,6 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
   env->ReleasePrimitiveArrayCritical(jDoubles, pDoubleData, 0);
   env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
 
-  // todo: pass data and parse in Listener each event? Could be different event_types in one EventListener?
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
   dxfg_event_type_list list = {
       size, reinterpret_cast<dxfg_event_type_t**>(events.data())
@@ -119,8 +120,11 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 
 JNIEXPORT
 void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
-                                                                       jint byteLen, jbyte* jBytes, jint doubleLen,
-                                                                       jdouble* jDoubles, jlong userCallback) {
+                                                                       jint byteLen, jbyte* jBytes,
+                                                                       jint doubleLen, jdouble* jDoubles,
+                                                                       jint eventTypesLen, jbyte* pEventTypes,
+                                                                       jlong userCallback)
+{
   auto pByteData = (char*) jBytes;
   auto pDoubleData = (double*) jDoubles;
   std::vector<dxfg_time_and_sale_t*> events(size, {});

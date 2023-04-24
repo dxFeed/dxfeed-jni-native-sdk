@@ -1,6 +1,6 @@
 package com.dxfeed.api;
 
-import com.dxfeed.event.market.TimeAndSale;
+import com.dxfeed.event.EventType;
 
 public class JniTest {
     static {
@@ -10,14 +10,18 @@ public class JniTest {
     }
 
     // callback from native
-    private static void addEventListener(DXFeedSubscription<TimeAndSale> sub, long userCallback) {
+    private static void addEventListener(DXFeedSubscription<EventType<?>> sub, long userCallback) {
         System.out.println("addEventListener, dxFeedSub = " + sub + "; userCallback = " + userCallback);
 
         sub.addEventListener(eventList -> {
-            TimeAndSalesNative nativeTS = new TimeAndSalesNative(eventList);
-            nOnQuoteEventListener(eventList.size(), nativeTS.byteData(), nativeTS.doubleData(), userCallback);
+            EventsNative nativeTS = new EventsNative(eventList);
+            nOnQuoteEventListener(eventList.size(), nativeTS.byteData(), nativeTS.doubleData(), nativeTS.pEventTypes,
+                    userCallback);
+            nativeTS.clear();
+            nativeTS = null;
         });
     }
 
-    private static native void nOnQuoteEventListener(int size, byte[] byteData, double[] doubleData, long userCallback);
+    private static native void nOnQuoteEventListener(int size, byte[] byteData, double[] doubleData,
+                                                     byte[] pEventTypes, long userCallback);
 }

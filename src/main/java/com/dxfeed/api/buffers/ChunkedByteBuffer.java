@@ -1,25 +1,30 @@
-package com.dxfeed.api;
+package com.dxfeed.api.buffers;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
-class ByteBufferWrapper {
+public class ChunkedByteBuffer {
+    private final static ConcurrentHashMap<String, byte[]> cacheStringToBytes = new ConcurrentHashMap<>();
     private int pos = 0;
-    private int totalBytes = 0;
-    private final byte[][] byteChunks;
-    private final ConcurrentHashMap<String, byte[]> cacheStringToBytes;
+    private int totalSize = 0;
+    private byte[][] byteChunks;
     private byte[] data;
 
-    ByteBufferWrapper(int quoteCount, ConcurrentHashMap<String, byte[]> cacheStringToBytes) {
+    public ChunkedByteBuffer(int quoteCount) {
         byteChunks = new byte[quoteCount][];
-        this.cacheStringToBytes = cacheStringToBytes;
+    }
+
+    public void clear() {
+        totalSize = pos = 0;
+        data = null;
+        byteChunks = null;
     }
 
     public void addChunk(int idx, int chunkSizeInBytes) {
         pos = 0;
         byteChunks[idx] = new byte[chunkSizeInBytes];
         data = byteChunks[idx];
-        totalBytes += chunkSizeInBytes;
+        totalSize += chunkSizeInBytes;
     }
 
     public void writeString(String value) {
@@ -61,13 +66,13 @@ class ByteBufferWrapper {
     }
 
     public byte[] toByteData() {
-        byte[] result = new byte[totalBytes];
+        byte[] result = new byte[totalSize];
         int pos = 0;
         for (byte[] buffer : byteChunks) {
             System.arraycopy(buffer, 0, result, pos, buffer.length);
             pos += buffer.length;
         }
-        totalBytes = 0;
+        totalSize = 0;
         data = null;
         return result;
     }
