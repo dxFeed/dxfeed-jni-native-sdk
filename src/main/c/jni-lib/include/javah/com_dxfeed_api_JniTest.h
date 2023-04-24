@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_dxfeed_api_JniTest
  * Method:    nOnQuoteEventListener
- * Signature: (I[B[DJ)V
+ * Signature: (I[B[D[BJ)V
  */
 JNIEXPORT void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener
-  (JNIEnv *, jclass, jint, jbyteArray, jdoubleArray, jlong);
+  (JNIEnv *, jclass, jint, jbyteArray, jdoubleArray, jbyteArray, jlong);
 
 #ifdef __cplusplus
 }
