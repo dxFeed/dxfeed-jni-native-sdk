@@ -1,25 +1,24 @@
 package com.dxfeed.api;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
 class ByteBufferWrapper {
     private int pos = 0;
     private int totalBytes = 0;
-    private final ByteBuffer[] byteChunks;
+    private final byte[][] byteChunks;
     private final ConcurrentHashMap<String, byte[]> cacheStringToBytes;
     private byte[] data;
 
     ByteBufferWrapper(int quoteCount, ConcurrentHashMap<String, byte[]> cacheStringToBytes) {
-        byteChunks = new ByteBuffer[quoteCount];
+        byteChunks = new byte[quoteCount][];
         this.cacheStringToBytes = cacheStringToBytes;
     }
 
     public void addChunk(int idx, int chunkSizeInBytes) {
         pos = 0;
-        byteChunks[idx] = ByteBuffer.allocate(chunkSizeInBytes);
-        data = byteChunks[idx].array();
+        byteChunks[idx] = new byte[chunkSizeInBytes];
+        data = byteChunks[idx];
         totalBytes += chunkSizeInBytes;
     }
 
@@ -62,12 +61,14 @@ class ByteBufferWrapper {
     }
 
     public byte[] toByteData() {
-        ByteBuffer res = ByteBuffer.allocate(totalBytes);
-        for (ByteBuffer buffer : byteChunks) {
-            res.put(buffer.array());
+        byte[] result = new byte[totalBytes];
+        int pos = 0;
+        for (byte[] buffer : byteChunks) {
+            System.arraycopy(buffer, 0, result, pos, buffer.length);
+            pos += buffer.length;
         }
         totalBytes = 0;
         data = null;
-        return res.array();
+        return result;
     }
 }
