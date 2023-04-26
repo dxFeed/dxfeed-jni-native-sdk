@@ -2,15 +2,12 @@
 #define DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 
 #include <jni.h>
+#include "javah/com_dxfeed_api_JniTest.h"
 
-extern "C" JNIEXPORT void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass,
-                                                                                    jint size, jbyteArray eventList,
-                                                                                    jdoubleArray jDoubleData,
-                                                                                    jlong dxSubscription);
 namespace dxfeed::jni {
   namespace nativeMethods {
     static JNINativeMethod methods[] = {
-        {"nOnQuoteEventListener", "(I[B[DJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},
+        {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},
     };
   }
 
