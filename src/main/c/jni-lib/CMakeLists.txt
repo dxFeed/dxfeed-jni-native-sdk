@@ -19,8 +19,8 @@ set(SOURCE_FILES
     src/DxFeed.cpp
     src/DxSubscription.cpp
     src/JavaProperty.cpp
-    src/LoadJavaVm.cpp
-    src/LoadLibrary.cpp
+    src/InitJavaVm.cpp
+    src/LoadJvmLib.cpp
     src/utils/JNIUtils.cpp
 )
 
