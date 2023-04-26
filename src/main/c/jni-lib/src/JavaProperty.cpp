@@ -18,6 +18,7 @@ namespace dxfeed::jni::internal {
   JavaProperty::~JavaProperty() {
     if (str_) {
       env_->ReleaseStringUTFChars(str_, nullptr);
+      env_->DeleteLocalRef(str_);
     }
     env_ = nullptr;
   }
