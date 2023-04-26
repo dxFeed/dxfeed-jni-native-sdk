@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <sstream>
+#include <filesystem>
 #include <iostream>
+#include <sstream>
 
-#include "dxfeed/utils/LoadLibrary.hpp"
+#include "dxfeed/utils/Base.h"
 
 #if _MSC_VER && !__INTEL_COMPILER
 #include <Windows.h>
@@ -11,7 +12,7 @@
 const wchar_t JAVA_DLL_NAME[] = L"java.dll";
 const wchar_t JVM_DLL_NAME[] = L"jvm.dll";
 
-static inline std::unique_ptr<WCHAR[]> multibyteStrToUtf16(const char *s) {
+std::unique_ptr<WCHAR[]> multibyteStrToUtf16(const char *s) {
   DWORD size = MultiByteToWideChar(CP_UTF8, 0, s, -1, nullptr, 0);
   std::unique_ptr<WCHAR[]> wideStr(new wchar_t[size]);
   MultiByteToWideChar(CP_UTF8, 0, s, -1, wideStr.get(), static_cast<int32_t>(size));
@@ -60,6 +61,8 @@ template <class TargetType, class InitialType>
 constexpr inline TargetType r_cast(InitialType arg) {
   return reinterpret_cast<TargetType>(arg);
 }
+
+namespace fs = std::filesystem;
 
 namespace dxfeed::jni::internal {
   CreateJavaVM_t createJavaVM = nullptr;

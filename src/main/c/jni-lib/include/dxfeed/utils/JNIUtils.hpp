@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 #define DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 
