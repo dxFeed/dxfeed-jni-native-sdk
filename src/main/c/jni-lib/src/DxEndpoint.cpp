@@ -11,6 +11,7 @@ namespace dxfeed {
     dxEndpointClass_ = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
     jobject dxEndpointBuilder = createDxEndpointBuilder();
     dxEndpoint_ = env->NewGlobalRef(createDxEndpoint(dxEndpointBuilder));
+    env_->DeleteLocalRef(dxEndpointBuilder);
   }
 
   DxEndpoint::~DxEndpoint() {
@@ -20,12 +21,14 @@ namespace dxfeed {
   jobject DxEndpoint::createDxEndpointBuilder() {
     jmethodID newBuilderMethodId = jni::safeGetStaticMethodID(env_, dxEndpointClass_, "newBuilder",
                                                               "()Lcom/dxfeed/api/DXEndpoint$Builder;");
-    return env_->CallStaticObjectMethod(dxEndpointClass_, newBuilderMethodId);
+    jobject pJobject = env_->CallStaticObjectMethod(dxEndpointClass_, newBuilderMethodId);
+    return pJobject;
   }
 
   jobject DxEndpoint::createDxEndpoint(jobject dxEndpointBuilder) {
     jclass dxEndpointBuilderClass = env_->GetObjectClass(dxEndpointBuilder);
     jmethodID buildId = jni::safeGetMethodID(env_, dxEndpointBuilderClass, "build", "()Lcom/dxfeed/api/DXEndpoint;");
+    env_->DeleteLocalRef(dxEndpointBuilderClass);
     return env_->CallObjectMethod(dxEndpointBuilder, buildId);
   }
 
@@ -33,6 +36,7 @@ namespace dxfeed {
     jmethodID connectMethodId = jni::safeGetMethodID(env_, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
     jstring addr = env_->NewStringUTF(address);
     jobject pJobject = env_->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
+    env_->DeleteLocalRef(addr);
     env_->DeleteGlobalRef(dxEndpoint_);
     dxEndpoint_ = env_->NewGlobalRef(pJobject);
     return 0;
@@ -41,7 +45,9 @@ namespace dxfeed {
   DxFeed* DxEndpoint::getFeed() const {
     jmethodID getFeedId = jni::safeGetMethodID(env_, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
     jobject dxFeed = env_->CallObjectMethod(dxEndpoint_, getFeedId);
-    return new DxFeed(env_, dxFeed);
+    auto* pFeed = new DxFeed(env_, dxFeed);
+    env_->DeleteLocalRef(dxFeed);
+    return pFeed;
   }
 
   void DxEndpoint::close() const {

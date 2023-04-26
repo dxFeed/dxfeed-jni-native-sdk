@@ -91,6 +91,10 @@ namespace dxfeed::jni::internal {
     jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
     std::cout << "\tclazz com/dxfeed/api/JniTest: " << clazz << std::endl;
     jni::registerNativeMethods(jniEnv, clazz);
+
+    jniEnv->DeleteLocalRef(pJstring);
+    jniEnv->DeleteLocalRef(javaLangSystemClazz);
+    jniEnv->DeleteLocalRef(clazz);
   }
 
   void loadJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {
