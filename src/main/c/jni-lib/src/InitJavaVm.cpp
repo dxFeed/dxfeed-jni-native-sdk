@@ -4,8 +4,7 @@
 #include <string>
 #include <iostream>
 
-#include "dxfeed/utils/Base.h"
-#include "dxfeed/utils/LoadJavaVm.hpp"
+#include "dxfeed/utils/InitJavaVm.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/JavaProperty.hpp"
 
@@ -103,7 +102,7 @@ namespace dxfeed::jni::internal {
     vmArgs.ignoreUnrecognized = JNI_FALSE;
 
     // Create the JVM
-    jint flag = internal::createJavaVM(&javaVM, (void**) &jniEnv, &vmArgs);
+    jint flag = fCreateJavaVM(&javaVM, (void**) &jniEnv, &vmArgs);
     if (flag == JNI_ERR) {
       throw std::runtime_error("Error creating VM. Exiting...n");
     }

@@ -3,7 +3,7 @@
 #include "api/dxfg_api.h"
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEventListener.hpp"
-#include "dxfeed/utils/Base.h"
+#include "dxfeed/utils/JNICommon.h"
 
 void dxfg_init(const char* javaHome, const char** vmArgs, const int vmArgsCount) {
   dxfeed::jni::internal::initJavaVM(javaHome, vmArgs, vmArgsCount);

@@ -3,17 +3,10 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 #define DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 
-#include <jni.h>
+#include "JNICommon.h"
 #include "javah/com_dxfeed_api_JniTest.h"
 
 namespace dxfeed::jni {
-  namespace internal {
-    extern JNIEnv* jniEnv;
-    extern JavaVM* javaVM;
-  } // namespace dxfeed::jni::internal
-
-  JNIEnv* getJNIEnv();
-
   namespace nativeMethods {
     static JNINativeMethod methods[] = {
         {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},

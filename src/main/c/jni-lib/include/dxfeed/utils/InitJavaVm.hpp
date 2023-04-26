@@ -3,7 +3,7 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_INTERNAL_H_
 #define DXFEED_JNI_NATIVE_SDK_INTERNAL_H_
 
-#include <jni.h>
+#include "JNICommon.h"
 
 namespace dxfeed::jni::internal {
 

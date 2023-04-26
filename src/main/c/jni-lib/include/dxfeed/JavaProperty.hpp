@@ -6,8 +6,6 @@
 #include <jni.h>
 #include <iostream>
 
-#include <jni.h>
-
 namespace dxfeed::jni::internal {
   struct JavaProperty {
     JavaProperty(JNIEnv* env, jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName);

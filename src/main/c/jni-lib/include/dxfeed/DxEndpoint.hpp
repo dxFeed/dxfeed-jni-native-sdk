@@ -5,6 +5,7 @@
 
 #include <jni.h>
 #include <cstdint>
+
 #include "api/dxfg_endpoint.h"
 #include "api/dxfg_events.h"
 #include "DxSubscription.hpp"
