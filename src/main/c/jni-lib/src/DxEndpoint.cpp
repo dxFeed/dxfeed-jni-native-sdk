@@ -39,9 +39,14 @@ namespace dxfeed {
     return 0;
   }
 
-  DxFeed* DxEndpoint::getFeed() {
+  DxFeed* DxEndpoint::getFeed() const {
     jmethodID getFeedId = jni::safeGetMethodID(env_, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
     jobject dxFeed = env_->CallObjectMethod(dxEndpoint_, getFeedId);
     return new DxFeed(env_, dxFeed, onClose_);
+  }
+
+  void DxEndpoint::close() const {
+    jmethodID closeMethodId = jni::safeGetMethodID(env_, dxEndpointClass_, "close", "()V");
+    env_->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 }

@@ -26,6 +26,12 @@ int32_t dxfg_DXEndpoint_release(graal_isolatethread_t*, dxfg_endpoint_t* endpoin
   return 0;
 }
 
+int32_t dxfg_DXEndpoint_close(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint) {
+  auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->close();
+  return 0;
+}
+
 int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t*, dxfg_endpoint_t* endpoint, const char *address) {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
   return pDxEndpoint->connect(address);
@@ -46,6 +52,12 @@ dxfg_subscription_t* dxfg_DXFeed_createSubscription(graal_isolatethread_t*,
 int32_t dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t* subscription) {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(subscription);
   delete pDxSubscription;
+  return 0;
+}
+
+int32_t dxfg_DXFeedSubscription_close(graal_isolatethread_t *, dxfg_subscription_t *sub) {
+  auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
+  pDxSubscription->close();
   return 0;
 }
 

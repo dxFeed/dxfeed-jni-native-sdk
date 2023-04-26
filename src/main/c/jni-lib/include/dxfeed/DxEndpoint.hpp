@@ -23,7 +23,8 @@ namespace dxfeed {
     DxEndpoint& operator=(DxEndpoint&& other) = delete;
 
     int32_t connect(const char* address);
-    DxFeed* getFeed();
+    DxFeed* getFeed() const;
+    void close() const;
   private:
     jobject createDxEndpointBuilder();
     jobject createDxEndpoint(jobject dxEndpointBuilder);

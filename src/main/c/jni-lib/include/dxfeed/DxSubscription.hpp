@@ -24,6 +24,7 @@ namespace dxfeed {
     void addListener(dxfg_feed_event_listener_t* listener) const;
     void addSymbol(const std::string& symbol) const;
     void setSymbol(const std::string& symbol) const;
+    void close() const;
 
   private:
     jobject subscription_;

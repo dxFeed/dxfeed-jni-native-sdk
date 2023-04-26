@@ -57,8 +57,8 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
 //  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
   std::chrono::minutes minutes(2); // time to sleep 24 hours
   std::this_thread::sleep_for(minutes);
-//  dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
-//  dxfg_DXEndpoint_close(thread, endpoint);
+  dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
+  dxfg_DXEndpoint_close(thread, endpoint);
   dxfg_DXSubscription_release(thread, subscriptionTimeAndSale);
   dxfg_DXFeedEventListener_release(thread, listener);
   dxfg_DXEndpoint_release(thread, endpoint);
