@@ -4,7 +4,6 @@
 #define DXFEED_JNI_NATIVE_SDK_DXEVENTLISTENER_H_
 
 #include <jni.h>
-#include "DxContext.hpp"
 #include "api/dxfg_subscription.h"
 
 namespace dxfeed {

@@ -61,7 +61,7 @@ constexpr inline TargetType r_cast(InitialType arg) {
   return reinterpret_cast<TargetType>(arg);
 }
 
-namespace dxfeed::internal {
+namespace dxfeed::jni::internal {
   CreateJavaVM_t createJavaVM = nullptr;
 
   template <typename CharT>

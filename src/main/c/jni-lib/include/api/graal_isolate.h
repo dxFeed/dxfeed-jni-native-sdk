@@ -10,7 +10,7 @@
  * requiring that the calling thread has been attached to that isolate.
  */
 struct __graal_isolatethread_t;
-typedef struct __graal_isolatethread_t graal_isolatethread_t;
+typedef struct JNIEnv_ graal_isolatethread_t;
 
 
 #if defined(__cplusplus)

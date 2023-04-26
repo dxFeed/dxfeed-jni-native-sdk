@@ -8,7 +8,7 @@
 
 namespace dxfeed {
   struct DxFeed {
-    DxFeed(JNIEnv* env, jobject obj, OnCloseHandler onClose);
+    DxFeed(JNIEnv* env, jobject obj);
     ~DxFeed();
 
     DxFeed(const DxFeed& other) = delete;
@@ -20,7 +20,6 @@ namespace dxfeed {
   private:
     jobject dxFeed_ = nullptr;
     JNIEnv* env_ = nullptr;
-    const dxfeed::OnCloseHandler onClose_ = nullptr;
   };
 }
 

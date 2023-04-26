@@ -8,7 +8,7 @@
 
 #include <jni.h>
 
-namespace dxfeed::internal {
+namespace dxfeed::jni::internal {
   struct JavaProperty {
     JavaProperty(JNIEnv* env, jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName);
     ~JavaProperty();
@@ -24,6 +24,6 @@ namespace dxfeed::internal {
     JNIEnv* env_;
     const char* cstr_ = nullptr;
   };
-}  // namespace dxfeed::internal
+}  // namespace dxfeed::jni::internal
 
 #endif // DXFEED_JNI_NATIVE_SDK_JAVA_PROPERTY_H_

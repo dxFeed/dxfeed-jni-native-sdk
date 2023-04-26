@@ -4,7 +4,7 @@
 
 #include "dxfeed/JavaProperty.hpp"
 
-namespace dxfeed::internal {
+namespace dxfeed::jni::internal {
   JavaProperty::JavaProperty(JNIEnv* env,jclass javaLangSystem, jmethodID getPropertyMethodId, const char* propName) :
       env_(env)
   {

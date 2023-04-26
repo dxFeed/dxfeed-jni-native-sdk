@@ -18,7 +18,6 @@ set(SOURCE_FILES
     src/DxEventListener.cpp
     src/DxFeed.cpp
     src/DxSubscription.cpp
-    src/DxContext.cpp
     src/JavaProperty.cpp
     src/LoadJavaVm.cpp
     src/LoadLibrary.cpp

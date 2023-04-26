@@ -7,13 +7,12 @@
 #include <string>
 #include <vector>
 
-#include "DxContext.hpp"
 #include "api/dxfg_events.h"
 #include "api/dxfg_subscription.h"
 
 namespace dxfeed {
   struct DxSubscription final {
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
@@ -29,7 +28,6 @@ namespace dxfeed {
   private:
     jobject subscription_;
     JNIEnv* env_;
-    const dxfeed::OnCloseHandler onClose_;
   };
 } // namespace dxfeed
 
