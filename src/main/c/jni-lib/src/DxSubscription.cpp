@@ -51,4 +51,10 @@ namespace dxfeed {
     jstring pSymbol = env_->NewStringUTF(symbol.c_str());
     env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
   }
+
+  void DxSubscription::close() const {
+    jclass dxFeedSubscription = env_->GetObjectClass(subscription_);
+    jmethodID closeMethodId = jni::safeGetMethodID(env_, dxFeedSubscription, "close", "()V");
+    env_->CallVoidMethod(subscription_, closeMethodId);
+  }
 }
