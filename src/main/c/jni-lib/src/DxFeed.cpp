@@ -3,16 +3,16 @@
 #include "dxfeed/DxFeed.h"
 
 namespace dxfeed {
-  DxFeed::DxFeed(JNIEnv* env, jobject dxFeed, const dxfeed::OnCloseHandler onClose) :
+  DxFeed::DxFeed(JNIEnv* env, jobject dxFeed) :
       env_(env),
-      dxFeed_(env->NewGlobalRef(dxFeed)),
-      onClose_(onClose) {}
+      dxFeed_(env->NewGlobalRef(dxFeed))
+  {}
 
   DxFeed::~DxFeed() {
-    onClose_(dxFeed_);
+    env_->DeleteGlobalRef(dxFeed_);
   }
 
   DxSubscription* DxFeed::createSubscription(dxfg_event_clazz_t eventType) {
-    return new DxSubscription(env_, dxFeed_, eventType, onClose_);
+    return new DxSubscription(env_, dxFeed_, eventType);
   }
 }

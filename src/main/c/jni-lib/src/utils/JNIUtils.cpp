@@ -5,6 +5,10 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
+  JNIEnv* getJNIEnv() {
+    return internal::jniEnv;
+  }
+
   jclass safeFindClass(JNIEnv* env, const char* clazzName) {
     auto clazz = env->FindClass(clazzName);
     if (!clazz) {

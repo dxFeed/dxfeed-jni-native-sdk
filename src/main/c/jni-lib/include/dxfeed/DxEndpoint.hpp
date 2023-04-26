@@ -11,10 +11,8 @@
 #include "DxFeed.h"
 
 namespace dxfeed {
-  typedef void(* OnCloseHandler)(jobject clazz);
-
   struct DxEndpoint final {
-    DxEndpoint(JNIEnv* env, dxfeed::OnCloseHandler onClose);
+    explicit DxEndpoint(JNIEnv* env);
     ~DxEndpoint();
 
     DxEndpoint(const DxEndpoint& other) = delete;
@@ -31,7 +29,6 @@ namespace dxfeed {
 
     jobject dxEndpoint_ = nullptr;
     JNIEnv* env_ = nullptr;
-    const dxfeed::OnCloseHandler onClose_ = nullptr;
     jclass dxEndpointClass_ = nullptr;
   };
 }

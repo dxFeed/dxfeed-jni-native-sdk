@@ -1,23 +1,17 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "api/dxfg_api.h"
-#include "dxfeed/DxContext.hpp"
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEventListener.hpp"
 #include "dxfeed/utils/LoadLibrary.hpp"
 
 void dxfg_init(const char* javaHome, const char** vmArgs, const int vmArgsCount) {
-  dxfeed::internal::loadJavaVM(javaHome, vmArgs, vmArgsCount);
-}
-
-void* dxfg_get_instance() {
-  auto& dxfgContext = dxfeed::DxContext::getInstance();
-  return &dxfgContext;
+  dxfeed::jni::internal::loadJavaVM(javaHome, vmArgs, vmArgsCount);
 }
 
 // todo: move to another CPP
-dxfg_endpoint_t* dxfg_DXEndpoint_create(graal_isolatethread_t*) {
-  return reinterpret_cast<dxfg_endpoint_t*>(new dxfeed::DxEndpoint(dxfeed::jniEnv, dxfeed::onClose));
+dxfg_endpoint_t* dxfg_DXEndpoint_create(graal_isolatethread_t* thread) {
+  return reinterpret_cast<dxfg_endpoint_t*>(new dxfeed::DxEndpoint(thread));
 }
 
 int32_t dxfg_DXEndpoint_release(graal_isolatethread_t*, dxfg_endpoint_t* endpoint) {

@@ -3,7 +3,6 @@
 #include <jni.h>
 
 #include "dxfeed/DxSubscription.hpp"
-#include "dxfeed/DxContext.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
@@ -16,9 +15,8 @@ namespace dxfeed {
     }
   }
 
-  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType, dxfeed::OnCloseHandler onClose) :
-    env_{env},
-    onClose_(onClose)
+  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) :
+    env_{env}
   {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     const char* className = getEventClassType(eventType);
@@ -29,12 +27,14 @@ namespace dxfeed {
   }
 
   DxSubscription::~DxSubscription() {
-    onClose_(subscription_);
+    env_->DeleteGlobalRef(subscription_);
   }
 
   void DxSubscription::addListener(dxfg_feed_event_listener_t* listener) const {
-    auto& dxfgContext = dxfeed::DxContext::getInstance();
-    env_->CallStaticVoidMethod(dxfgContext.helperClass(), dxfgContext.addEventListenerMethod(),
+    jclass javaHelperClass_ = jni::safeFindClass(env_, "Lcom/dxfeed/api/JniTest;");
+    jmethodID addEventListenerHelperMethodId_ = jni::safeGetStaticMethodID(env_, javaHelperClass_, "addEventListener",
+                                                                           "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
+    env_->CallStaticVoidMethod(javaHelperClass_, addEventListenerHelperMethodId_,
                                subscription_, reinterpret_cast<jlong>(listener));
   }
 

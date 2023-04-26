@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "api/dxfg_api.h"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 void printEvent(const dxfg_event_type_t* pEvent) {
   if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
@@ -82,7 +83,7 @@ int main(int argc, char** argv) {
   std::cout << "Connection to address:" << address << std::endl;
   dxfg_init(javaHomePath, jvmArgs, vmOptionsSize);
 
-  dxEndpointSubscription(nullptr);
+  dxEndpointSubscription(dxfeed::jni::getJNIEnv());
 
 //  void* dxFeed = dxfg_get_instance();
 //  auto connection = dxfg_create_connection(dxFeed, address);

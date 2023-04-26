@@ -5,9 +5,8 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
-  DxEndpoint::DxEndpoint(JNIEnv* env, dxfeed::OnCloseHandler onClose) :
-    env_{env},
-    onClose_(onClose)
+  DxEndpoint::DxEndpoint(JNIEnv* env) :
+    env_{env}
   {
     dxEndpointClass_ = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
     jobject dxEndpointBuilder = createDxEndpointBuilder();
@@ -15,7 +14,7 @@ namespace dxfeed {
   }
 
   DxEndpoint::~DxEndpoint() {
-    onClose_(dxEndpoint_);
+    env_->DeleteGlobalRef(dxEndpoint_);
   }
 
   jobject DxEndpoint::createDxEndpointBuilder() {
@@ -42,7 +41,7 @@ namespace dxfeed {
   DxFeed* DxEndpoint::getFeed() const {
     jmethodID getFeedId = jni::safeGetMethodID(env_, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
     jobject dxFeed = env_->CallObjectMethod(dxEndpoint_, getFeedId);
-    return new DxFeed(env_, dxFeed, onClose_);
+    return new DxFeed(env_, dxFeed);
   }
 
   void DxEndpoint::close() const {
