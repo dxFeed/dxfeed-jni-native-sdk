@@ -82,18 +82,18 @@ namespace dxfeed::jni::internal {
     jniEnv->DeleteLocalRef(clazz);
   }
 
-  void initJavaVM(const char* javaHome, const char** consoleVmArgs, const int vmArgsCount) {
-    loadJVMLibrary(javaHome);
+  void initJavaVM(VMOptions* params) {
+    loadJVMLibrary(params->javaHome);
 
     auto runtimePath = fs::current_path();
     std::cout << "APP_RUNTIME_PATH: " << runtimePath << std::endl;
 
-    int vmOptionsCount = vmArgsCount + 1; // 1 for classpath
+    int vmOptionsCount = params->vmArgsCount + 1; // 1 for classpath
     auto javaVmOptionsPtr = std::make_unique<JavaVMOption[]>(vmOptionsCount);
     auto javaVmOptions = javaVmOptionsPtr.get();
     std::string classPath = buildClassPath(runtimePath);
     javaVmOptions[0].optionString = classPath.data();
-    addJavaVMArgs(javaVmOptions + 1, consoleVmArgs, vmArgsCount);
+    addJavaVMArgs(javaVmOptions + 1, params->vmArgs, params->vmArgsCount);
 
     JavaVMInitArgs vmArgs;
     vmArgs.version = JNI_VERSION_1_8;
