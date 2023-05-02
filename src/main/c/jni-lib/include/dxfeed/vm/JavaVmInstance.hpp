@@ -4,6 +4,7 @@
 #define DXFEED_JNI_NATIVE_SDK_JAVAVM_INSTANCE_HPP_H_
 
 #include <jni.h>
+#include <cstdint>
 
 #include "CriticalSection.hpp"
 
@@ -12,7 +13,8 @@ namespace dxfeed::jni::internal::vm {
     JavaVmInstance(JavaVM* vmPtr, int32_t jniVersion);
     ~JavaVmInstance();
 
-    bool attachCurrentThread(JNIEnv* env);
+    JNIEnv* getCurrenThread();
+    bool attachCurrentThread(JNIEnv** env);
     void detachCurrentThread();
   private:
     static const char* hrToMsg(int hr);
