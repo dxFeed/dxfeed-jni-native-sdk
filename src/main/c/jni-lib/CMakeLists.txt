@@ -11,6 +11,13 @@ set(API_INCLUDE include)
 include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE})
 
 message("-- Linking native_lib")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionWindows.cpp)
+else()
+  set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionMacOS.cpp)
+endif()
+
 set(SOURCE_FILES
     JNIBridgeImpl.cpp
     src/api/dxfg_api.cpp
@@ -22,6 +29,8 @@ set(SOURCE_FILES
     src/InitJavaVm.cpp
     src/LoadJvmLib.cpp
     src/utils/JNIUtils.cpp
+    src/utils/vm/JavaVmInstance.cpp
+    ${CRITICAL_SECTION_IMPL}
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

@@ -5,7 +5,7 @@
 #include <thread>
 
 #include "api/dxfg_api.h"
-#include "dxfeed/utils/JNICommon.h"
+#include "dxfeed/utils/JNICommon.hpp"
 
 void printEvent(const dxfg_event_type_t* pEvent) {
   if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {

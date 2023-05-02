@@ -18,7 +18,7 @@ const char JAVA_DLL_NAME[] = "java";
 const char JVM_DLL_NAME[] = "libjvm.dylib";
 #endif
 
-#include "JNICommon.h"
+#include "JNICommon.hpp"
 
 namespace dxfeed::jni::internal {
 

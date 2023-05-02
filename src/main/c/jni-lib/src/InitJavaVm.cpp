@@ -14,7 +14,7 @@ namespace fs = std::filesystem;
 
 namespace dxfeed::jni::internal {
   JNIEnv* jniEnv = nullptr;
-  JavaVM* javaVM = nullptr;
+  JVMInstance* javaVM = nullptr;
 
   std::string buildClassPath(const fs::path& runtimePath) {
     auto jarPath = fs::absolute(runtimePath).append("java-libs");
@@ -104,17 +104,14 @@ namespace dxfeed::jni::internal {
     vmArgs.ignoreUnrecognized = JNI_FALSE;
 
     // Create the JVM
-    jint flag = fCreateJavaVM(&javaVM, (void**) &jniEnv, &vmArgs);
+    JavaVM* javaVmPtr;
+    jint flag = fCreateJavaVM(&javaVmPtr, (void**) &jniEnv, &vmArgs);
     if (flag == JNI_ERR) {
       throw std::runtime_error("Error creating VM. Exiting...n");
     }
+    javaVM = new vm::JavaVmInstance(javaVmPtr, vmArgs.version);
 
     auto path = runtimePath.string() + PATH_SEPARATOR + JNI_LIB_NAME;
     loadJNILibrary(path.c_str());
-  }
-
-  // todo: add dispose!!!!!!!!!!!!!
-  void disposeJavaVM() {
-    javaVM->DestroyJavaVM();
   }
 }
