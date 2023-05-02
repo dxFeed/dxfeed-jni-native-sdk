@@ -81,29 +81,11 @@ int main(int argc, char** argv) {
 
   // init context, connection, subscription
   std::cout << "Connection to address:" << address << std::endl;
-  dxfg_init(javaHomePath, jvmArgs, vmOptionsSize);
-
-  dxEndpointSubscription(dxfeed::jni::getJNIEnv());
-
-//  void* dxFeed = dxfg_get_instance();
-//  auto connection = dxfg_create_connection(dxFeed, address);
-//  auto subscription = dxfg_create_subscription(connection, 0);
-//
-//  // add listener with user code
-//  dxfg_add_listener(subscription, [](const void *events, int count) {
-//    auto timeAndSaleList = reinterpret_cast<const TimeAndSale*>(events);
-//    for (int i = 0; i < count; ++i) {
-//      auto quote = std::make_shared<TimeAndSale>(timeAndSaleList[i]);
-//      std::cout << dxfeed::TimeAndSaleFormatter::toString(quote.get()) << std::endl;
-//    }
-//  });
-//
-//  // add symbol to subscription
-//  dxfg_add_symbol(subscription, symbol);
-//
-//    // sleep then clean up
-//  std::chrono::hours hours(24); // time to sleep 24 hours
-//  std::this_thread::sleep_for(hours);
-//  delete subscription;
-//  delete connection;
+  dxfeed::jni::VMOptions vmOptions { javaHomePath, jvmArgs, vmOptionsSize };
+  graal_isolate_t* isolate;
+  graal_isolatethread_t* thread;
+  int hr = graal_create_isolate(&vmOptions, &isolate, &thread);
+  if (hr == JNI_OK) {
+    dxEndpointSubscription(thread);
+  }
 }

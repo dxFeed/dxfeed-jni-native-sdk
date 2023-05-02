@@ -6,10 +6,12 @@
 #include <jni.h>
 
 namespace dxfeed::jni {
-  JNIEnv* getJNIEnv();
-
+  struct VMOptions {
+    char* javaHome;
+    const char** vmArgs;
+    int vmArgsCount;
+  };
   namespace internal {
-
     extern JNIEnv* jniEnv;
     extern JavaVM* javaVM;
 
@@ -18,7 +20,7 @@ namespace dxfeed::jni {
 
     extern CreateJavaVM_t fCreateJavaVM;
 
-    void initJavaVM(const char* javaHome, const char** vmOptions = nullptr, int vmArgsCount = 0);
+    void initJavaVM(VMOptions* params);
   }
 }
 

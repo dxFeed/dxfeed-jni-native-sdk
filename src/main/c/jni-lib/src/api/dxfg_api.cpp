@@ -5,8 +5,14 @@
 #include "dxfeed/DxEventListener.hpp"
 #include "dxfeed/utils/JNICommon.h"
 
-void dxfg_init(const char* javaHome, const char** vmArgs, const int vmArgsCount) {
-  dxfeed::jni::internal::initJavaVM(javaHome, vmArgs, vmArgsCount);
+int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t **isolate, graal_isolatethread_t **thread) {
+  if (dxfeed::jni::internal::javaVM == nullptr) {
+    dxfeed::jni::VMOptions options = { "/Users/Andrey.Mikhalev/Documents/Tools/graalvm-ce-java17-22.1.0-dev/Contents/Home", nullptr, 0};
+    dxfeed::jni::internal::initJavaVM(&options);
+    *isolate = dxfeed::jni::internal::javaVM;
+    *thread = dxfeed::jni::internal::jniEnv;
+  }
+  return (*isolate != nullptr && *thread != nullptr) ? JNI_OK : -1;
 }
 
 // todo: move to another CPP
