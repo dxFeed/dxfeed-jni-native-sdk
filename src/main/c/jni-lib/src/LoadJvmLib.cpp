@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "dxfeed/utils/LoadJvmLib.h"
+#include "dxfeed/utils/LoadJvmLib.hpp"
 
 namespace fs = std::filesystem;
 

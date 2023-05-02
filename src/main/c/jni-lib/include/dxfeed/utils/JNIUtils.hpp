@@ -3,7 +3,7 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 #define DXFEED_JNI_NATIVE_SDK_JNIUTILS_H
 
-#include "JNICommon.h"
+#include "JNICommon.hpp"
 #include "javah/com_dxfeed_api_JniTest.h"
 
 namespace dxfeed::jni {
