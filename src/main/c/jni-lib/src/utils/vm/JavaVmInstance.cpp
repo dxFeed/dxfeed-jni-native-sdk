@@ -2,9 +2,17 @@
 
 #include <iostream>
 
-#include "dxfeed/vm/JavaVmInstance.hpp"
+#include "dxfeed/utils/vm/JavaVmInstance.hpp"
+#include "dxfeed/utils/JNICommon.hpp"
 
 namespace dxfeed::jni::internal::vm {
+  JavaVmInstance* JavaVmInstance::getInstance(JavaVM* vmPtr, int32_t jniVersion) {
+    if (dxfeed::jni::internal::javaVM) {
+      return dxfeed::jni::internal::javaVM;
+    }
+    return new JavaVmInstance(vmPtr, jniVersion);
+  }
+
   JavaVmInstance::JavaVmInstance(JavaVM* vmPtr, const int jniVersion) :
       vm_(vmPtr),
       jniVersion_(jniVersion),
@@ -16,17 +24,35 @@ namespace dxfeed::jni::internal::vm {
     vm_ = nullptr;
   }
 
-  bool JavaVmInstance::attachCurrentThread(JNIEnv* env) {
+  JNIEnv* JavaVmInstance::getCurrenThread() {
     criticalSection_.enter();
-    jint hr = vm_->AttachCurrentThread((void**) &env, nullptr);
-    bool success = (hr == JNI_OK);
-    if (success) {
+    JNIEnv* env = nullptr;
+    jint hr = vm_->GetEnv((void**)&env, jniVersion_);
+    if (hr != JNI_OK) {
+      if (hr == JNI_EDETACHED) {
+        hr = attachCurrentThread(&env);
+        if (hr != JNI_OK) {
+          std::cerr << "Can't attachCurrentThread. Exiting..." << std::endl;
+        }
+      } else {
+        std::cerr << "Can't getCurrenThread, error = " << hrToMsg(hr) << std::endl;
+      }
+    }
+    std::cout << "getCurrenThread, env = " << env << std::endl;
+    criticalSection_.leave();
+    return env;
+  }
+
+  int32_t JavaVmInstance::attachCurrentThread(JNIEnv** env) {
+    criticalSection_.enter();
+    jint hr = vm_->AttachCurrentThread((void**) env, nullptr);
+    if (hr == JNI_OK) {
       std::cout << "New thread is attached. tid: " /** PID */ << "\n"; // todo: getPid cross-platform
     } else {
-      logHRESULT(env, hr);
+      logHRESULT(*env, hr);
     }
     criticalSection_.leave();
-    return success;
+    return hr;
   }
 
   void JavaVmInstance::detachCurrentThread() {

@@ -21,6 +21,7 @@ endif()
 set(SOURCE_FILES
     JNIBridgeImpl.cpp
     src/api/dxfg_api.cpp
+    src/api/graal_isolate.cpp
     src/DxEndpoint.cpp
     src/DxEventListener.cpp
     src/DxFeed.cpp

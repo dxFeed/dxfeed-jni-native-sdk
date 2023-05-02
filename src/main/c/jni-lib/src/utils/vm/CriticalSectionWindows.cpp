@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/vm/CriticalSection.hpp"
+#include "dxfeed/utils/vm/CriticalSection.hpp"
 
 namespace dxfeed::jni::internal {
   CriticalSection::CriticalSection() {

@@ -109,7 +109,7 @@ namespace dxfeed::jni::internal {
     if (flag == JNI_ERR) {
       throw std::runtime_error("Error creating VM. Exiting...n");
     }
-    javaVM = new vm::JavaVmInstance(javaVmPtr, vmArgs.version);
+    javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
 
     auto path = runtimePath.string() + PATH_SEPARATOR + JNI_LIB_NAME;
     loadJNILibrary(path.c_str());

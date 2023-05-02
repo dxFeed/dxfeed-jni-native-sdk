@@ -4,17 +4,25 @@
 #define DXFEED_JNI_NATIVE_SDK_JAVAVM_INSTANCE_HPP_H_
 
 #include <jni.h>
+#include <cstdint>
 
 #include "CriticalSection.hpp"
 
 namespace dxfeed::jni::internal::vm {
   struct JavaVmInstance {
-    JavaVmInstance(JavaVM* vmPtr, int32_t jniVersion);
-    ~JavaVmInstance();
+    static JavaVmInstance* getInstance(JavaVM* vmPtr, int32_t jniVersion);
 
-    bool attachCurrentThread(JNIEnv* env);
+    JavaVmInstance(const JavaVmInstance& other) = delete;
+    JavaVmInstance(JavaVmInstance&& other) = delete;
+    JavaVmInstance& operator=(const JavaVmInstance& other) = delete;
+    JavaVmInstance& operator=(JavaVmInstance&& other) = delete;
+
+    JNIEnv* getCurrenThread();
+    int32_t attachCurrentThread(JNIEnv** env);
     void detachCurrentThread();
   private:
+    JavaVmInstance(JavaVM* vmPtr, int32_t jniVersion);
+    ~JavaVmInstance();
     static const char* hrToMsg(int hr);
     static void logErrMsg(JNIEnv* env, jint hr, const char* errMsg);
     static void logHRESULT(JNIEnv* env, jint hr);
