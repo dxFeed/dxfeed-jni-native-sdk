@@ -2,11 +2,23 @@
 
 #include "api/dxfg_api.h"
 #include "dxfeed/DxEndpoint.hpp"
+#include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/DxEventListener.hpp"
+
+dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread) {
+  return reinterpret_cast <dxfg_endpoint_builder_t*>(new dxfeed::DxEndpointBuilder(thread));
+}
+
+dxfg_endpoint_t* dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder) {
+  auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
+  return reinterpret_cast <dxfg_endpoint_t *>(pDxEndpointBuilder->build(thread));
+}
 
 // todo: move to another CPP
 dxfg_endpoint_t* dxfg_DXEndpoint_create(graal_isolatethread_t* thread) {
-  return reinterpret_cast<dxfg_endpoint_t*>(new dxfeed::DxEndpoint(thread));
+  auto pBuilder = std::make_unique<dxfeed::DxEndpointBuilder>(thread);
+  dxfeed::DxEndpoint* pEndpoint = pBuilder->build(thread);
+  return reinterpret_cast<dxfg_endpoint_t*>(pEndpoint);
 }
 
 int32_t dxfg_DXEndpoint_release(graal_isolatethread_t*, dxfg_endpoint_t* endpoint) {
