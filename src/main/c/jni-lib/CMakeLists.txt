@@ -24,6 +24,7 @@ set(SOURCE_FILES
     src/api/graal_isolate.cpp
     src/api/dxfg_system.cpp
     src/DxEndpoint.cpp
+    src/DxEndpointBuilder.cpp
     src/DxEventListener.cpp
     src/DxFeed.cpp
     src/DxSubscription.cpp

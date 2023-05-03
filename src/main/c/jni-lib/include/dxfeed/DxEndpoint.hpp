@@ -13,7 +13,7 @@
 
 namespace dxfeed {
   struct DxEndpoint final {
-    explicit DxEndpoint(JNIEnv* env);
+    explicit DxEndpoint(JNIEnv* env, jobject dxEndpoint);
     ~DxEndpoint();
 
     DxEndpoint(const DxEndpoint& other) = delete;
@@ -25,9 +25,6 @@ namespace dxfeed {
     DxFeed* getFeed() const;
     void close() const;
   private:
-    jobject createDxEndpointBuilder();
-    jobject createDxEndpoint(jobject dxEndpointBuilder);
-
     jobject dxEndpoint_ = nullptr;
     JNIEnv* env_ = nullptr;
     jclass dxEndpointClass_ = nullptr;
