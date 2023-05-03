@@ -4,7 +4,8 @@
 #define DXFEED_JNI_NATIVE_SDK_BASE_H_
 
 #include <jni.h>
-#include "dxfeed/vm/JavaVmInstance.hpp"
+#include "dxfeed/utils/vm/JavaVmInstance.hpp"
+#include "dxfeed/utils/java/JavaLangSystem.hpp"
 
 namespace dxfeed::jni {
   typedef internal::vm::JavaVmInstance JVMInstance;
@@ -17,6 +18,7 @@ namespace dxfeed::jni {
   namespace internal {
     extern JNIEnv* jniEnv;
     extern JVMInstance* javaVM;
+    extern const JavaLangSystem* javaLangSystem;
 
     typedef jint(JNICALL* CreateJavaVM_t)(JavaVM** pvm, void** env, void* args);
     typedef jclass(JNICALL* FindClassFromBootLoader_t)(JNIEnv* env, const char* name);

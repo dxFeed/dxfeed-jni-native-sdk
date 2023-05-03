@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "dxfeed/vm/JavaVmInstance.hpp"
+#include "dxfeed/utils/vm/JavaVmInstance.hpp"
 
 namespace dxfeed::jni::internal::vm {
   JavaVmInstance::JavaVmInstance(JavaVM* vmPtr, const int jniVersion) :
