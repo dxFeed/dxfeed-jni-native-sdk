@@ -15,4 +15,8 @@ namespace dxfeed {
   DxSubscription* DxFeed::createSubscription(dxfg_event_clazz_t eventType) {
     return new DxSubscription(env_, dxFeed_, eventType);
   }
+
+  DxSubscription* DxFeed::createSubscription(dxfg_event_clazz_list_t* eventClazzes) {
+    return new DxSubscription(env_, dxFeed_, eventClazzes);
+  }
 }

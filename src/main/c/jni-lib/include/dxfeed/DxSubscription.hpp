@@ -13,6 +13,7 @@
 namespace dxfeed {
   struct DxSubscription final {
     DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClazzes);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
