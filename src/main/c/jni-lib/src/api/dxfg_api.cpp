@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#include <memory>
+
 #include "api/dxfg_api.h"
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
