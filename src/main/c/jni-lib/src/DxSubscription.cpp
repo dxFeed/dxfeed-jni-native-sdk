@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <jni.h>
+#include <iostream>
 
 #include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
@@ -25,6 +26,32 @@ namespace dxfeed {
                                                           "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
     subscription_ = env->NewGlobalRef(env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass));
     env_->DeleteLocalRef(eventTypeClass);
+    env_->DeleteLocalRef(dxFeedClass);
+  }
+
+  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_list_t* eventClazzes) :
+    env_{env}
+  {
+    jclass dxFeedClass = env->GetObjectClass(dxFeed);
+    int32_t size = eventClazzes->size;
+    jclass clazzArrayClass = env->FindClass("[Ljava/lang/Class;");
+    std::cout << "clazzArrayClass:" << clazzArrayClass << "\n";
+    jobjectArray array = env->NewObjectArray(size, clazzArrayClass, nullptr);
+    std::cout << "array:" << array << "\n";
+    for (int i = 0; i < size; ++i) {
+      const char* className = getEventClassType(*eventClazzes->elements[i]);
+      std::cout << "\tarray[" << i << "] = " << className << "\n";
+      jclass eventTypeClass = jni::safeFindClass(env, className);
+      env->SetObjectArrayElement(array, i, eventTypeClass);
+    }
+    jmethodID createSubscriptionId2 = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
+                                                           "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
+    std::cout << "createSubscriptionId2:" << createSubscriptionId2 << "\n";
+    jobject sub = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
+    std::cout << "sub:" << sub << "\n";
+
+    subscription_ = env->NewGlobalRef(sub);
+    env_->DeleteLocalRef(array); //todo delete array elements?
     env_->DeleteLocalRef(dxFeedClass);
   }
 
