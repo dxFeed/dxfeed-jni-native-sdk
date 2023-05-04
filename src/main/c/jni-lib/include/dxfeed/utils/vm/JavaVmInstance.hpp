@@ -14,7 +14,7 @@ namespace dxfeed::jni::internal::vm {
     ~JavaVmInstance();
 
     JNIEnv* getCurrenThread();
-    bool attachCurrentThread(JNIEnv** env);
+    int32_t attachCurrentThread(JNIEnv** env);
     void detachCurrentThread();
   private:
     static const char* hrToMsg(int hr);

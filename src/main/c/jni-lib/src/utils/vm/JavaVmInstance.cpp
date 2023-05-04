@@ -20,26 +20,31 @@ namespace dxfeed::jni::internal::vm {
     criticalSection_.enter();
     JNIEnv* env = nullptr;
     jint hr = vm_->GetEnv((void**)&env, jniVersion_);
-    if (hr == JNI_ERR) {
-      std::cerr << "Error getting JNIEnv. Exiting..." << std::endl;
-      return nullptr;
+    if (hr != JNI_OK) {
+      if (hr == JNI_EDETACHED) {
+        hr = attachCurrentThread(&env);
+        if (hr != JNI_OK) {
+          std::cerr << "Can't attachCurrentThread. Exiting..." << std::endl;
+        }
+      } else {
+        std::cerr << "Can't getCurrenThread, error = " << hrToMsg(hr) << std::endl;
+      }
     }
     std::cout << "getCurrenThread, env = " << env << std::endl;
     criticalSection_.leave();
     return env;
   }
 
-  bool JavaVmInstance::attachCurrentThread(JNIEnv** env) {
+  int32_t JavaVmInstance::attachCurrentThread(JNIEnv** env) {
     criticalSection_.enter();
     jint hr = vm_->AttachCurrentThread((void**) env, nullptr);
-    bool success = (hr == JNI_OK);
-    if (success) {
+    if (hr == JNI_OK) {
       std::cout << "New thread is attached. tid: " /** PID */ << "\n"; // todo: getPid cross-platform
     } else {
       logHRESULT(*env, hr);
     }
     criticalSection_.leave();
-    return success;
+    return hr;
   }
 
   void JavaVmInstance::detachCurrentThread() {
