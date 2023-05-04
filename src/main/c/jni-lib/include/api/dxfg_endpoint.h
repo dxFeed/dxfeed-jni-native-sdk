@@ -54,6 +54,9 @@ int32_t                         dxfg_DXEndpoint_connect(graal_isolatethread_t* t
                                                         const char* address);
 dxfg_feed_t*                    dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
 
+int32_t                         dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread,
+                                                                  dxfg_endpoint_t* endpoint);
+
 /** @} */ // end of Endpoint
 
 #ifdef __cplusplus

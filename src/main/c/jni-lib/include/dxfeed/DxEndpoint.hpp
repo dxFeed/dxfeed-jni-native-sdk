@@ -24,6 +24,7 @@ namespace dxfeed {
     int32_t connect(const char* address);
     DxFeed* getFeed() const;
     void close() const;
+    void awaitNotConnected() const;
   private:
     jobject dxEndpoint_ = nullptr;
     JNIEnv* env_ = nullptr;
