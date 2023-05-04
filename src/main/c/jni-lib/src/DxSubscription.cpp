@@ -34,14 +34,17 @@ namespace dxfeed {
   {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     int32_t size = eventClazzes->size;
-    jclass clazzArrayClass = env->FindClass("[Ljava/lang/Class;");
+    jclass clazzArrayClass = env->FindClass("Ljava/lang/Class;");
     std::cout << "clazzArrayClass:" << clazzArrayClass << "\n";
     jobjectArray array = env->NewObjectArray(size, clazzArrayClass, nullptr);
     std::cout << "array:" << array << "\n";
     for (int i = 0; i < size; ++i) {
-      const char* className = getEventClassType(*eventClazzes->elements[i]);
+      dxfg_event_clazz_t* pClazz = eventClazzes->elements[i];
+      std::cout << "\tpClazz << = " << pClazz << ", *pClazz: " << *pClazz << "\n";
+      const char* className = getEventClassType(*pClazz);
       std::cout << "\tarray[" << i << "] = " << className << "\n";
       jclass eventTypeClass = jni::safeFindClass(env, className);
+      std::cout << "\teventTypeClass = " << eventTypeClass << "\n";
       env->SetObjectArrayElement(array, i, eventTypeClass);
     }
     jmethodID createSubscriptionId2 = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
