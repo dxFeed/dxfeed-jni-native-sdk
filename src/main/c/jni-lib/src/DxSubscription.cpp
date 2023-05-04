@@ -9,10 +9,45 @@
 namespace dxfeed {
   const char* getEventClassType(dxfg_event_clazz_t eventType) {
     switch (eventType) {
-      case dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE:
-        return "Lcom/dxfeed/event/market/TimeAndSale;";
-      case dxfg_event_clazz_t::DXFG_EVENT_QUOTE:
+      case DXFG_EVENT_QUOTE:
         return "Lcom/dxfeed/event/market/Quote;";
+      case DXFG_EVENT_PROFILE:
+        return "Lcom/dxfeed/event/market/Profile;";
+      case DXFG_EVENT_SUMMARY:
+        return "Lcom/dxfeed/event/market/Summary;";
+      case DXFG_EVENT_GREEKS:
+        return "Lcom/dxfeed/event/option/Greeks;";
+      case DXFG_EVENT_CANDLE:
+        return "Lcom/dxfeed/event/candle/Candle;";
+      case DXFG_EVENT_DAILY_CANDLE:
+        return "Lcom/dxfeed/event/candle/DailyCandle;";
+      case DXFG_EVENT_UNDERLYING:
+        return "Lcom/dxfeed/event/option/Underlying;";
+      case DXFG_EVENT_THEO_PRICE:
+        return "Lcom/dxfeed/event/option/TheoPrice;";
+      case DXFG_EVENT_TRADE:
+        return "Lcom/dxfeed/event/market/Trade;";
+      case DXFG_EVENT_TRADE_ETH:
+        return "Lcom/dxfeed/event/market/TradeETH;";
+      case DXFG_EVENT_CONFIGURATION:
+        return "Lcom/dxfeed/event/misc/Configuration;";
+      case DXFG_EVENT_MESSAGE:
+        return "Lcom/dxfeed/event/misc/Message;";
+      case DXFG_EVENT_TIME_AND_SALE:
+        return "Lcom/dxfeed/event/market/TimeAndSale;";
+      case DXFG_EVENT_ORDER_BASE:
+        return "Lcom/dxfeed/event/market/OrderBase;";
+      case DXFG_EVENT_ORDER:
+        return "Lcom/dxfeed/event/market/Order;";
+      case DXFG_EVENT_ANALYTIC_ORDER:
+        return "Lcom/dxfeed/event/market/AnalyticOrder;";
+      case DXFG_EVENT_SPREAD_ORDER:
+        return "Lcom/dxfeed/event/market/SpreadOrder;";
+      case DXFG_EVENT_SERIES:
+        return "Lcom/dxfeed/event/option/Series;";
+      case DXFG_EVENT_OPTION_SALE: // todo: there is no class in QD
+      default:
+        return nullptr;
     }
   }
 
