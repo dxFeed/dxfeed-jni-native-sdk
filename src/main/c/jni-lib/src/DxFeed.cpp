@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/DxFeed.h"
+#include "dxfeed/DxFeed.hpp"
 
 namespace dxfeed {
   DxFeed::DxFeed(JNIEnv* env, jobject dxFeed) :

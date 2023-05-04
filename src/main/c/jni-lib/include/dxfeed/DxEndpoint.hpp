@@ -9,7 +9,7 @@
 #include "api/dxfg_endpoint.h"
 #include "api/dxfg_events.h"
 #include "DxSubscription.hpp"
-#include "DxFeed.h"
+#include "DxFeed.hpp"
 
 namespace dxfeed {
   struct DxEndpoint final {
@@ -24,6 +24,7 @@ namespace dxfeed {
     int32_t connect(const char* address);
     DxFeed* getFeed() const;
     void close() const;
+    void awaitNotConnected() const;
   private:
     jobject dxEndpoint_ = nullptr;
     JNIEnv* env_ = nullptr;

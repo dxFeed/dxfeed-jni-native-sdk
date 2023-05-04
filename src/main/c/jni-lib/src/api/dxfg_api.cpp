@@ -45,6 +45,12 @@ dxfg_feed_t* dxfg_DXEndpoint_getFeed(graal_isolatethread_t*, dxfg_endpoint_t* en
   return reinterpret_cast<dxfg_feed_t*>(pDxEndpoint->getFeed());
 }
 
+int32_t dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->awaitNotConnected();
+  return 0;
+}
+
 dxfg_subscription_t* dxfg_DXFeed_createSubscription(graal_isolatethread_t*,
                                                     dxfg_feed_t* feed, dxfg_event_clazz_t eventClazz)
 {
