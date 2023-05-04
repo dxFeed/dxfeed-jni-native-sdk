@@ -129,4 +129,9 @@ int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t*, dxfg_subscript
   return 0;
 }
 
+int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler*) {
+  return 0; // todo: think
+}
+
+
 
