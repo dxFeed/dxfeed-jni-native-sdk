@@ -38,7 +38,7 @@ namespace dxfeed::jni {
       env->DeleteLocalRef(jValue);
     }
     env->DeleteLocalRef(jKey);
-    return result;
+    return result ? result : "";
   }
 
   void JavaLangSystem::setProperty(JNIEnv* env, const char* key, const char* value) const {
