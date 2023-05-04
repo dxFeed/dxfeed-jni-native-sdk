@@ -22,7 +22,8 @@ graal_isolatethread_t *graal_get_current_thread(graal_isolate_t* isolate) {
 // https://github.com/oracle/graal/blob/8be56121aa31e7448b4adb0224ab2ac44095ed9b/compiler/src/jdk.internal.vm.compiler/src/org/graalvm/libgraal/LibGraal.java#L253
 int graal_attach_thread(graal_isolate_t* isolate, graal_isolatethread_t** env) {
   auto vmInstance = reinterpret_cast<dxfeed::jni::internal::vm::JavaVmInstance*>(isolate);
-  return vmInstance->attachCurrentThread(env);
+  vmInstance->attachCurrentThread(env);
+  return 0;
 }
 
 // https://github.com/oracle/graal/blob/8be56121aa31e7448b4adb0224ab2ac44095ed9b/compiler/src/jdk.internal.vm.compiler/src/org/graalvm/libgraal/LibGraal.java#L283
