@@ -37,8 +37,18 @@ namespace dxfeed {
   void DxEndpointBuilder::withRole(JNIEnv* env, dxfg_endpoint_role_t role) {
     jmethodID withRoleId = jni::safeGetMethodID(env, dxEndpointBuilderClass_, "withRole",
                                              "(Lcom/dxfeed/api/DXEndpoint$Role;)Lcom/dxfeed/api/DXEndpoint$Builder;");
+    // todo: extract method for RoleId
     std::cout << "withRoleId: " << withRoleId << "\n";
-    jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withRoleId, role);
+    jclass jRoleClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint$Role;");
+    std::cout << "jRoleClass: " << jRoleClass << "\n";
+    jmethodID valuesId = jni::safeGetStaticMethodID(env, jRoleClass, "values", "()[Lcom/dxfeed/api/DXEndpoint$Role;");
+    std::cout << "valuesId: " << valuesId << "\n";
+    auto jRoleArray = reinterpret_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, valuesId));
+    jobject jRole = env->GetObjectArrayElement(jRoleArray, role);
+    jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withRoleId, jRole);
+    env->DeleteLocalRef(jRole);
+    env->DeleteLocalRef(jRoleArray);
+    env->DeleteLocalRef(jRoleClass);
     dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, newBuilder);
   }
 
@@ -64,7 +74,11 @@ namespace dxfeed {
     dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, newBuilder);
   }
 
-  void DxEndpointBuilder::withProperties(JNIEnv* env, const char* file_path) {
+  void DxEndpointBuilder::withProperties(JNIEnv* env, const char* filePath) {
+    jclass jPropertiesClass = jni::safeFindClass(env, "Ljava/util/Properties;");
+    std::cout << "jPropertiesClass: " << jPropertiesClass << "\n";
+    jmethodID loadId = jni::safeGetMethodID(env, jPropertiesClass, "load", "(Ljava/io/InputStream;)V");
+    std::cout << "loadId: " << loadId << "\n";
     //java/util/Properties;
   }
 
