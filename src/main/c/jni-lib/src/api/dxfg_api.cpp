@@ -11,6 +11,42 @@ dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* threa
   return reinterpret_cast <dxfg_endpoint_builder_t*>(new dxfeed::DxEndpointBuilder(thread));
 }
 
+int32_t dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                         dxfg_endpoint_role_t role)
+{
+  auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
+  pDxEndpointBuilder->withRole(thread, role);
+  return 0;
+}
+
+int32_t dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                         const char* name)
+{
+  auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
+  pDxEndpointBuilder->withName(thread, name);
+  return 0;
+}
+
+int32_t dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                             const char* key, const char* value)
+{
+  auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
+  pDxEndpointBuilder->withProperty(thread, key, value);
+  return 0;
+}
+
+int32_t dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                               const char* file_path)
+{
+  return 0;
+}
+
+int32_t dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                                 const char* key)
+{
+  return 0;
+}
+
 dxfg_endpoint_t* dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder) {
   auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
   return reinterpret_cast <dxfg_endpoint_t*>(pDxEndpointBuilder->build(thread));

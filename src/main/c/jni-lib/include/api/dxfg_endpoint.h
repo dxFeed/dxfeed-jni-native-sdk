@@ -38,10 +38,32 @@ typedef struct dxfg_endpoint_builder_t {
   dxfg_java_object_handler handler;
 } dxfg_endpoint_builder_t;
 
+/**
+ * @brief List of endpoint roles.
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html">Javadoc</a>
+ */
+typedef enum dxfg_endpoint_role_t {
+  DXFG_ENDPOINT_ROLE_FEED = 0,
+  DXFG_ENDPOINT_ROLE_ON_DEMAND_FEED,
+  DXFG_ENDPOINT_ROLE_STREAM_FEED,
+  DXFG_ENDPOINT_ROLE_PUBLISHER,
+  DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER,
+  DXFG_ENDPOINT_ROLE_LOCAL_HUB,
+} dxfg_endpoint_role_t;
 /** @defgroup Builder
  *  @{
  */
 dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread);
+int32_t dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                         dxfg_endpoint_role_t role);
+int32_t dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                         const char* name);
+int32_t dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                             const char* key, const char* value);
+int32_t dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                               const char* file_path);
+int32_t dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
+                                                 const char* key);
 dxfg_endpoint_t*         dxfg_DXEndpoint_Builder_build(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder);
 
 /** @} */ // end of Builder
