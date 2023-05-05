@@ -6,7 +6,6 @@
 
 #include "dxfeed/utils/InitJavaVm.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/utils/java/JavaLangSystem.hpp"
 
 #include <filesystem>
 
