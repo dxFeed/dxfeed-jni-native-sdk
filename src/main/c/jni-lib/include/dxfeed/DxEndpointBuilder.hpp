@@ -23,9 +23,16 @@ namespace dxfeed {
     DxEndpointBuilder& operator=(DxEndpointBuilder&& other) = delete;
 
     DxEndpoint* build(JNIEnv* env);
+    void withRole(JNIEnv* env, dxfg_endpoint_role_t role);
+    void withName(JNIEnv* env, const char* name);
+    void withProperty(JNIEnv* env, const char* key, const char* value);
+    void withProperties(JNIEnv* env, const char* file_path);
+    void supportsProperty(JNIEnv* env, const char* key);
   private:
+    static jobject rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder);
 
     jobject dxEndpointBuilder_ = nullptr;
+    jclass dxEndpointBuilderClass_ = nullptr;
     JNIEnv* env_ = nullptr;
   };
 }
