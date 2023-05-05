@@ -61,7 +61,7 @@ int32_t dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t* thread, dxfg_end
 int32_t dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
                                              const char* key, const char* value);
 int32_t dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                               const char* file_path);
+                                               const char* filePath);
 int32_t dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
                                                  const char* key);
 dxfg_endpoint_t*         dxfg_DXEndpoint_Builder_build(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder);

@@ -36,8 +36,10 @@ int32_t dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t* thread, dxfg
 }
 
 int32_t dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                               const char* file_path)
+                                               const char* filePath)
 {
+  auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
+  pDxEndpointBuilder->withProperties(thread, filePath);
   return 0;
 }
 
