@@ -71,19 +71,20 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 JNIEXPORT
 void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass, jint size,
                                                                jbyteArray jBytes, jdoubleArray jDoubles,
-                                                               jbyteArray pEventTypes,
+                                                               jbyteArray jEventTypes,
                                                                jlong userCallback)
 {
   std::vector<dxfg_event_type_t*> events(size);
   auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
+  auto pEventTypes = (char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
 
   // todo: read event based on pEventType
   for (int i = 0 ; i < size; ++i) {
     auto* quote = new dxfg_time_and_sale_t();
     events[i] = reinterpret_cast<dxfg_event_type_t*>(quote);
 
-    quote->market_event.event_type = {dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE};
+    quote->market_event.event_type.clazz = static_cast<dxfg_event_clazz_t>(readByte(&pEventTypes));
     int16_t strSize = readInt16_t(&pByteData);
     quote->market_event.event_symbol = pByteData;
     pByteData += strSize;
@@ -123,18 +124,19 @@ JNIEXPORT
 void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
                                                                        jint byteLen, jbyte* jBytes,
                                                                        jint doubleLen, jdouble* jDoubles,
-                                                                       jint eventTypesLen, jbyte* pEventTypes,
+                                                                       jint eventTypesLen, jbyte* jEventTypes,
                                                                        jlong userCallback)
 {
   auto pByteData = (char*) jBytes;
   auto pDoubleData = (double*) jDoubles;
+  auto pEventTypes = (char*) jEventTypes;
   std::vector<dxfg_event_type_t*> events(size);
 
   for (int i = 0 ; i < size; ++i) {
     auto* quote = new dxfg_time_and_sale_t();
     events[i] = reinterpret_cast<dxfg_event_type_t*>(quote);
 
-    quote->market_event.event_type =  { dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE };
+    quote->market_event.event_type.clazz = static_cast<dxfg_event_clazz_t>(readByte(&pEventTypes));
     int16_t strSize = readInt16_t(&pByteData);
     quote->market_event.event_symbol = pByteData;
     pByteData += strSize;
