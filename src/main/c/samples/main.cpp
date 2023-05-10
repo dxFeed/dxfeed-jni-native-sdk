@@ -9,7 +9,7 @@
 
 void printEvent(const dxfg_event_type_t* pEvent) {
   if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
-    auto* time_and_sale = (dxfg_time_and_sale_t* )pEvent;
+    const auto* time_and_sale = (const dxfg_time_and_sale_t*) pEvent;
     printf(
       "C: TIME_AND_SALE{event_symbol=%s, bid_price=%f, exchange_sale_conditions=%s, buyer=%s, seller=%s}\n",
       time_and_sale->market_event.event_symbol,

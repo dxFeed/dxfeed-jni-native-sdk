@@ -101,7 +101,7 @@ typedef struct dxfg_time_and_sale_t {
 
 typedef struct dxfg_event_type_list {
     int32_t size;
-    dxfg_event_type_t **elements;
+    dxfg_event_type_t const* const* elements;
 } dxfg_event_type_list;
 
 typedef struct dxfg_event_clazz_list_t {

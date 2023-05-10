@@ -31,6 +31,7 @@ set(SOURCE_FILES
     src/InitJavaVm.cpp
     src/LoadJvmLib.cpp
     src/utils/JNIUtils.cpp
+    src/utils/NativeEventReader.cpp
     src/utils/vm/JavaVmInstance.cpp
     src/utils/java/JavaLangSystem.cpp
     ${CRITICAL_SECTION_IMPL}
