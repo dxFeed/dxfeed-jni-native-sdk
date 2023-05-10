@@ -74,13 +74,16 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
                                                                jbyteArray pEventTypes,
                                                                jlong userCallback)
 {
-  std::vector<dxfg_time_and_sale_t*> events(size, new dxfg_time_and_sale_t);
+  std::vector<dxfg_event_type_t*> events(size);
   auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
 
   // todo: read event based on pEventType
-  for (auto& quote: events) {
-    quote->market_event.event_type =  { dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE };
+  for (int i = 0 ; i < size; ++i) {
+    auto* quote = new dxfg_time_and_sale_t();
+    events[i] = reinterpret_cast<dxfg_event_type_t*>(quote);
+
+    quote->market_event.event_type = {dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE};
     int16_t strSize = readInt16_t(&pByteData);
     quote->market_event.event_symbol = pByteData;
     pByteData += strSize;
@@ -112,9 +115,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
   env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
 
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
-  dxfg_event_type_list list = {
-      size, reinterpret_cast<dxfg_event_type_t**>(events.data())
-  };
+  dxfg_event_type_list list = { size, events.data() };
   pListener->callUserFunc(nullptr, &list);
 }
 
@@ -127,9 +128,12 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
 {
   auto pByteData = (char*) jBytes;
   auto pDoubleData = (double*) jDoubles;
-  std::vector<dxfg_time_and_sale_t*> events(size, {});
+  std::vector<dxfg_event_type_t*> events(size);
 
-  for (auto& quote: events) {
+  for (int i = 0 ; i < size; ++i) {
+    auto* quote = new dxfg_time_and_sale_t();
+    events[i] = reinterpret_cast<dxfg_event_type_t*>(quote);
+
     quote->market_event.event_type =  { dxfg_event_clazz_t::DXFG_EVENT_TIME_AND_SALE };
     int16_t strSize = readInt16_t(&pByteData);
     quote->market_event.event_symbol = pByteData;
@@ -159,9 +163,7 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
   }
 
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
-  dxfg_event_type_list list = {
-      size, reinterpret_cast<dxfg_event_type_t**>(events.data())
-  };
+  dxfg_event_type_list list = { size, events.data() };
   pListener->callUserFunc(nullptr, &list);
 }
 
