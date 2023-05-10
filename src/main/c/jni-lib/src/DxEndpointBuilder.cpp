@@ -1,6 +1,4 @@
-//
-// Created by Andrey.Mikhalev on 5/3/23.
-//
+// SPDX-License-Identifier: MPL-2.0
 
 #include <iostream>
 #include "dxfeed/utils/JNIUtils.hpp"
@@ -95,5 +93,5 @@ namespace dxfeed {
       return oldBuilder;
     }
   }
-  
+
 }
