@@ -33,7 +33,6 @@ namespace dxfeed {
 
     jobject dxEndpointBuilder_ = nullptr;
     jclass dxEndpointBuilderClass_ = nullptr;
-    JNIEnv* env_ = nullptr;
   };
 }
 

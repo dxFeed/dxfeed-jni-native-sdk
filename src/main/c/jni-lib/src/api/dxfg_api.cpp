@@ -69,38 +69,38 @@ int32_t dxfg_DXEndpoint_release(graal_isolatethread_t*, dxfg_endpoint_t* endpoin
 
 int32_t dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
-  pDxEndpoint->close();
+  pDxEndpoint->close(thread);
   return 0;
 }
 
-int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t*, dxfg_endpoint_t* endpoint, const char* address) {
+int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* address) {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
-  return pDxEndpoint->connect(address);
+  return pDxEndpoint->connect(thread, address);
 }
 
-dxfg_feed_t* dxfg_DXEndpoint_getFeed(graal_isolatethread_t*, dxfg_endpoint_t* endpoint) {
+dxfg_feed_t* dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
-  return reinterpret_cast<dxfg_feed_t*>(pDxEndpoint->getFeed());
+  return reinterpret_cast<dxfg_feed_t*>(pDxEndpoint->getFeed(thread));
 }
 
 int32_t dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
-  pDxEndpoint->awaitNotConnected();
+  pDxEndpoint->awaitNotConnected(thread);
   return 0;
 }
 
-dxfg_subscription_t* dxfg_DXFeed_createSubscription(graal_isolatethread_t*,
+dxfg_subscription_t* dxfg_DXFeed_createSubscription(graal_isolatethread_t* thread,
                                                     dxfg_feed_t* feed, dxfg_event_clazz_t eventClazz)
 {
   auto* pDxFeed = reinterpret_cast<dxfeed::DxFeed*>(feed);
-  return reinterpret_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(eventClazz));
+  return reinterpret_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(thread, eventClazz));
 }
 
 dxfg_subscription_t* dxfg_DXFeed_createSubscription2(graal_isolatethread_t* thread,
                                                      dxfg_feed_t* feed, dxfg_event_clazz_list_t* eventClazzes)
 {
   auto* pDxFeed = reinterpret_cast<dxfeed::DxFeed*>(feed);
-  return reinterpret_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(eventClazzes));
+  return reinterpret_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(thread, eventClazzes));
 }
 
 
@@ -110,9 +110,9 @@ int32_t dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t*
   return 0;
 }
 
-int32_t dxfg_DXFeedSubscription_close(graal_isolatethread_t*, dxfg_subscription_t* sub) {
+int32_t dxfg_DXFeedSubscription_close(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
-  pDxSubscription->close();
+  pDxSubscription->close(thread);
   return 0;
 }
 
@@ -128,15 +128,16 @@ int32_t dxfg_DXFeedEventListener_release(graal_isolatethread_t*, dxfg_feed_event
   return 0;
 }
 
-int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t*,
+int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread,
                                                  dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener)
 {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
-  pDxSubscription->addListener(listener);
+  pDxSubscription->addListener(thread, listener);
   return 0;
 }
 
-int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t*, dxfg_subscription_t* sub, dxfg_symbol_t* symbol)
+int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
+                                          dxfg_symbol_t* symbol)
 {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
   switch (symbol->type) {
@@ -144,7 +145,7 @@ int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t*, dxfg_subscript
       auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(symbol);
       // todo: investigate, why there no setSymbols method. Inlined?
       //  for now use addSymbol instead of setSymbol
-      pDxSubscription->addSymbol(pSymbol->symbol);
+      pDxSubscription->addSymbol(thread, pSymbol->symbol);
       break;
     }
     default:
@@ -153,12 +154,14 @@ int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t*, dxfg_subscript
   return 0;
 }
 
-int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t*, dxfg_subscription_t* sub, dxfg_symbol_t* symbol) {
+int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
+                                          dxfg_symbol_t* symbol)
+{
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
   switch (symbol->type) {
     case STRING: {
       auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(symbol);
-      pDxSubscription->addSymbol(pSymbol->symbol);
+      pDxSubscription->addSymbol(thread, pSymbol->symbol);
       break;
     }
     default:

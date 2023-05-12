@@ -21,13 +21,12 @@ namespace dxfeed {
     DxEndpoint& operator=(const DxEndpoint& other) = delete;
     DxEndpoint& operator=(DxEndpoint&& other) = delete;
 
-    int32_t connect(const char* address);
-    DxFeed* getFeed() const;
-    void close() const;
-    void awaitNotConnected() const;
+    int32_t connect(JNIEnv* env, const char* address);
+    DxFeed* getFeed(JNIEnv* env) const;
+    void close(JNIEnv* env) const;
+    void awaitNotConnected(JNIEnv* env) const;
   private:
     jobject dxEndpoint_ = nullptr;
-    JNIEnv* env_ = nullptr;
     jclass dxEndpointClass_ = nullptr;
   };
 }

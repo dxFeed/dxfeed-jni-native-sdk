@@ -16,11 +16,10 @@ namespace dxfeed {
     DxFeed& operator=(const DxFeed& other) = delete;
     DxFeed& operator=(DxFeed&& other) = delete;
 
-    DxSubscription* createSubscription(dxfg_event_clazz_t eventType);
-    DxSubscription* createSubscription(dxfg_event_clazz_list_t* eventType);
+    DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
+    DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
   private:
     jobject dxFeed_ = nullptr;
-    JNIEnv* env_ = nullptr;
   };
 }
 

@@ -5,23 +5,21 @@
 #include "dxfeed/DxEndpointBuilder.hpp"
 
 namespace dxfeed {
-  DxEndpointBuilder::DxEndpointBuilder(JNIEnv* env) :
-    env_(env)
-  {
-    jclass dxEndpointClass = jni::safeFindClass(env_, "Lcom/dxfeed/api/DXEndpoint;");
+  DxEndpointBuilder::DxEndpointBuilder(JNIEnv* env) {
+    jclass dxEndpointClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
     std::cout << "dxEndpointClass: " << dxEndpointClass << "\n";
-    jmethodID newBuilderMethodId = jni::safeGetStaticMethodID(env_, dxEndpointClass, "newBuilder",
+    jmethodID newBuilderMethodId = jni::safeGetStaticMethodID(env, dxEndpointClass, "newBuilder",
                                                               "()Lcom/dxfeed/api/DXEndpoint$Builder;");
     std::cout << "newBuilderMethodId: " << dxEndpointClass << "\n";
-    dxEndpointBuilder_ = env_->NewGlobalRef(env_->CallStaticObjectMethod(dxEndpointClass, newBuilderMethodId));
+    dxEndpointBuilder_ = env->NewGlobalRef(env->CallStaticObjectMethod(dxEndpointClass, newBuilderMethodId));
     std::cout << "dxEndpointBuilder_: " << dxEndpointBuilder_ << "\n";
     dxEndpointBuilderClass_ = env->GetObjectClass(dxEndpointBuilder_);
     std::cout << "dxEndpointBuilderClass: " << dxEndpointBuilderClass_ << "\n";
-    env_->DeleteLocalRef(dxEndpointClass);
+    env->DeleteLocalRef(dxEndpointClass);
   }
 
   DxEndpointBuilder::~DxEndpointBuilder() {
-    env_->DeleteGlobalRef(dxEndpointBuilder_);
+    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(dxEndpointBuilder_);
   }
 
   DxEndpoint* DxEndpointBuilder::build(JNIEnv* env) {
