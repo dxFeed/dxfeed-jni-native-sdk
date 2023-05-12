@@ -57,7 +57,9 @@ namespace dxfeed {
     jclass eventTypeClass = jni::safeFindClass(env, className);
     jmethodID createSubscriptionId = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
                                                           "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
-    subscription_ = env->NewGlobalRef(env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass));
+    jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass);
+    subscription_ = env->NewGlobalRef(pDxSubscription);
+    env->DeleteLocalRef(pDxSubscription);
     env->DeleteLocalRef(eventTypeClass);
     env->DeleteLocalRef(dxFeedClass);
   }
@@ -81,11 +83,13 @@ namespace dxfeed {
     jmethodID createSubscriptionId2 = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
                                                            "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
     std::cout << "createSubscriptionId2:" << createSubscriptionId2 << "\n";
-    jobject sub = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
-    std::cout << "sub:" << sub << "\n";
+    jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
+    std::cout << "pDxSubscription:" << pDxSubscription << "\n";
 
-    subscription_ = env->NewGlobalRef(sub);
+    subscription_ = env->NewGlobalRef(pDxSubscription);
+    env->DeleteLocalRef(array);
     env->DeleteLocalRef(array); //todo delete array elements?
+    env->DeleteLocalRef(clazzArrayClass);
     env->DeleteLocalRef(dxFeedClass);
   }
 

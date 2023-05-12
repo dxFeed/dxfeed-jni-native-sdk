@@ -16,10 +16,11 @@ namespace dxfeed {
   int32_t DxEndpoint::connect(JNIEnv* env, const char* address) {
     jmethodID connectMethodId = jni::safeGetMethodID(env, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
     jstring addr = env->NewStringUTF(address);
-    jobject pJobject = env->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
+    jobject pDxEndpoint = env->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
     env->DeleteLocalRef(addr);
     env->DeleteGlobalRef(dxEndpoint_);
-    dxEndpoint_ = env->NewGlobalRef(pJobject);
+    dxEndpoint_ = env->NewGlobalRef(pDxEndpoint);
+    env->DeleteLocalRef(pDxEndpoint);
     return JNI_OK;
   }
 
