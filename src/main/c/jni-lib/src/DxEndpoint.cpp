@@ -4,43 +4,42 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
-  DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) :
-    env_{env}
-  {
+  DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) {
     dxEndpointClass_ = env->GetObjectClass(dxEndpoint);
     dxEndpoint_ = env->NewGlobalRef(dxEndpoint);
   }
 
   DxEndpoint::~DxEndpoint() {
-    env_->DeleteGlobalRef(dxEndpoint_);
+    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(dxEndpoint_);
   }
 
-  int32_t DxEndpoint::connect(const char* address) {
-    jmethodID connectMethodId = jni::safeGetMethodID(env_, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
-    jstring addr = env_->NewStringUTF(address);
-    jobject pJobject = env_->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
-    env_->DeleteLocalRef(addr);
-    env_->DeleteGlobalRef(dxEndpoint_);
-    dxEndpoint_ = env_->NewGlobalRef(pJobject);
-    return 0;
+  int32_t DxEndpoint::connect(JNIEnv* env, const char* address) {
+    jmethodID connectMethodId = jni::safeGetMethodID(env, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
+    jstring addr = env->NewStringUTF(address);
+    jobject pDxEndpoint = env->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
+    env->DeleteLocalRef(addr);
+    env->DeleteGlobalRef(dxEndpoint_);
+    dxEndpoint_ = env->NewGlobalRef(pDxEndpoint);
+    env->DeleteLocalRef(pDxEndpoint);
+    return JNI_OK;
   }
 
-  DxFeed* DxEndpoint::getFeed() const {
-    jmethodID getFeedId = jni::safeGetMethodID(env_, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
-    jobject dxFeed = env_->CallObjectMethod(dxEndpoint_, getFeedId);
-    auto* pFeed = new DxFeed(env_, dxFeed);
-    env_->DeleteLocalRef(dxFeed);
+  DxFeed* DxEndpoint::getFeed(JNIEnv* env) const {
+    jmethodID getFeedId = jni::safeGetMethodID(env, dxEndpointClass_, "getFeed", "()Lcom/dxfeed/api/DXFeed;");
+    jobject dxFeed = env->CallObjectMethod(dxEndpoint_, getFeedId);
+    auto* pFeed = new DxFeed(env, dxFeed);
+    env->DeleteLocalRef(dxFeed);
     return pFeed;
   }
 
-  void DxEndpoint::close() const {
-    jmethodID closeMethodId = jni::safeGetMethodID(env_, dxEndpointClass_, "close", "()V");
-    env_->CallVoidMethod(dxEndpoint_, closeMethodId);
+  void DxEndpoint::close(JNIEnv* env) const {
+    jmethodID closeMethodId = jni::safeGetMethodID(env, dxEndpointClass_, "close", "()V");
+    env->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 
-  void DxEndpoint::awaitNotConnected() const {
-    jmethodID closeMethodId = jni::safeGetMethodID(env_, dxEndpointClass_, "awaitNotConnected", "()V");
-    env_->CallVoidMethod(dxEndpoint_, closeMethodId);
+  void DxEndpoint::awaitNotConnected(JNIEnv* env) const {
+    jmethodID closeMethodId = jni::safeGetMethodID(env, dxEndpointClass_, "awaitNotConnected", "()V");
+    env->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 
 }

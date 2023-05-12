@@ -51,22 +51,20 @@ namespace dxfeed {
     }
   }
 
-  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) :
-    env_{env}
-  {
+  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     const char* className = getEventClassType(eventType);
     jclass eventTypeClass = jni::safeFindClass(env, className);
     jmethodID createSubscriptionId = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
                                                           "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
-    subscription_ = env->NewGlobalRef(env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass));
-    env_->DeleteLocalRef(eventTypeClass);
-    env_->DeleteLocalRef(dxFeedClass);
+    jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass);
+    subscription_ = env->NewGlobalRef(pDxSubscription);
+    env->DeleteLocalRef(pDxSubscription);
+    env->DeleteLocalRef(eventTypeClass);
+    env->DeleteLocalRef(dxFeedClass);
   }
 
-  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_list_t* eventClazzes) :
-    env_{env}
-  {
+  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_list_t* eventClazzes) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     int32_t size = eventClazzes->size;
     jclass clazzArrayClass = env->FindClass("Ljava/lang/Class;");
@@ -85,48 +83,50 @@ namespace dxfeed {
     jmethodID createSubscriptionId2 = jni::safeGetMethodID(env, dxFeedClass, "createSubscription",
                                                            "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
     std::cout << "createSubscriptionId2:" << createSubscriptionId2 << "\n";
-    jobject sub = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
-    std::cout << "sub:" << sub << "\n";
+    jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
+    std::cout << "pDxSubscription:" << pDxSubscription << "\n";
 
-    subscription_ = env->NewGlobalRef(sub);
-    env_->DeleteLocalRef(array); //todo delete array elements?
-    env_->DeleteLocalRef(dxFeedClass);
+    subscription_ = env->NewGlobalRef(pDxSubscription);
+    env->DeleteLocalRef(array);
+    env->DeleteLocalRef(array); //todo delete array elements?
+    env->DeleteLocalRef(clazzArrayClass);
+    env->DeleteLocalRef(dxFeedClass);
   }
 
   DxSubscription::~DxSubscription() {
-    env_->DeleteGlobalRef(subscription_);
+    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(subscription_);
   }
 
-  void DxSubscription::addListener(dxfg_feed_event_listener_t* listener) const {
-    jclass pJclass = jni::safeFindClass(env_, "Lcom/dxfeed/api/JniTest;");
-    jmethodID addEventListenerId = jni::safeGetStaticMethodID(env_, pJclass, "addEventListener",
+  void DxSubscription::addListener(JNIEnv* env, dxfg_feed_event_listener_t* listener) const {
+    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
+    jmethodID addEventListenerId = jni::safeGetStaticMethodID(env, pJclass, "addEventListener",
                                                               "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
-    env_->CallStaticVoidMethod(pJclass, addEventListenerId, subscription_, reinterpret_cast<jlong>(listener));
-    env_->DeleteLocalRef(pJclass);
+    env->CallStaticVoidMethod(pJclass, addEventListenerId, subscription_, reinterpret_cast<jlong>(listener));
+    env->DeleteLocalRef(pJclass);
   }
 
-  void DxSubscription::addSymbol(const std::string& symbol) const {
-    jclass dxFeedSubscription = env_->GetObjectClass(subscription_);
-    jmethodID addSymbolsMethodId = jni::safeGetMethodID(env_, dxFeedSubscription, "addSymbols", "(Ljava/lang/Object;)V");
-    jstring pSymbol = env_->NewStringUTF(symbol.c_str());
-    env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
-    env_->DeleteLocalRef(pSymbol);
-    env_->DeleteLocalRef(dxFeedSubscription);
+  void DxSubscription::addSymbol(JNIEnv* env, const std::string& symbol) const {
+    jclass dxFeedSubscription = env->GetObjectClass(subscription_);
+    jmethodID addSymbolsMethodId = jni::safeGetMethodID(env, dxFeedSubscription, "addSymbols", "(Ljava/lang/Object;)V");
+    jstring pSymbol = env->NewStringUTF(symbol.c_str());
+    env->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
+    env->DeleteLocalRef(pSymbol);
+    env->DeleteLocalRef(dxFeedSubscription);
   }
 
-  void DxSubscription::setSymbol(const std::string& symbol) const {
-    jclass dxFeedSubscription = env_->GetObjectClass(subscription_);
-    jmethodID addSymbolsMethodId = jni::safeGetMethodID(env_, dxFeedSubscription, "setSymbols", "(Ljava/lang/Object;)V");
-    jstring pSymbol = env_->NewStringUTF(symbol.c_str());
-    env_->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
-    env_->DeleteLocalRef(pSymbol);
-    env_->DeleteLocalRef(dxFeedSubscription);
+  void DxSubscription::setSymbol(JNIEnv* env, const std::string& symbol) const {
+    jclass dxFeedSubscription = env->GetObjectClass(subscription_);
+    jmethodID addSymbolsMethodId = jni::safeGetMethodID(env, dxFeedSubscription, "setSymbols", "(Ljava/lang/Object;)V");
+    jstring pSymbol = env->NewStringUTF(symbol.c_str());
+    env->CallVoidMethod(subscription_, addSymbolsMethodId, pSymbol);
+    env->DeleteLocalRef(pSymbol);
+    env->DeleteLocalRef(dxFeedSubscription);
   }
 
-  void DxSubscription::close() const {
-    jclass dxFeedSubscription = env_->GetObjectClass(subscription_);
-    jmethodID closeMethodId = jni::safeGetMethodID(env_, dxFeedSubscription, "close", "()V");
-    env_->CallVoidMethod(subscription_, closeMethodId);
-    env_->DeleteLocalRef(dxFeedSubscription);
+  void DxSubscription::close(JNIEnv* env) const {
+    jclass dxFeedSubscription = env->GetObjectClass(subscription_);
+    jmethodID closeMethodId = jni::safeGetMethodID(env, dxFeedSubscription, "close", "()V");
+    env->CallVoidMethod(subscription_, closeMethodId);
+    env->DeleteLocalRef(dxFeedSubscription);
   }
 }

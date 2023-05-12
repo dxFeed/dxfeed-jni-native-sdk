@@ -21,14 +21,13 @@ namespace dxfeed {
     DxSubscription& operator=(const DxSubscription& other) = delete;
     DxSubscription& operator=(DxSubscription&& other) = delete;
 
-    void addListener(dxfg_feed_event_listener_t* listener) const;
-    void addSymbol(const std::string& symbol) const;
-    void setSymbol(const std::string& symbol) const;
-    void close() const;
+    void addListener(JNIEnv* env, dxfg_feed_event_listener_t* listener) const;
+    void addSymbol(JNIEnv* env, const std::string& symbol) const;
+    void setSymbol(JNIEnv* env, const std::string& symbol) const;
+    void close(JNIEnv* env) const;
 
   private:
     jobject subscription_;
-    JNIEnv* env_;
   };
 } // namespace dxfeed
 
