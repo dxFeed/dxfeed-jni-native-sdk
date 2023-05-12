@@ -20,7 +20,7 @@ namespace dxfeed {
     env->DeleteLocalRef(addr);
     env->DeleteGlobalRef(dxEndpoint_);
     dxEndpoint_ = env->NewGlobalRef(pJobject);
-    return 0;
+    return JNI_OK;
   }
 
   DxFeed* DxEndpoint::getFeed(JNIEnv* env) const {
