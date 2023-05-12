@@ -11,10 +11,11 @@ namespace dxfeed::jni {
   typedef internal::vm::JavaVmInstance JVMInstance;
 
   struct VMOptions {
-    char* javaHome;
+    const char* javaHome;
     const char** vmArgs;
     int vmArgsCount;
   };
+
   namespace internal {
     extern JNIEnv* jniEnv;
     extern JVMInstance* javaVM;

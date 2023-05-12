@@ -7,6 +7,10 @@
 #include "javah/com_dxfeed_api_JniTest.h"
 
 namespace dxfeed::jni {
+  const char JAVA_HOME[] = "JAVA_HOME";
+
+  const char* getJavaHome(VMOptions* params);
+
   namespace nativeMethods {
     static JNINativeMethod methods[] = {
         {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},

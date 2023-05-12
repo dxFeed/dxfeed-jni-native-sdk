@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "api/graal_isolate.h"
-#include "dxfeed/utils/JNICommon.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t **isolate, graal_isolatethread_t **thread) {
   if (dxfeed::jni::internal::javaVM == nullptr) {
-    dxfeed::jni::VMOptions options = { "/Users/Andrey.Mikhalev/Documents/Tools/graalvm-ce-java17-22.1.0-dev/Contents/Home", nullptr, 0};
+    auto javaHome = dxfeed::jni::getJavaHome(reinterpret_cast<dxfeed::jni::VMOptions*>(params));
+    // todo: get VmArgs and VmArgCount from params;
+    dxfeed::jni::VMOptions options = { javaHome, nullptr, 0 };
     dxfeed::jni::internal::initJavaVM(&options);
     *isolate = (void*) dxfeed::jni::internal::javaVM;
     *thread = dxfeed::jni::internal::jniEnv;
