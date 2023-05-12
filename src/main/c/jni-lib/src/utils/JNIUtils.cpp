@@ -5,6 +5,23 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
+  const char* getJavaHome(VMOptions* params) {
+    const char* javaHome = std::getenv(dxfeed::jni::JAVA_HOME);
+    const char* msg = "Use JAVA_HOME from ENV: ";
+    if (params) {
+      auto javaHomeCustom = reinterpret_cast<dxfeed::jni::VMOptions*>(params)->javaHome;
+      if (javaHomeCustom) {
+        msg = "Use custom JAVA_HOME from VmOptions: ";
+        javaHome = javaHomeCustom;
+      }
+    }
+    if (!javaHome) {
+      throw std::runtime_error("Can't find JAVA_HOME in ENV or in VmOptions!");
+    }
+    std::cout << msg << javaHome << std::endl;
+    return javaHome;
+  }
+
   jclass safeFindClass(JNIEnv* env, const char* clazzName) {
     auto clazz = env->FindClass(clazzName);
     if (!clazz) {
