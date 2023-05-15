@@ -33,6 +33,11 @@ void c_print(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *
   }
 }
 
+void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
+                                    dxfg_endpoint_state_t new_state, void *user_data) {
+  printf("C: state %d -> %d\n", old_state, new_state);
+}
+
 void finalize(graal_isolatethread_t *thread, void *userData) {
   printf("C: finalize\n");
 }
@@ -49,6 +54,10 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
 //  dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);
   dxfg_DXFeedSubscription_addEventListener(thread, subscriptionTimeAndSale, listener);
 
+  dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
+//  dxfg_Object_finalize(thread, stateListener, finalize, nullptr);
+  dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener);
+
   dxfg_string_symbol_t symbolAAPL;
   symbolAAPL.supper.type = STRING;
   symbolAAPL.symbol = "AAPL";
@@ -56,12 +65,13 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
 //  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
 //  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
-  std::chrono::minutes minutes(2); // time to sleep 24 hours
+  std::chrono::seconds minutes(2); // time to sleep 24 hours
   std::this_thread::sleep_for(minutes);
   dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
   dxfg_DXEndpoint_close(thread, endpoint);
   dxfg_DXSubscription_release(thread, subscriptionTimeAndSale);
   dxfg_DXFeedEventListener_release(thread, listener);
+  dxfg_DXEndpoint_removeStateChangeListener(thread, endpoint, stateListener);
   dxfg_DXEndpoint_release(thread, endpoint);
   printf("C: dxEndpointSubscription END\n");
 }
