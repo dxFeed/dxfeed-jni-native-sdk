@@ -6,6 +6,7 @@
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/DxEventListener.hpp"
+#include "dxfeed/DxStateChangeListener.hpp"
 
 dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread) {
   return reinterpret_cast <dxfg_endpoint_builder_t*>(new dxfeed::DxEndpointBuilder(thread));
@@ -86,6 +87,31 @@ dxfg_feed_t* dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoin
 int32_t dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
   pDxEndpoint->awaitNotConnected(thread);
+  return JNI_OK;
+}
+
+dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
+                                                                       dxfg_endpoint_state_change_listener_func userFunc,
+                                                                       void* userData)
+{
+  auto stateChangeListener = new dxfeed::DxStateChangeListener(userFunc, userData);
+  return reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(stateChangeListener);
+}
+
+int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                               dxfg_endpoint_state_change_listener_t* listener)
+{
+  auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
+  auto* stateChangeListener = reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(listener);
+  pDxEndpoint->addStateChangeListener(thread, stateChangeListener);
+  return JNI_OK;
+}
+int32_t dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                  dxfg_endpoint_state_change_listener_t *listener)
+{
+  auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
+  auto* stateChangeListener = reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(listener);
+  pDxEndpoint->removeStateChangeListener(thread, stateChangeListener);
   return JNI_OK;
 }
 

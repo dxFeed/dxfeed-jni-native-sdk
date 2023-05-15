@@ -26,6 +26,7 @@ set(SOURCE_FILES
     src/DxEndpoint.cpp
     src/DxEndpointBuilder.cpp
     src/DxEventListener.cpp
+    src/DxStateChangeListener.cpp
     src/DxFeed.cpp
     src/DxSubscription.cpp
     src/InitJavaVm.cpp

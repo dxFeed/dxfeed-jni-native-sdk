@@ -25,6 +25,8 @@ namespace dxfeed {
     DxFeed* getFeed(JNIEnv* env) const;
     void close(JNIEnv* env) const;
     void awaitNotConnected(JNIEnv* env) const;
+    void addStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_t* listener);
+    void removeStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_t* listener);
   private:
     jobject dxEndpoint_ = nullptr;
     jclass dxEndpointClass_ = nullptr;

@@ -6,6 +6,7 @@
 
 #include "javah/com_dxfeed_api_JniTest.h"
 #include "dxfeed/DxEventListener.hpp"
+#include "dxfeed/DxStateChangeListener.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
 
 #ifdef __cplusplus
@@ -29,6 +30,15 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 JNIEXPORT
 void JNI_OnUnload(JavaVM* vm, void* reserved) {
   std::cout << "JNI_OnUnload" << std::endl;
+}
+
+JNIEXPORT
+void JNICALL Java_com_dxfeed_api_JniTest_nOnStateChangeListener(JNIEnv* env, jclass,
+                                                               jint oldStateValue, jint newStateValue,
+                                                               jlong userCallback)
+{
+  auto pListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(userCallback);
+  pListener->callUserFunc(env, oldStateValue, newStateValue);
 }
 
 JNIEXPORT
