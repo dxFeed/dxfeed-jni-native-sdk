@@ -14,6 +14,7 @@ namespace dxfeed::jni {
   namespace nativeMethods {
     static JNINativeMethod methods[] = {
         {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},
+        {"nOnStateChangeListener", "(IIJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnStateChangeListener},
     };
   }
 

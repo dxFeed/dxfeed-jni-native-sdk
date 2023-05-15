@@ -7,12 +7,14 @@
 #include <cstdint>
 
 #include "api/dxfg_endpoint.h"
-#include "api/dxfg_events.h"
 #include "DxSubscription.hpp"
 #include "DxFeed.hpp"
+#include "dxfeed/listeners/DxStateChangeListener.hpp"
 
 namespace dxfeed {
   struct DxEndpoint final {
+    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.impl.DXEndpointImpl";
+
     explicit DxEndpoint(JNIEnv* env, jobject dxEndpoint);
     ~DxEndpoint();
 
@@ -25,6 +27,8 @@ namespace dxfeed {
     DxFeed* getFeed(JNIEnv* env) const;
     void close(JNIEnv* env) const;
     void awaitNotConnected(JNIEnv* env) const;
+    void addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
+    void removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
   private:
     jobject dxEndpoint_ = nullptr;
     jclass dxEndpointClass_ = nullptr;

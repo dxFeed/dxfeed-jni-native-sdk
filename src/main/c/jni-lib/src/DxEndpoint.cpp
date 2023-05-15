@@ -2,6 +2,7 @@
 
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/listeners/DxStateChangeListener.hpp"
 
 namespace dxfeed {
   DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) {
@@ -42,4 +43,15 @@ namespace dxfeed {
     env->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 
+  void DxEndpoint::addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
+    jmethodID addStateChangeListenerId = jni::safeGetMethodID(env, dxEndpointClass_, "addStateChangeListener",
+                                         "(Ljava/beans/PropertyChangeListener;)V");
+    env->CallObjectMethod(dxEndpoint_, addStateChangeListenerId, listener->getJavaHandle());
+  }
+
+  void DxEndpoint::removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
+    jmethodID addStateChangeListenerId = jni::safeGetMethodID(env, dxEndpointClass_, "removeStateChangeListener",
+                                                              "(Ljava/beans/PropertyChangeListener;)V");
+    env->CallObjectMethod(dxEndpoint_, addStateChangeListenerId, listener->getJavaHandle());
+  }
 }

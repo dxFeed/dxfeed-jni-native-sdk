@@ -15,6 +15,7 @@ namespace dxfeed::jni::internal {
   JNIEnv* jniEnv = nullptr;
   JVMInstance* javaVM = nullptr;
   const JavaLangSystem* javaLangSystem = nullptr;
+  const JavaLangClass* javaLangClass = nullptr;
 
   std::string buildClassPath(const fs::path& runtimePath) {
     fs::path jarPath = runtimePath.string() + PATH_SEPARATOR + MY_JAR;
@@ -56,6 +57,7 @@ namespace dxfeed::jni::internal {
   }
 
   void loadJNILibrary() {
+    javaLangClass = new JavaLangClass(jniEnv);
     javaLangSystem = new JavaLangSystem(jniEnv);
     javaLangSystem->load(jniEnv, dllFilePath);
     std::cout << "Loaded DxFeed lib: " << dllFilePath << std::endl;

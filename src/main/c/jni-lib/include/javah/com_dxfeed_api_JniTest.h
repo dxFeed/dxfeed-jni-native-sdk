@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener
   (JNIEnv *, jclass, jint, jbyteArray, jdoubleArray, jbyteArray, jlong);
 
+/*
+ * Class:     com_dxfeed_api_JniTest
+ * Method:    nOnStateChangeListener
+ * Signature: (IIJ)V
+ */
+JNIEXPORT void JNICALL Java_com_dxfeed_api_JniTest_nOnStateChangeListener
+  (JNIEnv *, jclass, jint, jint, jlong);
+
 #ifdef __cplusplus
 }
 #endif

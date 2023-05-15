@@ -26,7 +26,8 @@ set(SOURCE_FILES
     src/api/dxfg_system.cpp
     src/DxEndpoint.cpp
     src/DxEndpointBuilder.cpp
-    src/DxEventListener.cpp
+    src/listeners/DxEventListener.cpp
+    src/listeners/DxStateChangeListener.cpp
     src/DxFeed.cpp
     src/DxSubscription.cpp
     src/InitJavaVm.cpp
@@ -35,6 +36,7 @@ set(SOURCE_FILES
     src/utils/NativeEventReader.cpp
     src/utils/vm/JavaVmInstance.cpp
     src/utils/java/JavaLangSystem.cpp
+    src/utils/java/JavaLangClass.cpp
     ${CRITICAL_SECTION_IMPL}
 )
 
