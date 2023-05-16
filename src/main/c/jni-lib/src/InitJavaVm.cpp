@@ -17,19 +17,12 @@ namespace dxfeed::jni::internal {
   const JavaLangSystem* javaLangSystem = nullptr;
 
   std::string buildClassPath(const fs::path& runtimePath) {
-    auto jarPath = fs::absolute(runtimePath).append("java-libs");
+    fs::path jarPath = runtimePath.string() + PATH_SEPARATOR + MY_JAR;
     if (!exists(jarPath)) {
       throw std::runtime_error("Can't find java libs in " + jarPath.string());
     }
-    auto jarDxFeedPath = absolute(jarPath).append("libs").string() + PATH_SEPARATOR;
-    std::cout << "Custom JAR path: " << jarPath << std::endl;
-    std::cout << "DxFeed JAR path: " << jarDxFeedPath << std::endl;
-
-    fs::path result = jarPath.string() + PATH_SEPARATOR + MY_JAR;
-    for (const auto jar: JARS) {
-      result += JAR_SEPARATOR + jarDxFeedPath + jar;
-    }
-    return "-Djava.class.path=" + result.string();
+    std::cout << "DxFeed JAR path: " << jarPath << std::endl;
+    return "-Djava.class.path=" + jarPath.string();
   }
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
@@ -95,6 +88,8 @@ namespace dxfeed::jni::internal {
     std::string classPath = buildClassPath(runtimePath);
     javaVmOptions[0].optionString = classPath.data();
     addJavaVMArgs(javaVmOptions + 1, params->vmArgs, params->vmArgsCount);
+
+    std::cout << "Run cmd \"java " << javaVmOptions->optionString << "\"" << std::endl;
 
     JavaVMInitArgs vmArgs;
     vmArgs.version = JNI_VERSION_1_8;
