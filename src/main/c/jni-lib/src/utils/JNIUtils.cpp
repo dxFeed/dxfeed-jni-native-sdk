@@ -18,7 +18,7 @@ namespace dxfeed::jni {
     if (!javaHome) {
       throw std::runtime_error("Can't find JAVA_HOME in ENV or in VmOptions!");
     }
-    std::cout << msg << ": " << javaHome << std::endl;
+    std::cout << msg << javaHome << std::endl;
     return javaHome;
   }
 
