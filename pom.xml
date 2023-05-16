@@ -5,7 +5,7 @@
 
     <artifactId>dxfeed-jni-native-sdk</artifactId>
     <groupId>com.devexperts.qd</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -66,59 +66,48 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.dxfeed.api.JniTest</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>
-                                com.devexperts.qd,
-                                com.devexperts.mdd
-                            </includeGroupIds>
-                            <outputDirectory>
-                                ${project.basedir}/src/main/c/build/java-libs/libs
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy</id>
+                        <id>copy-fat-jar</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${groupId}</groupId>
-                                    <artifactId>${artifactId}</artifactId>
-                                    <version>${version}</version>
-                                    <outputDirectory>${project.basedir}/src/main/c/build/java-libs</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
+                            <outputDirectory>${basedir}/src/main/c/build</outputDirectory>
+                            <encoding>UTF-8</encoding>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/</directory>
+                                    <include>dxfeed-jni-native-sdk-${version}.jar</include>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>libs/</classpathPrefix>
-                            <mainClass>com.dxfeed.api.JniTest</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

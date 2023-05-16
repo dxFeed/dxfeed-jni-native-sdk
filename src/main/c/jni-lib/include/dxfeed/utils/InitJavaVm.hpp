@@ -17,16 +17,7 @@ namespace dxfeed::jni::internal {
   const char JNI_LIB_NAME[] = "native_jni.dylib";
 #endif
 
-  const char MY_JAR[] = "dxfeed-jni-native-sdk-0.0.1-SNAPSHOT.jar";
-  const char* JARS[] = {
-      "auther-api-442.jar",
-      "dxfeed-api-3.313.jar",
-      "dxlib-3.313.jar",
-      "qds-3.313.jar",
-      "qds-file-3.313.jar",
-      "qds-tools-3.313.jar"
-  };
-
+  const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
 
   void loadJVMLibrary(const char*);
 }  // namespace dxfeed::jni::internal
