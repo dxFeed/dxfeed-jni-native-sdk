@@ -33,12 +33,14 @@ namespace dxfeed::jni::internal {
   }
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
-    for (int i = 0; i < vmArgCount; ++i) {
-      auto arg = vmArgs[i];
-      if (arg[0] == '-') { // VM args starts from '-'
-        vmOptions[i].optionString = const_cast<char*>(arg);
-      } else {
-        std::cout << "unknown VM arg: " << arg << std::endl;
+    if (vmArgs) {
+      for (int i = 0; i < vmArgCount; ++i) {
+        auto arg = vmArgs[i];
+        if (arg[0] == '-') { // VM args starts from '-'
+          vmOptions[i].optionString = const_cast<char*>(arg);
+        } else {
+          std::cout << "unknown VM arg: " << arg << std::endl;
+        }
       }
     }
   }
