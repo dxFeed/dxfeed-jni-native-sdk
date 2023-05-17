@@ -55,9 +55,10 @@ namespace dxfeed::jni::internal {
     std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
   }
 
-  void loadJNILibrary(const char* path) {
+  void loadJNILibrary() {
     javaLangSystem = new JavaLangSystem(jniEnv);
-    javaLangSystem->load(jniEnv, path);
+    javaLangSystem->load(jniEnv, dllFilePath);
+    std::cout << "Loaded DxFeed lib: " << dllFilePath << std::endl;
     dumpJavaInfo();
 
     jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
@@ -95,7 +96,6 @@ namespace dxfeed::jni::internal {
     }
     javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
 
-    auto path = runtimePath.string() + PATH_SEPARATOR + JNI_LIB_NAME;
-    loadJNILibrary(path.c_str());
+    loadJNILibrary();
   }
 }

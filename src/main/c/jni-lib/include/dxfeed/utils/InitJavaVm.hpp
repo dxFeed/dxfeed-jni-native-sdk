@@ -10,13 +10,11 @@ namespace dxfeed::jni::internal {
 #if _MSC_VER && !__INTEL_COMPILER
   constexpr char JAR_SEPARATOR = ';';
   const char PATH_SEPARATOR = '\\';
-  const char JNI_LIB_NAME[] = "native_jni.dll";
 #else
   constexpr char JAR_SEPARATOR = ':';
   constexpr char PATH_SEPARATOR = '/';
-  const char JNI_LIB_NAME[] = "native_jni.dylib";
 #endif
-
+  extern char dllFilePath[];
   const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
 
   void loadJVMLibrary(const char*);
