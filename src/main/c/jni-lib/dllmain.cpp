@@ -14,5 +14,16 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID lpvRes
   return TRUE;
 }
 #else
-  // todo: get dll path for Unix
+
+#include <dlfcn.h>
+#include <cstring>
+
+__attribute__((constructor))
+extern "C" void DllMain(void) {
+  Dl_info dl_info;
+  dladdr((void *)DllMain, &dl_info);
+  if (dl_info.dli_fname) {
+    strcpy(dxfeed::jni::internal::dllFilePath, dl_info.dli_fname);
+  }
+}
 #endif
