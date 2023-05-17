@@ -19,6 +19,7 @@ else()
 endif()
 
 set(SOURCE_FILES
+    dllmain.cpp
     JNIBridgeImpl.cpp
     src/api/dxfg_api.cpp
     src/api/graal_isolate.cpp
