@@ -55,10 +55,14 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 
   env->ReleasePrimitiveArrayCritical(jDoubles, pDoubleData, 0);
   env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
+  env->ReleasePrimitiveArrayCritical(jEventTypes, pEventTypes, 0);
 
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
   dxfg_event_type_list list = { size, events.data() };
   pListener->callUserFunc(nullptr, &list);
+  for (const auto& event : events) {
+    delete event;
+  }
 }
 
 JNIEXPORT
@@ -77,6 +81,10 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
   dxfg_event_type_list list = { size, events.data() };
   pListener->callUserFunc(nullptr, &list);
+
+  for (const auto& event : events) {
+    delete[] event;
+  }
 }
 
 #ifdef __cplusplus
