@@ -3,11 +3,17 @@ package com.dxfeed.api.buffers;
 public class ChunkedDoubleBuffer {
     private int pos = 0;
     private int totalSize = 0;
-    private final double[][] doubleChunks;
+    private double[][] doubleChunks;
     private double[] data;
 
     public ChunkedDoubleBuffer(int quoteCount) {
         doubleChunks = new double[quoteCount][];
+    }
+
+    public void clear() {
+        totalSize = pos = 0;
+        data = null;
+        doubleChunks = null;
     }
 
     public void addChunk(int idx, int chunkSize) {

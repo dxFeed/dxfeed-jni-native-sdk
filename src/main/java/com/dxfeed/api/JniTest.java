@@ -22,6 +22,8 @@ public class JniTest {
             EventsNative nativeTS = new EventsNative(eventList);
             nOnQuoteEventListener(eventList.size(), nativeTS.byteData(), nativeTS.doubleData(), nativeTS.pEventTypes,
                     userCallback);
+            nativeTS.clear();
+            nativeTS = null;
         });
     }
 

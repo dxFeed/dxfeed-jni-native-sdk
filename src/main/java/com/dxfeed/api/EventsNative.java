@@ -11,9 +11,9 @@ import com.dxfeed.event.market.TimeAndSale;
 import java.util.List;
 
 public class EventsNative {
-    private final ChunkedByteBuffer pBytes;
-    private final ChunkedDoubleBuffer pDoubles;
-    public final byte[] pEventTypes;
+    private ChunkedByteBuffer pBytes;
+    private ChunkedDoubleBuffer pDoubles;
+    public byte[] pEventTypes;
 
     EventsNative(List<EventType<?>> quoteList) {
         int quoteCount = quoteList.size();
@@ -30,6 +30,14 @@ public class EventsNative {
                 QuoteToNative.convert((Quote) quote, pBytes, pDoubles, i);
             }
         }
+    }
+
+    public void clear() {
+        pBytes.clear();
+        pBytes = null;
+        pDoubles.clear();
+        pDoubles = null;
+        pEventTypes = null;
     }
 
     public byte[] byteData() {

@@ -4,14 +4,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkedByteBuffer {
+    private final static ConcurrentHashMap<String, byte[]> cacheStringToBytes = new ConcurrentHashMap<>();
     private int pos = 0;
     private int totalSize = 0;
-    private final byte[][] byteChunks;
-    private final static ConcurrentHashMap<String, byte[]> cacheStringToBytes = new ConcurrentHashMap<>();
+    private byte[][] byteChunks;
     private byte[] data;
 
     public ChunkedByteBuffer(int quoteCount) {
         byteChunks = new byte[quoteCount][];
+    }
+
+    public void clear() {
+        totalSize = pos = 0;
+        data = null;
+        byteChunks = null;
     }
 
     public void addChunk(int idx, int chunkSizeInBytes) {
