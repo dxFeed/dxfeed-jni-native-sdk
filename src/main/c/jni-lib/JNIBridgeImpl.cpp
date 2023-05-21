@@ -59,7 +59,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
   dxfg_event_type_list list = { size, events.data() };
-  pListener->callUserFunc(nullptr, &list);
+  pListener->callUserFunc(nullptr, &list); // todo: discuss thread == nullptr?
   for (const auto& event : events) {
     delete event;
   }
@@ -80,7 +80,7 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
 
   auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
   dxfg_event_type_list list = { size, events.data() };
-  pListener->callUserFunc(nullptr, &list);
+  pListener->callUserFunc(nullptr, &list); // todo: discuss thread == nullptr?
 
   for (const auto& event : events) {
     delete[] event;
