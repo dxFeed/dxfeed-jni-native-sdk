@@ -2,6 +2,7 @@
 
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/DxStateChangeListener.hpp"
 
 namespace dxfeed {
   DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) {
@@ -42,19 +43,15 @@ namespace dxfeed {
     env->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 
-  void DxEndpoint::addStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_t* listener) {
-    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
-    jmethodID addStateChangeListenerId = jni::safeGetStaticMethodID(env, pJclass, "addStateChangeEventListener",
-                                         "(Lcom/dxfeed/api/DXEndpoint;J)V");
-    env->CallStaticVoidMethod(pJclass, addStateChangeListenerId, dxEndpoint_, reinterpret_cast<jlong>(listener));
-    env->DeleteLocalRef(pJclass);
+  void DxEndpoint::addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
+    jmethodID addStateChangeListenerId = jni::safeGetMethodID(env, dxEndpointClass_, "addStateChangeListener",
+                                         "(Ljava/beans/PropertyChangeListener;)V");
+    env->CallObjectMethod(dxEndpoint_, addStateChangeListenerId, listener->getJavaHandle());
   }
 
-  void DxEndpoint::removeStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_t* listener) {
-    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
-    jmethodID removeStateChangeListenerId = jni::safeGetStaticMethodID(env, pJclass, "removeStateChangeEventListener",
-                                                                    "(Lcom/dxfeed/api/DXEndpoint;J)V");
-    env->CallStaticVoidMethod(pJclass, removeStateChangeListenerId, dxEndpoint_, reinterpret_cast<jlong>(listener));
-    env->DeleteLocalRef(pJclass);
+  void DxEndpoint::removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
+    jmethodID addStateChangeListenerId = jni::safeGetMethodID(env, dxEndpointClass_, "removeStateChangeListener",
+                                                              "(Ljava/beans/PropertyChangeListener;)V");
+    env->CallObjectMethod(dxEndpoint_, addStateChangeListenerId, listener->getJavaHandle());
   }
 }

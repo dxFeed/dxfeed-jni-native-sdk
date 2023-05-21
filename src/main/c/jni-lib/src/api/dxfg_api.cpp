@@ -94,7 +94,7 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
                                                                        dxfg_endpoint_state_change_listener_func userFunc,
                                                                        void* userData)
 {
-  auto stateChangeListener = new dxfeed::DxStateChangeListener(userFunc, userData);
+  auto stateChangeListener = new dxfeed::DxStateChangeListener(thread, userFunc, userData);
   return reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(stateChangeListener);
 }
 
@@ -102,15 +102,16 @@ int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dx
                                                dxfg_endpoint_state_change_listener_t* listener)
 {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
-  auto* stateChangeListener = reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(listener);
+  auto* stateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(listener);
   pDxEndpoint->addStateChangeListener(thread, stateChangeListener);
   return JNI_OK;
 }
+
 int32_t dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                   dxfg_endpoint_state_change_listener_t *listener)
 {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
-  auto* stateChangeListener = reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(listener);
+  auto* stateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(listener);
   pDxEndpoint->removeStateChangeListener(thread, stateChangeListener);
   return JNI_OK;
 }

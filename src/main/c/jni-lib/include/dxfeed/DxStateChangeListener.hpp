@@ -8,9 +8,12 @@
 
 namespace dxfeed {
   struct DxStateChangeListener {
-    DxStateChangeListener(dxfg_endpoint_state_change_listener_func userFunc, void* userData);
+    DxStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_func userFunc, void* userData);
+    ~DxStateChangeListener();
+    jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, int32_t oldState, int32_t newState);
   private:
+    jobject stateChangeListener_ = nullptr;
     dxfg_endpoint_state_change_listener_func userFunc_ = nullptr;
     void* userData_ = nullptr;
   };
