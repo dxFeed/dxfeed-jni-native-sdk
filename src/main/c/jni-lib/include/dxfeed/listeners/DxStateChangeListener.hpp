@@ -8,6 +8,8 @@
 
 namespace dxfeed {
   struct DxStateChangeListener {
+    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.JniTest$JNIPropertyChangeListener";
+
     DxStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_func userFunc, void* userData);
     ~DxStateChangeListener();
     jobject getJavaHandle() const;

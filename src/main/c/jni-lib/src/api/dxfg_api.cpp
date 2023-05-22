@@ -218,9 +218,13 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
         dxfg_DXEndpoint_release(thread, (dxfg_endpoint_t*) object);
       } else if (name.find(dxfeed::DxSubscription::JAVA_CLASS_NAME) != std::string::npos) {
         dxfg_DXSubscription_release(thread, (dxfg_subscription_t*) object);
-      } else if (name.find("com.dxfeed.api.JniTest$$Lambda$") != std::string::npos) {
-        // todo: two types of listeners: both are lambdas: DxStateChangeListener and DxEventListener
-        dxfg_PropertyChangeListener_release(thread, (dxfg_endpoint_state_change_listener_t*) object);
+      } else if (name.find(dxfeed::DxStateChangeListener::JAVA_CLASS_NAME) != std::string::npos) {
+        // todo: sync with Konstantin about DxStateChangeListener lifetime
+//        dxfg_PropertyChangeListener_release(thread, (dxfg_endpoint_state_change_listener_t*) object);
+      } else if (name.find(dxfeed::DxEventListener::JAVA_CLASS_NAME) != std::string::npos) {
+        dxfg_DXFeedEventListener_release(thread, (dxfg_feed_event_listener_t*) object);
+      } else {
+        std::cerr << "\t LEAKED: " << std::hex << pObject << std::endl;
       }
       return JNI_OK;
     }
