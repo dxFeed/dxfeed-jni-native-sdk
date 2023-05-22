@@ -12,16 +12,15 @@ public class JniTest {
     }
 
     // callback from native
-    private static void addEventListener(DXFeedSubscription<EventType<?>> sub, long userCallback) {
-        System.out.println("addEventListener, dxFeedSub = " + sub + "; userCallback = " + userCallback);
-
-        sub.addEventListener(eventList -> {
+    private static DXFeedEventListener<EventType<?>> newEventListener(long userCallback) {
+        System.out.println("newEventListener, with  userCallback = " + userCallback);
+        return eventList -> {
             EventsNative nativeTS = new EventsNative(eventList);
             nOnQuoteEventListener(eventList.size(), nativeTS.byteData(), nativeTS.doubleData(), nativeTS.pEventTypes,
                     userCallback);
             nativeTS.clear();
             nativeTS = null;
-        });
+        };
     }
 
     private static PropertyChangeListener newStateChangeEventListener(long userCallback) {

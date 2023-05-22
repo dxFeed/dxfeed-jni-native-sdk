@@ -36,6 +36,7 @@ set(SOURCE_FILES
     src/utils/NativeEventReader.cpp
     src/utils/vm/JavaVmInstance.cpp
     src/utils/java/JavaLangSystem.cpp
+    src/utils/java/JavaLangClass.cpp
     ${CRITICAL_SECTION_IMPL}
 )
 

@@ -5,8 +5,8 @@
 #include <iostream>
 
 #include "javah/com_dxfeed_api_JniTest.h"
-#include "dxfeed/DxEventListener.hpp"
-#include "dxfeed/DxStateChangeListener.hpp"
+#include "dxfeed/listeners/DxEventListener.hpp"
+#include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
 
 #ifdef __cplusplus

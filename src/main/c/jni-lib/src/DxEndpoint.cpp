@@ -2,7 +2,7 @@
 
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/DxStateChangeListener.hpp"
+#include "dxfeed/listeners/DxStateChangeListener.hpp"
 
 namespace dxfeed {
   DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) {

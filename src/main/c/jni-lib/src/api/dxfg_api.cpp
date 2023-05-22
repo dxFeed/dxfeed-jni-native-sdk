@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <memory>
+#include <iostream>
 
 #include "api/dxfg_api.h"
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
-#include "dxfeed/DxEventListener.hpp"
-#include "dxfeed/DxStateChangeListener.hpp"
+#include "dxfeed/listeners/DxEventListener.hpp"
+#include "dxfeed/listeners/DxStateChangeListener.hpp"
+#include "dxfeed/utils/JNICommon.hpp"
 
 dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread) {
   return reinterpret_cast <dxfg_endpoint_builder_t*>(new dxfeed::DxEndpointBuilder(thread));
@@ -98,6 +99,12 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
   return reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(stateChangeListener);
 }
 
+int32_t dxfg_PropertyChangeListener_release(graal_isolatethread_t*, dxfg_endpoint_state_change_listener_t* listener) {
+  auto* pListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(listener);
+  delete pListener;
+  return JNI_OK;
+}
+
 int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
                                                dxfg_endpoint_state_change_listener_t* listener)
 {
@@ -143,10 +150,10 @@ int32_t dxfg_DXFeedSubscription_close(graal_isolatethread_t* thread, dxfg_subscr
   return JNI_OK;
 }
 
-dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t*,
+dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t* thread,
                                                          dxfg_feed_event_listener_function user_func, void* user_data)
 {
-  return reinterpret_cast<dxfg_feed_event_listener_t*>(new dxfeed::DxEventListener(user_func, user_data));
+  return reinterpret_cast<dxfg_feed_event_listener_t*>(new dxfeed::DxEventListener(thread, user_func, user_data));
 }
 
 int32_t dxfg_DXFeedEventListener_release(graal_isolatethread_t*, dxfg_feed_event_listener_t* listener) {
@@ -159,7 +166,8 @@ int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread,
                                                  dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener)
 {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
-  pDxSubscription->addListener(thread, listener);
+  auto* pDxEventListener =  reinterpret_cast<dxfeed::DxEventListener*>(listener);
+  pDxSubscription->addListener(thread, pDxEventListener);
   return JNI_OK;
 }
 
@@ -197,7 +205,26 @@ int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_su
   return JNI_OK;
 }
 
-int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler*) {
+int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler* object) {
+  std::cout << "dxfg_JavaObjectHandler_release" << std::endl;
+  if (object) {
+    std::cout << "\tdeleteGlobalRef for object: " << std::hex << object << std::endl;
+    jobject pObject = object->dxfg_java_object_handle;
+    std::cout << "\tdxfg_java_object_handle: " << std::hex << pObject << std::endl;
+    const auto& name = dxfeed::jni::internal::javaLangClass->getName(thread, pObject);
+    if (!name.empty()) {
+      std::cout << "\t" << name << std::endl;
+      if (name.find(dxfeed::DxEndpoint::JAVA_CLASS_NAME) != std::string::npos) {
+        dxfg_DXEndpoint_release(thread, (dxfg_endpoint_t*) object);
+      } else if (name.find(dxfeed::DxSubscription::JAVA_CLASS_NAME) != std::string::npos) {
+        dxfg_DXSubscription_release(thread, (dxfg_subscription_t*) object);
+      } else if (name.find("com.dxfeed.api.JniTest$$Lambda$") != std::string::npos) {
+        // todo: two types of listeners: both are lambdas: DxStateChangeListener and DxEventListener
+        dxfg_PropertyChangeListener_release(thread, (dxfg_endpoint_state_change_listener_t*) object);
+      }
+      return JNI_OK;
+    }
+  }
   return JNI_OK; // todo: think
 }
 

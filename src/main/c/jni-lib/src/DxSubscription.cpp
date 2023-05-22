@@ -97,12 +97,12 @@ namespace dxfeed {
     dxfeed::jni::internal::jniEnv->DeleteGlobalRef(subscription_);
   }
 
-  void DxSubscription::addListener(JNIEnv* env, dxfg_feed_event_listener_t* listener) const {
-    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
-    jmethodID addEventListenerId = jni::safeGetStaticMethodID(env, pJclass, "addEventListener",
-                                                              "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
-    env->CallStaticVoidMethod(pJclass, addEventListenerId, subscription_, reinterpret_cast<jlong>(listener));
-    env->DeleteLocalRef(pJclass);
+  void DxSubscription::addListener(JNIEnv* env, DxEventListener* listener) const {
+    jclass dxSubscriptionClass = env->GetObjectClass(subscription_);
+    jmethodID addEventListenerId = jni::safeGetMethodID(env, dxSubscriptionClass, "addEventListener",
+                                                              "(Lcom/dxfeed/api/DXFeedEventListener;)V");
+    env->CallVoidMethod(subscription_, addEventListenerId, listener->getJavaHandle());
+    env->DeleteLocalRef(dxSubscriptionClass);
   }
 
   void DxSubscription::addSymbol(JNIEnv* env, const std::string& symbol) const {

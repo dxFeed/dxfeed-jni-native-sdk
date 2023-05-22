@@ -8,9 +8,12 @@
 
 namespace dxfeed {
   struct DxEventListener {
-    DxEventListener(dxfg_feed_event_listener_function userFunc, void* userData);
+    DxEventListener(JNIEnv* env, dxfg_feed_event_listener_function userFunc, void* userData);
+    ~DxEventListener();
+    jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, dxfg_event_type_list* events);
   private:
+    jobject eventListener_ = nullptr;
     dxfg_feed_event_listener_function userFunc_ = nullptr;
     void* userData_ = nullptr;
   };

@@ -68,11 +68,12 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   std::chrono::seconds minutes(2); // time to sleep 24 hours
   std::this_thread::sleep_for(minutes);
   dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
-  dxfg_DXEndpoint_close(thread, endpoint);
-  dxfg_DXSubscription_release(thread, subscriptionTimeAndSale);
-  dxfg_DXFeedEventListener_release(thread, listener);
   dxfg_DXEndpoint_removeStateChangeListener(thread, endpoint, stateListener);
-  dxfg_DXEndpoint_release(thread, endpoint);
+  dxfg_DXEndpoint_close(thread, endpoint);
+  dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
+  dxfg_JavaObjectHandler_release(thread, &listener->handler);
+  dxfg_JavaObjectHandler_release(thread, &subscriptionTimeAndSale->handler);
+  dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
   printf("C: dxEndpointSubscription END\n");
 }
 
