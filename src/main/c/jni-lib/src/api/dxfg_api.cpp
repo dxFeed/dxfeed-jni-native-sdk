@@ -214,19 +214,21 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
     const auto& name = dxfeed::jni::internal::javaLangClass->getName(thread, pObject);
     if (!name.empty()) {
       std::cout << "\t" << name << std::endl;
-      if (name.find(dxfeed::DxEndpoint::JAVA_CLASS_NAME) != std::string::npos) {
+      if (name == dxfeed::DxEndpoint::JAVA_CLASS_NAME) {
         dxfg_DXEndpoint_release(thread, (dxfg_endpoint_t*) object);
-      } else if (name.find(dxfeed::DxSubscription::JAVA_CLASS_NAME) != std::string::npos) {
+      } else if (name == dxfeed::DxSubscription::JAVA_CLASS_NAME) {
         dxfg_DXSubscription_release(thread, (dxfg_subscription_t*) object);
-      } else if (name.find(dxfeed::DxStateChangeListener::JAVA_CLASS_NAME) != std::string::npos) {
+      } else if (name == dxfeed::DxStateChangeListener::JAVA_CLASS_NAME) {
         // todo: sync with Konstantin about DxStateChangeListener lifetime
 //        dxfg_PropertyChangeListener_release(thread, (dxfg_endpoint_state_change_listener_t*) object);
-      } else if (name.find(dxfeed::DxEventListener::JAVA_CLASS_NAME) != std::string::npos) {
+        std::cerr << "\t LEAKED: " << std::hex << pObject << std::endl;
+      } else if (name == dxfeed::DxEventListener::JAVA_CLASS_NAME) {
         dxfg_DXFeedEventListener_release(thread, (dxfg_feed_event_listener_t*) object);
       } else {
         std::cerr << "\t LEAKED: " << std::hex << pObject << std::endl;
       }
-      return JNI_OK;
+    } else {
+      std::cerr << "\t LEAKED: " << std::hex << pObject << std::endl;
     }
   }
   return JNI_OK; // todo: think
