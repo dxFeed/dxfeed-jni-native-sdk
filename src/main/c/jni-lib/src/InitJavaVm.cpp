@@ -40,30 +40,20 @@ namespace dxfeed::jni::internal {
   }
 
   void dumpJavaInfo() {
-    auto vendor = javaLangSystem->getProperty(jniEnv, "java.vendor");
-    auto version = javaLangSystem->getProperty(jniEnv, "java.version");
-    auto versionDate = javaLangSystem->getProperty(jniEnv, "java.version.date");
-    auto runtimeName = javaLangSystem->getProperty(jniEnv, "java.runtime.name");
-    auto runtimeVersion = javaLangSystem->getProperty(jniEnv, "java.runtime.version");
-    auto vmName = javaLangSystem->getProperty(jniEnv, "java.vm.name");
-    auto vmVendor = javaLangSystem->getProperty(jniEnv, "java.vm.vendor");
-    auto vmVersion = javaLangSystem->getProperty(jniEnv, "java.vm.version");
-    auto vmInfo = javaLangSystem->getProperty(jniEnv, "java.vm.info");
+    auto vendor = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vendor"));
+    auto version = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.version"));
+    auto versionDate = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.version.date"));
+    auto runtimeName = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.runtime.name"));
+    auto runtimeVersion = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.runtime.version"));
+    auto vmName = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.name"));
+    auto vmVendor = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.vendor"));
+    auto vmVersion = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.version"));
+    auto vmInfo = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.info"));
 
     std::cout << "JAVA_HOME info:" << std::endl;
-    std::cout << "\t" << vendor << " version \"" << version << "\" " << versionDate << std::endl;
-    std::cout << "\t" << runtimeName << " (build " << runtimeVersion << ")" << std::endl;
-    std::cout << "\t" << vmName << " " << vmVendor << " (build" << vmVersion << ", " << vmInfo << ")" << std::endl;
-
-    delete[] vmInfo;
-    delete[] vmVersion;
-    delete[] vmVendor;
-    delete[] vmName;
-    delete[] runtimeVersion;
-    delete[] runtimeName;
-    delete[] versionDate;
-    delete[] version;
-    delete[] vendor;
+    std::cout << "\t" << *vendor << " version \"" << *version << "\" " << *versionDate << std::endl;
+    std::cout << "\t" << *runtimeName << " (build " << *runtimeVersion << ")" << std::endl;
+    std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
   }
 
   void loadJNILibrary() {
