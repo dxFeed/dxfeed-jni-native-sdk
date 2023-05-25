@@ -46,6 +46,11 @@ public class ChunkedByteBuffer {
         data[pos++] = (byte) (value >> 8);
     }
 
+    public void writeChar(char value) {
+        data[pos++] = (byte) value;
+        data[pos++] = (byte) (value >> 8);
+    }
+
     public void writeInt(int value) {
         data[pos++] = (byte) value;
         data[pos++] = (byte) (value >> 8);

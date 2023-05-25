@@ -49,7 +49,7 @@ namespace dxfeed::jni {
     std::vector<dxfg_event_type_t*> events(size);
     for (int i = 0 ; i < size; ++i) {
       auto eventType = static_cast<dxfg_event_clazz_t>(readByte(&pEventTypes));
-      switch(eventType) {
+      switch (eventType) {
         case DXFG_EVENT_TIME_AND_SALE:
           events[i] = reinterpret_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
           break;
@@ -58,18 +58,19 @@ namespace dxfeed::jni {
     return events;
   }
 
-  dxfg_time_and_sale_t*  NativeEventReader::toTimeAndSale(char* pByteData, double* pDoubleData) {
+  dxfg_time_and_sale_t* NativeEventReader::toTimeAndSale(char* pByteData, double* pDoubleData) {
     auto* quote = new dxfg_time_and_sale_t();
     quote->market_event.event_type.clazz = DXFG_EVENT_TIME_AND_SALE;
     int16_t strSize = readInt16_t(&pByteData);
     quote->market_event.event_symbol = pByteData;
     pByteData += strSize;
     quote->market_event.event_time = readLong(&pByteData);
-    quote->index = readLong(&pByteData);
     quote->event_flags = readInt(&pByteData);
+    quote->index = readLong(&pByteData);
     quote->time_nano_part = readInt(&pByteData);
-    quote->exchange_code = readByte(&pByteData); // todo: check type
-    quote->size = readLong(&pByteData); // todo: check type
+    quote->exchange_code = readInt16_t(&pByteData);
+    quote->size = static_cast<double>(readLong(&pByteData));
+    quote->flags = readInt(&pByteData);
 
     strSize = readInt16_t(&pByteData);
     quote->exchange_sale_conditions = strSize ? pByteData : "";

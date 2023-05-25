@@ -15,19 +15,19 @@ public class EventsNative {
     private ChunkedDoubleBuffer pDoubles;
     public byte[] pEventTypes;
 
-    EventsNative(List<EventType<?>> quoteList) {
-        int quoteCount = quoteList.size();
-        pBytes = new ChunkedByteBuffer(quoteCount);
-        pDoubles = new ChunkedDoubleBuffer(quoteCount);
-        pEventTypes = new byte[quoteCount];
-        for (int i = 0; i < quoteCount; ++i) {
-            EventType<?> quote = quoteList.get(i);
-            if (quote instanceof TimeAndSale) {
+    EventsNative(List<EventType<?>> eventList) {
+        int eventCount = eventList.size();
+        pBytes = new ChunkedByteBuffer(eventCount);
+        pDoubles = new ChunkedDoubleBuffer(eventCount);
+        pEventTypes = new byte[eventCount];
+        for (int i = 0; i < eventCount; ++i) {
+            EventType<?> event = eventList.get(i);
+            if (event instanceof TimeAndSale) {
                 pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE.eventOrdinal();
-                TimeAndSalesToNative.convert((TimeAndSale) quote, pBytes, pDoubles, i);
-            } else  if (quote instanceof Quote) {
+                TimeAndSalesToNative.convert((TimeAndSale) event, pBytes, pDoubles, i);
+            } else if (event instanceof Quote) {
                 pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_QUOTE.eventOrdinal();
-                QuoteToNative.convert((Quote) quote, pBytes, pDoubles, i);
+                QuoteToNative.convert((Quote) event, pBytes, pDoubles, i);
             }
         }
     }
