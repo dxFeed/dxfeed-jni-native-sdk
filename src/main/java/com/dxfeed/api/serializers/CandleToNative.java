@@ -12,7 +12,7 @@ public class CandleToNative {
      *     const char *event_symbol;
      *     int64_t event_time;
      * } dxfg_market_event_t;
-     *
+     * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
      * typedef struct dxfg_candle_t {
      *     dxfg_market_event_t market_event;
      *     int32_t event_flags;

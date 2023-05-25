@@ -12,7 +12,7 @@ public class TimeAndSalesToNative {
      *     const char *event_symbol;
      *     int64_t event_time;
      * } dxfg_market_event_t;
-     *
+     * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L340
      * typedef struct dxfg_time_and_sale_t {
      *     dxfg_market_event_t market_event;
      *     int32_t event_flags;

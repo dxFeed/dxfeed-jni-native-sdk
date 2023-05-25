@@ -12,7 +12,7 @@ public class QuoteToNative {
      *     const char *event_symbol;
      *     int64_t event_time;
      * } dxfg_market_event_t;
-     *
+     * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L140
      * typedef struct dxfg_quote_t {
      *     dxfg_market_event_t market_event;
      *     int32_t time_millis_sequence;
