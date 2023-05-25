@@ -2,9 +2,11 @@ package com.dxfeed.api;
 
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.serializers.CandleToNative;
 import com.dxfeed.api.serializers.QuoteToNative;
 import com.dxfeed.api.serializers.TimeAndSalesToNative;
 import com.dxfeed.event.EventType;
+import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.market.Quote;
 import com.dxfeed.event.market.TimeAndSale;
 
@@ -28,6 +30,9 @@ public class EventsNative {
             } else if (event instanceof Quote) {
                 pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_QUOTE.eventOrdinal();
                 QuoteToNative.convert((Quote) event, pBytes, pDoubles, i);
+            } else if (event instanceof Candle) {
+                pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CANDLE.eventOrdinal();
+                CandleToNative.convert((Candle) event, pBytes, pDoubles, i);
             }
         }
     }

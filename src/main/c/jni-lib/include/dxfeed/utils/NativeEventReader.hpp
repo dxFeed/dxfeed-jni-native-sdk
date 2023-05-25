@@ -12,6 +12,7 @@ namespace dxfeed::jni {
   private:
     static dxfg_time_and_sale_t* toTimeAndSale(char* pByteData, double* pDoubleData);
     static dxfg_quote_t* toQuote(char* pByteData, double* pDoubleData);
+    static dxfg_candle_t* toCandle(char* pByteData, double* pDoubleData);
   };
 }
 

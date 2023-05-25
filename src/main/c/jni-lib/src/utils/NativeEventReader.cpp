@@ -56,6 +56,9 @@ namespace dxfeed::jni {
         case DXFG_EVENT_QUOTE:
           events[i] = reinterpret_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
           break;
+        case DXFG_EVENT_CANDLE:
+          events[i] = reinterpret_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+          break;
       }
     }
     return events;
@@ -111,6 +114,30 @@ namespace dxfeed::jni {
 
     quote->bid_price = readDouble(&pDoubleData);
     quote->ask_price = readDouble(&pDoubleData);
+    return quote;
+  }
+
+  dxfg_candle_t* NativeEventReader::toCandle(char* pByteData, double* pDoubleData) {
+    auto* quote = new dxfg_candle_t();
+    quote->event_type.clazz = DXFG_EVENT_CANDLE;
+    int16_t strSize = readInt16_t(&pByteData);
+    quote->event_symbol = pByteData;
+    pByteData += strSize;
+    quote->event_time = readLong(&pByteData);
+    quote->event_flags = readInt(&pByteData);
+    quote->index = readLong(&pByteData);
+    quote->count = readLong(&pByteData);
+    quote->volume = static_cast<double>(readLong(&pByteData));
+    quote->bid_volume = static_cast<double>(readLong(&pByteData));
+    quote->ask_volume = static_cast<double>(readLong(&pByteData));
+    quote->open_interest = static_cast<double>(readLong(&pByteData));
+
+    quote->open = readDouble(&pDoubleData);
+    quote->high = readDouble(&pDoubleData);
+    quote->low = readDouble(&pDoubleData);
+    quote->close = readDouble(&pDoubleData);
+    quote->vwap = readDouble(&pDoubleData);
+    quote->imp_volatility = readDouble(&pDoubleData);
     return quote;
   }
 }
