@@ -97,6 +97,26 @@ typedef struct dxfg_quote_t {
 } dxfg_quote_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html">Javadoc</a>
+ */
+typedef struct dxfg_candle_t {
+  dxfg_market_event_t market_event;
+  int32_t event_flags;
+  int64_t index;
+  int64_t count;
+  double open;
+  double high;
+  double low;
+  double close;
+  double volume;
+  double vwap;
+  double bid_volume;
+  double ask_volume;
+  double imp_volatility;
+  double open_interest;
+} dxfg_candle_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html">Javadoc</a>
  */
 typedef struct dxfg_time_and_sale_t {
