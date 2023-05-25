@@ -80,6 +80,23 @@ typedef struct dxfg_market_event_t {
 } dxfg_market_event_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Quote.html">Javadoc</a>
+ */
+typedef struct dxfg_quote_t {
+  dxfg_market_event_t market_event;
+  int32_t time_millis_sequence;
+  int32_t time_nano_part;
+  int64_t bid_time;
+  int16_t bid_exchange_code;
+  double bid_price;
+  double bid_size;
+  int64_t ask_time;
+  int16_t ask_exchange_code;
+  double ask_price;
+  double ask_size;
+} dxfg_quote_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html">Javadoc</a>
  */
 typedef struct dxfg_time_and_sale_t {

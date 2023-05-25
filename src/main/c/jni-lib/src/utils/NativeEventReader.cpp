@@ -53,6 +53,9 @@ namespace dxfeed::jni {
         case DXFG_EVENT_TIME_AND_SALE:
           events[i] = reinterpret_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
           break;
+        case DXFG_EVENT_QUOTE:
+          events[i] = reinterpret_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
+          break;
       }
     }
     return events;
@@ -85,6 +88,27 @@ namespace dxfeed::jni {
     pByteData += strSize;
 
     quote->price = readDouble(&pDoubleData);
+    quote->bid_price = readDouble(&pDoubleData);
+    quote->ask_price = readDouble(&pDoubleData);
+    return quote;
+  }
+
+  dxfg_quote_t* NativeEventReader::toQuote(char* pByteData, double* pDoubleData) {
+    auto* quote = new dxfg_quote_t();
+    quote->market_event.event_type.clazz = DXFG_EVENT_QUOTE;
+    int16_t strSize = readInt16_t(&pByteData);
+    quote->market_event.event_symbol = pByteData;
+    pByteData += strSize;
+    quote->market_event.event_time = readLong(&pByteData);
+    quote->time_millis_sequence = readInt(&pByteData);
+    quote->time_nano_part = readInt(&pByteData);
+    quote->bid_time = readLong(&pByteData);
+    quote->bid_exchange_code = readInt16_t(&pByteData);
+    quote->bid_size = static_cast<double>(readLong(&pByteData));
+    quote->ask_time = readLong(&pByteData);
+    quote->ask_exchange_code = readInt16_t(&pByteData);
+    quote->ask_size = static_cast<double>(readLong(&pByteData));
+
     quote->bid_price = readDouble(&pDoubleData);
     quote->ask_price = readDouble(&pDoubleData);
     return quote;

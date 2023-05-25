@@ -11,6 +11,7 @@ namespace dxfeed::jni {
     static std::vector<dxfg_event_type_t*> toEvents(int size, char* pByteData, double* pDoubleData, char* pEventTypes);
   private:
     static dxfg_time_and_sale_t* toTimeAndSale(char* pByteData, double* pDoubleData);
+    static dxfg_quote_t* toQuote(char* pByteData, double* pDoubleData);
   };
 }
 
