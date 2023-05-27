@@ -4,6 +4,7 @@
 #define DXFEED_JNI_NATIVE_SDK_DXSTATECHANGELISTENER_H_
 
 #include <jni.h>
+
 #include "api/dxfg_endpoint.h"
 
 namespace dxfeed {

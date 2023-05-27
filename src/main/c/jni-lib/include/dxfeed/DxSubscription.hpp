@@ -5,12 +5,12 @@
 
 #include <jni.h>
 #include <string>
-#include <vector>
 
-#include "api/dxfg_subscription.h"
-#include "dxfeed/listeners/DxEventListener.hpp"
+#include "api/dxfg_events.h"
 
 namespace dxfeed {
+  struct DxEventListener;
+
   struct DxSubscription final {
     constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.DXFeedSubscription";
 

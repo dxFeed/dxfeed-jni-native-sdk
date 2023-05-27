@@ -9,8 +9,6 @@
 #include <pthread.h>
 #endif
 
-
-// todo: cross-platform;
 namespace dxfeed::jni::internal {
   struct CriticalSection {
     explicit CriticalSection();

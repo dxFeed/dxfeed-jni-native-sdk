@@ -21,17 +21,17 @@ typedef enum dxfg_symbol_type_t {
 } dxfg_symbol_type_t;
 
 typedef struct dxfg_symbol_t {
-    dxfg_symbol_type_t type;
+  dxfg_symbol_type_t type;
 } dxfg_symbol_t;
 
 typedef struct dxfg_string_symbol_t {
-    dxfg_symbol_t supper;
-    const char *symbol;
+  dxfg_symbol_t supper;
+  const char* symbol;
 } dxfg_string_symbol_t;
 
 typedef struct dxfg_symbol_list {
-    int32_t size;
-    dxfg_symbol_t **elements;
+  int32_t size;
+  dxfg_symbol_t** elements;
 } dxfg_symbol_list;
 
 /**
@@ -67,16 +67,16 @@ typedef enum dxfg_event_clazz_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/EventType.html">Javadoc</a>
  */
 typedef struct dxfg_event_type_t {
-    dxfg_event_clazz_t clazz;
+  dxfg_event_clazz_t clazz;
 } dxfg_event_type_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/MarketEvent.html">Javadoc</a>
  */
 typedef struct dxfg_market_event_t {
-    dxfg_event_type_t event_type;
-    const char *event_symbol;
-    int64_t event_time;
+  dxfg_event_type_t event_type;
+  const char* event_symbol;
+  int64_t event_time;
 } dxfg_market_event_t;
 
 /**
@@ -124,39 +124,45 @@ typedef struct dxfg_candle_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html">Javadoc</a>
  */
 typedef struct dxfg_time_and_sale_t {
-    dxfg_market_event_t market_event;
-    int32_t event_flags;
-    int64_t index;
-    int32_t time_nano_part;
-    int16_t exchange_code;
-    double price;
-    double size;
-    double bid_price;
-    double ask_price;
-    const char *exchange_sale_conditions;
-    int32_t flags;
-    const char *buyer;
-    const char *seller;
+  dxfg_market_event_t market_event;
+  int32_t event_flags;
+  int64_t index;
+  int32_t time_nano_part;
+  int16_t exchange_code;
+  double price;
+  double size;
+  double bid_price;
+  double ask_price;
+  const char* exchange_sale_conditions;
+  int32_t flags;
+  const char* buyer;
+  const char* seller;
 } dxfg_time_and_sale_t;
 
 
 typedef struct dxfg_event_type_list {
-    int32_t size;
-    dxfg_event_type_t const* const* elements;
+  int32_t size;
+  dxfg_event_type_t const* const* elements;
 } dxfg_event_type_list;
 
 typedef struct dxfg_event_clazz_list_t {
-    int32_t size;
-    dxfg_event_clazz_t **elements;
+  int32_t size;
+  dxfg_event_clazz_t** elements;
 } dxfg_event_clazz_list_t;
 
-dxfg_symbol_t*              dxfg_Symbol_new(graal_isolatethread_t *thread, const char *symbol, dxfg_symbol_type_t symbolType);
-int32_t                     dxfg_Symbol_release(graal_isolatethread_t *thread, dxfg_symbol_t* symbol);
-dxfg_event_type_t*          dxfg_EventType_new(graal_isolatethread_t *thread, const char *symbolName, dxfg_event_clazz_t clazz);
-int32_t                     dxfg_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
-int32_t                     dxfg_CList_EventType_release(graal_isolatethread_t *thread, dxfg_event_type_list* eventTypes);// free the memory occupied by the с data structure (list and all events)
-int32_t                     dxfg_CList_EventClazz_release(graal_isolatethread_t *thread, dxfg_event_clazz_list_t* eventClazzes);// free the memory occupied by the с data structure (list and all int-pointer)
-int32_t                     dxfg_CList_symbol_release(graal_isolatethread_t *thread, dxfg_symbol_list*);// free the memory occupied by the с data structure (list and all int-pointer)
+dxfg_symbol_t*      dxfg_Symbol_new(graal_isolatethread_t* thread, const char* symbol, dxfg_symbol_type_t symbolType);
+int32_t             dxfg_Symbol_release(graal_isolatethread_t* thread, dxfg_symbol_t* symbol);
+dxfg_event_type_t*  dxfg_EventType_new(graal_isolatethread_t* thread, const char* symbolName, dxfg_event_clazz_t clazz);
+int32_t             dxfg_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
+
+// free the memory occupied by the с data structure (list and all events)
+int32_t             dxfg_CList_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_list* eventTypes);
+
+// free the memory occupied by the с data structure (list and all int-pointer)
+int32_t             dxfg_CList_EventClazz_release(graal_isolatethread_t* thread, dxfg_event_clazz_list_t* eventClazzes);
+
+// free the memory occupied by the с data structure (list and all int-pointer)
+int32_t             dxfg_CList_symbol_release(graal_isolatethread_t* thread, dxfg_symbol_list*);
 
 #ifdef __cplusplus
 }

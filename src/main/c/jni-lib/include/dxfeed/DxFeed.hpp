@@ -3,10 +3,13 @@
 #ifndef DXFEED_JNI_NATIVE_SDK_DXFEED_H_
 #define DXFEED_JNI_NATIVE_SDK_DXFEED_H_
 
-#include "DxSubscription.hpp"
+#include <jni.h>
+
 #include "api/dxfg_events.h"
 
 namespace dxfeed {
+  struct DxSubscription;
+
   struct DxFeed {
     DxFeed(JNIEnv* env, jobject obj);
     ~DxFeed();
@@ -22,6 +25,5 @@ namespace dxfeed {
     jobject dxFeed_ = nullptr;
   };
 }
-
 
 #endif //DXFEED_JNI_NATIVE_SDK_DXFEED_H_

@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "dxfeed/DxSubscription.hpp"
+#include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {

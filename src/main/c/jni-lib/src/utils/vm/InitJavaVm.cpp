@@ -3,27 +3,28 @@
 #include <jni.h>
 #include <string>
 #include <iostream>
-
-#include "dxfeed/utils/InitJavaVm.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
-
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
+#include "dxfeed/utils/JNIUtils.hpp"
+
 namespace dxfeed::jni::internal {
+  extern char dllFilePath[];
+  const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
+
+  void loadJVMLibrary(const char*);
+
   JNIEnv* jniEnv = nullptr;
   JVMInstance* javaVM = nullptr;
   const JavaLangSystem* javaLangSystem = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
 
-  std::string buildClassPath(const fs::path& runtimePath) {
-    fs::path jarPath = runtimePath.string() + PATH_SEPARATOR + MY_JAR;
-    if (!exists(jarPath)) {
-      throw std::runtime_error("Can't find java libs in " + jarPath.string());
-    }
-    std::cout << "DxFeed JAR path: " << jarPath << std::endl;
-    return "-Djava.class.path=" + jarPath.string();
+  namespace nativeMethods {
+    static JNINativeMethod methods[] = {
+      {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},
+      {"nOnStateChangeListener", "(IIJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnStateChangeListener},
+    };
   }
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
@@ -56,6 +57,13 @@ namespace dxfeed::jni::internal {
     std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
   }
 
+  void registerNativeMethods(JNIEnv* env, jclass clazz) {
+    jint methodCount = sizeof(nativeMethods::methods) / sizeof(nativeMethods::methods[0]);
+    jint res = env->RegisterNatives(clazz, nativeMethods::methods, methodCount);
+    auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
+    std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
+  }
+
   void loadJNILibrary() {
     javaLangClass = new JavaLangClass(jniEnv);
     javaLangSystem = new JavaLangSystem(jniEnv);
@@ -65,8 +73,17 @@ namespace dxfeed::jni::internal {
 
     jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
     std::cout << "\tclazz com/dxfeed/api/JniTest: " << clazz << std::endl;
-    jni::registerNativeMethods(jniEnv, clazz);
+    registerNativeMethods(jniEnv, clazz);
     jniEnv->DeleteLocalRef(clazz);
+  }
+
+  std::string buildClassPath(const fs::path& runtimePath) {
+    fs::path jarPath = runtimePath / MY_JAR;
+    if (!exists(jarPath)) {
+      throw std::runtime_error("Can't find java libs in " + jarPath.string());
+    }
+    std::cout << "DxFeed JAR path: " << jarPath << std::endl;
+    return "-Djava.class.path=" + jarPath.string();
   }
 
   void initJavaVM(VMOptions* params) {

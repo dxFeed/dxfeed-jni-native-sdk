@@ -7,13 +7,13 @@
 #include <cstdint>
 
 #include "api/dxfg_endpoint.h"
-#include "api/dxfg_events.h"
-#include "DxSubscription.hpp"
-#include "DxFeed.hpp"
-#include "DxEndpoint.hpp"
 
 namespace dxfeed {
+  struct DxEndpoint;
+
   struct DxEndpointBuilder final {
+    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl";
+
     explicit DxEndpointBuilder(JNIEnv* env);
     ~DxEndpointBuilder();
 
