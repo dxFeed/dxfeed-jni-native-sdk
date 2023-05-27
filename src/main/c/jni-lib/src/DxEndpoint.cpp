@@ -6,6 +6,7 @@
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 
 namespace dxfeed {
+
   DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) {
     dxEndpointClass_ = env->GetObjectClass(dxEndpoint);
     dxEndpoint_ = env->NewGlobalRef(dxEndpoint);
@@ -54,5 +55,19 @@ namespace dxfeed {
     jmethodID addStateChangeListenerId = jni::safeGetMethodID(env, dxEndpointClass_, "removeStateChangeListener",
                                                               "(Ljava/beans/PropertyChangeListener;)V");
     env->CallObjectMethod(dxEndpoint_, addStateChangeListenerId, listener->getJavaHandle());
+  }
+
+  DxEndpoint* DxEndpoint::getInstance(JNIEnv* env) {
+    jclass dxEndpointClass = jni::safeFindClass(env, JNI_CLASS_NAME);
+    jmethodID getInstanceId = jni::safeGetStaticMethodID(env, dxEndpointClass, "getInstance",
+                                                         "()Lcom/dxfeed/api/DXEndpoint;");
+    jobject dxEndpoint = env->CallStaticObjectMethod(dxEndpointClass, getInstanceId);
+    DxEndpoint* result = nullptr;
+    if (dxEndpoint) {
+      result = new DxEndpoint(env, dxEndpoint);
+      env->DeleteLocalRef(dxEndpoint);
+    }
+    env->DeleteLocalRef(dxEndpointClass);
+    return result;
   }
 }

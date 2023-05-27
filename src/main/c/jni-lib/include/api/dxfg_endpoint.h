@@ -21,6 +21,8 @@ extern "C" {
  * @brief Forward declarations.
  */
 typedef struct dxfg_feed_t dxfg_feed_t;
+typedef struct dxfg_publisher_t dxfg_publisher_t;
+typedef struct dxfg_event_clazz_list_t dxfg_event_clazz_list_t;
 
 /**
  * @brief The DXEndpoint.
@@ -69,6 +71,7 @@ typedef enum dxfg_endpoint_state_t {
   DXFG_ENDPOINT_STATE_CONNECTED,
   DXFG_ENDPOINT_STATE_CLOSED,
 } dxfg_endpoint_state_t;
+
 /**
  * @brief Function pointer to the endpoint state change listener.
  * @param[in] thread The pointer to a run-time data structure for the thread.
@@ -76,13 +79,13 @@ typedef enum dxfg_endpoint_state_t {
  * @param[in] new_state The new endpoint state.
  * @param[in,out] user_data The pointer to user data.
  */
-typedef void (* dxfg_endpoint_state_change_listener_func)(graal_isolatethread_t* thread,
-                                                          dxfg_endpoint_state_t old_state,
-                                                          dxfg_endpoint_state_t new_state, void* user_data);
+typedef void (*dxfg_endpoint_state_change_listener_func)(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
+                                                         dxfg_endpoint_state_t new_state, void *user_data);
 
 /** @defgroup Builder
  *  @{
  */
+
 dxfg_endpoint_builder_t*  dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread);
 int32_t                   dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread,
                                                            dxfg_endpoint_builder_t* builder, dxfg_endpoint_role_t role);
@@ -97,22 +100,42 @@ int32_t                   dxfg_DXEndpoint_Builder_withProperties(graal_isolateth
 int32_t                   dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread,
                                                                    dxfg_endpoint_builder_t* builder, const char* key);
 dxfg_endpoint_t*          dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder);
+
+/** @} */ // end of Builder
+
+dxfg_endpoint_t*          dxfg_DXEndpoint_getInstance(graal_isolatethread_t* thread);
+dxfg_endpoint_t*          dxfg_DXEndpoint_getInstance2(graal_isolatethread_t *thread, dxfg_endpoint_role_t role);
+dxfg_endpoint_t*          dxfg_DXEndpoint_create(graal_isolatethread_t* thread);
+dxfg_endpoint_t*          dxfg_DXEndpoint_create2(graal_isolatethread_t *thread, dxfg_endpoint_role_t role);
+int32_t                   dxfg_DXEndpoint_release(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+int32_t                   dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+int32_t                   dxfg_DXEndpoint_closeAndAwaitTermination(graal_isolatethread_t *thread,
+                                                                   dxfg_endpoint_t *endpoint);
+dxfg_endpoint_role_t      dxfg_DXEndpoint_getRole(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+dxfg_endpoint_state_t     dxfg_DXEndpoint_getState(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+dxfg_feed_t*              dxfg_DXEndpoint_getFeed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+dxfg_publisher_t*         dxfg_DXEndpoint_getPublisher(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+dxfg_event_clazz_list_t*  dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+
+int32_t                   dxfg_DXEndpoint_user(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                               const char *user);
+int32_t                   dxfg_DXEndpoint_password(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+                                                   const char *password);
+int32_t                   dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint,
+                                                  const char* address);
+int32_t                   dxfg_DXEndpoint_reconnect(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+int32_t                   dxfg_DXEndpoint_disconnect(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+int32_t                   dxfg_DXEndpoint_disconnectAndClear(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+dxfg_feed_t*              dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+int32_t                   dxfg_DXEndpoint_awaitProcessed(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint);
+int32_t                   dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+
 int32_t                   dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t* thread,
                                                                  dxfg_endpoint_t* endpoint,
                                                                  dxfg_endpoint_state_change_listener_t* listener);
 int32_t                   dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t* thread,
-                                                                    dxfg_endpoint_t* endpoint,
-                                                                    dxfg_endpoint_state_change_listener_t* listener);
-
-/** @} */ // end of Builder
-
-dxfg_endpoint_t*  dxfg_DXEndpoint_getInstance(graal_isolatethread_t* thread);
-dxfg_endpoint_t*  dxfg_DXEndpoint_create(graal_isolatethread_t* thread);
-int32_t           dxfg_DXEndpoint_release(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
-int32_t           dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
-int32_t           dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* address);
-dxfg_feed_t*      dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
-int32_t           dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+                                                                dxfg_endpoint_t* endpoint,
+                                                                dxfg_endpoint_state_change_listener_t* listener);
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
                                                                        dxfg_endpoint_state_change_listener_func userFunc,
@@ -124,4 +147,4 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
 }
 #endif
 
-#endif // DXFEED_JNI_NATIVE_API_ENDPOINT_H_
+#endif // DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_

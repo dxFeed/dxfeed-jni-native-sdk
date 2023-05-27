@@ -6,6 +6,10 @@
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
 
+/** @defgroup Builder
+ *  @{
+ */
+
 dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread) {
   return reinterpret_cast <dxfg_endpoint_builder_t*>(new dxfeed::DxEndpointBuilder(thread));
 }
@@ -48,12 +52,18 @@ int32_t dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread, 
   return JNI_OK;
 }
 
-dxfg_endpoint_t* dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder) {
+dxfg_endpoint_t* dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder)
+{
   auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(builder);
   return reinterpret_cast <dxfg_endpoint_t*>(pDxEndpointBuilder->build(thread));
 }
 
-// todo: move to another CPP
+/** @} */ // end of Builder
+
+dxfg_endpoint_t* dxfg_DXEndpoint_getInstance(graal_isolatethread_t* thread) {
+  return reinterpret_cast<dxfg_endpoint_t*>(dxfeed::DxEndpoint::getInstance(thread));
+}
+
 dxfg_endpoint_t* dxfg_DXEndpoint_create(graal_isolatethread_t* thread) {
   auto pBuilder = std::make_unique<dxfeed::DxEndpointBuilder>(thread);
   dxfeed::DxEndpoint* pEndpoint = pBuilder->build(thread);
@@ -88,7 +98,7 @@ int32_t dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_en
   return JNI_OK;
 }
 
-int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
+int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint,
                                                dxfg_endpoint_state_change_listener_t* listener)
 {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
@@ -97,8 +107,8 @@ int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dx
   return JNI_OK;
 }
 
-int32_t dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                                  dxfg_endpoint_state_change_listener_t *listener)
+int32_t dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint,
+                                                  dxfg_endpoint_state_change_listener_t* listener)
 {
   auto* pDxEndpoint = reinterpret_cast<dxfeed::DxEndpoint*>(endpoint);
   auto* stateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(listener);
