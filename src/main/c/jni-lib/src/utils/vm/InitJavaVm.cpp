@@ -10,11 +10,6 @@ namespace fs = std::filesystem;
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni::internal {
-#if _MSC_VER && !__INTEL_COMPILER
-  const char PATH_SEPARATOR = '\\';
-#else
-  constexpr char PATH_SEPARATOR = '/';
-#endif
   extern char dllFilePath[];
   const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
 
@@ -83,7 +78,7 @@ namespace dxfeed::jni::internal {
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {
-    fs::path jarPath = runtimePath.string() + PATH_SEPARATOR + MY_JAR;
+    fs::path jarPath = runtimePath / MY_JAR;
     if (!exists(jarPath)) {
       throw std::runtime_error("Can't find java libs in " + jarPath.string());
     }
