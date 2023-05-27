@@ -21,25 +21,26 @@ typedef struct dxfg_java_object_handler {
 } dxfg_java_object_handler;
 
 typedef struct dxfg_list {
-    int32_t size;
-    void **elements;
+  int32_t size;
+  void** elements;
 } dxfg_list;
 
 typedef struct dxfg_java_object_handler_list {
-    int32_t size;
-    dxfg_java_object_handler **elements;
+  int32_t size;
+  dxfg_java_object_handler** elements;
 } dxfg_java_object_handler_list;
 
 
-typedef void (*dxfg_finalize_function)(graal_isolatethread_t *thread, void *user_data);
+typedef void (* dxfg_finalize_function)(graal_isolatethread_t* thread, void* user_data);
 
-int32_t dxfg_Object_finalize(graal_isolatethread_t *thread, dxfg_java_object_handler* handler, dxfg_finalize_function finalize, void *user_data);
+int32_t dxfg_Object_finalize(graal_isolatethread_t* thread, dxfg_java_object_handler* handler,
+                             dxfg_finalize_function finalize, void* user_data);
 
 // free the memory occupied by the с data structure and release the reference to the java object
-int dxfg_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler*);
+int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler*);
 
 // free the memory occupied by the с data structure (list and all elements) and release the reference to the java object for all elements
-int dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t *thread, dxfg_java_object_handler_list*);
+int dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler_list*);
 
 /** @} */ // end of Javac
 

@@ -76,41 +76,43 @@ typedef enum dxfg_endpoint_state_t {
  * @param[in] new_state The new endpoint state.
  * @param[in,out] user_data The pointer to user data.
  */
-typedef void (*dxfg_endpoint_state_change_listener_func)(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
-                                                         dxfg_endpoint_state_t new_state, void *user_data);
+typedef void (* dxfg_endpoint_state_change_listener_func)(graal_isolatethread_t* thread,
+                                                          dxfg_endpoint_state_t old_state,
+                                                          dxfg_endpoint_state_t new_state, void* user_data);
 
 /** @defgroup Builder
  *  @{
  */
-dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread);
-int32_t dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                         dxfg_endpoint_role_t role);
-int32_t dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                         const char* name);
-int32_t dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                             const char* key, const char* value);
-int32_t dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                               const char* filePath);
-int32_t dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
-                                                 const char* key);
-dxfg_endpoint_t* dxfg_DXEndpoint_Builder_build(graal_isolatethread_t *thread, dxfg_endpoint_builder_t *builder);
-int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                               dxfg_endpoint_state_change_listener_t *listener);
-int32_t dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint,
-                                                  dxfg_endpoint_state_change_listener_t *listener);
+dxfg_endpoint_builder_t*  dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread);
+int32_t                   dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread,
+                                                           dxfg_endpoint_builder_t* builder, dxfg_endpoint_role_t role);
+int32_t                   dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t* thread,
+                                                           dxfg_endpoint_builder_t* builder, const char* name);
+int32_t                   dxfg_DXEndpoint_Builder_withProperty(graal_isolatethread_t* thread,
+                                                               dxfg_endpoint_builder_t* builder, const char* key,
+                                                               const char* value);
+int32_t                   dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread,
+                                                                 dxfg_endpoint_builder_t* builder,
+                                                                 const char* filePath);
+int32_t                   dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread,
+                                                                   dxfg_endpoint_builder_t* builder, const char* key);
+dxfg_endpoint_t*          dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder);
+int32_t                   dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t* thread,
+                                                                 dxfg_endpoint_t* endpoint,
+                                                                 dxfg_endpoint_state_change_listener_t* listener);
+int32_t                   dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t* thread,
+                                                                    dxfg_endpoint_t* endpoint,
+                                                                    dxfg_endpoint_state_change_listener_t* listener);
 
 /** @} */ // end of Builder
 
-dxfg_endpoint_t*                dxfg_DXEndpoint_getInstance(graal_isolatethread_t* thread);
-dxfg_endpoint_t*                dxfg_DXEndpoint_create(graal_isolatethread_t* thread);
-int32_t                         dxfg_DXEndpoint_release(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
-int32_t                         dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
-int32_t                         dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint,
-                                                        const char* address);
-dxfg_feed_t*                    dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
-
-int32_t                         dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread,
-                                                                  dxfg_endpoint_t* endpoint);
+dxfg_endpoint_t*  dxfg_DXEndpoint_getInstance(graal_isolatethread_t* thread);
+dxfg_endpoint_t*  dxfg_DXEndpoint_create(graal_isolatethread_t* thread);
+int32_t           dxfg_DXEndpoint_release(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+int32_t           dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+int32_t           dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* address);
+dxfg_feed_t*      dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+int32_t           dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
                                                                        dxfg_endpoint_state_change_listener_func userFunc,

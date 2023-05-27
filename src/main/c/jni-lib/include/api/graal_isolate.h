@@ -4,6 +4,7 @@
 #define __GRAAL_ISOLATE_H
 
 #include <jni.h>
+
 /*
  * Structure representing a thread that is attached to an isolate. A pointer to
  * such a structure can be passed to an entry point as the execution context,
@@ -20,11 +21,11 @@ extern "C" {
 int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t** isolate,
                          graal_isolatethread_t** thread);
 
-graal_isolatethread_t *graal_get_current_thread(graal_isolate_t* isolate);
+graal_isolatethread_t* graal_get_current_thread(graal_isolate_t* isolate);
 
 int graal_attach_thread(graal_isolate_t* isolate, graal_isolatethread_t** env);
 
-int graal_detach_thread(graal_isolatethread_t *);
+int graal_detach_thread(graal_isolatethread_t*);
 
 #if defined(__cplusplus)
 }
