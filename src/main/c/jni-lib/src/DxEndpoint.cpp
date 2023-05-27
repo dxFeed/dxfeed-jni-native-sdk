@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/DxEndpoint.hpp"
+#include "dxfeed/DxFeed.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 

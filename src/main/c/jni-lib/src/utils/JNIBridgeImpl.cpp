@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <jni.h>
-#include <vector>
 #include <iostream>
 
 #include "javah/com_dxfeed_api_JniTest.h"

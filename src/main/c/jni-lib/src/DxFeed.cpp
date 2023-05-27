@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/DxFeed.hpp"
+#include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
 
 namespace dxfeed {

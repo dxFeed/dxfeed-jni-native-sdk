@@ -6,12 +6,10 @@
 #include <jni.h>
 #include <cstdint>
 
-#include "api/dxfg_endpoint.h"
-#include "DxSubscription.hpp"
-#include "DxFeed.hpp"
-#include "dxfeed/listeners/DxStateChangeListener.hpp"
-
 namespace dxfeed {
+  struct DxFeed;
+  struct DxStateChangeListener;
+
   struct DxEndpoint final {
     constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.impl.DXEndpointImpl";
 

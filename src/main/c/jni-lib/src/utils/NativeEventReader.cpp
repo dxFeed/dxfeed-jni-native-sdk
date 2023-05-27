@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 
-#include <vector>
 #include "dxfeed/utils/NativeEventReader.hpp"
 
 namespace dxfeed::jni {

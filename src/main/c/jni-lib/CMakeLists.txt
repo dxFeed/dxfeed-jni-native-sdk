@@ -14,29 +14,32 @@ message("-- Linking native_lib")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionWindows.cpp)
-else()
+else ()
   set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionMacOS.cpp)
-endif()
+endif ()
 
 set(SOURCE_FILES
-    dllmain.cpp
-    JNIBridgeImpl.cpp
-    src/api/dxfg_api.cpp
-    src/api/graal_isolate.cpp
-    src/api/dxfg_system.cpp
+    src/dllmain.cpp
     src/DxEndpoint.cpp
     src/DxEndpointBuilder.cpp
-    src/listeners/DxEventListener.cpp
-    src/listeners/DxStateChangeListener.cpp
     src/DxFeed.cpp
     src/DxSubscription.cpp
-    src/InitJavaVm.cpp
-    src/LoadJvmLib.cpp
+    src/api/dxfg_api.cpp
+    src/api/dxfg_dxfeed.cpp
+    src/api/dxfg_endpoint.cpp
+    src/api/dxfg_subscription.cpp
+    src/api/dxfg_system.cpp
+    src/api/graal_isolate.cpp
+    src/listeners/DxEventListener.cpp
+    src/listeners/DxStateChangeListener.cpp
+    src/utils/JNIBridgeImpl.cpp
     src/utils/JNIUtils.cpp
+    src/utils/LoadJvmLib.cpp
     src/utils/NativeEventReader.cpp
-    src/utils/vm/JavaVmInstance.cpp
-    src/utils/java/JavaLangSystem.cpp
     src/utils/java/JavaLangClass.cpp
+    src/utils/java/JavaLangSystem.cpp
+    src/utils/vm/InitJavaVm.cpp
+    src/utils/vm/JavaVmInstance.cpp
     ${CRITICAL_SECTION_IMPL}
 )
 
@@ -53,35 +56,35 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
   target_compile_options(${PROJECT_NAME} PRIVATE
-          -std=c++17
-          -stdlib=libc++
-          -Wall
-          -Wextra
-          -Wno-unused-parameter
-          -O3
-          )
+      -std=c++17
+      -stdlib=libc++
+      -Wall
+      -Wextra
+      -Wno-unused-parameter
+      -O3
+  )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_definitions(${PROJECT_NAME} PRIVATE
-          _WIN32_WINDOWS
-          _WINSOCK_DEPRECATED_NO_WARNINGS
-          )
+      _WIN32_WINDOWS
+      _WINSOCK_DEPRECATED_NO_WARNINGS
+  )
   target_compile_options(${PROJECT_NAME} PRIVATE
-          /std:c++17
-          /W3
-          /bigobj
-          /EHsc
-          "$<$<CONFIG:Release>:/Ox>"
-          "$<$<CONFIG:Release>:/Ob2>"
-          "$<$<CONFIG:Release>:/Ot>"
-          "$<$<CONFIG:Release>:/Oi>"
-          "$<$<CONFIG:Release>:/Oy->"
-          )
+      /std:c++17
+      /W3
+      /bigobj
+      /EHsc
+      "$<$<CONFIG:Release>:/Ox>"
+      "$<$<CONFIG:Release>:/Ob2>"
+      "$<$<CONFIG:Release>:/Ot>"
+      "$<$<CONFIG:Release>:/Oi>"
+      "$<$<CONFIG:Release>:/Oy->"
+  )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   target_compile_options(${PROJECT_NAME} PRIVATE
-          -std=c++17
-          -Wall
-          -Wextra
-          -Wno-unused-parameter
-          -O3
-          )
-endif()
+      -std=c++17
+      -Wall
+      -Wextra
+      -Wno-unused-parameter
+      -O3
+  )
+endif ()

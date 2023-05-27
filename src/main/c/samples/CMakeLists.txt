@@ -26,7 +26,7 @@ elseif (APPLE)
 elseif (UNIX)
   message("UNIX")
   set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.so)
-endif()
+endif ()
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -93,4 +93,4 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
       -Wno-unused-parameter
       -O3
       )
-endif()
+endif ()

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <iostream>
-#include "dxfeed/utils/JNIUtils.hpp"
+
+#include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
   DxEndpointBuilder::DxEndpointBuilder(JNIEnv* env) {

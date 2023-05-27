@@ -4,6 +4,7 @@
 #define DXFEED_JNI_NATIVE_SDK_BASE_H_
 
 #include <jni.h>
+
 #include "dxfeed/utils/vm/JavaVmInstance.hpp"
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/java/JavaLangClass.hpp"
@@ -16,6 +17,9 @@ namespace dxfeed::jni {
     const char** vmArgs;
     int vmArgsCount;
   };
+
+  constexpr char JAVA_HOME[] = "JAVA_HOME";
+  const char* getJavaHome(VMOptions* params);
 
   namespace internal {
     extern JNIEnv* jniEnv;
