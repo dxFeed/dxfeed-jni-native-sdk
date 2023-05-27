@@ -118,11 +118,11 @@ namespace dxfeed::jni {
 
   dxfg_candle_t* NativeEventReader::toCandle(char* pByteData, double* pDoubleData) {
     auto* quote = new dxfg_candle_t();
-    quote->market_event.event_type.clazz = DXFG_EVENT_CANDLE;
+    quote->event_type.clazz = DXFG_EVENT_CANDLE;
     int16_t strSize = readInt16_t(&pByteData);
-    quote->market_event.event_symbol = pByteData;
-    pByteData += strSize;
-    quote->market_event.event_time = readLong(&pByteData);
+//    quote->event_type.event_symbol = pByteData;
+//    pByteData += strSize;
+//    quote->event_type.event_time = readLong(&pByteData);
     quote->event_flags = readInt(&pByteData);
     quote->index = readLong(&pByteData);
     quote->count = readLong(&pByteData);

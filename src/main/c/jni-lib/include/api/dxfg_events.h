@@ -100,7 +100,9 @@ typedef struct dxfg_quote_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html">Javadoc</a>
  */
 typedef struct dxfg_candle_t {
-  dxfg_market_event_t market_event;
+  dxfg_event_type_t event_type;
+  //    dxfg_time_series_event_t time_series_event;
+  //    dxfg_lasting_event_t lasting_event;
   int32_t event_flags;
   int64_t index;
   int64_t count;

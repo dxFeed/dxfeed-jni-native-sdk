@@ -3,7 +3,6 @@ package com.dxfeed.api.serializers;
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
 import com.dxfeed.event.candle.Candle;
-import com.dxfeed.event.candle.CandleSymbol;
 
 public class CandleToNative {
     /**
@@ -14,7 +13,9 @@ public class CandleToNative {
      * } dxfg_market_event_t;
      * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
      * typedef struct dxfg_candle_t {
-     *     dxfg_market_event_t market_event;
+     *     dxfg_event_type_t event_type;
+     *     //  dxfg_time_series_event_t time_series_event;
+     *     //  dxfg_lasting_event_t lasting_event;
      *     int32_t event_flags;
      *     int64_t index;
      *     int64_t count;
@@ -30,10 +31,12 @@ public class CandleToNative {
      *     double open_interest;
      * } dxfg_candle_t;
      */
+
+    // todo: sync about CandleSymbol
     public static void convert(Candle event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-        CandleSymbol candleSymbol = event.getEventSymbol();
-        String eventSymbol = candleSymbol.toString();
-        int eventSymbolLength = eventSymbol.length();
+//        CandleSymbol candleSymbol = event.getEventSymbol();
+//        String eventSymbol = candleSymbol.toString();
+//        int eventSymbolLength = eventSymbol.length();
         long eventTime = event.getEventTime();          // 8
         int eventFlags = event.getEventFlags();         // 4
         long index = event.getIndex();                  // 8
@@ -43,10 +46,10 @@ public class CandleToNative {
         long askVolume = event.getAskVolume();          // 8
         long openInterest = event.getOpenInterest();    // 8
 
-        int totalSize = (2 + eventSymbolLength) + (8) + (4) + (8) + (8) + (8) + (8) + (8) + (8);
+        int totalSize = /* (2 + eventSymbolLength) */ + (8) + (4) + (8) + (8) + (8) + (8) + (8) + (8);
 
         pBytes.addChunk(chunkIdx, totalSize);
-        pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
+//        pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
         pBytes.writeLong(eventTime);            // 8
         pBytes.writeInt(eventFlags);            // 4
         pBytes.writeLong(index);                // 8
