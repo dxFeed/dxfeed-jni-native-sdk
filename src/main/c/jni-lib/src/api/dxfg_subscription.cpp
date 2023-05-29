@@ -24,6 +24,15 @@ int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread,
   return JNI_OK;
 }
 
+int32_t dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t* thread,
+                                                 dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener)
+{
+  auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
+  auto* pDxEventListener =  reinterpret_cast<dxfeed::DxEventListener*>(listener);
+  pDxSubscription->removeListener(thread, pDxEventListener);
+  return JNI_OK;
+}
+
 int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
                                           dxfg_symbol_t* symbol)
 {

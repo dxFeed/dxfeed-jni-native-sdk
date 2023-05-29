@@ -4,31 +4,16 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
-  DxStateChangeListener::DxStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_func userFunc,
-                                               void* userData)
+  DxStateChangeListener::DxStateChangeListener(jlong listenerId): javaListenerId_(listenerId) {}
+
+  DxStateChangeListener* DxStateChangeListener::create(JNIEnv* env, dxfg_endpoint_state_change_listener_func callback,
+                                                       void* userData)
   {
-    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
+    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
     jmethodID newStateChangeListenerId = jni::safeGetStaticMethodID(env, pJclass, "newStateChangeEventListener",
-                                                                    "(J)Ljava/beans/PropertyChangeListener;");
-    stateChangeListener_ = env->NewGlobalRef(
-      env->CallStaticObjectMethod(pJclass, newStateChangeListenerId, reinterpret_cast<jlong>(this))
-    );
+                                                                    "(JJ)J");
+    jlong result = env->CallStaticLongMethod(pJclass, newStateChangeListenerId, callback, userData);
     env->DeleteLocalRef(pJclass);
-    userFunc_ = userFunc;
-    userData_ = userData;
-  }
-
-  DxStateChangeListener::~DxStateChangeListener() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(stateChangeListener_);
-  }
-
-  jobject DxStateChangeListener::getJavaHandle() const {
-    return stateChangeListener_;
-  }
-
-  void DxStateChangeListener::callUserFunc(graal_isolatethread_t* thread, int32_t oldStateEnum, int32_t newStateEnum) {
-    auto oldState = static_cast<dxfg_endpoint_state_t>(oldStateEnum);
-    auto newState = static_cast<dxfg_endpoint_state_t>(newStateEnum);
-    userFunc_(thread, oldState, newState, userData_);
+    return new DxStateChangeListener(result);
   }
 }

@@ -3,7 +3,7 @@
 #include <jni.h>
 #include <iostream>
 
-#include "javah/com_dxfeed_api_JniTest.h"
+#include "javah/com_dxfeed_api_DxFeedJni.h"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
@@ -32,19 +32,23 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_JniTest_nOnStateChangeListener(JNIEnv* env, jclass,
-                                                               jint oldStateValue, jint newStateValue,
-                                                               jlong userCallback)
+void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnStateChangeListener(JNIEnv* env, jclass,
+                                                                                  jint oldStateValue,
+                                                                                  jint newStateValue,
+                                                                                  jlong jUserCallback, jlong jUserData)
 {
-  auto pListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(userCallback);
-  pListener->callUserFunc(env, oldStateValue, newStateValue);
+  auto userCallback = reinterpret_cast<dxfg_endpoint_state_change_listener_func>(jUserCallback);
+  auto userData = reinterpret_cast<void*>(jUserData);
+  auto oldState = static_cast<dxfg_endpoint_state_t>(oldStateValue);
+  auto newState = static_cast<dxfg_endpoint_state_t>(newStateValue);
+  userCallback(env, oldState, newState, userData);
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass, jint size,
+void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnEventListener(JNIEnv* env, jclass, jint size,
                                                                jbyteArray jBytes, jdoubleArray jDoubles,
                                                                jbyteArray jEventTypes,
-                                                               jlong userCallback)
+                                                               jlong jUserCallback, jlong jUserData)
 {
   auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
@@ -56,20 +60,21 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
   env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
   env->ReleasePrimitiveArrayCritical(jEventTypes, pEventTypes, 0);
 
-  auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
+  auto pListener = reinterpret_cast<dxfg_feed_event_listener_function>(jUserCallback);
+  auto userData = reinterpret_cast<void*>(jUserData);
   dxfg_event_type_list list = { size, events.data() };
-  pListener->callUserFunc(nullptr, &list); // todo: discuss thread == nullptr?
+  pListener(nullptr, &list, userData); // todo: discuss thread == nullptr?
   for (const auto& event : events) {
     delete event;
   }
 }
 
 JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
+void JNICALL JavaCritical_com_dxfeed_api_DxFeedJni_nOnEventListener(jint size,
                                                                        jint byteLen, jbyte* jBytes,
                                                                        jint doubleLen, jdouble* jDoubles,
                                                                        jint eventTypesLen, jbyte* jEventTypes,
-                                                                       jlong userCallback)
+                                                                       jlong jUserCallback, jlong jUserData)
 {
   auto pByteData = (char*) jBytes;
   auto pDoubleData = (double*) jDoubles;
@@ -77,9 +82,10 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
 
   const auto& events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
 
-  auto pListener = reinterpret_cast<dxfeed::DxEventListener*>(userCallback);
+  auto pListener = reinterpret_cast<dxfg_feed_event_listener_function>(jUserCallback);
+  auto userData = reinterpret_cast<void*>(jUserData);
   dxfg_event_type_list list = { size, events.data() };
-  pListener->callUserFunc(nullptr, &list); // todo: discuss thread == nullptr?
+  pListener(nullptr, &list, userData); // todo: discuss thread == nullptr?
 
   for (const auto& event : events) {
     delete[] event;

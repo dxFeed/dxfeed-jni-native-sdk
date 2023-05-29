@@ -8,6 +8,7 @@
 namespace fs = std::filesystem;
 
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "javah/com_dxfeed_api_DxFeedJni.h"
 
 namespace dxfeed::jni::internal {
   extern char dllFilePath[];
@@ -21,10 +22,19 @@ namespace dxfeed::jni::internal {
   const JavaLangClass* javaLangClass = nullptr;
 
   namespace nativeMethods {
-    static JNINativeMethod methods[] = {
-      {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},
-      {"nOnStateChangeListener", "(IIJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnStateChangeListener},
+    static JNINativeMethod nativeMethods[] = {
+        {"nOnStateChangeListener", "(IIJJ)V", (void*) &Java_com_dxfeed_api_DxFeedJni_nOnStateChangeListener},
+        {"nOnEventListener", "(I[B[D[BJJ)V", (void*) &Java_com_dxfeed_api_DxFeedJni_nOnEventListener}
     };
+
+    void registerNativeMethods(JNIEnv* env) {
+      jclass dxFeedJniClazz = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
+      std::cout << "\tclazz com/dxfeed/api/DxFeedJni: " << dxFeedJniClazz << std::endl;
+      jint res = env->RegisterNatives(dxFeedJniClazz, nativeMethods, sizeof(nativeMethods) / sizeof(nativeMethods[0]));
+      env->DeleteLocalRef(dxFeedJniClazz);
+      auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
+      std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
+    }
   }
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
@@ -40,16 +50,16 @@ namespace dxfeed::jni::internal {
     }
   }
 
-  void dumpJavaInfo() {
-    auto vendor = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vendor"));
-    auto version = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.version"));
-    auto versionDate = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.version.date"));
-    auto runtimeName = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.runtime.name"));
-    auto runtimeVersion = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.runtime.version"));
-    auto vmName = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.name"));
-    auto vmVendor = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.vendor"));
-    auto vmVersion = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.version"));
-    auto vmInfo = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.info"));
+  void dumpJavaInfo(JNIEnv* env) {
+    auto vendor = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vendor"));
+    auto version = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.version"));
+    auto versionDate = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.version.date"));
+    auto runtimeName = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.runtime.name"));
+    auto runtimeVersion = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.runtime.version"));
+    auto vmName = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.name"));
+    auto vmVendor = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.vendor"));
+    auto vmVersion = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.version"));
+    auto vmInfo = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.info"));
 
     std::cout << "JAVA_HOME info:" << std::endl;
     std::cout << "\t" << *vendor << " version \"" << *version << "\" " << *versionDate << std::endl;
@@ -57,24 +67,13 @@ namespace dxfeed::jni::internal {
     std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
   }
 
-  void registerNativeMethods(JNIEnv* env, jclass clazz) {
-    jint methodCount = sizeof(nativeMethods::methods) / sizeof(nativeMethods::methods[0]);
-    jint res = env->RegisterNatives(clazz, nativeMethods::methods, methodCount);
-    auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
-    std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
-  }
-
-  void loadJNILibrary() {
-    javaLangClass = new JavaLangClass(jniEnv);
-    javaLangSystem = new JavaLangSystem(jniEnv);
-    javaLangSystem->load(jniEnv, dllFilePath);
+  void loadJNILibrary(JNIEnv* env) {
+    javaLangClass = new JavaLangClass(env);
+    javaLangSystem = new JavaLangSystem(env);
+    javaLangSystem->load(env, dllFilePath);
     std::cout << "Loaded DxFeed lib: " << dllFilePath << std::endl;
-    dumpJavaInfo();
-
-    jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
-    std::cout << "\tclazz com/dxfeed/api/JniTest: " << clazz << std::endl;
-    registerNativeMethods(jniEnv, clazz);
-    jniEnv->DeleteLocalRef(clazz);
+    dumpJavaInfo(env);
+    nativeMethods::registerNativeMethods(env);
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {
@@ -115,6 +114,6 @@ namespace dxfeed::jni::internal {
     }
     javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
 
-    loadJNILibrary();
+    loadJNILibrary(jniEnv);
   }
 }
