@@ -7,9 +7,9 @@ namespace dxfeed {
   DxStateChangeListener::DxStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_func userFunc,
                                                void* userData)
   {
-    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
+    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JNIPropertyChangeListener;");
     jmethodID newStateChangeListenerId = jni::safeGetStaticMethodID(env, pJclass, "newStateChangeEventListener",
-                                                                    "(J)Ljava/beans/PropertyChangeListener;");
+                                                                    "(J)Lcom/dxfeed/api/JNIPropertyChangeListener;");
     stateChangeListener_ = env->NewGlobalRef(
       env->CallStaticObjectMethod(pJclass, newStateChangeListenerId, reinterpret_cast<jlong>(this))
     );
@@ -30,5 +30,10 @@ namespace dxfeed {
     auto oldState = static_cast<dxfg_endpoint_state_t>(oldStateEnum);
     auto newState = static_cast<dxfg_endpoint_state_t>(newStateEnum);
     userFunc_(thread, oldState, newState, userData_);
+  }
+
+  void DxStateChangeListener::clear() {
+    userFunc_ = nullptr;
+    userData_ = nullptr;
   }
 }

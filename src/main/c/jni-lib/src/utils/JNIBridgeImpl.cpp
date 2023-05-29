@@ -3,7 +3,8 @@
 #include <jni.h>
 #include <iostream>
 
-#include "javah/com_dxfeed_api_JniTest.h"
+#include "javah/com_dxfeed_api_JNIDXFeedEventListener.h"
+#include "javah/com_dxfeed_api_JNIPropertyChangeListener.h"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
@@ -32,16 +33,17 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_JniTest_nOnStateChangeListener(JNIEnv* env, jclass,
-                                                               jint oldStateValue, jint newStateValue,
-                                                               jlong userCallback)
+void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListener(JNIEnv* env, jclass,
+                                                                                  jint oldStateValue,
+                                                                                  jint newStateValue,
+                                                                                  jlong jListener)
 {
-  auto pListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(userCallback);
-  pListener->callUserFunc(env, oldStateValue, newStateValue);
+  auto stateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(jListener);
+  stateChangeListener->callUserFunc(env, oldStateValue, newStateValue);
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jclass, jint size,
+void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener(JNIEnv* env, jclass, jint size,
                                                                jbyteArray jBytes, jdoubleArray jDoubles,
                                                                jbyteArray jEventTypes,
                                                                jlong userCallback)
@@ -65,7 +67,7 @@ void JNICALL Java_com_dxfeed_api_JniTest_nOnQuoteEventListener(JNIEnv* env, jcla
 }
 
 JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size,
+void JNICALL JavaCritical_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener(jint size,
                                                                        jint byteLen, jbyte* jBytes,
                                                                        jint doubleLen, jdouble* jDoubles,
                                                                        jint eventTypesLen, jbyte* jEventTypes,
@@ -84,6 +86,20 @@ void JNICALL JavaCritical_com_dxfeed_api_JniTest_nOnQuoteEventListener(jint size
   for (const auto& event : events) {
     delete[] event;
   }
+}
+
+JNIEXPORT
+void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nClose(JNIEnv*, jclass, jlong jListener) {
+  std::cout << "Java_com_dxfeed_api_JNIDXFeedEventListener_nClose" << std::endl;
+  auto eventListener = reinterpret_cast<dxfeed::DxEventListener*>(jListener);
+  eventListener->clear(); // todo: support releasing before
+}
+
+JNIEXPORT
+void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nClose(JNIEnv *, jclass, jlong jListener) {
+  std::cout << "Java_com_dxfeed_api_JNIPropertyChangeListener_nClose" << std::endl;
+  auto stateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(jListener);
+  stateChangeListener->clear();
 }
 
 #ifdef __cplusplus

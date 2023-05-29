@@ -5,9 +5,9 @@
 
 namespace dxfeed {
   DxEventListener::DxEventListener(JNIEnv* env, dxfg_feed_event_listener_function userFunc, void* userData) {
-    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JniTest;");
+    jclass pJclass = jni::safeFindClass(env, "Lcom/dxfeed/api/JNIDXFeedEventListener;");
     jmethodID newEventListenerId = jni::safeGetStaticMethodID(env, pJclass, "newEventListener",
-                                                                    "(J)Lcom/dxfeed/api/DXFeedEventListener;");
+                                                              "(J)Lcom/dxfeed/api/JNIDXFeedEventListener;");
     eventListener_ = env->NewGlobalRef(
         env->CallStaticObjectMethod(pJclass, newEventListenerId, reinterpret_cast<jlong>(this))
     );
@@ -26,5 +26,10 @@ namespace dxfeed {
 
   void DxEventListener::callUserFunc(graal_isolatethread_t* thread, dxfg_event_type_list* events) {
     userFunc_(thread, events, userData_);
+  }
+
+  void DxEventListener::clear() {
+    userFunc_ = nullptr;
+    userData_ = nullptr;
   }
 }

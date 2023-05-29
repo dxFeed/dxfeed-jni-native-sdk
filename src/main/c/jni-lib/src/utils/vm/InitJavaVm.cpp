@@ -8,6 +8,8 @@
 namespace fs = std::filesystem;
 
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "javah/com_dxfeed_api_JNIDXFeedEventListener.h"
+#include "javah/com_dxfeed_api_JNIPropertyChangeListener.h"
 
 namespace dxfeed::jni::internal {
   extern char dllFilePath[];
@@ -21,10 +23,23 @@ namespace dxfeed::jni::internal {
   const JavaLangClass* javaLangClass = nullptr;
 
   namespace nativeMethods {
-    static JNINativeMethod methods[] = {
-      {"nOnQuoteEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnQuoteEventListener},
-      {"nOnStateChangeListener", "(IIJ)V", (void*) &Java_com_dxfeed_api_JniTest_nOnStateChangeListener},
+    static JNINativeMethod dxFeedEventListenerMethods[] = {
+        {"nOnEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener},
+        {"nClose",                "(J)V", (void*) &Java_com_dxfeed_api_JNIDXFeedEventListener_nClose},
     };
+
+    int32_t dxFeedEventListenerMethodsMethodsCount() {
+      return sizeof(dxFeedEventListenerMethods) / sizeof(dxFeedEventListenerMethods[0]);
+    }
+
+    static JNINativeMethod propertyStateChangeListenerMethods[] = {
+        {"nOnStateChangeListener", "(IIJ)V", (void*) &Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListener},
+        {"nClose",                 "(J)V",   (void*) &Java_com_dxfeed_api_JNIPropertyChangeListener_nClose},
+    };
+
+    int32_t propertyStateChangeListenerMethodsCount() {
+      return sizeof(propertyStateChangeListenerMethods) / sizeof(propertyStateChangeListenerMethods[0]);
+    }
   }
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
@@ -57,9 +72,8 @@ namespace dxfeed::jni::internal {
     std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
   }
 
-  void registerNativeMethods(JNIEnv* env, jclass clazz) {
-    jint methodCount = sizeof(nativeMethods::methods) / sizeof(nativeMethods::methods[0]);
-    jint res = env->RegisterNatives(clazz, nativeMethods::methods, methodCount);
+  void registerNativeMethods(JNIEnv* env, jclass clazz, JNINativeMethod* methods, int methodCount) {
+    jint res = env->RegisterNatives(clazz, methods, methodCount);
     auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
     std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
   }
@@ -71,10 +85,19 @@ namespace dxfeed::jni::internal {
     std::cout << "Loaded DxFeed lib: " << dllFilePath << std::endl;
     dumpJavaInfo();
 
-    jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
-    std::cout << "\tclazz com/dxfeed/api/JniTest: " << clazz << std::endl;
-    registerNativeMethods(jniEnv, clazz);
-    jniEnv->DeleteLocalRef(clazz);
+    jclass dxFeedEventListenerClazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JNIDXFeedEventListener;");
+    std::cout << "\tclazz com/dxfeed/api/JNIDXFeedEventListener: " << dxFeedEventListenerClazz << std::endl;
+    registerNativeMethods(jniEnv, dxFeedEventListenerClazz,
+                          nativeMethods::dxFeedEventListenerMethods,
+                          nativeMethods::dxFeedEventListenerMethodsMethodsCount());
+    jniEnv->DeleteLocalRef(dxFeedEventListenerClazz);
+
+    jclass propertyChangeListenerClazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JNIPropertyChangeListener;");
+    std::cout << "\tclazz com/dxfeed/api/JNIPropertyChangeListener: " << propertyChangeListenerClazz << std::endl;
+    registerNativeMethods(jniEnv, propertyChangeListenerClazz,
+                          nativeMethods::propertyStateChangeListenerMethods,
+                          nativeMethods::propertyStateChangeListenerMethodsCount());
+    jniEnv->DeleteLocalRef(propertyChangeListenerClazz);
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {

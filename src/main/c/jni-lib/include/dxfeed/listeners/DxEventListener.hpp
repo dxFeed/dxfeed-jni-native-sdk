@@ -9,12 +9,13 @@
 
 namespace dxfeed {
   struct DxEventListener {
-    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.JniTest$JNIDXFeedEventListener";
+    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.JNIDXFeedEventListener";
 
     DxEventListener(JNIEnv* env, dxfg_feed_event_listener_function userFunc, void* userData);
     ~DxEventListener();
     jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, dxfg_event_type_list* events);
+    void clear();
   private:
     jobject eventListener_ = nullptr;
     dxfg_feed_event_listener_function userFunc_ = nullptr;

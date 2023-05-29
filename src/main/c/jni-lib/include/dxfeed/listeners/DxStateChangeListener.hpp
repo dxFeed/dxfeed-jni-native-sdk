@@ -9,12 +9,13 @@
 
 namespace dxfeed {
   struct DxStateChangeListener {
-    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.JniTest$JNIPropertyChangeListener";
+    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.JNIPropertyChangeListener";
 
     DxStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_func userFunc, void* userData);
     ~DxStateChangeListener();
     jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, int32_t oldState, int32_t newState);
+    void clear();
   private:
     jobject stateChangeListener_ = nullptr;
     dxfg_endpoint_state_change_listener_func userFunc_ = nullptr;
