@@ -12,6 +12,8 @@ namespace dxfeed {
   struct DxEndpoint;
 
   struct DxEndpointBuilder final {
+    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.impl.DXEndpointImpl$BuilderImpl";
+
     explicit DxEndpointBuilder(JNIEnv* env);
     ~DxEndpointBuilder();
 

@@ -14,6 +14,12 @@ dxfg_endpoint_builder_t* dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* threa
   return reinterpret_cast <dxfg_endpoint_builder_t*>(new dxfeed::DxEndpointBuilder(thread));
 }
 
+int32_t dxfg_DXEndpointBuilder_release(graal_isolatethread_t*, dxfg_endpoint_builder_t* endpointBuilder) {
+  auto pDxEndpointBuilder = reinterpret_cast<dxfeed::DxEndpointBuilder*>(endpointBuilder);
+  delete pDxEndpointBuilder;
+  return JNI_OK;
+}
+
 int32_t dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
                                          dxfg_endpoint_role_t role)
 {

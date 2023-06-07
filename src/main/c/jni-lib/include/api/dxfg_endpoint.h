@@ -87,6 +87,7 @@ typedef void (*dxfg_endpoint_state_change_listener_func)(graal_isolatethread_t *
  */
 
 dxfg_endpoint_builder_t*  dxfg_DXEndpoint_newBuilder(graal_isolatethread_t* thread);
+int32_t dxfg_DXEndpointBuilder_release(graal_isolatethread_t*, dxfg_endpoint_builder_t* endpointBuilder);
 int32_t                   dxfg_DXEndpoint_Builder_withRole(graal_isolatethread_t* thread,
                                                            dxfg_endpoint_builder_t* builder, dxfg_endpoint_role_t role);
 int32_t                   dxfg_DXEndpoint_Builder_withName(graal_isolatethread_t* thread,

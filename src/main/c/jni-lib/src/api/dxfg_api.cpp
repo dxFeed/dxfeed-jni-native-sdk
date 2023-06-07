@@ -6,6 +6,7 @@
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/DxEndpoint.hpp"
+#include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/DxSubscription.hpp"
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
@@ -32,9 +33,11 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
     if (!name.empty()) {
       std::cout << ", name: " << name;
       if (name == dxfeed::DxEndpoint::JAVA_CLASS_NAME) {
-        dxfg_DXEndpoint_release(thread, (dxfg_endpoint_t*) object);
+        dxfg_DXEndpoint_release(thread, reinterpret_cast<dxfg_endpoint_t*>(object));
+      } else if (name == dxfeed::DxEndpointBuilder::JAVA_CLASS_NAME) {
+        dxfg_DXEndpointBuilder_release(thread, reinterpret_cast<dxfg_endpoint_builder_t*>(object));
       } else if (name == dxfeed::DxSubscription::JAVA_CLASS_NAME) {
-        dxfg_DXSubscription_release(thread, (dxfg_subscription_t*) object);
+        dxfg_DXSubscription_release(thread, reinterpret_cast<dxfg_subscription_t*> (object));
       } else if (name == dxfeed::DxStateChangeListener::JAVA_CLASS_NAME) {
         auto* pStateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(object);
         // can be called from java later, so will be deleted here Java_com_dxfeed_api_JNIPropertyChangeListener_nClose
