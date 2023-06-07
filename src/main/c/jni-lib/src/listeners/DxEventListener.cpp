@@ -29,7 +29,17 @@ namespace dxfeed {
     userFunc_(thread, events, userData_);
   }
 
-  void DxEventListener::removeJavaRef() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(eventListener_);
+  void DxEventListener::removeFromJava() {
+    removedFromJava_ = true;
+    if (deletedFromNative_) {
+      this->~DxEventListener();
+    }
+  }
+
+  void DxEventListener::closeFromNative() {
+    deletedFromNative_ = true;
+    if (removedFromJava_) {
+      this->~DxEventListener();
+    }
   }
 }

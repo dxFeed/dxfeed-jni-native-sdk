@@ -40,12 +40,12 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
         dxfg_DXSubscription_release(thread, reinterpret_cast<dxfg_subscription_t*> (object));
       } else if (name == dxfeed::DxStateChangeListener::JAVA_CLASS_NAME) {
         auto* pStateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(object);
-        // can be called from java later, so will be deleted here Java_com_dxfeed_api_JNIPropertyChangeListener_nClose
-        pStateChangeListener->removeJavaRef();
+        // can be called from java later, so will be suicided automatically
+        pStateChangeListener->closeFromNative();
       } else if (name == dxfeed::DxEventListener::JAVA_CLASS_NAME) {
         auto* pEventListener = reinterpret_cast<dxfeed::DxEventListener*>(object);
-        // can be called from java later, so will be deleted here Java_com_dxfeed_api_JNIDXFeedEventListener_nClose
-        pEventListener->removeJavaRef();
+        // can be called from java later, so will be suicided automatically
+        pEventListener->closeFromNative();
       } else {
         std::cerr << ", LEAKED: " << std::hex << pObject;
       }

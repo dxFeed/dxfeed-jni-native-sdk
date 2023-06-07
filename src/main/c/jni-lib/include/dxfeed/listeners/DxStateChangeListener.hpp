@@ -12,14 +12,18 @@ namespace dxfeed {
     constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.JNIPropertyChangeListener";
 
     DxStateChangeListener(JNIEnv* env, dxfg_endpoint_state_change_listener_func userFunc, void* userData);
-    ~DxStateChangeListener();
     jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, int32_t oldState, int32_t newState);
-    void removeJavaRef();
+    void removeFromJava();
+    void closeFromNative();
   private:
+    ~DxStateChangeListener();
+
     jobject stateChangeListener_ = nullptr;
     dxfg_endpoint_state_change_listener_func userFunc_ = nullptr;
     void* userData_ = nullptr;
+    bool removedFromJava_ = false;
+    bool deletedFromNative_ = false;
   };
 }
 
