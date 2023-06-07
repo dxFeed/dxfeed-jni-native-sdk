@@ -23,6 +23,7 @@ set(SOURCE_FILES
     src/DxEndpoint.cpp
     src/DxEndpointBuilder.cpp
     src/DxFeed.cpp
+    src/DxLastingEvent.cpp
     src/DxSubscription.cpp
     src/api/dxfg_api.cpp
     src/api/dxfg_dxfeed.cpp

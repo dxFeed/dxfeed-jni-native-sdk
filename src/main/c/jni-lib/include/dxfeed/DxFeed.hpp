@@ -6,8 +6,10 @@
 #include <jni.h>
 
 #include "api/dxfg_events.h"
+#include "api/dxfg_feed.h"
 
 namespace dxfeed {
+  const char* getEventClassType(dxfg_event_clazz_t eventType);
   struct DxSubscription;
 
   struct DxFeed {
@@ -21,8 +23,17 @@ namespace dxfeed {
 
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
+    void attachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
+    void detachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
+    void detachSubscriptionAndClear(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
+
+    dxfg_event_type_t* getLastEventIfSubscribed(graal_isolatethread_t* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
+    void getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pType);
+    void getLastEvents(graal_isolatethread_t* env, dxfg_event_type_list* pList);
+
   private:
     jobject dxFeed_ = nullptr;
+    jclass dxFeedClass_ = nullptr;
   };
 }
 
