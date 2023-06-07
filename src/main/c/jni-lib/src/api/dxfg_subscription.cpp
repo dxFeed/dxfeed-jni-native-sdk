@@ -34,12 +34,12 @@ int32_t dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t* threa
 }
 
 int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                          dxfg_symbol_t* symbol)
+                                          dxfg_symbol_t* pSymbolType)
 {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
-  switch (symbol->type) {
+  switch (pSymbolType->type) {
     case STRING: {
-      auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(symbol);
+      auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(pSymbolType);
       // todo: investigate, why there no setSymbols method. Inlined?
       //  for now use addSymbol instead of setSymbol
       pDxSubscription->addSymbol(thread, pSymbol->symbol);

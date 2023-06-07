@@ -44,7 +44,7 @@ int32_t               dxfg_DXFeedSubscription_removeEventListener(graal_isolatet
                                                                   dxfg_subscription_t* sub,
                                                                   dxfg_feed_event_listener_t* listener);
 int32_t               dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                        dxfg_symbol_t* symbol);
+                                                        dxfg_symbol_t* pSymbolType);
 int32_t               dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
                                                         dxfg_symbol_t* symbol);
 
