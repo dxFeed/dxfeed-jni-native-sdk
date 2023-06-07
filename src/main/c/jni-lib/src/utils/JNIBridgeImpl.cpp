@@ -92,14 +92,14 @@ JNIEXPORT
 void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nClose(JNIEnv*, jclass, jlong jListener) {
   std::cout << "Java_com_dxfeed_api_JNIDXFeedEventListener_nClose" << std::endl;
   auto eventListener = reinterpret_cast<dxfeed::DxEventListener*>(jListener);
-  eventListener->clear(); // todo: support releasing before
+  delete eventListener;
 }
 
 JNIEXPORT
 void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nClose(JNIEnv *, jclass, jlong jListener) {
   std::cout << "Java_com_dxfeed_api_JNIPropertyChangeListener_nClose" << std::endl;
   auto stateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(jListener);
-  stateChangeListener->clear();
+  delete stateChangeListener;
 }
 
 #ifdef __cplusplus

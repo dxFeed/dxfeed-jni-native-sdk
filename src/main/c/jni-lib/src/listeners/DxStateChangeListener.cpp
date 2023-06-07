@@ -19,7 +19,8 @@ namespace dxfeed {
   }
 
   DxStateChangeListener::~DxStateChangeListener() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(stateChangeListener_);
+    userFunc_ = nullptr;
+    userData_ = nullptr;
   }
 
   jobject DxStateChangeListener::getJavaHandle() const {
@@ -32,8 +33,7 @@ namespace dxfeed {
     userFunc_(thread, oldState, newState, userData_);
   }
 
-  void DxStateChangeListener::clear() {
-    userFunc_ = nullptr;
-    userData_ = nullptr;
+  void DxStateChangeListener::removeJavaRef() {
+    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(stateChangeListener_);
   }
 }

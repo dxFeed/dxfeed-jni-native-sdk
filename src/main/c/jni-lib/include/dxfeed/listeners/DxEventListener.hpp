@@ -15,7 +15,7 @@ namespace dxfeed {
     ~DxEventListener();
     jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, dxfg_event_type_list* events);
-    void clear();
+    void removeJavaRef();
   private:
     jobject eventListener_ = nullptr;
     dxfg_feed_event_listener_function userFunc_ = nullptr;

@@ -17,7 +17,8 @@ namespace dxfeed {
   }
 
   DxEventListener::~DxEventListener() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(eventListener_);
+    userFunc_ = nullptr;
+    userData_ = nullptr;
   }
 
   jobject DxEventListener::getJavaHandle() const {
@@ -28,8 +29,7 @@ namespace dxfeed {
     userFunc_(thread, events, userData_);
   }
 
-  void DxEventListener::clear() {
-    userFunc_ = nullptr;
-    userData_ = nullptr;
+  void DxEventListener::removeJavaRef() {
+    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(eventListener_);
   }
 }

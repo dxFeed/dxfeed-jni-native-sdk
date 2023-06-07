@@ -15,7 +15,7 @@ namespace dxfeed {
     ~DxStateChangeListener();
     jobject getJavaHandle() const;
     void callUserFunc(graal_isolatethread_t* thread, int32_t oldState, int32_t newState);
-    void clear();
+    void removeJavaRef();
   private:
     jobject stateChangeListener_ = nullptr;
     dxfg_endpoint_state_change_listener_func userFunc_ = nullptr;
