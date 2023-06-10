@@ -13,14 +13,15 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
                                                                        dxfg_endpoint_state_change_listener_func userFunc,
                                                                        void* userData)
 {
-  auto stateChangeListener = new dxfeed::DxStateChangeListener(thread, userFunc, userData);
-  return reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(stateChangeListener);
+  auto* pDxStateChangeListener = dxfeed::DxStateChangeListener::create(thread, userFunc, userData);
+  return reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(pDxStateChangeListener);
 }
 
 dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t* thread,
                                                          dxfg_feed_event_listener_function user_func, void* user_data)
 {
-  return reinterpret_cast<dxfg_feed_event_listener_t*>(new dxfeed::DxEventListener(thread, user_func, user_data));
+  auto* pDxEventListener = dxfeed::DxEventListener::create(thread, user_func, user_data);
+  return reinterpret_cast<dxfg_feed_event_listener_t*>(pDxEventListener);
 }
 
 int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler* object) {
@@ -38,20 +39,13 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
         dxfg_DXEndpointBuilder_release(thread, reinterpret_cast<dxfg_endpoint_builder_t*>(object));
       } else if (name == dxfeed::DxSubscription::JAVA_CLASS_NAME) {
         dxfg_DXSubscription_release(thread, reinterpret_cast<dxfg_subscription_t*> (object));
-      } else if (name == dxfeed::DxStateChangeListener::JAVA_CLASS_NAME) {
-        auto* pStateChangeListener = reinterpret_cast<dxfeed::DxStateChangeListener*>(object);
-        // can be called from java later, so will be suicided automatically
-        pStateChangeListener->closeFromNative();
-      } else if (name == dxfeed::DxEventListener::JAVA_CLASS_NAME) {
-        auto* pEventListener = reinterpret_cast<dxfeed::DxEventListener*>(object);
-        // can be called from java later, so will be suicided automatically
-        pEventListener->closeFromNative();
       } else {
         std::cerr << ", LEAKED: " << std::hex << pObject;
       }
       std::cout << std::endl;
     } else {
       std::cerr << ", already released: " << std::hex << pObject << std::endl;
+      delete object;
     }
     thread->DeleteLocalRef(pObject);
   }

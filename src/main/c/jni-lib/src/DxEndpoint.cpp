@@ -48,16 +48,16 @@ namespace dxfeed {
   void DxEndpoint::addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
     jclass jniTestClass = jni::safeFindClass(env, "Lcom/dxfeed/api/JNIPropertyChangeListener;");
     jmethodID methodId = jni::safeGetStaticMethodID(env, jniTestClass, "addStateChangeEventListener",
-                                                    "(Lcom/dxfeed/api/DXEndpoint;Lcom/dxfeed/api/JNIPropertyChangeListener;)V");
-    env->CallStaticVoidMethod(jniTestClass, methodId, dxEndpoint_, listener->getJavaHandle());
+                                                    "(Lcom/dxfeed/api/DXEndpoint;J)V");
+    env->CallStaticVoidMethod(jniTestClass, methodId, dxEndpoint_, listener->javaListenerId_);
     env->DeleteLocalRef(jniTestClass);
   }
 
   void DxEndpoint::removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
     jclass jniTestClass = jni::safeFindClass(env, "Lcom/dxfeed/api/JNIPropertyChangeListener;");
     jmethodID methodId = jni::safeGetStaticMethodID(env, jniTestClass, "removeStateChangeEventListener",
-                                                    "(Lcom/dxfeed/api/DXEndpoint;Lcom/dxfeed/api/JNIPropertyChangeListener;)V");
-    env->CallStaticVoidMethod(jniTestClass, methodId, dxEndpoint_, listener->getJavaHandle());
+                                                    "(Lcom/dxfeed/api/DXEndpoint;J)V");
+    env->CallStaticVoidMethod(jniTestClass, methodId, dxEndpoint_, listener->javaListenerId_);
     env->DeleteLocalRef(jniTestClass);
   }
 

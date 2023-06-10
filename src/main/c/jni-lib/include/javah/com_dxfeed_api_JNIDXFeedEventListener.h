@@ -10,18 +10,10 @@ extern "C" {
 /*
  * Class:     com_dxfeed_api_JNIDXFeedEventListener
  * Method:    nOnEventListener
- * Signature: (I[B[D[BJ)V
+ * Signature: (I[B[D[BJJ)V
  */
 JNIEXPORT void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener
-  (JNIEnv *, jclass, jint, jbyteArray, jdoubleArray, jbyteArray, jlong);
-
-/*
- * Class:     com_dxfeed_api_JNIDXFeedEventListener
- * Method:    nClose
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nClose
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jclass, jint, jbyteArray, jdoubleArray, jbyteArray, jlong, jlong);
 
 #ifdef __cplusplus
 }

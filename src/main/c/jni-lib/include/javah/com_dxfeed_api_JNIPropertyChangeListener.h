@@ -10,18 +10,10 @@ extern "C" {
 /*
  * Class:     com_dxfeed_api_JNIPropertyChangeListener
  * Method:    nOnStateChangeListener
- * Signature: (IIJ)V
+ * Signature: (IIJJ)V
  */
 JNIEXPORT void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListener
-  (JNIEnv *, jclass, jint, jint, jlong);
-
-/*
- * Class:     com_dxfeed_api_JNIPropertyChangeListener
- * Method:    nClose
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nClose
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jclass, jint, jint, jlong, jlong);
 
 #ifdef __cplusplus
 }

@@ -24,8 +24,7 @@ namespace dxfeed::jni::internal {
 
   namespace nativeMethods {
     static JNINativeMethod dxFeedEventListenerMethods[] = {
-        {"nOnEventListener", "(I[B[D[BJ)V", (void*) &Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener},
-        {"nClose",                "(J)V", (void*) &Java_com_dxfeed_api_JNIDXFeedEventListener_nClose},
+        {"nOnEventListener", "(I[B[D[BJJ)V", (void*) &Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener}
     };
 
     int32_t dxFeedEventListenerMethodsMethodsCount() {
@@ -33,8 +32,8 @@ namespace dxfeed::jni::internal {
     }
 
     static JNINativeMethod propertyStateChangeListenerMethods[] = {
-        {"nOnStateChangeListener", "(IIJ)V", (void*) &Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListener},
-        {"nClose",                 "(J)V",   (void*) &Java_com_dxfeed_api_JNIPropertyChangeListener_nClose},
+        {"nOnStateChangeListener", "(IIJJ)V", (void*)
+        &Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListener}
     };
 
     int32_t propertyStateChangeListenerMethodsCount() {
