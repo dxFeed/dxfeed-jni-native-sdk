@@ -3,8 +3,7 @@
 #include <jni.h>
 #include <iostream>
 
-#include "javah/com_dxfeed_api_JNIDXFeedEventListener.h"
-#include "javah/com_dxfeed_api_JNIPropertyChangeListener.h"
+#include "javah/com_dxfeed_api_DxFeedJni.h"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
@@ -33,7 +32,7 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListener(JNIEnv* env, jclass,
+void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnStateChangeListener(JNIEnv* env, jclass,
                                                                                   jint oldStateValue,
                                                                                   jint newStateValue,
                                                                                   jlong jUserCallback, jlong jUserData)
@@ -46,7 +45,7 @@ void JNICALL Java_com_dxfeed_api_JNIPropertyChangeListener_nOnStateChangeListene
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener(JNIEnv* env, jclass, jint size,
+void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnEventListener(JNIEnv* env, jclass, jint size,
                                                                jbyteArray jBytes, jdoubleArray jDoubles,
                                                                jbyteArray jEventTypes,
                                                                jlong jUserCallback, jlong jUserData)
@@ -71,7 +70,7 @@ void JNICALL Java_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener(JNIEnv*
 }
 
 JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_JNIDXFeedEventListener_nOnEventListener(jint size,
+void JNICALL JavaCritical_com_dxfeed_api_DxFeedJni_nOnEventListener(jint size,
                                                                        jint byteLen, jbyte* jBytes,
                                                                        jint doubleLen, jdouble* jDoubles,
                                                                        jint eventTypesLen, jbyte* jEventTypes,
