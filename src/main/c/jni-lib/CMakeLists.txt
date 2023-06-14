@@ -28,6 +28,7 @@ set(SOURCE_FILES
     src/api/dxfg_api.cpp
     src/api/dxfg_dxfeed.cpp
     src/api/dxfg_endpoint.cpp
+    src/api/dxfg_events.cpp
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp
     src/api/graal_isolate.cpp

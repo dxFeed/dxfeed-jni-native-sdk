@@ -49,6 +49,9 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
   dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
 
+    dxfg_EventType_new(thread, "", DXFG_EVENT_QUOTE);
+
+
   dxfg_subscription_t* subscriptionTimeAndSale = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_TIME_AND_SALE);
   dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
 //  dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);

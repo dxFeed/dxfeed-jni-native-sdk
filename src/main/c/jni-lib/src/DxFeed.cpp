@@ -77,8 +77,8 @@ namespace dxfeed {
     const char* className = getEventClassType(eventType->clazz);
     jclass eventTypeClass = jni::safeFindClass(env, className);
 
-    // todo: implement, alloc new Java Event by event Type
-    // env->CallObjectMethod(dxFeed_, getLastEventId, eve)
+    dxfg_event_type_t* pEventType = dxfg_EventType_new(env, "", eventType->clazz); // todo: long or wrapper?
+    env->CallObjectMethod(dxFeed_, getLastEventId, pEventType); // todo: check the type of pType!!!
 
     env->DeleteLocalRef(eventTypeClass);
   }

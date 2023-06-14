@@ -1,8 +1,11 @@
 package com.dxfeed.api;
 
 import com.dxfeed.event.EventType;
+import com.dxfeed.event.LastingEvent;
 
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -15,6 +18,7 @@ public class DxFeedJni {
 
     private static final ConcurrentHashMap<Long, PropertyChangeListener> changeListenerMap = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Long, DXFeedEventListener<EventType<?>>> eventListenerMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, LastingEvent<?>> lastingEventMap = new ConcurrentHashMap<>();
     private static final AtomicLong nativeHandleId = new AtomicLong();
 
     // callbacks from native
@@ -68,6 +72,30 @@ public class DxFeedJni {
             System.out.println("removeEventListener, nativeHandle = " + nativeHandleId);
             sub.removeEventListener(eventListener);
         }
+    }
+
+    private static <E extends LastingEvent<?>> long newEvent(Class<E> eventTypeClass, String symbol) {
+        long id = nativeHandleId.incrementAndGet();
+        try {
+            Constructor<E> constructor = eventTypeClass.getConstructor(String.class);
+            System.out.println("constructor = " + constructor);
+            E e = constructor.newInstance(symbol);
+            System.out.println("event = " + e);
+            lastingEventMap.put(id, e);
+            return id;
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static <E extends LastingEvent<?>> long getLastEventIfSubscribed(DXFeed feed, Class<E> eventTypeClass, String symbol) {
+        E lastEventIfSubscribed = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
+        return 0;
+    }
+
+    private static <E extends LastingEvent<?>> long getLastEvent(DXFeed feed, Class<E> eventTypeClass) {
+//        E lastEventIfSubscribed = feed.getLastEvent();
+        return 0;
     }
 
     private static native void nOnStateChangeListener(int oldState, int newState, long userCallback, long userData);
