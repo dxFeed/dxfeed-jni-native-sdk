@@ -11,17 +11,15 @@
 namespace dxfeed {
 
   struct DxLastingEvent {
-    DxLastingEvent(JNIEnv* env, jobject obj);
-    ~DxLastingEvent();
+    DxLastingEvent(dxfg_event_type_t eventType, jlong nativeHandlerId);
 
     DxLastingEvent(const DxLastingEvent& other) = delete;
     DxLastingEvent(DxLastingEvent&& other) = delete;
     DxLastingEvent& operator=(const DxLastingEvent& other) = delete;
     DxLastingEvent& operator=(DxLastingEvent&& other) = delete;
 
-  private:
-    jobject dxLastingEvent_ = nullptr;
-    jclass dxLastingEventClass_ = nullptr;
+    dxfg_event_type_t eventType;
+    jlong nativeHandlerId;
   };
 }
 

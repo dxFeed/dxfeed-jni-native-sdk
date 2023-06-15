@@ -89,13 +89,25 @@ public class DxFeedJni {
     }
 
     private static <E extends LastingEvent<?>> long getLastEventIfSubscribed(DXFeed feed, Class<E> eventTypeClass, String symbol) {
-        E lastEventIfSubscribed = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
-        return 0;
+        E lastEvent = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
+        System.out.println("DxFeedJni::getLastEventIfSubscribed = " + lastEvent);
+        if (lastEvent != null) {
+            long id = nativeHandleId.incrementAndGet();
+            lastingEventMap.put(id, lastEvent);
+            return id;
+        } else {
+            return 0;
+        }
     }
 
-    private static <E extends LastingEvent<?>> long getLastEvent(DXFeed feed, Class<E> eventTypeClass) {
-//        E lastEventIfSubscribed = feed.getLastEvent();
-        return 0;
+    private static <E extends LastingEvent<?>> long getLastEvent(DXFeed feed, long nativeHandleId) {
+        System.out.println("DxFeedJni::getLastEvent");
+        LastingEvent<?> lastingEvent = lastingEventMap.get(nativeHandleId);
+        System.out.println("event before getLastEvent = " + lastingEvent);
+        feed.getLastEvent(lastingEvent);
+        System.out.println("event after getLastEvent = " + lastingEvent);
+        lastingEventMap.put(nativeHandleId, lastingEvent);
+        return nativeHandleId;
     }
 
     private static native void nOnStateChangeListener(int oldState, int newState, long userCallback, long userData);

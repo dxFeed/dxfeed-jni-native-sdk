@@ -4,12 +4,9 @@
 #include "dxfeed/utils/JNICommon.hpp"
 
 namespace dxfeed {
-  DxLastingEvent::DxLastingEvent(JNIEnv* env, jobject dxLastingEvent) :
-      dxLastingEvent_(env->NewGlobalRef(dxLastingEvent)),
-      dxLastingEventClass_(env->GetObjectClass(dxLastingEvent))
+  DxLastingEvent::DxLastingEvent(dxfg_event_type_t eventType, jlong nativeHandlerId) :
+    eventType(eventType),
+    nativeHandlerId(nativeHandlerId)
   {}
 
-  DxLastingEvent::~DxLastingEvent() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(dxLastingEvent_);
-  }
 }

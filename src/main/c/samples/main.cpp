@@ -49,9 +49,6 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
   dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
 
-    dxfg_EventType_new(thread, "", DXFG_EVENT_QUOTE);
-
-
   dxfg_subscription_t* subscriptionTimeAndSale = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_TIME_AND_SALE);
   dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
 //  dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);
@@ -68,8 +65,13 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
 //  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
 //  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
-  std::chrono::seconds minutes(2); // time to sleep 24 hours
+  std::chrono::seconds minutes(100); // time to sleep 24 hours
   std::this_thread::sleep_for(minutes);
+
+  auto event = dxfg_EventType_new(thread, "", DXFG_EVENT_QUOTE);
+  int32_t result = dxfg_DXFeed_getLastEvent(thread, feed, event);
+  dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE, &symbolAAPL.supper);
+
   dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
   dxfg_DXEndpoint_removeStateChangeListener(thread, endpoint, stateListener);
   dxfg_DXEndpoint_close(thread, endpoint);
