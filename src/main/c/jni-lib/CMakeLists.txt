@@ -25,6 +25,7 @@ set(SOURCE_FILES
     src/DxFeed.cpp
     src/DxLastingEvent.cpp
     src/DxSubscription.cpp
+    src/DxSymbol.cpp
     src/api/dxfg_api.cpp
     src/api/dxfg_dxfeed.cpp
     src/api/dxfg_endpoint.cpp
