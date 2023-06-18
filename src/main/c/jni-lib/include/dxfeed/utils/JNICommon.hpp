@@ -8,7 +8,7 @@
 #include "dxfeed/utils/vm/JavaVmInstance.hpp"
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/java/JavaLangClass.hpp"
-#include "dxfeed/utils/java/DxFeedJniClass.hpp"
+#include "dxfeed/utils/java/DxJni.hpp"
 
 namespace dxfeed::jni {
   typedef internal::vm::JavaVmInstance JVMInstance;
@@ -27,7 +27,7 @@ namespace dxfeed::jni {
     extern JVMInstance* javaVM;
     extern const JavaLangSystem* javaLangSystem;
     extern const JavaLangClass* javaLangClass;
-    extern const DxFeedJniClass* dxFeedJniClass;
+    extern const DxJni* dxJni;
 
     typedef jint(JNICALL* CreateJavaVM_t)(JavaVM** pvm, void** env, void* args);
     typedef jclass(JNICALL* FindClassFromBootLoader_t)(JNIEnv* env, const char* name);

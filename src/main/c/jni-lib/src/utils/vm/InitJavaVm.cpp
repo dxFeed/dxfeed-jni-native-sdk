@@ -8,7 +8,6 @@
 namespace fs = std::filesystem;
 
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "javah/com_dxfeed_api_DxFeedJni.h"
 
 namespace dxfeed::jni::internal {
   extern char dllFilePath[];
@@ -20,22 +19,7 @@ namespace dxfeed::jni::internal {
   JVMInstance* javaVM = nullptr;
   const JavaLangSystem* javaLangSystem = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
-  const DxFeedJniClass* dxFeedJniClass = nullptr;
-
-  namespace nativeMethods {
-    static JNINativeMethod nativeMethods[] = {
-        {"nOnStateChangeListener", "(IIJJ)V", (void*) &Java_com_dxfeed_api_DxFeedJni_nOnStateChangeListener},
-        {"nOnEventListener", "(I[B[D[BJJ)V", (void*) &Java_com_dxfeed_api_DxFeedJni_nOnEventListener}
-    };
-
-    void registerNativeMethods(JNIEnv* env) {
-      dxFeedJniClass = new DxFeedJniClass(env);
-      jint res = env->RegisterNatives(dxFeedJniClass->clazz, nativeMethods, sizeof(nativeMethods) / sizeof
-      (nativeMethods[0]));
-      auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
-      std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
-    }
-  }
+  const DxJni* dxJni = nullptr;
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
     if (vmArgs) {
@@ -73,7 +57,7 @@ namespace dxfeed::jni::internal {
     javaLangSystem->load(env, dllFilePath);
     std::cout << "Loaded DxFeed lib: " << dllFilePath << std::endl;
     dumpJavaInfo(env);
-    nativeMethods::registerNativeMethods(env);
+    dxJni = DxJni::initDxJni(env);
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {

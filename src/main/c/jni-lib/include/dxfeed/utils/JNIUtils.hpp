@@ -11,6 +11,11 @@ namespace dxfeed::jni {
   typedef jmethodID (JNIEnv::*JMethodIdProvider)(jclass, const char*, const char*);
   jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
   jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
+
+  template <typename OutputType, typename InputType>
+  OutputType cast(InputType t) {
+    return reinterpret_cast<OutputType>(t);
+  }
 } // namespace dxfeed::jni
 
 #endif //DXFEED_JNI_NATIVE_SDK_JNIUTILS_H

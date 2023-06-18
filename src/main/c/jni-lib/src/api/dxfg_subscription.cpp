@@ -34,15 +34,31 @@ int32_t dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t* threa
 }
 
 int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                          dxfg_symbol_t* pSymbolType)
+                                          dxfg_symbol_t* pSymbol)
 {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
-  switch (pSymbolType->type) {
+  switch (pSymbol->type) {
     case STRING: {
-      auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(pSymbolType);
-      // todo: investigate, why there no setSymbols method. Inlined?
-      //  for now use addSymbol instead of setSymbol
-      pDxSubscription->addSymbol(thread, pSymbol->symbol);
+      auto* pStringSymbol = reinterpret_cast<dxfg_string_symbol_t*>(pSymbol);
+      pDxSubscription->addSymbol(thread, pStringSymbol->supper.type, pStringSymbol->symbol);
+      break;
+    }
+    case WILDCARD: {
+      auto* pWildcardSymbol = reinterpret_cast<dxfg_wildcard_symbol_t*>(pSymbol);
+      pDxSubscription->addSymbol(thread, pWildcardSymbol->supper.type, "*");
+      break;
+    }
+    case CANDLE: {
+      auto* pCandleSymbol = reinterpret_cast<dxfg_candle_symbol_t*>(pSymbol);
+      pDxSubscription->addSymbol(thread, pCandleSymbol->supper.type, pCandleSymbol->symbol);
+      break;
+    }
+    case TIME_SERIES_SUBSCRIPTION: {
+//      auto* pSymbol = reinterpret_cast<dxfg_time_series_subscription_symbol_t*>(pSymbolType);
+//      pDxSubscription->addSymbol(thread, pSymbol->);
+      break;
+    }
+    case INDEXED_EVENT_SUBSCRIPTION: {
       break;
     }
     default:
@@ -52,13 +68,31 @@ int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_su
 }
 
 int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                          dxfg_symbol_t* symbol)
+                                          dxfg_symbol_t* pSymbol)
 {
   auto* pDxSubscription = reinterpret_cast<dxfeed::DxSubscription*>(sub);
-  switch (symbol->type) {
+  switch (pSymbol->type) {
     case STRING: {
-      auto* pSymbol = reinterpret_cast<dxfg_string_symbol_t*>(symbol);
-      pDxSubscription->addSymbol(thread, pSymbol->symbol);
+      auto* pStringSymbol = reinterpret_cast<dxfg_string_symbol_t*>(pSymbol);
+      pDxSubscription->setSymbol(thread, pStringSymbol->supper.type, pStringSymbol->symbol);
+      break;
+    }
+    case WILDCARD: {
+      auto* pWildcardSymbol = reinterpret_cast<dxfg_wildcard_symbol_t*>(pSymbol);
+      pDxSubscription->setSymbol(thread, pWildcardSymbol->supper.type, "*");
+      break;
+    }
+    case CANDLE: {
+      auto* pCandleSymbol = reinterpret_cast<dxfg_candle_symbol_t*>(pSymbol);
+      pDxSubscription->setSymbol(thread, pCandleSymbol->supper.type, pCandleSymbol->symbol);
+      break;
+    }
+    case TIME_SERIES_SUBSCRIPTION: {
+//      auto* pSymbol = reinterpret_cast<dxfg_time_series_subscription_symbol_t*>(pSymbolType);
+//      pDxSubscription->addSymbol(thread, pSymbol->);
+      break;
+    }
+    case INDEXED_EVENT_SUBSCRIPTION: {
       break;
     }
     default:

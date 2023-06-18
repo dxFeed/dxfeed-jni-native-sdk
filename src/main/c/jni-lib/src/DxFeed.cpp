@@ -48,8 +48,8 @@ namespace dxfeed {
                                                       dxfg_symbol_t* pSymbolType)
   {
     jmethodID getLastEventIfSubscribedId =
-      jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "getLastEventIfSubscribed",
-                           "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)J");
+      jni::safeGetStaticMethodID(env, dxJni->dxFeedJniClass_, "getLastEventIfSubscribed",
+                                 "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)J");
 
     dxfeed::DxLastingEvent* lastingEvent = nullptr;
     switch (pSymbolType->type) {
@@ -61,8 +61,8 @@ namespace dxfeed {
         }
         const char* className = getEventClassType(eventTypeClass);
         jclass eventTypeClazz = jni::safeFindClass(env, className);
-        jlong result = env->CallStaticLongMethod(dxFeedJniClass->clazz, getLastEventIfSubscribedId, dxFeed_, eventTypeClazz,
-                                                 jSymbol);
+        jlong result = env->CallStaticLongMethod(dxJni->dxFeedJniClass_, getLastEventIfSubscribedId, dxFeed_,
+                                                 eventTypeClazz, jSymbol);
         dxfg_event_type_t eventType = { eventTypeClass };
         lastingEvent = new DxLastingEvent(eventType, result);
         env->DeleteLocalRef(jSymbol);
@@ -74,11 +74,12 @@ namespace dxfeed {
   }
 
   void DxFeed::getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pEventType) {
-    jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "getLastEvent",
+    jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxJni->dxFeedJniClass_, "getLastEvent",
                                                             "(Lcom/dxfeed/api/DXFeed;J)J");
 
     auto dxLastingEvent = reinterpret_cast<dxfeed::DxLastingEvent*>(pEventType);
-    jlong result = env->CallStaticLongMethod(dxFeedJniClass->clazz, methodId, dxFeed_, dxLastingEvent->nativeHandlerId);
+    jlong result = env->CallStaticLongMethod(dxJni->dxFeedJniClass_, methodId, dxFeed_,
+                                             dxLastingEvent->nativeHandlerId);
     dxLastingEvent->nativeHandlerId = result;
   }
 
