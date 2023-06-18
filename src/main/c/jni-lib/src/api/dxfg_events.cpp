@@ -6,20 +6,20 @@
 #include "dxfeed/DxLastingEvent.hpp"
 #include "dxfeed/DxSymol.hpp"
 
+using namespace dxfeed::jni::internal;
+
 dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, dxfg_symbol_type_t symbolType) {
-  jclass dxFeedJniClass = dxfeed::jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass, "newSymbol",
+  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "newSymbol",
                                                           "(Ljava/lang/String;I)J");
-  jlong result = env->CallStaticLongMethod(dxFeedJniClass, methodId, symbolType);
+  jlong result = env->CallStaticLongMethod(dxFeedJniClass->clazz, methodId, symbolType);
   auto dxSymbol = new dxfeed::DxSymbol(symbolType, result);
   return reinterpret_cast<dxfg_symbol_t*>(dxSymbol);
 }
 
 int32_t dxfg_Symbol_release(graal_isolatethread_t* env, dxfg_symbol_t* symbol) {
-  jclass dxFeedJniClass = dxfeed::jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass, "releaseSymbol","(J)V");
+  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "releaseSymbol","(J)V");
   auto dxSymbol = reinterpret_cast<dxfeed::DxSymbol*>(symbol);
-  env->CallStaticVoidMethod(dxFeedJniClass, methodId, dxSymbol->nativeHandlerId);
+  env->CallStaticVoidMethod(dxFeedJniClass->clazz, methodId, dxSymbol->nativeHandlerId);
   delete dxSymbol;
   return JNI_OK;
 }
@@ -31,12 +31,10 @@ dxfg_event_type_t* dxfg_EventType_new(graal_isolatethread_t* env, const char* sy
   jclass eventTypeClass = dxfeed::jni::safeFindClass(env, className);
   jstring jSymbolName = env->NewStringUTF(symbolName);
 
-  jclass dxFeedJniClass = dxfeed::jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass, "newEvent",
+  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "newEvent",
                                                           "(Ljava/lang/Class;Ljava/lang/String;)J");
-  jlong result = env->CallStaticLongMethod(dxFeedJniClass, methodId, eventTypeClass, jSymbolName);
+  jlong result = env->CallStaticLongMethod(dxFeedJniClass->clazz, methodId, eventTypeClass, jSymbolName);
 
-  env->DeleteLocalRef(dxFeedJniClass);
   env->DeleteLocalRef(jSymbolName);
   env->DeleteLocalRef(eventTypeClass);
 
@@ -45,11 +43,9 @@ dxfg_event_type_t* dxfg_EventType_new(graal_isolatethread_t* env, const char* sy
 }
 
 int32_t dxfg_EventType_release(graal_isolatethread_t* env, dxfg_event_type_t* eventType) {
-  jclass dxFeedJniClass = dxfeed::jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass, "releaseEvent", "(J)V");
+  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "releaseEvent", "(J)V");
   auto dxLastingEvent = reinterpret_cast<dxfeed::DxLastingEvent*>(eventType);
-  env->CallStaticVoidMethod(dxFeedJniClass, methodId, dxLastingEvent->eventType);
-  env->DeleteLocalRef(dxFeedJniClass);
+  env->CallStaticVoidMethod(dxFeedJniClass->clazz, methodId, dxLastingEvent->eventType);
   delete dxLastingEvent;
   return JNI_OK;
 }

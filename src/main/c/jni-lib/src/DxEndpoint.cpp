@@ -6,6 +6,7 @@
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 
 namespace dxfeed {
+  using namespace jni::internal;
 
   DxEndpoint::DxEndpoint(JNIEnv* env, jobject dxEndpoint) {
     dxEndpointClass_ = env->GetObjectClass(dxEndpoint);
@@ -46,19 +47,15 @@ namespace dxfeed {
   }
 
   void DxEndpoint::addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
-    jclass dxFeedJniClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass, "addStateChangeEventListener",
+    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "addStateChangeEventListener",
                                                     "(Lcom/dxfeed/api/DXEndpoint;J)V");
-    env->CallStaticVoidMethod(dxFeedJniClass, methodId, dxEndpoint_, listener->javaListenerId_);
-    env->DeleteLocalRef(dxFeedJniClass);
+    env->CallStaticVoidMethod(dxFeedJniClass->clazz, methodId, dxEndpoint_, listener->javaListenerId_);
   }
 
   void DxEndpoint::removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
-    jclass dxFeedJniClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass, "removeStateChangeEventListener",
+    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "removeStateChangeEventListener",
                                                     "(Lcom/dxfeed/api/DXEndpoint;J)V");
-    env->CallStaticVoidMethod(dxFeedJniClass, methodId, dxEndpoint_, listener->javaListenerId_);
-    env->DeleteLocalRef(dxFeedJniClass);
+    env->CallStaticVoidMethod(dxFeedJniClass->clazz, methodId, dxEndpoint_, listener->javaListenerId_);
   }
 
   DxEndpoint* DxEndpoint::getInstance(JNIEnv* env) {
