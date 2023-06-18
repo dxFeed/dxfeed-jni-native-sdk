@@ -7,6 +7,8 @@
 #include "dxfeed/DxLastingEvent.hpp"
 
 namespace dxfeed {
+  using namespace jni::internal;
+
   DxFeed::DxFeed(JNIEnv* env, jobject dxFeed) :
       dxFeed_(env->NewGlobalRef(dxFeed)),
       dxFeedClass_(env->GetObjectClass(dxFeed))
@@ -45,9 +47,8 @@ namespace dxfeed {
   dxfg_event_type_t* DxFeed::getLastEventIfSubscribed(graal_isolatethread_t* env, dxfg_event_clazz_t eventTypeClass,
                                                       dxfg_symbol_t* pSymbolType)
   {
-    jclass dxFeedJniClass = dxfeed::jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
     jmethodID getLastEventIfSubscribedId =
-      jni::safeGetStaticMethodID(env, dxFeedJniClass, "getLastEventIfSubscribed",
+      jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "getLastEventIfSubscribed",
                            "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)J");
 
     dxfeed::DxLastingEvent* lastingEvent = nullptr;
@@ -60,7 +61,7 @@ namespace dxfeed {
         }
         const char* className = getEventClassType(eventTypeClass);
         jclass eventTypeClazz = jni::safeFindClass(env, className);
-        jlong result = env->CallStaticLongMethod(dxFeedJniClass, getLastEventIfSubscribedId, dxFeed_, eventTypeClazz,
+        jlong result = env->CallStaticLongMethod(dxFeedJniClass->clazz, getLastEventIfSubscribedId, dxFeed_, eventTypeClazz,
                                                  jSymbol);
         dxfg_event_type_t eventType = { eventTypeClass };
         lastingEvent = new DxLastingEvent(eventType, result);
@@ -69,20 +70,16 @@ namespace dxfeed {
       // todo: add symbolTypes
       default: { }
     }
-    env->DeleteLocalRef(dxFeedJniClass);
     return reinterpret_cast<dxfg_event_type_t*>(lastingEvent);
   }
 
   void DxFeed::getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pEventType) {
-    jclass dxFeedJniClass = dxfeed::jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-    jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass, "getLastEvent",
+    jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "getLastEvent",
                                                             "(Lcom/dxfeed/api/DXFeed;J)J");
 
     auto dxLastingEvent = reinterpret_cast<dxfeed::DxLastingEvent*>(pEventType);
-    jlong result = env->CallStaticLongMethod(dxFeedJniClass, methodId, dxFeed_, dxLastingEvent->nativeHandlerId);
+    jlong result = env->CallStaticLongMethod(dxFeedJniClass->clazz, methodId, dxFeed_, dxLastingEvent->nativeHandlerId);
     dxLastingEvent->nativeHandlerId = result;
-
-    env->DeleteLocalRef(dxFeedJniClass);
   }
 
   void DxFeed::getLastEvents(graal_isolatethread_t* env, dxfg_event_type_list* pList) {

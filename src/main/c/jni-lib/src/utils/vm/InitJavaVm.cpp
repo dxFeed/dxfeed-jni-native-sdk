@@ -20,6 +20,7 @@ namespace dxfeed::jni::internal {
   JVMInstance* javaVM = nullptr;
   const JavaLangSystem* javaLangSystem = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
+  const DxFeedJniClass* dxFeedJniClass = nullptr;
 
   namespace nativeMethods {
     static JNINativeMethod nativeMethods[] = {
@@ -28,10 +29,9 @@ namespace dxfeed::jni::internal {
     };
 
     void registerNativeMethods(JNIEnv* env) {
-      jclass dxFeedJniClazz = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-      std::cout << "\tclazz com/dxfeed/api/DxFeedJni: " << dxFeedJniClazz << std::endl;
-      jint res = env->RegisterNatives(dxFeedJniClazz, nativeMethods, sizeof(nativeMethods) / sizeof(nativeMethods[0]));
-      env->DeleteLocalRef(dxFeedJniClazz);
+      dxFeedJniClass = new DxFeedJniClass(env);
+      jint res = env->RegisterNatives(dxFeedJniClass->clazz, nativeMethods, sizeof(nativeMethods) / sizeof
+      (nativeMethods[0]));
       auto msg = (res == JNI_OK) ? "JNI_OK" : "Failed";
       std::cout << "\tRegisterNatives result: " << msg << "(" << res << ")" << std::endl;
     }

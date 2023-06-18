@@ -9,6 +9,8 @@
 #include "dxfeed/DxFeed.hpp"
 
 namespace dxfeed {
+  using namespace jni::internal;
+
   DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     const char* className = getEventClassType(eventType);
@@ -56,19 +58,15 @@ namespace dxfeed {
   }
 
   void DxSubscription::addListener(JNIEnv* env, DxEventListener* listener) const {
-    jclass dxFeedJniClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass, "addEventListener",
+    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "addEventListener",
                                                     "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
-    env->CallStaticVoidMethod(dxFeedJniClass, methodId, subscription_, listener->javaListenerId_);
-    env->DeleteLocalRef(dxFeedJniClass);
+    env->CallStaticVoidMethod(dxFeedJniClass->clazz, methodId, subscription_, listener->javaListenerId_);
   }
 
   void DxSubscription::removeListener(JNIEnv* env, DxEventListener* listener) const {
-    jclass dxFeedJniClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
-    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass, "removeEventListener",
+    jmethodID methodId = jni::safeGetStaticMethodID(env, dxFeedJniClass->clazz, "removeEventListener",
                                                     "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
-    env->CallStaticVoidMethod(dxFeedJniClass, methodId, subscription_, listener->javaListenerId_);
-    env->DeleteLocalRef(dxFeedJniClass);
+    env->CallStaticVoidMethod(dxFeedJniClass->clazz, methodId, subscription_, listener->javaListenerId_);
   }
 
   void DxSubscription::addSymbol(JNIEnv* env, const std::string& symbol) const {
