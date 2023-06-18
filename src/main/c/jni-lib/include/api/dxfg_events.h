@@ -12,6 +12,17 @@ extern "C" {
 
 #include "dxfg_javac.h"
 
+typedef enum dxfg_indexed_event_source_type_t {
+  INDEXED_EVENT_SOURCE = 0,
+  ORDER_SOURCE
+} dxfg_indexed_event_source_type_t;
+
+typedef struct dxfg_indexed_event_source_t {
+  dxfg_indexed_event_source_type_t type;
+  int32_t id;
+  const char *name;
+} dxfg_indexed_event_source_t;
+
 typedef enum dxfg_symbol_type_t {
     STRING = 0,
     CANDLE,
@@ -28,6 +39,27 @@ typedef struct dxfg_string_symbol_t {
   dxfg_symbol_t supper;
   const char* symbol;
 } dxfg_string_symbol_t;
+
+typedef struct dxfg_wildcard_symbol_t {
+  dxfg_symbol_t supper;
+} dxfg_wildcard_symbol_t;
+
+typedef struct dxfg_candle_symbol_t {
+  dxfg_symbol_t supper;
+  const char *symbol;
+} dxfg_candle_symbol_t;
+
+typedef struct dxfg_indexed_event_subscription_symbol_t {
+  dxfg_symbol_t supper;
+  dxfg_symbol_t *symbol;
+  dxfg_indexed_event_source_t* source;
+} dxfg_indexed_event_subscription_symbol_t;
+
+typedef struct dxfg_time_series_subscription_symbol_t {
+  dxfg_symbol_t supper;
+  dxfg_symbol_t *symbol;
+  int64_t from_time;
+} dxfg_time_series_subscription_symbol_t;
 
 typedef struct dxfg_symbol_list {
   int32_t size;

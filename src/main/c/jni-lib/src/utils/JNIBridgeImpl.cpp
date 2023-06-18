@@ -3,7 +3,8 @@
 #include <jni.h>
 #include <iostream>
 
-#include "javah/com_dxfeed_api_DxFeedJni.h"
+#include "javah/com_dxfeed_api_DxEndpointJni.h"
+#include "javah/com_dxfeed_api_DxSubscriptionJni.h"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
@@ -32,7 +33,7 @@ void JNI_OnUnload(JavaVM* vm, void* reserved) {
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnStateChangeListener(JNIEnv* env, jclass,
+void JNICALL Java_com_dxfeed_api_DxEndpointJni_nOnStateChangeListener(JNIEnv* env, jclass,
                                                                                   jint oldStateValue,
                                                                                   jint newStateValue,
                                                                                   jlong jUserCallback, jlong jUserData)
@@ -45,10 +46,9 @@ void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnStateChangeListener(JNIEnv* env, j
 }
 
 JNIEXPORT
-void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnEventListener(JNIEnv* env, jclass, jint size,
-                                                               jbyteArray jBytes, jdoubleArray jDoubles,
-                                                               jbyteArray jEventTypes,
-                                                               jlong jUserCallback, jlong jUserData)
+void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env, jclass, jint size, jbyteArray jBytes,
+                                                                    jdoubleArray jDoubles, jbyteArray jEventTypes,
+                                                                    jlong jUserCallback, jlong jUserData)
 {
   auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
@@ -70,11 +70,10 @@ void JNICALL Java_com_dxfeed_api_DxFeedJni_nOnEventListener(JNIEnv* env, jclass,
 }
 
 JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_DxFeedJni_nOnEventListener(jint size,
-                                                                       jint byteLen, jbyte* jBytes,
-                                                                       jint doubleLen, jdouble* jDoubles,
-                                                                       jint eventTypesLen, jbyte* jEventTypes,
-                                                                       jlong jUserCallback, jlong jUserData)
+void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint size, jint byteLen, jbyte* jBytes,
+                                                                            jint doubleLen, jdouble* jDoubles,
+                                                                            jint eventTypesLen, jbyte* jEventTypes,
+                                                                            jlong jUserCallback, jlong jUserData)
 {
   auto pByteData = (char*) jBytes;
   auto pDoubleData = (double*) jDoubles;
