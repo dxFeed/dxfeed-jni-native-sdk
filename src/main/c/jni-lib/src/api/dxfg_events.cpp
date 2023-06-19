@@ -5,6 +5,7 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxLastingEvent.hpp"
 #include "dxfeed/DxSymol.hpp"
+#include "dxfeed/DxIndexedEventSource.hpp"
 
 using namespace dxfeed::jni::internal;
 
@@ -13,13 +14,13 @@ dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, d
   jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxSymbolClass, "newSymbol", "(Ljava/lang/String;I)J");
   jlong result = env->CallStaticLongMethod(dxSymbolClass, methodId, symbolType);
   auto dxSymbol = new dxfeed::DxSymbol(symbolType, result);
-  return reinterpret_cast<dxfg_symbol_t*>(dxSymbol);
+  return dxfeed::r_cast<dxfg_symbol_t*>(dxSymbol);
 }
 
 int32_t dxfg_Symbol_release(graal_isolatethread_t* env, dxfg_symbol_t* symbol) {
   auto dxSymbolClass = dxJni->dxSymbolJniClass_;
   jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxSymbolClass, "releaseSymbol", "(J)V");
-  auto dxSymbol = reinterpret_cast<dxfeed::DxSymbol*>(symbol);
+  auto dxSymbol = dxfeed::r_cast<dxfeed::DxSymbol*>(symbol);
   env->CallStaticVoidMethod(dxSymbolClass, methodId, dxSymbol->nativeHandlerId);
   delete dxSymbol;
   return JNI_OK;
@@ -41,14 +42,25 @@ dxfg_event_type_t* dxfg_EventType_new(graal_isolatethread_t* env, const char* sy
   env->DeleteLocalRef(eventTypeClass);
 
   dxfg_event_type_t eventType {eventTypeClazz};
-  return reinterpret_cast<dxfg_event_type_t*>(new dxfeed::DxLastingEvent(eventType, result));
+  return dxfeed::r_cast<dxfg_event_type_t*>(new dxfeed::DxLastingEvent(eventType, result));
 }
 
 int32_t dxfg_EventType_release(graal_isolatethread_t* env, dxfg_event_type_t* eventType) {
   jclass clazz = dxJni->dxFeedJniClass_;
   jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, clazz, "releaseEvent", "(J)V");
-  auto dxLastingEvent = reinterpret_cast<dxfeed::DxLastingEvent*>(eventType);
+  auto dxLastingEvent = dxfeed::r_cast<dxfeed::DxLastingEvent*>(eventType);
   env->CallStaticVoidMethod(clazz, methodId, dxLastingEvent->eventType);
   delete dxLastingEvent;
+  return JNI_OK;
+}
+
+dxfg_indexed_event_source_t* dxfg_IndexedEventSource_new(graal_isolatethread_t* env, const char* source) {
+  return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, source));
+}
+
+int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t* env, dxfg_indexed_event_source_t* source) {
+  auto dxIndexedEventSource = dxfeed::r_cast<dxfeed::DxIndexedEventSource*>(source);
+  dxIndexedEventSource->releaseJavaObject(env);
+  delete dxIndexedEventSource;
   return JNI_OK;
 }

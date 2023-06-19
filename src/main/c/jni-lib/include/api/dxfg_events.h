@@ -185,6 +185,10 @@ int32_t             dxfg_Symbol_release(graal_isolatethread_t* thread, dxfg_symb
 dxfg_event_type_t*  dxfg_EventType_new(graal_isolatethread_t* thread, const char* symbolName, dxfg_event_clazz_t clazz);
 int32_t             dxfg_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
 
+dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
+dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t *env, const char* source);//if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t* source);
+
 // free the memory occupied by the с data structure (list and all events)
 int32_t             dxfg_CList_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_list* eventTypes);
 
