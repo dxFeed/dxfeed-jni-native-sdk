@@ -5,16 +5,18 @@
 
 #include "JNICommon.hpp"
 
-namespace dxfeed::jni {
-  jclass safeFindClass(JNIEnv* env, const char* clazzName);
-
-  typedef jmethodID (JNIEnv::*JMethodIdProvider)(jclass, const char*, const char*);
-  jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
-  jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
-
+namespace dxfeed {
   template <typename OutputType, typename InputType>
-  OutputType cast(InputType t) {
+  OutputType r_cast(InputType t) {
     return reinterpret_cast<OutputType>(t);
+  }
+
+  namespace jni {
+    jclass safeFindClass(JNIEnv* env, const char* clazzName);
+
+    typedef jmethodID (JNIEnv::*JMethodIdProvider)(jclass, const char*, const char*);
+    jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
+    jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
   }
 } // namespace dxfeed::jni
 
