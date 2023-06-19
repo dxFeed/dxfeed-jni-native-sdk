@@ -23,7 +23,7 @@ set(SOURCE_FILES
     src/DxEndpoint.cpp
     src/DxEndpointBuilder.cpp
     src/DxFeed.cpp
-    src/DxIndexedEventSource.cpp
+    src/DxOrderSource.cpp
     src/DxLastingEvent.cpp
     src/DxSubscription.cpp
     src/DxSymbol.cpp

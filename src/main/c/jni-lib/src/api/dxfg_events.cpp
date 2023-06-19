@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#include <sstream>
+
 #include "api/dxfg_events.h"
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxLastingEvent.hpp"
 #include "dxfeed/DxSymol.hpp"
-#include "dxfeed/DxIndexedEventSource.hpp"
+#include "dxfeed/DxOrderSource.hpp"
 
 using namespace dxfeed::jni::internal;
 
@@ -55,12 +57,44 @@ int32_t dxfg_EventType_release(graal_isolatethread_t* env, dxfg_event_type_t* ev
 }
 
 dxfg_indexed_event_source_t* dxfg_IndexedEventSource_new(graal_isolatethread_t* env, const char* source) {
-  return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, source));
+  return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxOrderSource(env, source));
 }
 
 int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t* env, dxfg_indexed_event_source_t* source) {
-  auto dxIndexedEventSource = dxfeed::r_cast<dxfeed::DxIndexedEventSource*>(source);
+  auto dxIndexedEventSource = dxfeed::r_cast<dxfeed::DxOrderSource*>(source);
   dxIndexedEventSource->releaseJavaObject(env);
   delete dxIndexedEventSource;
   return JNI_OK;
 }
+
+dxfg_indexed_event_source_t* dxfg_IndexedEvent_getSource(graal_isolatethread_t* env, dxfg_event_type_t* eventType) {
+  switch (eventType->clazz) {
+    case DXFG_EVENT_GREEKS:
+    case DXFG_EVENT_CANDLE:
+    case DXFG_EVENT_DAILY_CANDLE:
+    case DXFG_EVENT_TIME_AND_SALE:
+    case DXFG_EVENT_UNDERLYING:
+    case DXFG_EVENT_THEO_PRICE:
+    case DXFG_EVENT_SERIES: {
+      return dxfg_IndexedEventSource_new(env, nullptr);
+    }
+    case DXFG_EVENT_ORDER_BASE:
+    case DXFG_EVENT_SPREAD_ORDER:
+    case DXFG_EVENT_ORDER:
+    case DXFG_EVENT_ANALYTIC_ORDER: {
+      const auto index = dxfeed::r_cast<dxfg_order_base_t*>(eventType)->index;
+      int sourceId = static_cast<int32_t>(index >> 48);
+      if (!dxfeed::DxOrderSource::isSpecialSourceId(env, sourceId)) {
+        sourceId = static_cast<int32_t>(index >> 32);
+      }
+      return dxfeed::DxOrderSource::createOrderSourceById(env, sourceId);
+    }
+    default: {
+      std::stringstream ss{};
+      const char* className = dxfeed::getEventClassType(eventType->clazz);
+      ss << "ClassCastException(" << className << " is not Class<? extends IndexedEvent>";
+      throw std::runtime_error(ss.str());
+    }
+  }
+}
+

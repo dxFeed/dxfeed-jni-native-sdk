@@ -169,6 +169,40 @@ typedef struct dxfg_time_and_sale_t {
   const char* seller;
 } dxfg_time_and_sale_t;
 
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderBase.html">Javadoc</a>
+ */
+typedef struct dxfg_order_base_t {
+    dxfg_market_event_t market_event;
+    //    dxfg_indexed_event_t indexed_event;
+    int32_t event_flags;
+
+    int64_t index;
+    int64_t time_sequence;
+    int32_t time_nano_part;
+
+    int64_t action_time;
+    int64_t order_id;
+    int64_t aux_order_id;
+
+    double price;
+    double size;
+    double executed_size;
+    int64_t count;
+    int32_t flags;
+
+    int64_t trade_id;
+    double trade_price;
+    double trade_size;
+} dxfg_order_base_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Order.html">Javadoc</a>
+ */
+typedef struct dxfg_order_t {
+    dxfg_order_base_t order_base;
+    const char *market_maker;
+} dxfg_order_t;
 
 typedef struct dxfg_event_type_list {
   int32_t size;
@@ -185,9 +219,11 @@ int32_t             dxfg_Symbol_release(graal_isolatethread_t* thread, dxfg_symb
 dxfg_event_type_t*  dxfg_EventType_new(graal_isolatethread_t* thread, const char* symbolName, dxfg_event_clazz_t clazz);
 int32_t             dxfg_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
 
-dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
-dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t *env, const char* source);//if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+
+// if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t *env, const char* source);
 int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t *thread, dxfg_indexed_event_source_t* source);
+dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t *thread, dxfg_event_type_t* eventType);
 
 // free the memory occupied by the с data structure (list and all events)
 int32_t             dxfg_CList_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_list* eventTypes);
