@@ -17,6 +17,7 @@ namespace dxfeed {
     typedef jmethodID (JNIEnv::*JMethodIdProvider)(jclass, const char*, const char*);
     jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
     jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
+    jfieldID safeGetStaticFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature);
   }
 } // namespace dxfeed::jni
 

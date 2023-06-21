@@ -1,38 +1,34 @@
 package com.dxfeed.api;
 
+import com.dxfeed.api.osub.IndexedEventSubscriptionSymbol;
+import com.dxfeed.api.osub.TimeSeriesSubscriptionSymbol;
 import com.dxfeed.api.osub.WildcardSymbol;
+import com.dxfeed.event.IndexedEventSource;
 import com.dxfeed.event.candle.CandleSymbol;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 public class DxSymbolJni {
-    private static final ConcurrentHashMap<Long, Object> symbolMap = new ConcurrentHashMap<>();
-
-    private static long newSymbol(String symbol, int symbolType) {
-        boolean isTimeSeries = symbolType == DxfgSymbolType.TIME_SERIES_SUBSCRIPTION.ordinal();
-        boolean isIndexedEvent = symbolType == DxfgSymbolType.INDEXED_EVENT_SUBSCRIPTION.ordinal();
-        if (isTimeSeries || isIndexedEvent) {
-            throw new IllegalStateException();
-        }
-        long id = DxFeedJni.nextHandleId();
-        System.out.println("DxSymbolJni::newSymbol, nativeHandleId = " + id);
-        if (symbolType == DxfgSymbolType.STRING.ordinal()) {
-            symbolMap.put(id, symbol);
-        } else if (symbolType == DxfgSymbolType.CANDLE.ordinal()) {
-            CandleSymbol candleSymbol = CandleSymbol.valueOf(symbol);
-            symbolMap.put(id, candleSymbol);
-        } else if (symbolType == DxfgSymbolType.WILDCARD.ordinal()) {
-            symbolMap.put(id, WildcardSymbol.ALL);
-        } else {
-            throw new IllegalStateException();
-        }
-        return id;
+    private static WildcardSymbol newWildCardSymbol() {
+        System.out.println("DxSymbolJni::newWildCardSymbol: " + WildcardSymbol.ALL);
+        return WildcardSymbol.ALL;
     }
 
-    private static void releaseSymbol(long nativeHandlerId) {
-        Object remove = symbolMap.remove(nativeHandlerId);
-        if (remove != null) {
-            System.out.println("DxSymbolJni::releaseSymbol, nativeHandleId = " + nativeHandlerId);
-        }
+    private static CandleSymbol newCandleSymbol(String symbol) {
+        CandleSymbol candleSymbol = CandleSymbol.valueOf(symbol);
+        System.out.println("DxSymbolJni::newCandleSymbol: " + candleSymbol);
+        return candleSymbol;
+    }
+
+    private static <T> TimeSeriesSubscriptionSymbol<T> newTimeSeriesSubscriptionSymbol(T symbol, long fromTime) {
+        TimeSeriesSubscriptionSymbol<T> tssSymbol = new TimeSeriesSubscriptionSymbol<>(symbol, fromTime);
+        System.out.println("DxSymbolJni::newTimeSeriesSubscriptionSymbol: " + tssSymbol);
+        return tssSymbol;
+    }
+
+    private static <T> IndexedEventSubscriptionSymbol<T> newIndexedEventSubscriptionSymbol(T symbol,
+                                                                                           IndexedEventSource source)
+    {
+        IndexedEventSubscriptionSymbol<T> iesSymbol = new IndexedEventSubscriptionSymbol<>(symbol, source);
+        System.out.println("DxSymbolJni::newIndexedEventSubscriptionSymbol: " + iesSymbol);
+        return iesSymbol;
     }
 }

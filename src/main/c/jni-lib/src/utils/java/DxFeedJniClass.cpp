@@ -6,10 +6,10 @@
 
 namespace dxfeed::jni {
   DxJni::DxJni(JNIEnv* env):
-    dxEndpointJniClass_(r_cast <jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxEndpointJni;")))),
-    dxFeedJniClass_(r_cast <jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;")))),
-    dxSubscriptionJniClass_(r_cast <jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxSubscriptionJni;")))),
-    dxSymbolJniClass_(r_cast <jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxSymbolJni;"))))
+    dxEndpointJniClass_(r_cast<jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxEndpointJni;")))),
+    dxFeedJniClass_(r_cast<jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;")))),
+    dxSubscriptionJniClass_(r_cast<jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxSubscriptionJni;")))),
+    dxSymbolJniClass_(r_cast<jclass>(env->NewGlobalRef(safeFindClass(env, "Lcom/dxfeed/api/DxSymbolJni;"))))
   {
     std::cout << "com.dxfeed.api.DxEndpointJniClass: " << dxEndpointJniClass_ << "\n";
     std::cout << "com.dxfeed.api.DxFeedJniClass: " << dxFeedJniClass_ << "\n";

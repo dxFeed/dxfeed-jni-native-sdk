@@ -1,33 +1,50 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <sstream>
+#include <iostream>
 
 #include "api/dxfg_events.h"
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxLastingEvent.hpp"
-#include "dxfeed/DxSymol.hpp"
-#include "dxfeed/DxOrderSource.hpp"
+#include "dxfeed/DxIndexedEventSource.hpp"
 
 using namespace dxfeed::jni::internal;
 
+// todo: what's wrong with TIME_SERIES_SUBSCRIPTION and INDEXED_EVENT_SUBSCRIPTION ??
 dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, dxfg_symbol_type_t symbolType) {
-  auto dxSymbolClass = dxJni->dxSymbolJniClass_;
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxSymbolClass, "newSymbol", "(Ljava/lang/String;I)J");
-  jlong result = env->CallStaticLongMethod(dxSymbolClass, methodId, symbol, symbolType);
-  auto dxSymbol = new dxfeed::DxSymbol(symbolType, result);
-  return dxfeed::r_cast<dxfg_symbol_t*>(dxSymbol);
+  bool isTimeSeries = (symbolType == dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION);
+  bool isIndexedEvent = (symbolType == dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION);
+  if (isTimeSeries || isIndexedEvent) {
+    std::cerr << "Unknown symbol type: " + std::to_string(symbolType);
+    return nullptr;
+  }
+  if (symbolType == dxfg_symbol_type_t::STRING) {
+    auto result = new dxfg_string_symbol_t();
+    result->supper = dxfg_symbol_t { symbolType };
+    result->symbol = symbol; // todo: alloc & copy?
+    return dxfeed::r_cast<dxfg_symbol_t*>(result);
+  } else if (symbolType ==  dxfg_symbol_type_t::CANDLE) {
+    auto result = new dxfg_candle_symbol_t();
+    result->supper = dxfg_symbol_t { symbolType };
+    result->symbol = symbol; // todo: alloc & copy?
+    return dxfeed::r_cast<dxfg_symbol_t*>(result);
+  } else if (symbolType ==  dxfg_symbol_type_t::WILDCARD) {
+    auto result = new dxfg_wildcard_symbol_t();
+    result->supper = dxfg_symbol_t { symbolType };
+    return dxfeed::r_cast<dxfg_symbol_t*>(result);
+  } else {
+    std::cerr << "Unknown symbol type: " + std::to_string(symbolType);
+    return nullptr;
+  }
 }
 
 int32_t dxfg_Symbol_release(graal_isolatethread_t* env, dxfg_symbol_t* symbol) {
-  auto dxSymbolClass = dxJni->dxSymbolJniClass_;
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxSymbolClass, "releaseSymbol", "(J)V");
-  auto dxSymbol = dxfeed::r_cast<dxfeed::DxSymbol*>(symbol);
-  env->CallStaticVoidMethod(dxSymbolClass, methodId, dxSymbol->nativeHandlerId);
-  delete dxSymbol;
+  delete symbol; // todo: dealloc symbol->symbol?
   return JNI_OK;
 }
 
+// todo: don't create Java object here? Crate it before JNI call to VM
 dxfg_event_type_t* dxfg_EventType_new(graal_isolatethread_t* env, const char* symbolName,
                                       dxfg_event_clazz_t eventTypeClazz)
 {
@@ -57,13 +74,12 @@ int32_t dxfg_EventType_release(graal_isolatethread_t* env, dxfg_event_type_t* ev
 }
 
 dxfg_indexed_event_source_t* dxfg_IndexedEventSource_new(graal_isolatethread_t* env, const char* source) {
-  return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxOrderSource(env, source));
+  return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, source));
 }
 
 int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t* env, dxfg_indexed_event_source_t* source) {
-  auto dxIndexedEventSource = dxfeed::r_cast<dxfeed::DxOrderSource*>(source);
-  dxIndexedEventSource->releaseJavaObject(env);
-  delete dxIndexedEventSource;
+  auto dxIndexedEventSource = dxfeed::r_cast<dxfeed::DxIndexedEventSource*>(source);
+  dxIndexedEventSource->release(env);
   return JNI_OK;
 }
 
@@ -84,16 +100,17 @@ dxfg_indexed_event_source_t* dxfg_IndexedEvent_getSource(graal_isolatethread_t* 
     case DXFG_EVENT_ANALYTIC_ORDER: {
       const auto index = dxfeed::r_cast<dxfg_order_base_t*>(eventType)->index;
       int sourceId = static_cast<int32_t>(index >> 48);
-      if (!dxfeed::DxOrderSource::isSpecialSourceId(env, sourceId)) {
+      if (!dxfeed::DxIndexedEventSource::isSpecialSourceId(env, sourceId)) {
         sourceId = static_cast<int32_t>(index >> 32);
       }
-      return dxfeed::DxOrderSource::createOrderSourceById(env, sourceId);
+      return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, sourceId));
     }
     default: {
       std::stringstream ss{};
       const char* className = dxfeed::getEventClassType(eventType->clazz);
       ss << "ClassCastException(" << className << " is not Class<? extends IndexedEvent>";
-      throw std::runtime_error(ss.str());
+      std::cerr << "Unknown symbol type: " + ss.str();
+      return nullptr;
     }
   }
 }

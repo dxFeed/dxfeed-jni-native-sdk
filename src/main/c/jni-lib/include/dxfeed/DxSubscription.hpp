@@ -25,8 +25,9 @@ namespace dxfeed {
 
     void addListener(JNIEnv* env, DxEventListener* listener) const;
     void removeListener(JNIEnv* env, DxEventListener* listener) const;
-    void addSymbol(JNIEnv* env, dxfg_symbol_type_t, const std::string& symbol) const;
-    void setSymbol(JNIEnv* env, dxfg_symbol_type_t, const std::string& symbol) const;
+    int32_t addSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
+    int32_t addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
+    int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
     void close(JNIEnv* env) const;
 
   private:
