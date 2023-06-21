@@ -7,6 +7,7 @@
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxFeed.hpp"
+#include "dxfeed/DxSymbol.hpp"
 
 namespace dxfeed {
   using namespace jni;
@@ -72,22 +73,50 @@ namespace dxfeed {
     env->CallStaticVoidMethod(dxSymbolClass, methodId, subscription_, listener->javaListenerId_);
   }
 
-  void DxSubscription::addSymbol(JNIEnv* env, dxfg_symbol_type_t symbolType, const std::string& symbol) const {
-    auto dxSymbolClass = dxJni->dxSubscriptionJniClass_;
-    jmethodID addSymbolsMethodId = safeGetStaticMethodID(env, dxSymbolClass, "addSymbol",
-                                                         "(Lcom/dxfeed/api/DXFeedSubscription;ILjava/lang/String;)V");
-    jstring pSymbol = env->NewStringUTF(symbol.c_str());
-    env->CallStaticVoidMethod(dxSymbolClass, addSymbolsMethodId, subscription_, symbolType, pSymbol);
-    env->DeleteLocalRef(pSymbol);
+  int32_t DxSubscription::addSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
+    jclass dxFeedSubscriptionClass = env->GetObjectClass(subscription_);
+    jmethodID addSymbolsMethodId = safeGetMethodID(env, dxFeedSubscriptionClass, "addSymbols",
+                                                         "(Ljava/lang/Object;)V");
+    jobject jSymbol = dxfeed::DxSymbol::toJavaObject(env, pSymbol);
+    if (jSymbol) {
+      env->CallVoidMethod(subscription_, addSymbolsMethodId, jSymbol);
+    }
+    env->DeleteLocalRef(jSymbol);
+    env->DeleteLocalRef(dxFeedSubscriptionClass);
+    return jSymbol ? JNI_OK : JNI_ERR;
   }
 
-  void DxSubscription::setSymbol(JNIEnv* env, dxfg_symbol_type_t symbolType, const std::string& symbol) const {
-    auto dxSymbolClass = dxJni->dxSubscriptionJniClass_;
-    jmethodID setSymbolsMethodId = safeGetStaticMethodID(env, dxSymbolClass, "setSymbol",
-                                                         "(Lcom/dxfeed/api/DXFeedSubscription;ILjava/lang/String;)V");
-    jstring pSymbol = env->NewStringUTF(symbol.c_str());
-    env->CallStaticVoidMethod(dxSymbolClass, setSymbolsMethodId, subscription_, symbolType, pSymbol);
-    env->DeleteLocalRef(pSymbol);
+  int32_t DxSubscription::addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const {
+    int32_t size = symbols->size;
+    jclass objectArrayClass = env->FindClass("Ljava/lang/Object;");
+    jobjectArray array = env->NewObjectArray(size, objectArrayClass, nullptr);
+    for (int i = 0; i < size; ++i) {
+      dxfg_symbol_t* symbol = symbols->elements[i];
+      jobject jSymbol = DxSymbol::toJavaObject(env, symbol);
+      env->SetObjectArrayElement(array, i, jSymbol);
+    }
+
+    jclass dxFeedSubscriptionClass = env->GetObjectClass(subscription_);
+    jmethodID addSymbolsMethodId = safeGetMethodID(env, dxFeedSubscriptionClass, "addSymbols",
+                                                   "([Ljava/lang/Object;)V");
+    
+    env->CallVoidMethod(subscription_, addSymbolsMethodId, array);
+    env->DeleteLocalRef(dxFeedSubscriptionClass);
+    env->DeleteLocalRef(objectArrayClass);
+    env->DeleteLocalRef(array);
+    return JNI_OK;
+  }
+
+  int32_t DxSubscription::setSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
+    jclass dxFeedSubscriptionClass = env->GetObjectClass(subscription_);
+    jmethodID setSymbolsMethodId = safeGetMethodID(env, dxFeedSubscriptionClass, "setSymbols","([Ljava/lang/Object;)V");
+    jobject jSymbol = dxfeed::DxSymbol::toJavaObject(env, pSymbol);
+    if (jSymbol) {
+      env->CallVoidMethod(subscription_, setSymbolsMethodId, jSymbol);
+    }
+    env->DeleteLocalRef(jSymbol);
+    env->DeleteLocalRef(dxFeedSubscriptionClass);
+    return jSymbol ? JNI_OK : JNI_ERR;
   }
 
   void DxSubscription::close(JNIEnv* env) const {

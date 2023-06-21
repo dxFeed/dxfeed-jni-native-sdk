@@ -14,7 +14,7 @@ public class DxFeedJni {
                 ", com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = " + property);
     }
 
-    private static final ConcurrentHashMap<Long, LastingEvent<?>> lastingEventMap = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Long, Object> nativeObjectsMap = new ConcurrentHashMap<>();
     private static final AtomicLong nativeHandleId = new AtomicLong();
 
     public static long nextHandleId() {
@@ -29,7 +29,7 @@ public class DxFeedJni {
             System.out.println("constructor = " + constructor);
             E e = constructor.newInstance(symbol);
             System.out.println("event = " + e);
-            lastingEventMap.put(id, e);
+            nativeObjectsMap.put(id, e);
             return id;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -37,7 +37,7 @@ public class DxFeedJni {
     }
 
     private static void releaseEvent(long nativeHandlerId) {
-        LastingEvent<?> event = lastingEventMap.remove(nativeHandlerId);
+        LastingEvent<?> event = (LastingEvent<?>) nativeObjectsMap.remove(nativeHandlerId);
         if (event != null) {
             System.out.println("DxFeedJni::releaseEvent, nativeHandle = " + nativeHandlerId);
         }
@@ -50,7 +50,7 @@ public class DxFeedJni {
         System.out.println("DxFeedJni::getLastEventIfSubscribed = " + lastEvent);
         if (lastEvent != null) {
             long id = nativeHandleId.incrementAndGet();
-            lastingEventMap.put(id, lastEvent);
+            nativeObjectsMap.put(id, lastEvent);
             return id;
         } else {
             return 0;
@@ -59,11 +59,11 @@ public class DxFeedJni {
 
     private static <E extends LastingEvent<?>> long getLastEvent(DXFeed feed, long nativeHandleId) {
         System.out.println("DxFeedJni::getLastEvent, nativeHandleId = " + nativeHandleId);
-        LastingEvent<?> lastingEvent = lastingEventMap.get(nativeHandleId);
+        LastingEvent<?> lastingEvent = (LastingEvent<?>) nativeObjectsMap.get(nativeHandleId);
         System.out.println("event before getLastEvent = " + lastingEvent);
         feed.getLastEvent(lastingEvent);
         System.out.println("event after getLastEvent = " + lastingEvent);
-        lastingEventMap.put(nativeHandleId, lastingEvent);
+        nativeObjectsMap.put(nativeHandleId, lastingEvent);
         return nativeHandleId;
     }
 }
