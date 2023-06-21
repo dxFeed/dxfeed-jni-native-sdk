@@ -14,7 +14,7 @@ using namespace dxfeed::jni::internal;
 dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, dxfg_symbol_type_t symbolType) {
   auto dxSymbolClass = dxJni->dxSymbolJniClass_;
   jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(env, dxSymbolClass, "newSymbol", "(Ljava/lang/String;I)J");
-  jlong result = env->CallStaticLongMethod(dxSymbolClass, methodId, symbolType);
+  jlong result = env->CallStaticLongMethod(dxSymbolClass, methodId, symbol, symbolType);
   auto dxSymbol = new dxfeed::DxSymbol(symbolType, result);
   return dxfeed::r_cast<dxfg_symbol_t*>(dxSymbol);
 }
