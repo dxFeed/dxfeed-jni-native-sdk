@@ -63,6 +63,20 @@ namespace dxfeed::jni {
     return events;
   }
 
+  dxfg_event_type_t* NativeEventReader::toEvent(char* pByteData, double* pDoubleData, dxfg_event_clazz_t eventType) {
+    switch (eventType) {
+      case DXFG_EVENT_TIME_AND_SALE:
+        return reinterpret_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
+      case DXFG_EVENT_QUOTE:
+        return reinterpret_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
+      case DXFG_EVENT_CANDLE:
+        return reinterpret_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+      default: {
+        return nullptr;
+      }
+    }
+  }
+
   dxfg_time_and_sale_t* NativeEventReader::toTimeAndSale(char* pByteData, double* pDoubleData) {
     auto* quote = new dxfg_time_and_sale_t();
     quote->market_event.event_type.clazz = DXFG_EVENT_TIME_AND_SALE;

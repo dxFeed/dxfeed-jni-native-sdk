@@ -10,6 +10,7 @@
 namespace dxfeed::jni {
   struct NativeEventReader {
     static std::vector<dxfg_event_type_t*> toEvents(int size, char* pByteData, double* pDoubleData, char* pEventTypes);
+    static dxfg_event_type_t* toEvent(char* pByteData, double* pDoubleData, dxfg_event_clazz_t pEventTypes);
   private:
     static dxfg_time_and_sale_t* toTimeAndSale(char* pByteData, double* pDoubleData);
     static dxfg_quote_t* toQuote(char* pByteData, double* pDoubleData);

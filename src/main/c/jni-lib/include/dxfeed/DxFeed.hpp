@@ -9,7 +9,8 @@
 #include "api/dxfg_feed.h"
 
 namespace dxfeed {
-  const char* getEventClassType(dxfg_event_clazz_t eventType);
+  const char* getEventClassType(dxfg_event_type_t eventType);
+  const char* getEventClassType(dxfg_event_clazz_t eventTypeClazz);
   struct DxSubscription;
 
   struct DxFeed {
