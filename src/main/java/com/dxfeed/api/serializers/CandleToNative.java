@@ -3,42 +3,45 @@ package com.dxfeed.api.serializers;
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
 import com.dxfeed.event.candle.Candle;
+import com.dxfeed.event.candle.CandleSymbol;
 
 public class CandleToNative {
     /**
-     * typedef struct dxfg_market_event_t {
-     *     dxfg_event_type_t event_type;
-     *     const char *event_symbol;
-     *     int64_t event_time;
-     * } dxfg_market_event_t;
-     * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
+     * typedef struct dxfg_candle_symbol_t {
+     *   dxfg_symbol_t supper;
+     *   const char* symbol;
+     * } dxfg_candle_symbol_t;
+     *
+     * * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
      * typedef struct dxfg_candle_t {
-     *     dxfg_event_type_t event_type;
-     *     //  dxfg_time_series_event_t time_series_event;
-     *     //  dxfg_lasting_event_t lasting_event;
-     *     int32_t event_flags;
-     *     int64_t index;
-     *     int64_t count;
-     *     double open;
-     *     double high;
-     *     double low;
-     *     double close;
-     *     double volume;
-     *     double vwap;
-     *     double bid_volume;
-     *     double ask_volume;
-     *     double imp_volatility;
-     *     double open_interest;
+     *   dxfg_event_type_t event_type;
+     *   //  dxfg_time_series_event_t time_series_event;
+     *   //  dxfg_lasting_event_t lasting_event;
+     *   dxfg_candle_symbol_t *event_symbol;
+     *   int32_t event_flags;
+     *   int64_t event_time;
+     *   int64_t index;
+     *   int64_t count;
+     *   double open;
+     *   double high;
+     *   double low;
+     *   double close;
+     *   double volume;
+     *   double vwap;
+     *   double bid_volume;
+     *   double ask_volume;
+     *   double imp_volatility;
+     *   double open_interest;
      * } dxfg_candle_t;
      */
 
     // todo: sync about CandleSymbol
     public static void convert(Candle event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-//        CandleSymbol candleSymbol = event.getEventSymbol();
-//        String eventSymbol = candleSymbol.toString();
-//        int eventSymbolLength = eventSymbol.length();
-        long eventTime = event.getEventTime();          // 8
+        CandleSymbol candleSymbol = event.getEventSymbol();
+        String eventSymbol = candleSymbol.toString();
+        int eventSymbolLength = eventSymbol.length();
         int eventFlags = event.getEventFlags();         // 4
+        long eventTime = event.getEventTime();          // 8
         long index = event.getIndex();                  // 8
         long count = event.getCount();                  // 8
         long volume = event.getVolume();                // 8
@@ -46,12 +49,12 @@ public class CandleToNative {
         long askVolume = event.getAskVolume();          // 8
         long openInterest = event.getOpenInterest();    // 8
 
-        int totalSize = /* (2 + eventSymbolLength) */ + (8) + (4) + (8) + (8) + (8) + (8) + (8) + (8);
+        int totalSize = (2 + eventSymbolLength) + (4) + (8) + (8) + (8) + (8) + (8) + (8) + (8);
 
         pBytes.addChunk(chunkIdx, totalSize);
-//        pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
-        pBytes.writeLong(eventTime);            // 8
+        pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
         pBytes.writeInt(eventFlags);            // 4
+        pBytes.writeLong(eventTime);            // 8
         pBytes.writeLong(index);                // 8
         pBytes.writeLong(count);                // 8
         pBytes.writeLong(volume);               // 8
