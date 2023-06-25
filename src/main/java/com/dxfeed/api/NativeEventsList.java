@@ -12,12 +12,12 @@ import com.dxfeed.event.market.TimeAndSale;
 
 import java.util.List;
 
-public class EventsNative {
+public class NativeEventsList {
     private ChunkedByteBuffer pBytes;
     private ChunkedDoubleBuffer pDoubles;
     public byte[] pEventTypes;
 
-    EventsNative(List<EventType<?>> eventList) {
+    NativeEventsList(List<EventType<?>> eventList) {
         int eventCount = eventList.size();
         pBytes = new ChunkedByteBuffer(eventCount);
         pDoubles = new ChunkedDoubleBuffer(eventCount);

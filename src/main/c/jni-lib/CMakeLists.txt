@@ -24,7 +24,7 @@ set(SOURCE_FILES
     src/DxEndpointBuilder.cpp
     src/DxFeed.cpp
     src/DxIndexedEventSource.cpp
-    src/DxLastingEvent.cpp
+    src/DxEventT.cpp
     src/DxSubscription.cpp
     src/DxSymbol.cpp
     src/api/dxfg_api.cpp
@@ -39,6 +39,7 @@ set(SOURCE_FILES
     src/utils/JNIBridgeImpl.cpp
     src/utils/JNIUtils.cpp
     src/utils/LoadJvmLib.cpp
+    src/utils/NativeEventData.cpp
     src/utils/NativeEventReader.cpp
     src/utils/java/DxFeedJniClass.cpp
     src/utils/java/JavaLangClass.cpp
