@@ -12,7 +12,6 @@ namespace dxfeed {
 
   struct DxIndexedEventSource final {
     DxIndexedEventSource(JNIEnv* env, const char* name);
-    DxIndexedEventSource(JNIEnv* env, const int32_t sourceId);
 
     DxIndexedEventSource(const DxIndexedEventSource& other) = delete;
     DxIndexedEventSource(DxIndexedEventSource&& other) = delete;
@@ -23,7 +22,9 @@ namespace dxfeed {
     void release(JNIEnv* env);
 
     static bool isSpecialSourceId(JNIEnv* env, int32_t index);
+    static dxfg_indexed_event_source_t* createByEventType(JNIEnv* env, dxfg_event_type_t* pType);
   private:
+    DxIndexedEventSource(JNIEnv* env, const int32_t sourceId);
     ~DxIndexedEventSource();
 
     dxfg_indexed_event_source_type_t type_;

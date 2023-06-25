@@ -52,8 +52,8 @@ namespace dxfeed::jni {
     return safeGetMethod(env, &JNIEnv::GetMethodID, clazz, methodName, signature);
   }
 
-  jfieldID safeGetStaticFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature) {
-    jfieldID field = env->GetStaticFieldID(clazz, fieldName, signature);
+  jfieldID safeGetFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature) {
+    jfieldID field = env->GetFieldID(clazz, fieldName, signature);
     if (!field) {
       auto errMsg = "Can't find method " + std::string(fieldName) + " with signature " + std::string(signature);
       std::cerr << errMsg << std::endl;

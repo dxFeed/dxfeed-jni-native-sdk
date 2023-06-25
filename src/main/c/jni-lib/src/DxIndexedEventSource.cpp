@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#define __STDC_WANT_LIB_EXT1__ 1
 #include <jni.h>
+#include <sstream>
+#include <iostream>
 
 #include "dxfeed/DxIndexedEventSource.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/DxFeed.hpp"
 
 namespace dxfeed {
   using namespace jni;
@@ -46,7 +50,7 @@ namespace dxfeed {
     name_ = name;
     name[stringUtfLength] = 0;
     const char* utfChars = env->GetStringUTFChars(jName, 0);
-    strcpy_s(name, stringUtfLength, utfChars);
+    strcpy(name, /*stringUtfLength,*/ utfChars); //todo: investigate strcpy_s on unix
     env->ReleaseStringUTFChars(jName, utfChars);
     env->DeleteLocalRef(jName);
 
@@ -79,5 +83,37 @@ namespace dxfeed {
     jmethodID isSpecialSourceIdId = jni::safeGetStaticMethodID(env, dxClass, "isSpecialSourceId", "(I)Z");
     jboolean result = env->CallStaticBooleanMethod(dxClass, isSpecialSourceIdId, index);
     return result;
+  }
+
+  dxfg_indexed_event_source_t* DxIndexedEventSource::createByEventType(JNIEnv* env, dxfg_event_type_t* pEventType) {
+    switch (pEventType->clazz) {
+      case DXFG_EVENT_GREEKS:
+      case DXFG_EVENT_CANDLE:
+      case DXFG_EVENT_DAILY_CANDLE:
+      case DXFG_EVENT_TIME_AND_SALE:
+      case DXFG_EVENT_UNDERLYING:
+      case DXFG_EVENT_THEO_PRICE:
+      case DXFG_EVENT_SERIES: {
+        return dxfg_IndexedEventSource_new(env, nullptr);
+      }
+      case DXFG_EVENT_ORDER_BASE:
+      case DXFG_EVENT_SPREAD_ORDER:
+      case DXFG_EVENT_ORDER:
+      case DXFG_EVENT_ANALYTIC_ORDER: {
+        const auto index = dxfeed::r_cast<dxfg_order_base_t*>(pEventType)->index;
+        int sourceId = static_cast<int32_t>(index >> 48);
+        if (!dxfeed::DxIndexedEventSource::isSpecialSourceId(env, sourceId)) {
+          sourceId = static_cast<int32_t>(index >> 32);
+        }
+        return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, sourceId));
+      }
+      default: {
+        std::stringstream ss{};
+        const char* className = dxfeed::getEventClassType(pEventType->clazz);
+        ss << "ClassCastException(" << className << " is not Class<? extends IndexedEvent>";
+        std::cerr << "Unknown symbol type: " + ss.str();
+        return nullptr;
+      }
+    }
   }
 }

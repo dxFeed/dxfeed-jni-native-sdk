@@ -1,6 +1,8 @@
 package com.dxfeed.api;
 
 import com.dxfeed.event.LastingEvent;
+import com.dxfeed.event.market.Quote;
+import com.sun.tools.javac.util.List;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +16,16 @@ public class DxFeedJni {
                 ", com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = " + property);
     }
 
+    private static class NativeEventData {
+        private final byte[] byteData;
+        private final double[] doubleData;
+
+        public NativeEventData(NativeEventsList nativeEventsList) {
+            byteData = nativeEventsList.byteData();
+            doubleData = nativeEventsList.doubleData();
+        }
+    }
+
     public static final ConcurrentHashMap<Long, Object> nativeObjectsMap = new ConcurrentHashMap<>();
     private static final AtomicLong nativeHandleId = new AtomicLong();
 
@@ -21,49 +33,37 @@ public class DxFeedJni {
         return nativeHandleId.incrementAndGet();
     }
 
-    private static <E extends LastingEvent<?>> long newEvent(Class<E> eventTypeClass, String symbol) {
-        long id = nativeHandleId.incrementAndGet();
-        System.out.println("DxFeedJni::newEvent, nativeHandle = " + id);
-        try {
-            Constructor<E> constructor = eventTypeClass.getConstructor(String.class);
-            System.out.println("constructor = " + constructor);
-            E e = constructor.newInstance(symbol);
-            System.out.println("event = " + e);
-            nativeObjectsMap.put(id, e);
-            return id;
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void releaseEvent(long nativeHandlerId) {
-        LastingEvent<?> event = (LastingEvent<?>) nativeObjectsMap.remove(nativeHandlerId);
-        if (event != null) {
-            System.out.println("DxFeedJni::releaseEvent, nativeHandle = " + nativeHandlerId);
-        }
-    }
-
-    private static <E extends LastingEvent<?>> long getLastEventIfSubscribed(DXFeed feed, Class<E> eventTypeClass,
-                                                                             String symbol)
+    private static <E extends LastingEvent<?>> NativeEventData getLastEventIfSubscribed(DXFeed feed,
+                                                                                        Class<E> eventTypeClass,
+                                                                                        Object symbol)
     {
         E lastEvent = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
         System.out.println("DxFeedJni::getLastEventIfSubscribed = " + lastEvent);
-        if (lastEvent != null) {
-            long id = nativeHandleId.incrementAndGet();
-            nativeObjectsMap.put(id, lastEvent);
-            return id;
-        } else {
-            return 0;
-        }
+        return (lastEvent != null) ? new NativeEventData(new NativeEventsList(List.of(lastEvent))) : null;
     }
 
-    private static <E extends LastingEvent<?>> long getLastEvent(DXFeed feed, long nativeHandleId) {
-        System.out.println("DxFeedJni::getLastEvent, nativeHandleId = " + nativeHandleId);
-        LastingEvent<?> lastingEvent = (LastingEvent<?>) nativeObjectsMap.get(nativeHandleId);
-        System.out.println("event before getLastEvent = " + lastingEvent);
-        feed.getLastEvent(lastingEvent);
-        System.out.println("event after getLastEvent = " + lastingEvent);
-        nativeObjectsMap.put(nativeHandleId, lastingEvent);
-        return nativeHandleId;
+    private static <E extends LastingEvent<?>> NativeEventData getLastEvent(DXFeed feed, Class<E> eventTypeClass,
+                                                                            String eventName)
+    {
+        E event = createEventByClass(eventTypeClass, eventName);
+        System.out.println("event before getLastEvent = " + event);
+        feed.getLastEvent(event);
+        System.out.println("event after getLastEvent = " + event);
+        if (event instanceof Quote) {
+            return new NativeEventData(new NativeEventsList(List.of(event)));
+        }
+        return null;
+    }
+
+    private static <E extends LastingEvent<?>> E createEventByClass(Class<E> eventTypeClass, String eventName) {
+        try {
+            Constructor<E> constructor = eventTypeClass.getConstructor(String.class);
+            System.out.println("constructor = " + constructor);
+            E event = constructor.newInstance(eventName);
+            System.out.println("event = " + event);
+            return event;
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
