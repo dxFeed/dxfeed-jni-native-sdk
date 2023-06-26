@@ -134,10 +134,10 @@ namespace dxfeed::jni {
     auto* quote = new dxfg_candle_t();
     quote->event_type.clazz = DXFG_EVENT_CANDLE;
     int16_t strSize = readInt16_t(&pByteData);
-    quote->event_symbol->symbol = pByteData;
+    quote->event_symbol = pByteData;
     pByteData += strSize;
-    quote->event_flags = readInt(&pByteData);
     quote->event_time = readLong(&pByteData);
+    quote->event_flags = readInt(&pByteData);
     quote->index = readLong(&pByteData);
     quote->count = readLong(&pByteData);
     quote->volume = static_cast<double>(readLong(&pByteData));
