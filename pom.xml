@@ -20,12 +20,12 @@
         <dependency>
             <groupId>com.devexperts.qd</groupId>
             <artifactId>qds</artifactId>
-            <version>3.313</version>
+            <version>3.320</version>
         </dependency>
         <dependency>
             <groupId>com.devexperts.mdd</groupId>
             <artifactId>auther-api</artifactId>
-            <version>442</version>
+            <version>450</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.devexperts.qd</groupId>
