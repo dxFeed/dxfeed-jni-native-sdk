@@ -44,12 +44,8 @@ public class CandleToNative {
         long eventTime = event.getEventTime();          // 8
         long index = event.getIndex();                  // 8
         long count = event.getCount();                  // 8
-        long volume = event.getVolume();                // 8
-        long bidVolume = event.getBidVolume();          // 8
-        long askVolume = event.getAskVolume();          // 8
-        long openInterest = event.getOpenInterest();    // 8
 
-        int totalSize = (2 + eventSymbolLength) + (4) + (8) + (8) + (8) + (8) + (8) + (8) + (8);
+        int totalSize = (2 + eventSymbolLength) + (4) + (8) + (8) + (8);
 
         pBytes.addChunk(chunkIdx, totalSize);
         pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
@@ -57,25 +53,30 @@ public class CandleToNative {
         pBytes.writeLong(eventTime);            // 8
         pBytes.writeLong(index);                // 8
         pBytes.writeLong(count);                // 8
-        pBytes.writeLong(volume);               // 8
-        pBytes.writeLong(bidVolume);            // 8
-        pBytes.writeLong(askVolume);            // 8
-        pBytes.writeLong(openInterest);         // 8
 
         // DOUBLE DATA
         double open = event.getOpen();                      // 1
         double high = event.getHigh();                      // 1
         double low = event.getLow();                        // 1
         double close = event.getClose();                    // 1
+        double volume = event.getVolume();                  // 1
         double vwap = event.getVWAP();                      // 1
+        double bidVolume = event.getBidVolume();            // 1
+        double askVolume = event.getAskVolume();            // 1
         double impVolatility = event.getImpVolatility();    // 1
+        double openInterest = event.getOpenInterest();      // 1
+
         // DOUBLE DATA
-        pDoubles.addChunk(chunkIdx, 6);
+        pDoubles.addChunk(chunkIdx, 10);
         pDoubles.write(open);
         pDoubles.write(high);
         pDoubles.write(low);
         pDoubles.write(close);
+        pDoubles.write(volume);
         pDoubles.write(vwap);
+        pDoubles.write(bidVolume);
+        pDoubles.write(askVolume);
         pDoubles.write(impVolatility);
+        pDoubles.write(openInterest);
     }
 }

@@ -36,12 +36,10 @@ public class QuoteToNative {
         int timeNanoPart = event.getTimeNanoPart();                                                     // 4
         long bidTime = event.getBidTime();                                                              // 8
         char bidExchangeCode = event.getBidExchangeCode();                                              // 2
-        long bidSize = event.getBidSize();                                                              // 8
         long askTime = event.getAskTime();                                                              // 8
         char askExchangeCode = event.getAskExchangeCode();                                              // 2
-        long askSize = event.getAskSize();                                                              // 8
 
-        int totalSize = (2 + eventSymbolLength) + (8) + (4) + (4) + (8) + (2) + (8) + (8) + (2) + (8);
+        int totalSize = (2 + eventSymbolLength + 1) + (8) + (4) + (4) + (8) + (2) + (8) + (2);
 
         pBytes.addChunk(chunkIdx, totalSize);
         pBytes.writeString(eventSymbol);            // 2 + eventSymbolLength
@@ -50,17 +48,20 @@ public class QuoteToNative {
         pBytes.writeInt(timeNanoPart);              // 4
         pBytes.writeLong(bidTime);                  // 8
         pBytes.writeChar(bidExchangeCode);          // 2
-        pBytes.writeLong(bidSize);                  // 8
         pBytes.writeLong(askTime);                  // 8
         pBytes.writeChar(askExchangeCode);          // 2
-        pBytes.writeLong(askSize);                  // 8
 
         // DOUBLE DATA
         double bidPrice = event.getBidPrice();  // 1
+        double bidSize = event.getBidSize();    // 1
         double askPrice = event.getAskPrice();  // 1
+        double askSize = event.getAskSize();    // 1
+
         // DOUBLE DATA
-        pDoubles.addChunk(chunkIdx, 2);
+        pDoubles.addChunk(chunkIdx, 4);
         pDoubles.write(bidPrice);
+        pDoubles.write(bidSize);
         pDoubles.write(askPrice);
+        pDoubles.write(askSize);
     }
 }

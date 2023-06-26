@@ -7,8 +7,8 @@ public class DxFeedEventMarket {
         }
     }
 
-    public static class TradePackagePrivate {
-        public static int getFlags(Trade event) {
+    public static class TradeBasePackagePrivate {
+        public static int getFlags(TradeBase event) {
             return event.getFlags(); // package private method
         }
     }
