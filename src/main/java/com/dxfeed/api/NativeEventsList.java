@@ -2,13 +2,13 @@ package com.dxfeed.api;
 
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
-import com.dxfeed.api.serializers.CandleToNative;
-import com.dxfeed.api.serializers.QuoteToNative;
-import com.dxfeed.api.serializers.TimeAndSalesToNative;
+import com.dxfeed.api.serializers.*;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
+import com.dxfeed.event.market.Profile;
 import com.dxfeed.event.market.Quote;
 import com.dxfeed.event.market.TimeAndSale;
+import com.dxfeed.event.market.Trade;
 
 import java.util.List;
 
@@ -33,6 +33,14 @@ public class NativeEventsList {
             } else if (event instanceof Candle) {
                 pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CANDLE.eventOrdinal();
                 CandleToNative.convert((Candle) event, pBytes, pDoubles, i);
+            } else if (event instanceof Trade) {
+                pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TRADE.eventOrdinal();
+                TradeToNative.convert((Trade) event, pBytes, pDoubles, i);
+            } else if (event instanceof Profile) {
+                pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_PROFILE.eventOrdinal();
+                ProfileToNative.convert((Profile) event, pBytes, pDoubles, i);
+            } else {
+                throw new IllegalStateException("Event mapping for " + event.getClass().getName() + " is not implemented");
             }
         }
     }

@@ -12,7 +12,7 @@ public class CandleToNative {
      *   const char* symbol;
      * } dxfg_candle_symbol_t;
      *
-     * * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
+     * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
      * typedef struct dxfg_candle_t {
      *   dxfg_event_type_t event_type;
      *   //  dxfg_time_series_event_t time_series_event;
