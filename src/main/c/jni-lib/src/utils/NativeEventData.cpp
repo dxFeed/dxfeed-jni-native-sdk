@@ -28,17 +28,17 @@ namespace dxfeed::jni {
     auto byteArray = r_cast<jbyteArray>(env_->GetObjectField(nativeEventData, byteData_));
     auto doubleArray = r_cast<jdoubleArray>(env_->GetObjectField(nativeEventData, doubleData_));
     
-    auto byteData = r_cast<char*>(env_->GetPrimitiveArrayCritical(byteArray, 0));
-    auto doubleData = r_cast<double*>(env_->GetPrimitiveArrayCritical(doubleArray, 0));
+    auto byteData = r_cast<const char*>(env_->GetPrimitiveArrayCritical(byteArray, 0));
+    auto doubleData = r_cast<const double*>(env_->GetPrimitiveArrayCritical(doubleArray, 0));
 
     // return newEventType via arg-pointer
     dxfg_event_type_t* pEventType = *ppEventType;
-    dxfg_event_type_t* pType = jni::NativeEventReader::toEvent(byteData, doubleData, pEventType->clazz);
+    dxfg_event_type_t* pType = jni::NativeEventReader::toEvent(&byteData, &doubleData, pEventType->clazz);
     delete pEventType;
     *ppEventType = pType;
 
-    env_->ReleasePrimitiveArrayCritical(byteArray, r_cast<void*>(byteData), 0);
-    env_->ReleasePrimitiveArrayCritical(doubleArray, r_cast<void*>(doubleData), 0);
+    env_->ReleasePrimitiveArrayCritical(byteArray, const_cast<char*>(byteData), 0);
+    env_->ReleasePrimitiveArrayCritical(doubleArray, const_cast<double*>(doubleData), 0);
     env_->DeleteLocalRef(doubleArray);
     env_->DeleteLocalRef(byteArray);
   }

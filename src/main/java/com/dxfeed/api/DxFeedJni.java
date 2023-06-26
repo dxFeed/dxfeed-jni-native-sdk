@@ -2,10 +2,10 @@ package com.dxfeed.api;
 
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.market.Quote;
-import com.sun.tools.javac.util.List;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 

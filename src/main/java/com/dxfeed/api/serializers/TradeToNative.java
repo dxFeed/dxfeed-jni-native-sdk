@@ -3,7 +3,7 @@ package com.dxfeed.api.serializers;
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarket;
-import com.dxfeed.event.market.Trade;
+import com.dxfeed.event.market.TradeBase;
 
 public class TradeToNative {
     /**
@@ -29,17 +29,17 @@ public class TradeToNative {
      *   int32_t flags;
      * } dxfg_trade_base_t;
      */
-    public static void convert(Trade event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
+    public static void convert(TradeBase event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
         String eventSymbol = event.getEventSymbol();
         int eventSymbolLength = eventSymbol.length();
-        long eventTime = event.getEventTime();                              // 8
-        long timeSequence = event.getTimeSequence();                        // 8
-        int timeNanoPart = event.getTimeNanoPart();                         // 4
-        char exchangeCode = event.getExchangeCode();                        // 2
-        int dayId = event.getDayId();                                       // 4
-        int flags = DxFeedEventMarket.TradePackagePrivate.getFlags(event);  // 4
+        long eventTime = event.getEventTime();                                  // 8
+        long timeSequence = event.getTimeSequence();                            // 8
+        int timeNanoPart = event.getTimeNanoPart();                             // 4
+        char exchangeCode = event.getExchangeCode();                            // 2
+        int dayId = event.getDayId();                                           // 4
+        int flags = DxFeedEventMarket.TradeBasePackagePrivate.getFlags(event);  // 4
 
-        int totalSize = (2 + eventSymbolLength) + (8) + (8) + (4) + (2) + (4) + (4);
+        int totalSize = (2 + eventSymbolLength + 1) + (8) + (8) + (4) + (2) + (4) + (4);
 
         pBytes.addChunk(chunkIdx, totalSize);
         pBytes.writeString(eventSymbol);    // 2 + eventSymbolLength
