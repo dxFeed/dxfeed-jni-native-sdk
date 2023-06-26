@@ -50,15 +50,15 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
                                                                     jdoubleArray jDoubles, jbyteArray jEventTypes,
                                                                     jlong jUserCallback, jlong jUserData)
 {
-  auto pByteData = (char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
-  auto pDoubleData = (double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
-  auto pEventTypes = (char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
+  auto pByteData = (const char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
+  auto pDoubleData = (const double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
+  auto pEventTypes = (const char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
 
   const auto& events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
 
-  env->ReleasePrimitiveArrayCritical(jDoubles, pDoubleData, 0);
-  env->ReleasePrimitiveArrayCritical(jBytes, pByteData, 0);
-  env->ReleasePrimitiveArrayCritical(jEventTypes, pEventTypes, 0);
+  env->ReleasePrimitiveArrayCritical(jDoubles, const_cast<double*>(pDoubleData), 0);
+  env->ReleasePrimitiveArrayCritical(jBytes, const_cast<char*>(pByteData), 0);
+  env->ReleasePrimitiveArrayCritical(jEventTypes, const_cast<char*>(pEventTypes), 0);
 
   auto pListener = reinterpret_cast<dxfg_feed_event_listener_function>(jUserCallback);
   auto userData = reinterpret_cast<void*>(jUserData);

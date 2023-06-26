@@ -1,6 +1,7 @@
 package com.dxfeed.api.buffers;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkedByteBuffer {
@@ -31,8 +32,15 @@ public class ChunkedByteBuffer {
         if (value == null || value.length() == 0) {
             writeShort((short)0); // 0 as empty str
         } else {
-            writeShort((short)value.length());
-            byte[] strBytes = cacheStringToBytes.computeIfAbsent(value, k -> value.getBytes(StandardCharsets.UTF_8));
+            writeShort((short)(value.length() + 1));
+            byte[] strBytes = cacheStringToBytes.computeIfAbsent(value, k -> {
+                byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+                byte[] result = new byte[bytes.length + 1];
+                result[bytes.length] = 0;
+                System.arraycopy(bytes, 0, result, 0, bytes.length);
+                System.out.println("string = " +  value + ", result = " + Arrays.toString(result));
+                return result;
+            });
             writeBytes(strBytes);
         }
     }
@@ -42,26 +50,26 @@ public class ChunkedByteBuffer {
     }
 
     public void writeShort(short value) {
-        data[pos++] = (byte) value;
-        data[pos++] = (byte) (value >> 8);
+        data[pos++] = (byte) (value & 0x00FF);
+        data[pos++] = (byte) ((value & 0xFF00) >> 8);
     }
 
     public void writeChar(char value) {
-        data[pos++] = (byte) value;
-        data[pos++] = (byte) (value >> 8);
+        data[pos++] = (byte) (value & 0x00FF);
+        data[pos++] = (byte) ((value & 0xFF00) >> 8);
     }
 
     public void writeInt(int value) {
-        data[pos++] = (byte) value;
-        data[pos++] = (byte) (value >> 8);
-        data[pos++] = (byte) (value >> 16);
-        data[pos++] = (byte) (value >> 24);
+        for (int i = 0; i < 4; i++) {
+            data[pos++] = (byte) (value & 0xFF);
+            value >>= 8;
+        }
     }
 
     public void writeLong(long value) {
         for (int i = 0; i < 8; i++) {
-            data[pos++] = (byte) value;
-            value = value >> 8;
+            data[pos++] = (byte) (value & 0xFF);
+            value >>= 8;
         }
     }
 
@@ -77,8 +85,6 @@ public class ChunkedByteBuffer {
             System.arraycopy(buffer, 0, result, pos, buffer.length);
             pos += buffer.length;
         }
-        totalSize = 0;
-        data = null;
         return result;
     }
 }
