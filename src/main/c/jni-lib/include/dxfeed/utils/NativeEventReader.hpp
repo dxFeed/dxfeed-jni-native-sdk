@@ -15,6 +15,8 @@ namespace dxfeed::jni {
     static dxfg_time_and_sale_t* toTimeAndSale(char* pByteData, double* pDoubleData);
     static dxfg_quote_t* toQuote(char* pByteData, double* pDoubleData);
     static dxfg_candle_t* toCandle(char* pByteData, double* pDoubleData);
+    static dxfg_trade_t* toTrade(char* pByteData, double* pDoubleData);
+    static dxfg_profile_t* toProfile(char* pByteData, double* pDoubleData);
   };
 }
 

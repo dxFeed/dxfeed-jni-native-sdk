@@ -124,6 +124,30 @@ typedef struct dxfg_quote_t {
 } dxfg_quote_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Profile.html">Javadoc</a>
+ */
+typedef struct dxfg_profile_t {
+  dxfg_market_event_t market_event;
+  //    dxfg_lasting_event_t lasting_event;
+  const char *description;
+  const char *status_reason;
+  int64_t halt_start_time;
+  int64_t halt_end_time;
+  double high_limit_price;
+  double low_limit_price;
+  double high_52_week_price;
+  double low_52_week_price;
+  double beta;
+  double earnings_per_share;
+  double dividend_frequency;
+  double ex_dividend_amount;
+  int32_t ex_dividend_day_id;
+  double shares;
+  double free_float;
+  int32_t flags;
+} dxfg_profile_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html">Javadoc</a>
  */
 typedef struct dxfg_candle_t {
@@ -146,6 +170,31 @@ typedef struct dxfg_candle_t {
   double imp_volatility;
   double open_interest;
 } dxfg_candle_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeBase.html">Javadoc</a>
+ */
+typedef struct dxfg_trade_base_t {
+  dxfg_market_event_t market_event;
+  //    dxfg_lasting_event_t lasting_event;
+  int64_t time_sequence;
+  int32_t time_nano_part;
+  int16_t exchange_code;
+  double price;
+  double change;
+  double size;
+  int32_t day_id;
+  double day_volume;
+  double day_turnover;
+  int32_t flags;
+} dxfg_trade_base_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Trade.html">Javadoc</a>
+ */
+typedef struct dxfg_trade_t {
+  dxfg_trade_base_t trade_base;
+} dxfg_trade_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html">Javadoc</a>
