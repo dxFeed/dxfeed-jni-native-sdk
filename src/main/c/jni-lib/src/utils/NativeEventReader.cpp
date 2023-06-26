@@ -2,6 +2,7 @@
 
 
 #include "dxfeed/utils/NativeEventReader.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
   template <typename T>
@@ -42,23 +43,20 @@ namespace dxfeed::jni {
     return value;
   }
 
+  inline const char* readString(char** pData) {
+    int16_t strSize = readInt16_t(pData);
+    const auto result = strSize ? *pData : "";
+    (*pData) += strSize;
+    return result;
+  }
+
   std::vector<dxfg_event_type_t*> NativeEventReader::toEvents(int size, char* pByteData, double* pDoubleData,
                                                               char* pEventTypes)
   {
     std::vector<dxfg_event_type_t*> events(size);
     for (int i = 0 ; i < size; ++i) {
       auto eventType = static_cast<dxfg_event_clazz_t>(readByte(&pEventTypes));
-      switch (eventType) {
-        case DXFG_EVENT_TIME_AND_SALE:
-          events[i] = reinterpret_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
-          break;
-        case DXFG_EVENT_QUOTE:
-          events[i] = reinterpret_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
-          break;
-        case DXFG_EVENT_CANDLE:
-          events[i] = reinterpret_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
-          break;
-      }
+      events[i] = toEvent(pByteData, pDoubleData, eventType);
     }
     return events;
   }
@@ -66,11 +64,15 @@ namespace dxfeed::jni {
   dxfg_event_type_t* NativeEventReader::toEvent(char* pByteData, double* pDoubleData, dxfg_event_clazz_t eventType) {
     switch (eventType) {
       case DXFG_EVENT_TIME_AND_SALE:
-        return reinterpret_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
+        return dxfeed::r_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
       case DXFG_EVENT_QUOTE:
-        return reinterpret_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
+        return dxfeed::r_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
       case DXFG_EVENT_CANDLE:
-        return reinterpret_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+        return dxfeed::r_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+      case DXFG_EVENT_TRADE:
+        return dxfeed::r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
+      case DXFG_EVENT_PROFILE:
+        return dxfeed::r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
       default: {
         return nullptr;
       }
@@ -80,9 +82,7 @@ namespace dxfeed::jni {
   dxfg_time_and_sale_t* NativeEventReader::toTimeAndSale(char* pByteData, double* pDoubleData) {
     auto* quote = new dxfg_time_and_sale_t();
     quote->market_event.event_type.clazz = DXFG_EVENT_TIME_AND_SALE;
-    int16_t strSize = readInt16_t(&pByteData);
-    quote->market_event.event_symbol = pByteData;
-    pByteData += strSize;
+    quote->market_event.event_symbol = readString(&pByteData);
     quote->market_event.event_time = readLong(&pByteData);
     quote->event_flags = readInt(&pByteData);
     quote->index = readLong(&pByteData);
@@ -91,17 +91,9 @@ namespace dxfeed::jni {
     quote->size = static_cast<double>(readLong(&pByteData));
     quote->flags = readInt(&pByteData);
 
-    strSize = readInt16_t(&pByteData);
-    quote->exchange_sale_conditions = strSize ? pByteData : "";
-    pByteData += strSize;
-
-    strSize = readInt16_t(&pByteData);
-    quote->buyer = strSize ? pByteData : "";
-    pByteData += strSize;
-
-    strSize = readInt16_t(&pByteData);
-    quote->seller = strSize ? pByteData : "";
-    pByteData += strSize;
+    quote->exchange_sale_conditions = readString(&pByteData);
+    quote->buyer = readString(&pByteData);
+    quote->seller = readString(&pByteData);
 
     quote->price = readDouble(&pDoubleData);
     quote->bid_price = readDouble(&pDoubleData);
@@ -112,9 +104,7 @@ namespace dxfeed::jni {
   dxfg_quote_t* NativeEventReader::toQuote(char* pByteData, double* pDoubleData) {
     auto* quote = new dxfg_quote_t();
     quote->market_event.event_type.clazz = DXFG_EVENT_QUOTE;
-    int16_t strSize = readInt16_t(&pByteData);
-    quote->market_event.event_symbol = pByteData;
-    pByteData += strSize;
+    quote->market_event.event_symbol = readString(&pByteData);
     quote->market_event.event_time = readLong(&pByteData);
     quote->time_millis_sequence = readInt(&pByteData);
     quote->time_nano_part = readInt(&pByteData);
@@ -133,9 +123,7 @@ namespace dxfeed::jni {
   dxfg_candle_t* NativeEventReader::toCandle(char* pByteData, double* pDoubleData) {
     auto* quote = new dxfg_candle_t();
     quote->event_type.clazz = DXFG_EVENT_CANDLE;
-    int16_t strSize = readInt16_t(&pByteData);
-    quote->event_symbol = pByteData;
-    pByteData += strSize;
+    quote->event_symbol = readString(&pByteData);
     quote->event_time = readLong(&pByteData);
     quote->event_flags = readInt(&pByteData);
     quote->index = readLong(&pByteData);
@@ -152,5 +140,51 @@ namespace dxfeed::jni {
     quote->vwap = readDouble(&pDoubleData);
     quote->imp_volatility = readDouble(&pDoubleData);
     return quote;
+  }
+
+  dxfg_trade_t* NativeEventReader::toTrade(char* pByteData, double* pDoubleData) {
+    auto* trade = new dxfg_trade_t();
+    trade->trade_base.market_event.event_type.clazz = DXFG_EVENT_TRADE;
+    trade->trade_base.market_event.event_symbol = readString(&pByteData);
+    trade->trade_base.market_event.event_time = readLong(&pByteData);
+
+    trade->trade_base.time_sequence = readLong(&pByteData);
+    trade->trade_base.time_nano_part = readInt(&pByteData);
+    trade->trade_base.exchange_code = readInt16_t(&pByteData);
+    trade->trade_base.day_id = readInt(&pByteData);
+    trade->trade_base.flags = readInt(&pByteData);
+
+    trade->trade_base.price = readDouble(&pDoubleData);
+    trade->trade_base.change = readDouble(&pDoubleData);
+    trade->trade_base.size = readDouble(&pDoubleData);
+    trade->trade_base.day_volume = readDouble(&pDoubleData);
+    trade->trade_base.day_turnover = readDouble(&pDoubleData);
+    return trade;
+  }
+
+  dxfg_profile_t* NativeEventReader::toProfile(char* pByteData, double* pDoubleData) {
+    auto* profile = new dxfg_profile_t();
+    profile->market_event.event_type.clazz = DXFG_EVENT_PROFILE;
+    profile->market_event.event_symbol = readString(&pByteData);
+    profile->market_event.event_time = readLong(&pByteData);
+
+    profile->halt_start_time = readLong(&pByteData);
+    profile->halt_end_time = readLong(&pByteData);
+    profile->ex_dividend_day_id = readInt(&pByteData);
+    profile->flags = readInt(&pByteData);
+    profile->description = readString(&pByteData);
+    profile->status_reason = readString(&pByteData);
+
+    profile->high_limit_price = readDouble(&pDoubleData);
+    profile->low_limit_price = readDouble(&pDoubleData);
+    profile->high_52_week_price = readDouble(&pDoubleData);
+    profile->low_52_week_price = readDouble(&pDoubleData);
+    profile->beta = readDouble(&pDoubleData);
+    profile->earnings_per_share = readDouble(&pDoubleData);
+    profile->dividend_frequency = readDouble(&pDoubleData);
+    profile->ex_dividend_amount = readDouble(&pDoubleData);
+    profile->shares = readDouble(&pDoubleData);
+    profile->free_float = readDouble(&pDoubleData);
+    return profile;
   }
 }
