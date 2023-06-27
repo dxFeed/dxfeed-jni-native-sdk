@@ -38,25 +38,25 @@ public class ChunkedByteBuffer {
 
     public void writeShort(short value) {
         data[pos++] = (byte) (value & 0x00FF);
-        data[pos++] = (byte) ((value & 0xFF00) >> 8);
+        data[pos++] = (byte) ((value & 0xFF00) >> Byte.SIZE);
     }
 
     public void writeChar(char value) {
         data[pos++] = (byte) (value & 0x00FF);
-        data[pos++] = (byte) ((value & 0xFF00) >> 8);
+        data[pos++] = (byte) ((value & 0xFF00) >> Byte.SIZE);
     }
 
     public void writeInt(int value) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < Integer.BYTES; i++) {
             data[pos++] = (byte) (value & 0xFF);
-            value >>= 8;
+            value >>= Byte.SIZE;
         }
     }
 
     public void writeLong(long value) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < Long.BYTES; i++) {
             data[pos++] = (byte) (value & 0xFF);
-            value >>= 8;
+            value >>= Byte.SIZE;
         }
     }
 
