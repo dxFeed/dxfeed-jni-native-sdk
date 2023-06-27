@@ -39,10 +39,9 @@ public class TimeAndSalesToNative {
         long index = event.getIndex();                                              // 8
         int timeNanoPart = event.getTimeNanoPart();                                 // 4
         char exchangeCode = event.getExchangeCode();                                // 2
-        long quoteSize = event.getSize();                                           // 8
         int flags = DxFeedEventMarket.TimeAndSalePackagePrivate.getFlags(event);    // 4
 
-        int totalSize = (2 + eventSymbolLength) + (8) + (4) + (8) + (4) + (2) + (8) + (4) + (2 + 2 + 2);
+        int totalSize = (2 + eventSymbolLength) + (8) + (4) + (8) + (4) + (2) + (4) + (2 + 2 + 2);
         String exchangeSaleConditions = event.getExchangeSaleConditions();
         if (exchangeSaleConditions != null) {
             totalSize += exchangeSaleConditions.length();
@@ -63,18 +62,19 @@ public class TimeAndSalesToNative {
         pBytes.writeLong(index);                    // 8
         pBytes.writeInt(timeNanoPart);              // 4
         pBytes.writeChar(exchangeCode);             // 2
-        pBytes.writeLong(quoteSize);                // 8
         pBytes.writeInt(flags);                     // 4
         pBytes.writeString(exchangeSaleConditions); // 2 + exchangeSaleConditionsLength
         pBytes.writeString(buyer);                  // 2 +  buyerLength
         pBytes.writeString(seller);                 // 2 +  sellerLength
 
         double price = event.getPrice();        // 1
+        double size = event.getSize();          // 1
         double bidPrice = event.getBidPrice();  // 1
         double askPrice = event.getAskPrice();  // 1
         // DOUBLE DATA
-        pDoubles.addChunk(eventIdx, 3);
+        pDoubles.addChunk(eventIdx, 4);
         pDoubles.write(price);
+        pDoubles.write(size);
         pDoubles.write(bidPrice);
         pDoubles.write(askPrice);
     }
