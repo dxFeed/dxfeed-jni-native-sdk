@@ -6,10 +6,10 @@
 
 namespace dxfeed::jni {
   const char* getJavaHome(VMOptions* params) {
-    const char* javaHome = std::getenv(dxfeed::jni::JAVA_HOME);
+    const char* javaHome = std::getenv(JAVA_HOME);
     const char* msg = "Use JAVA_HOME from ENV: ";
     if (params) {
-      auto javaHomeCustom = reinterpret_cast<dxfeed::jni::VMOptions*>(params)->javaHome;
+      auto javaHomeCustom = r_cast<VMOptions*>(params)->javaHome;
       if (javaHomeCustom) {
         msg = "Use custom JAVA_HOME from VmOptions: ";
         javaHome = javaHomeCustom;

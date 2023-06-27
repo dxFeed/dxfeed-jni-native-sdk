@@ -5,15 +5,11 @@
 #include <sstream>
 
 #include "dxfeed/utils/LoadJvmLib.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace fs = std::filesystem;
 
 namespace dxfeed::jni::internal {
-  template <class TargetType, class InitialType>
-  constexpr inline TargetType r_cast(InitialType arg) {
-    return reinterpret_cast<TargetType>(arg);
-  }
-
   CreateJavaVM_t fCreateJavaVM = nullptr;
 
   template <typename CharT>

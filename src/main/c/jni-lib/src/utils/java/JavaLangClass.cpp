@@ -18,7 +18,7 @@ namespace dxfeed::jni {
     auto clazzObject = env->GetObjectClass(jObject);
     std::string result;
     if (clazzObject) {
-      auto name = reinterpret_cast<jstring>(env->CallObjectMethod(clazzObject, getNameMethodId));
+      auto name = r_cast<jstring>(env->CallObjectMethod(clazzObject, getNameMethodId));
       if (name) {
         const char* data = env->GetStringUTFChars(name, nullptr);
         result = data;

@@ -14,7 +14,7 @@ namespace dxfeed {
   }
 
   DxEndpoint::~DxEndpoint() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(dxEndpoint_);
+    jni::internal::jniEnv->DeleteGlobalRef(dxEndpoint_);
   }
 
   int32_t DxEndpoint::connect(JNIEnv* env, const char* address) {
