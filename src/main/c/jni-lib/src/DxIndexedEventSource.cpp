@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#define __STDC_WANT_LIB_EXT1__ 1
 #include <jni.h>
 #include <sstream>
 #include <iostream>
@@ -50,7 +49,7 @@ namespace dxfeed {
     name_ = name;
     name[stringUtfLength] = 0;
     const char* utfChars = env->GetStringUTFChars(jName, 0);
-    strcpy(name, /*stringUtfLength,*/ utfChars); //todo: investigate strcpy_s on unix
+    memcpy(name, utfChars, stringUtfLength);
     env->ReleaseStringUTFChars(jName, utfChars);
     env->DeleteLocalRef(jName);
 
