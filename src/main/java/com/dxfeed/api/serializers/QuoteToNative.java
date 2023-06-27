@@ -29,8 +29,7 @@ public class QuoteToNative {
      * } dxfg_quote_t;
      */
     public static void convert(Quote event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-        String eventSymbol = event.getEventSymbol();
-        int eventSymbolLength = eventSymbol.length();
+        CString eventSymbol = new CString(event.getEventSymbol());
         long eventTime = event.getEventTime();                                                          // 8
         int timeMillisSequence = DxFeedEventMarket.QuotePackagePrivate.getTimeMillisSequence(event);    // 4
         int timeNanoPart = event.getTimeNanoPart();                                                     // 4
@@ -39,7 +38,7 @@ public class QuoteToNative {
         long askTime = event.getAskTime();                                                              // 8
         char askExchangeCode = event.getAskExchangeCode();                                              // 2
 
-        int totalSize = (2 + eventSymbolLength + 1) + (8) + (4) + (4) + (8) + (2) + (8) + (2);
+        int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (4) + (8) + (2) + (8) + (2);
 
         pBytes.addChunk(chunkIdx, totalSize);
         pBytes.writeString(eventSymbol);            // 2 + eventSymbolLength

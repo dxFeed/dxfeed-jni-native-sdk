@@ -36,33 +36,27 @@ public class ProfileToNative {
      *  } dxfg_profile_t;
      */
     public static void convert(Profile event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-        String eventSymbol = event.getEventSymbol();
-        int eventSymbolLength = eventSymbol.length();                           // 2
+        CString eventSymbol = new CString(event.getEventSymbol());
         long eventTime = event.getEventTime();                                  // 8
         long haltStartTime = event.getHaltStartTime();                          // 8
         long haltEndTime = event.getHaltEndTime();                              // 8
         int exDividendDayId = event.getExDividendDayId();                       // 4
         int flags = DxFeedEventMarket.ProfilePackagePrivate.getFlags(event);    // 4
+        CString description = new CString(event.getDescription());
+        CString statusReason = new CString(event.getStatusReason());
 
-        int totalSize = (2 + eventSymbolLength) + (8) + (8) + (8) + (4) + (4) + (2 + 2);
-        String description = event.getDescription();
-        if (description != null) {
-            totalSize += description.length();
-        }
-        String statusReason = event.getStatusReason();
-        if (statusReason != null) {
-            totalSize += statusReason.length();
-        }
+        int totalSize = eventSymbol.totalAllocatedBytes + (8) + (8) + (8) + (4) + (4) +
+                description.totalAllocatedBytes + statusReason.totalAllocatedBytes;
 
         pBytes.addChunk(chunkIdx, totalSize);
-        pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
+        pBytes.writeString(eventSymbol);
         pBytes.writeLong(eventTime);            // 8
         pBytes.writeLong(haltStartTime);        // 8
         pBytes.writeLong(haltEndTime);          // 8
         pBytes.writeInt(exDividendDayId);       // 4
         pBytes.writeInt(flags);                 // 4
-        pBytes.writeString(description);        // 2 + eventSymbolLength
-        pBytes.writeString(statusReason);       // 2 + eventSymbolLength
+        pBytes.writeString(description);
+        pBytes.writeString(statusReason);
 
         // DOUBLE DATA
         double highLimitPrice = event.getHighLimitPrice();          // 1
