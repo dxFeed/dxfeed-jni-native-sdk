@@ -30,8 +30,7 @@ public class TradeToNative {
      * } dxfg_trade_base_t;
      */
     public static void convert(TradeBase event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-        String eventSymbol = event.getEventSymbol();
-        int eventSymbolLength = eventSymbol.length();
+        CString eventSymbol = new CString(event.getEventSymbol());
         long eventTime = event.getEventTime();                                  // 8
         long timeSequence = event.getTimeSequence();                            // 8
         int timeNanoPart = event.getTimeNanoPart();                             // 4
@@ -39,10 +38,10 @@ public class TradeToNative {
         int dayId = event.getDayId();                                           // 4
         int flags = DxFeedEventMarket.TradeBasePackagePrivate.getFlags(event);  // 4
 
-        int totalSize = (2 + eventSymbolLength + 1) + (8) + (8) + (4) + (2) + (4) + (4);
+        int totalSize = eventSymbol.totalAllocatedBytes + (8) + (8) + (4) + (2) + (4) + (4);
 
         pBytes.addChunk(chunkIdx, totalSize);
-        pBytes.writeString(eventSymbol);    // 2 + eventSymbolLength
+        pBytes.writeString(eventSymbol);
         pBytes.writeLong(eventTime);        // 8
         pBytes.writeLong(timeSequence);     // 8
         pBytes.writeInt(timeNanoPart);      // 4

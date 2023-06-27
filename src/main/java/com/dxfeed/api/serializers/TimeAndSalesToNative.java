@@ -32,40 +32,31 @@ public class TimeAndSalesToNative {
      */
 
     public static void convert(TimeAndSale event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int eventIdx) {
-        String eventSymbol = event.getEventSymbol();
-        int eventSymbolLength = eventSymbol.length();
+        CString eventSymbol = new CString(event.getEventSymbol());
         long eventTime = event.getEventTime();                                      // 8
         int eventFlags = event.getEventFlags();                                     // 4
         long index = event.getIndex();                                              // 8
         int timeNanoPart = event.getTimeNanoPart();                                 // 4
         char exchangeCode = event.getExchangeCode();                                // 2
         int flags = DxFeedEventMarket.TimeAndSalePackagePrivate.getFlags(event);    // 4
+        CString exchangeSaleConditions = new CString(event.getExchangeSaleConditions());
+        CString buyer = new CString(event.getBuyer());
+        CString seller = new CString(event.getSeller());
 
-        int totalSize = (2 + eventSymbolLength) + (8) + (4) + (8) + (4) + (2) + (4) + (2 + 2 + 2);
-        String exchangeSaleConditions = event.getExchangeSaleConditions();
-        if (exchangeSaleConditions != null) {
-            totalSize += exchangeSaleConditions.length();
-        }
-        String buyer = event.getBuyer();
-        if (buyer != null) {
-            totalSize += buyer.length();
-        }
-        String seller = event.getSeller();
-        if (seller != null) {
-            totalSize += seller.length();
-        }
+        int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (4) + (2) + (4) +
+                exchangeSaleConditions.totalAllocatedBytes + buyer.totalAllocatedBytes + seller.totalAllocatedBytes;
 
         pBytes.addChunk(eventIdx, totalSize);
-        pBytes.writeString(eventSymbol);            // 2 + eventSymbolLength
+        pBytes.writeString(eventSymbol);
         pBytes.writeLong(eventTime);                // 8
         pBytes.writeInt(eventFlags);                // 4
         pBytes.writeLong(index);                    // 8
         pBytes.writeInt(timeNanoPart);              // 4
         pBytes.writeChar(exchangeCode);             // 2
         pBytes.writeInt(flags);                     // 4
-        pBytes.writeString(exchangeSaleConditions); // 2 + exchangeSaleConditionsLength
-        pBytes.writeString(buyer);                  // 2 +  buyerLength
-        pBytes.writeString(seller);                 // 2 +  sellerLength
+        pBytes.writeString(exchangeSaleConditions);
+        pBytes.writeString(buyer);
+        pBytes.writeString(seller);
 
         double price = event.getPrice();        // 1
         double size = event.getSize();          // 1

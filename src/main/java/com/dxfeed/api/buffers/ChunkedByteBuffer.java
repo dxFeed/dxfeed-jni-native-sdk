@@ -1,11 +1,8 @@
 package com.dxfeed.api.buffers;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
+import com.dxfeed.api.serializers.CString;
 
 public class ChunkedByteBuffer {
-    private final static ConcurrentHashMap<String, byte[]> cacheStringToBytes = new ConcurrentHashMap<>();
     private int pos = 0;
     private int totalSize = 0;
     private byte[][] byteChunks;
@@ -28,20 +25,10 @@ public class ChunkedByteBuffer {
         totalSize += chunkSizeInBytes;
     }
 
-    public void writeString(String value) {
-        if (value == null || value.length() == 0) {
-            writeShort((short)0); // 0 as empty str
-        } else {
-            writeShort((short)(value.length() + 1));
-            byte[] strBytes = cacheStringToBytes.computeIfAbsent(value, k -> {
-                byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
-                byte[] result = new byte[bytes.length + 1];
-                result[bytes.length] = 0;
-                System.arraycopy(bytes, 0, result, 0, bytes.length);
-                System.out.println("string = " +  value + ", result = " + Arrays.toString(result));
-                return result;
-            });
-            writeBytes(strBytes);
+    public void writeString(CString cString) {
+        writeShort(cString.cStringLength());
+        if (cString.isNotNull()) {
+            writeBytes(cString.strBytes);
         }
     }
 
