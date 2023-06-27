@@ -4,35 +4,35 @@ import java.beans.PropertyChangeListener;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DxEndpointJni {
-    // callbacks from native
-    private static long newStateChangeEventListener(long userCallback, long userData) {
-        long id = DxFeedJni.nextHandleId();
-        System.out.println("DxEndpointJni::newStateChangeEventListener, nativeHandle = " + id);
-        PropertyChangeListener listener = event -> nOnStateChangeListener(
-                ((DXEndpoint.State) event.getOldValue()).ordinal(),
-                ((DXEndpoint.State) event.getNewValue()).ordinal(),
-                userCallback, userData);
-        DxFeedJni.nativeObjectsMap.put(id, listener);
-        return id;
-    }
+  // callbacks from native
+  private static long newStateChangeEventListener(long userCallback, long userData) {
+    long id = DxFeedJni.nextHandleId();
+    System.out.println("DxEndpointJni::newStateChangeEventListener, nativeHandle = " + id);
+    PropertyChangeListener listener = event -> nOnStateChangeListener(
+        ((DXEndpoint.State) event.getOldValue()).ordinal(),
+        ((DXEndpoint.State) event.getNewValue()).ordinal(),
+        userCallback, userData);
+    DxFeedJni.nativeObjectsMap.put(id, listener);
+    return id;
+  }
 
-    private static void addStateChangeEventListener(DXEndpoint endpoint, long nativeHandleId) {
-        PropertyChangeListener propertyChangeListener =
-                (PropertyChangeListener) DxFeedJni.nativeObjectsMap.get(nativeHandleId);
-        if (propertyChangeListener != null) {
-            System.out.println("DxEndpointJni::addStateChangeEventListener, nativeHandle = " + nativeHandleId);
-            endpoint.addStateChangeListener(propertyChangeListener);
-        }
+  private static void addStateChangeEventListener(DXEndpoint endpoint, long nativeHandleId) {
+    PropertyChangeListener propertyChangeListener =
+        (PropertyChangeListener) DxFeedJni.nativeObjectsMap.get(nativeHandleId);
+    if (propertyChangeListener != null) {
+      System.out.println("DxEndpointJni::addStateChangeEventListener, nativeHandle = " + nativeHandleId);
+      endpoint.addStateChangeListener(propertyChangeListener);
     }
+  }
 
-    private static void removeStateChangeEventListener(DXEndpoint endpoint, long nativeHandleId) {
-        PropertyChangeListener stateChangeListener =
-                (PropertyChangeListener) DxFeedJni.nativeObjectsMap.remove(nativeHandleId);
-        if (stateChangeListener != null) {
-            System.out.println("DxEndpointJni::removeStateChangeEventListener, nativeHandle = " + nativeHandleId);
-            endpoint.removeStateChangeListener(stateChangeListener);
-        }
+  private static void removeStateChangeEventListener(DXEndpoint endpoint, long nativeHandleId) {
+    PropertyChangeListener stateChangeListener =
+        (PropertyChangeListener) DxFeedJni.nativeObjectsMap.remove(nativeHandleId);
+    if (stateChangeListener != null) {
+      System.out.println("DxEndpointJni::removeStateChangeEventListener, nativeHandle = " + nativeHandleId);
+      endpoint.removeStateChangeListener(stateChangeListener);
     }
+  }
 
-    private static native void nOnStateChangeListener(int oldState, int newState, long userCallback, long userData);
+  private static native void nOnStateChangeListener(int oldState, int newState, long userCallback, long userData);
 }
