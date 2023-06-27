@@ -66,15 +66,15 @@ namespace dxfeed::jni {
   dxfg_event_type_t* NativeEventReader::toEvent(const char** pByteData, const double** pDoubleData, dxfg_event_clazz_t eventType) {
     switch (eventType) {
       case DXFG_EVENT_TIME_AND_SALE:
-        return dxfeed::r_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
       case DXFG_EVENT_QUOTE:
-        return dxfeed::r_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
       case DXFG_EVENT_CANDLE:
-        return dxfeed::r_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
       case DXFG_EVENT_TRADE:
-        return dxfeed::r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
       case DXFG_EVENT_PROFILE:
-        return dxfeed::r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
       default: {
         std::cout << "NativeEventReader::toEvent = " << nullptr << std::endl;
         return nullptr;

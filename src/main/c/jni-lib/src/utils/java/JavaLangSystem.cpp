@@ -26,7 +26,7 @@ namespace dxfeed::jni {
 
   const char* JavaLangSystem::getProperty(JNIEnv* env, const char* key) const {
     jstring jKey = env->NewStringUTF(key);
-    auto jValue = reinterpret_cast<jstring>(env->CallStaticObjectMethod(javaLangSystemClazz, getPropMethodId, jKey));
+    auto jValue = r_cast<jstring>(env->CallStaticObjectMethod(javaLangSystemClazz, getPropMethodId, jKey));
     char* result = new char[1] { 0 };
     if (jValue) {
       auto tmp = env->GetStringUTFChars(jValue, nullptr);

@@ -6,9 +6,9 @@
 #include "JNICommon.hpp"
 
 namespace dxfeed {
-  template <typename OutputType, typename InputType>
-  OutputType r_cast(InputType t) {
-    return reinterpret_cast<OutputType>(t);
+  template <class TargetType, class InitialType>
+  constexpr inline TargetType r_cast(InitialType arg) {
+    return reinterpret_cast<TargetType>(arg);
   }
 
   namespace jni {

@@ -8,20 +8,21 @@
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/DxSubscription.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
                                                                        dxfg_endpoint_state_change_listener_func userFunc,
                                                                        void* userData)
 {
   auto* pDxStateChangeListener = dxfeed::DxStateChangeListener::create(thread, userFunc, userData);
-  return reinterpret_cast<dxfg_endpoint_state_change_listener_t*>(pDxStateChangeListener);
+  return dxfeed::r_cast<dxfg_endpoint_state_change_listener_t*>(pDxStateChangeListener);
 }
 
 dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t* thread,
                                                          dxfg_feed_event_listener_function user_func, void* user_data)
 {
   auto* pDxEventListener = dxfeed::DxEventListener::create(thread, user_func, user_data);
-  return reinterpret_cast<dxfg_feed_event_listener_t*>(pDxEventListener);
+  return dxfeed::r_cast<dxfg_feed_event_listener_t*>(pDxEventListener);
 }
 
 int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler* object) {
@@ -34,11 +35,11 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
     if (!name.empty()) {
       std::cout << ", name: " << name;
       if (name == dxfeed::DxEndpoint::JAVA_CLASS_NAME) {
-        dxfg_DXEndpoint_release(thread, reinterpret_cast<dxfg_endpoint_t*>(object));
+        dxfg_DXEndpoint_release(thread, dxfeed::r_cast<dxfg_endpoint_t*>(object));
       } else if (name == dxfeed::DxEndpointBuilder::JAVA_CLASS_NAME) {
-        dxfg_DXEndpointBuilder_release(thread, reinterpret_cast<dxfg_endpoint_builder_t*>(object));
+        dxfg_DXEndpointBuilder_release(thread, dxfeed::r_cast<dxfg_endpoint_builder_t*>(object));
       } else if (name == dxfeed::DxSubscription::JAVA_CLASS_NAME) {
-        dxfg_DXSubscription_release(thread, reinterpret_cast<dxfg_subscription_t*> (object));
+        dxfg_DXSubscription_release(thread, dxfeed::r_cast<dxfg_subscription_t*> (object));
       } else {
         std::cerr << ", LEAKED: " << std::hex << pObject;
       }

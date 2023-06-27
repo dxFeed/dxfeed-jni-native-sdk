@@ -77,7 +77,7 @@ namespace dxfeed {
     jclass dxFeedSubscriptionClass = env->GetObjectClass(subscription_);
     jmethodID addSymbolsMethodId = safeGetMethodID(env, dxFeedSubscriptionClass, "addSymbols",
                                                          "(Ljava/lang/Object;)V");
-    jobject jSymbol = dxfeed::DxSymbol::toJavaObject(env, pSymbol);
+    jobject jSymbol = DxSymbol::toJavaObject(env, pSymbol);
     if (jSymbol) {
       env->CallVoidMethod(subscription_, addSymbolsMethodId, jSymbol);
     }
@@ -110,7 +110,7 @@ namespace dxfeed {
   int32_t DxSubscription::setSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
     jclass dxFeedSubscriptionClass = env->GetObjectClass(subscription_);
     jmethodID setSymbolsMethodId = safeGetMethodID(env, dxFeedSubscriptionClass, "setSymbols","([Ljava/lang/Object;)V");
-    jobject jSymbol = dxfeed::DxSymbol::toJavaObject(env, pSymbol);
+    jobject jSymbol = DxSymbol::toJavaObject(env, pSymbol);
     if (jSymbol) {
       env->CallVoidMethod(subscription_, setSymbolsMethodId, jSymbol);
     }

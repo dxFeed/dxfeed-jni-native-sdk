@@ -100,16 +100,16 @@ namespace dxfeed {
       case DXFG_EVENT_SPREAD_ORDER:
       case DXFG_EVENT_ORDER:
       case DXFG_EVENT_ANALYTIC_ORDER: {
-        const auto index = dxfeed::r_cast<dxfg_order_base_t*>(pEventType)->index;
+        const auto index = r_cast<dxfg_order_base_t*>(pEventType)->index;
         int sourceId = static_cast<int32_t>(index >> 48);
-        if (!dxfeed::DxIndexedEventSource::isSpecialSourceId(env, sourceId)) {
+        if (!DxIndexedEventSource::isSpecialSourceId(env, sourceId)) {
           sourceId = static_cast<int32_t>(index >> 32);
         }
-        return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, sourceId));
+        return r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, sourceId));
       }
       default: {
         std::stringstream ss{};
-        const char* className = dxfeed::getEventClassType(pEventType->clazz);
+        const char* className = getEventClassType(pEventType->clazz);
         ss << "ClassCastException(" << className << " is not Class<? extends IndexedEvent>";
         std::cerr << "Unknown symbol type: " + ss.str();
         return nullptr;
