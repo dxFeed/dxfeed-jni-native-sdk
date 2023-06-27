@@ -23,7 +23,7 @@ namespace dxfeed {
   }
 
   DxEndpointBuilder::~DxEndpointBuilder() {
-    dxfeed::jni::internal::jniEnv->DeleteGlobalRef(dxEndpointBuilder_);
+    jni::internal::jniEnv->DeleteGlobalRef(dxEndpointBuilder_);
   }
 
   DxEndpoint* DxEndpointBuilder::build(JNIEnv* env) {
@@ -45,7 +45,7 @@ namespace dxfeed {
     std::cout << "jRoleClass: " << jRoleClass << "\n";
     jmethodID valuesId = jni::safeGetStaticMethodID(env, jRoleClass, "values", "()[Lcom/dxfeed/api/DXEndpoint$Role;");
     std::cout << "valuesId: " << valuesId << "\n";
-    auto jRoleArray = reinterpret_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, valuesId));
+    auto jRoleArray = r_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, valuesId));
     jobject jRole = env->GetObjectArrayElement(jRoleArray, role);
     jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withRoleId, jRole);
     env->DeleteLocalRef(jRole);

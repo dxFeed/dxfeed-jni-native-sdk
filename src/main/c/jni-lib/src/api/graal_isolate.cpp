@@ -5,7 +5,7 @@
 
 int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t **isolate, graal_isolatethread_t **thread) {
   if (dxfeed::jni::internal::javaVM == nullptr) {
-    auto javaHome = dxfeed::jni::getJavaHome(reinterpret_cast<dxfeed::jni::VMOptions*>(params));
+    auto javaHome = dxfeed::jni::getJavaHome(dxfeed::r_cast<dxfeed::jni::VMOptions*>(params));
     // todo: get VmArgs and VmArgCount from params;
     dxfeed::jni::VMOptions options = { javaHome, nullptr, 0 };
     dxfeed::jni::internal::initJavaVM(&options);
@@ -17,13 +17,13 @@ int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t 
 
 
 graal_isolatethread_t* graal_get_current_thread(graal_isolate_t* isolate) {
-  auto vmInstance = reinterpret_cast<dxfeed::jni::internal::vm::JavaVmInstance*>(isolate);
+  auto vmInstance = dxfeed::r_cast<dxfeed::jni::internal::vm::JavaVmInstance*>(isolate);
   return vmInstance->getCurrenThread();
 }
 
 // https://github.com/oracle/graal/blob/8be56121aa31e7448b4adb0224ab2ac44095ed9b/compiler/src/jdk.internal.vm.compiler/src/org/graalvm/libgraal/LibGraal.java#L253
 int graal_attach_thread(graal_isolate_t* isolate, graal_isolatethread_t** env) {
-  auto vmInstance = reinterpret_cast<dxfeed::jni::internal::vm::JavaVmInstance*>(isolate);
+  auto vmInstance = dxfeed::r_cast<dxfeed::jni::internal::vm::JavaVmInstance*>(isolate);
   vmInstance->attachCurrentThread(env);
   return JNI_OK;
 }

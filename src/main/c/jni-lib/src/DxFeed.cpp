@@ -78,13 +78,12 @@ namespace dxfeed {
     jmethodID getLastEventId = jni::safeGetStaticMethodID(env, dxJni->dxFeedJniClass_, "getLastEvent",
               "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;");
 
-    auto dxEventT = reinterpret_cast<DxEventT*>(pEventType);
+    auto dxEventT = r_cast<DxEventT*>(pEventType);
     jstring jSymbolName = env->NewStringUTF(dxEventT->symbol_);
     const char* className = getEventClassType(dxEventT->eventType_.clazz);
     jclass eventTypeClass = jni::safeFindClass(env, className);
-
-    jobject nativeEventData = env->CallStaticObjectMethod(dxJni->dxFeedJniClass_, getLastEventId, dxFeed_, jSymbolName,
-                                                          eventTypeClass);
+    jobject nativeEventData = env->CallStaticObjectMethod(dxJni->dxFeedJniClass_, getLastEventId, dxFeed_,
+                                                          jSymbolName, eventTypeClass);
     if (nativeEventData) {
       jni::NativeEventData data{env};
       data.toNativeEvent(nativeEventData, &pEventType);
