@@ -91,7 +91,6 @@ namespace dxfeed::jni {
     tns->index = readLong(pByteData);
     tns->time_nano_part = readInt(pByteData);
     tns->exchange_code = readInt16_t(pByteData);
-    tns->size = static_cast<double>(readLong(pByteData));
     tns->flags = readInt(pByteData);
 
     tns->exchange_sale_conditions = readString(pByteData);
@@ -99,6 +98,7 @@ namespace dxfeed::jni {
     tns->seller = readString(pByteData);
 
     tns->price = readDouble(pDoubleData);
+    tns->size = readDouble(pDoubleData);
     tns->bid_price = readDouble(pDoubleData);
     tns->ask_price = readDouble(pDoubleData);
     return tns;
@@ -131,17 +131,17 @@ namespace dxfeed::jni {
     candle->event_flags = readInt(pByteData);
     candle->index = readLong(pByteData);
     candle->count = readLong(pByteData);
-    candle->volume = static_cast<double>(readLong(pByteData));
-    candle->bid_volume = static_cast<double>(readLong(pByteData));
-    candle->ask_volume = static_cast<double>(readLong(pByteData));
-    candle->open_interest = static_cast<double>(readLong(pByteData));
 
     candle->open = readDouble(pDoubleData);
     candle->high = readDouble(pDoubleData);
     candle->low = readDouble(pDoubleData);
     candle->close = readDouble(pDoubleData);
+    candle->volume = readDouble(pDoubleData);
     candle->vwap = readDouble(pDoubleData);
+    candle->bid_volume = readDouble(pDoubleData);
+    candle->ask_volume = readDouble(pDoubleData);
     candle->imp_volatility = readDouble(pDoubleData);
+    candle->open_interest = readDouble(pDoubleData);
     return candle;
   }
 
