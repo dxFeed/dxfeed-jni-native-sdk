@@ -38,17 +38,16 @@ public class CandleToNative {
     // todo: sync about CandleSymbol
     public static void convert(Candle event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
         CandleSymbol candleSymbol = event.getEventSymbol();
-        String eventSymbol = candleSymbol.toString();
-        int eventSymbolLength = eventSymbol.length();
+        CString eventSymbol = new CString(candleSymbol.toString());
         int eventFlags = event.getEventFlags();         // 4
         long eventTime = event.getEventTime();          // 8
         long index = event.getIndex();                  // 8
         long count = event.getCount();                  // 8
 
-        int totalSize = (2 + eventSymbolLength) + (4) + (8) + (8) + (8);
+        int totalSize = eventSymbol.totalAllocatedBytes + (4) + (8) + (8) + (8);
 
         pBytes.addChunk(chunkIdx, totalSize);
-        pBytes.writeString(eventSymbol);        // 2 + eventSymbolLength
+        pBytes.writeString(eventSymbol);
         pBytes.writeInt(eventFlags);            // 4
         pBytes.writeLong(eventTime);            // 8
         pBytes.writeLong(index);                // 8
