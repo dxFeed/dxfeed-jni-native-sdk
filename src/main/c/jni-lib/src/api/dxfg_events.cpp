@@ -1,20 +1,15 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
-
 #include "api/dxfg_events.h"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxEventT.hpp"
 #include "dxfeed/DxIndexedEventSource.hpp"
 
-using namespace dxfeed::jni::internal;
-
-// todo: what's wrong with TIME_SERIES_SUBSCRIPTION and INDEXED_EVENT_SUBSCRIPTION ??
 dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, dxfg_symbol_type_t symbolType) {
   bool isTimeSeries = (symbolType == dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION);
   bool isIndexedEvent = (symbolType == dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION);
   if (isTimeSeries || isIndexedEvent) {
-    std::cerr << "Unknown symbol type: " + std::to_string(symbolType);
+    dxfeed::jni::javaLogger->error("Unknown symbol type: %", symbolType);
     return nullptr;
   }
   if (symbolType == dxfg_symbol_type_t::STRING) {
@@ -32,7 +27,7 @@ dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, d
     result->supper = dxfg_symbol_t { symbolType };
     return dxfeed::r_cast<dxfg_symbol_t*>(result);
   } else {
-    std::cerr << "Unknown symbol type: " + std::to_string(symbolType);
+    dxfeed::jni::javaLogger->error("Unknown symbol type: ", symbolType);
     return nullptr;
   }
 }

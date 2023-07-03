@@ -1,21 +1,20 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
   JavaLangSystem::JavaLangSystem(JNIEnv* env) {
-    javaLangSystemClazz = jni::safeFindClass(env, "Ljava/lang/System;");
-    std::cout << "java.lang.System: " << javaLangSystemClazz << "\n";
-    loadMethodId = jni::safeGetStaticMethodID(env, javaLangSystemClazz, "load", "(Ljava/lang/String;)V");
-    std::cout << "void System::load(String path): " << loadMethodId << "\n";
-    getPropMethodId = jni::safeGetStaticMethodID(env, javaLangSystemClazz, "getProperty",
+    javaLangSystemClazz = safeFindClass(env, "Ljava/lang/System;");
+    javaLogger->info("java.lang.System: %", javaLangSystemClazz);
+    loadMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "load", "(Ljava/lang/String;)V");
+    javaLogger->info("void System::load(String path): %", loadMethodId);
+    getPropMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "getProperty",
                                                            "(Ljava/lang/String;)Ljava/lang/String;");
-    std::cout << "void System::getProperty(String key): " << getPropMethodId << "\n";
-    setPropMethodId = jni::safeGetStaticMethodID(env, javaLangSystemClazz, "setProperty",
+    javaLogger->info("void System::getProperty(String key): %", getPropMethodId);
+    setPropMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "setProperty",
                                                  "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
-    std::cout << "String System::setProperty(String key, String value): " << setPropMethodId << "\n";
+    javaLogger->info("String System::setProperty(String key, String value): %", setPropMethodId);
   }
 
   void JavaLangSystem::load(JNIEnv* env, const char* libPath) const {

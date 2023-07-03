@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <jni.h>
-#include <sstream>
-#include <iostream>
 
 #include "dxfeed/DxIndexedEventSource.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
@@ -10,11 +8,10 @@
 
 namespace dxfeed {
   using namespace jni;
-  using namespace jni::internal;
 
   DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const char* name) {
-    jclass dxClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxIndexedEventSource;");
-    jmethodID newOrderedSourceId = jni::safeGetStaticMethodID(env, dxClass, "newOrderSourceByName",
+    jclass dxClass = safeFindClass(env, "Lcom/dxfeed/api/DxIndexedEventSource;");
+    jmethodID newOrderedSourceId = safeGetStaticMethodID(env, dxClass, "newOrderSourceByName",
                                                               "(Ljava/lang/String;[J)Lcom/dxfeed/event/IndexedEventSource;");
     name_ = name;
     jstring jName = env->NewStringUTF(name);
@@ -30,8 +27,8 @@ namespace dxfeed {
   }
 
   DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const int32_t sourceId) {
-    jclass dxClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxIndexedEventSource;");
-    jmethodID newOrderedSourceId = jni::safeGetStaticMethodID(env, dxClass, "newOrderSourceById",
+    jclass dxClass = safeFindClass(env, "Lcom/dxfeed/api/DxIndexedEventSource;");
+    jmethodID newOrderedSourceId = safeGetStaticMethodID(env, dxClass, "newOrderSourceById",
                                                               "(I[J)Lcom/dxfeed/event/market/OrderSource;");
 
     jlongArray data = env->NewLongArray(2);
@@ -40,7 +37,7 @@ namespace dxfeed {
     );
 
     jclass eventSourceClass = env->GetObjectClass(indexedEventSource_);
-    jmethodID nameId = jni::safeGetStaticMethodID(env, eventSourceClass, "name", "()Ljava/lang/String;");
+    jmethodID nameId = safeGetStaticMethodID(env, eventSourceClass, "name", "()Ljava/lang/String;");
     auto jName = r_cast<jstring>(env->CallObjectMethod(indexedEventSource_, nameId));
     env->DeleteLocalRef(eventSourceClass);
 
@@ -78,8 +75,8 @@ namespace dxfeed {
   }
 
   bool DxIndexedEventSource::isSpecialSourceId(JNIEnv* env, int32_t index) {
-    jclass dxClass = jni::safeFindClass(env, "Lcom/dxfeed/event/market/OrderSource;");
-    jmethodID isSpecialSourceIdId = jni::safeGetStaticMethodID(env, dxClass, "isSpecialSourceId", "(I)Z");
+    jclass dxClass = safeFindClass(env, "Lcom/dxfeed/event/market/OrderSource;");
+    jmethodID isSpecialSourceIdId = safeGetStaticMethodID(env, dxClass, "isSpecialSourceId", "(I)Z");
     jboolean result = env->CallStaticBooleanMethod(dxClass, isSpecialSourceIdId, index);
     return result;
   }
@@ -107,10 +104,9 @@ namespace dxfeed {
         return r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, sourceId));
       }
       default: {
-        std::stringstream ss{};
         const char* className = getEventClassType(pEventType->clazz);
-        ss << "ClassCastException(" << className << " is not Class<? extends IndexedEvent>";
-        std::cerr << "Unknown symbol type: " + ss.str();
+        javaLogger->error("ClassCastException(\"%\" is not Class<? extends IndexedEvent>, unknown symbol type: ",
+                          className);
         return nullptr;
       }
     }

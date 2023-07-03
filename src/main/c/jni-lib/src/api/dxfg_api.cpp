@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
+#include <sstream>
 
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
@@ -26,14 +26,14 @@ dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t* 
 }
 
 int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler* object) {
-  std::cout << "dxfg_JavaObjectHandler_release: ";
+  std::stringstream ss;
+  ss << "dxfg_JavaObjectHandler_release: ";
   if (object) {
     jobject pObject = object->dxfg_java_object_handle;
-    std::cout << "\tdxfg_java_object_handle: " << std::hex << pObject;
-    const auto& name = pObject
-        ? dxfeed::jni::internal::javaLangClass->getName(thread, pObject) : "";
+    ss << "\t dxfg_java_object_handle: " << pObject;
+    const auto& name = pObject ? dxfeed::jni::internal::javaLangClass->getName(thread, pObject) : "";
     if (!name.empty()) {
-      std::cout << ", name: " << name;
+      ss << ", name: " << name;
       if (name == dxfeed::DxEndpoint::JAVA_CLASS_NAME) {
         dxfg_DXEndpoint_release(thread, dxfeed::r_cast<dxfg_endpoint_t*>(object));
       } else if (name == dxfeed::DxEndpointBuilder::JAVA_CLASS_NAME) {
@@ -41,16 +41,16 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
       } else if (name == dxfeed::DxSubscription::JAVA_CLASS_NAME) {
         dxfg_DXSubscription_release(thread, dxfeed::r_cast<dxfg_subscription_t*> (object));
       } else {
-        std::cerr << ", LEAKED: " << std::hex << pObject;
+        ss << ", LEAKED: " << pObject;
       }
-      std::cout << std::endl;
     } else {
-      std::cerr << ", already released: " << std::hex << pObject << std::endl;
+      ss << ", already released: " << pObject << "\n";
       delete object;
     }
     thread->DeleteLocalRef(pObject);
   }
-  return JNI_OK; // todo: think
+  dxfeed::jni::javaLogger->info(ss.str());
+  return JNI_OK;
 }
 
 

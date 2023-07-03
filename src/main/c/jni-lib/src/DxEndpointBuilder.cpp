@@ -5,46 +5,49 @@
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/JNICommon.hpp"
 
 namespace dxfeed {
+  using namespace jni;
+  
   DxEndpointBuilder::DxEndpointBuilder(JNIEnv* env) {
-    jclass dxEndpointClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
-    std::cout << "dxEndpointClass: " << dxEndpointClass << "\n";
-    jmethodID newBuilderMethodId = jni::safeGetStaticMethodID(env, dxEndpointClass, "newBuilder",
+    jclass dxEndpointClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
+    javaLogger->info("dxEndpointClass: %", dxEndpointClass);
+    jmethodID newBuilderMethodId = safeGetStaticMethodID(env, dxEndpointClass, "newBuilder",
                                                               "()Lcom/dxfeed/api/DXEndpoint$Builder;");
-    std::cout << "newBuilderMethodId: " << dxEndpointClass << "\n";
+    javaLogger->info("newBuilderMethodId: %", dxEndpointClass);
     jobject pDxEndpointBuilder = env->CallStaticObjectMethod(dxEndpointClass, newBuilderMethodId);
     dxEndpointBuilder_ = env->NewGlobalRef(pDxEndpointBuilder);
     env->DeleteLocalRef(pDxEndpointBuilder);
-    std::cout << "dxEndpointBuilder_: " << dxEndpointBuilder_ << "\n";
+    javaLogger->info("dxEndpointBuilder_: %", dxEndpointBuilder_);
     dxEndpointBuilderClass_ = env->GetObjectClass(dxEndpointBuilder_);
-    std::cout << "dxEndpointBuilderClass: " << dxEndpointBuilderClass_ << "\n";
+    javaLogger->info("dxEndpointBuilderClass: %", dxEndpointBuilderClass_);
     env->DeleteLocalRef(dxEndpointClass);
   }
 
   DxEndpointBuilder::~DxEndpointBuilder() {
-    jni::internal::jniEnv->DeleteGlobalRef(dxEndpointBuilder_);
+    internal::jniEnv->DeleteGlobalRef(dxEndpointBuilder_);
   }
 
   DxEndpoint* DxEndpointBuilder::build(JNIEnv* env) {
-    jmethodID buildId = jni::safeGetMethodID(env, dxEndpointBuilderClass_, "build", "()Lcom/dxfeed/api/DXEndpoint;");
-    std::cout << "buildId: " << buildId << "\n";
+    jmethodID buildId = safeGetMethodID(env, dxEndpointBuilderClass_, "build", "()Lcom/dxfeed/api/DXEndpoint;");
+    javaLogger->info("buildId: %", buildId);
     jobject pDxEndpoint = env->CallObjectMethod(dxEndpointBuilder_, buildId);
-    std::cout << "DxEndpoint OBJECT: " << pDxEndpoint << "\n";
+    javaLogger->info("DxEndpoint OBJECT: %", pDxEndpoint);
     auto* pEndpoint = new DxEndpoint(env, pDxEndpoint);
     env->DeleteLocalRef(pDxEndpoint);
     return pEndpoint;
   }
 
   void DxEndpointBuilder::withRole(JNIEnv* env, dxfg_endpoint_role_t role) {
-    jmethodID withRoleId = jni::safeGetMethodID(env, dxEndpointBuilderClass_, "withRole",
+    jmethodID withRoleId = safeGetMethodID(env, dxEndpointBuilderClass_, "withRole",
                                              "(Lcom/dxfeed/api/DXEndpoint$Role;)Lcom/dxfeed/api/DXEndpoint$Builder;");
     // todo: extract method for RoleId
-    std::cout << "withRoleId: " << withRoleId << "\n";
-    jclass jRoleClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint$Role;");
-    std::cout << "jRoleClass: " << jRoleClass << "\n";
-    jmethodID valuesId = jni::safeGetStaticMethodID(env, jRoleClass, "values", "()[Lcom/dxfeed/api/DXEndpoint$Role;");
-    std::cout << "valuesId: " << valuesId << "\n";
+    javaLogger->info("withRoleId: %", withRoleId);
+    jclass jRoleClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint$Role;");
+    javaLogger->info("jRoleClass: %", jRoleClass);
+    jmethodID valuesId = safeGetStaticMethodID(env, jRoleClass, "values", "()[Lcom/dxfeed/api/DXEndpoint$Role;");
+    javaLogger->info("valuesId: %", valuesId);
     auto jRoleArray = r_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, valuesId));
     jobject jRole = env->GetObjectArrayElement(jRoleArray, role);
     jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withRoleId, jRole);
@@ -56,9 +59,9 @@ namespace dxfeed {
   }
 
   void DxEndpointBuilder::withName(JNIEnv* env, const char* name) {
-    jmethodID withNameId = jni::safeGetMethodID(env, dxEndpointBuilderClass_, "withName",
+    jmethodID withNameId = safeGetMethodID(env, dxEndpointBuilderClass_, "withName",
                                              "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;");
-    std::cout << "withNameId: " << withNameId << "\n";
+    javaLogger->info("withNameId: %", withNameId);
     jstring jName = env->NewStringUTF(name);
     jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withNameId, jName);
     env->DeleteLocalRef(jName);
@@ -67,9 +70,9 @@ namespace dxfeed {
   }
 
   void DxEndpointBuilder::withProperty(JNIEnv* env, const char* key, const char* value) {
-    jmethodID withPropertyId = jni::safeGetMethodID(env, dxEndpointBuilderClass_, "withProperty",
+    jmethodID withPropertyId = safeGetMethodID(env, dxEndpointBuilderClass_, "withProperty",
                                                 "(Ljava/lang/String;Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;");
-    std::cout << "withPropertyId: " << withPropertyId << "\n";
+    javaLogger->info("withPropertyId: %", withPropertyId);
     jstring jKey = env->NewStringUTF(key);
     jstring jValue = env->NewStringUTF(value);
     jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withPropertyId, jKey, jValue);
@@ -80,10 +83,10 @@ namespace dxfeed {
   }
 
   void DxEndpointBuilder::withProperties(JNIEnv* env, const char* filePath) {
-    jclass jPropertiesClass = jni::safeFindClass(env, "Ljava/util/Properties;");
-    std::cout << "jPropertiesClass: " << jPropertiesClass << "\n";
-    jmethodID loadId = jni::safeGetMethodID(env, jPropertiesClass, "load", "(Ljava/io/InputStream;)V");
-    std::cout << "loadId: " << loadId << "\n";
+    jclass jPropertiesClass = safeFindClass(env, "Ljava/util/Properties;");
+    javaLogger->info("jPropertiesClass: %", jPropertiesClass);
+    jmethodID loadId = safeGetMethodID(env, jPropertiesClass, "load", "(Ljava/io/InputStream;)V");
+    javaLogger->info("loadId: %", loadId);
     env->DeleteLocalRef(jPropertiesClass);
     //java/util/Properties;
   }
@@ -93,11 +96,11 @@ namespace dxfeed {
 
   jobject DxEndpointBuilder::rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder) {
     if (newBuilder != nullptr) {
-      std::cout << "newBuilder = " << newBuilder << "\n";
+      javaLogger->info("newBuilder = %", newBuilder);
       env->DeleteGlobalRef(oldBuilder);
       return env->NewGlobalRef(newBuilder);
     } else {
-      std::cerr << "Can't build DxEndpointBuilder!\n";
+      javaLogger->error("Can't build DxEndpointBuilder!");
       return oldBuilder;
     }
   }

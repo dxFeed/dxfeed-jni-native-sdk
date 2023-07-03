@@ -9,6 +9,7 @@
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/java/JavaLangClass.hpp"
 #include "dxfeed/utils/java/DxJni.hpp"
+#include "dxfeed/utils/java/JavaLogger.hpp"
 
 namespace dxfeed::jni {
   typedef internal::vm::JavaVmInstance JVMInstance;
@@ -21,6 +22,7 @@ namespace dxfeed::jni {
 
   constexpr char JAVA_HOME[] = "JAVA_HOME";
   const char* getJavaHome(VMOptions* params);
+  extern const JavaLogger* javaLogger;
 
   namespace internal {
     extern JNIEnv* jniEnv;

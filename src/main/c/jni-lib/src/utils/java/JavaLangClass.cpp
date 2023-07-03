@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
 #include "dxfeed/utils/java/JavaLangClass.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
   JavaLangClass::JavaLangClass(JNIEnv* env) {
-    javaLangClassClazz = jni::safeFindClass(env, "Ljava/lang/Class;");
-    std::cout << "java.lang.Class: " << javaLangClassClazz << "\n";
-    getNameMethodId = jni::safeGetMethodID(env, javaLangClassClazz, "getName", "()Ljava/lang/String;");
-    std::cout << "String Class::getName(): " << getNameMethodId << "\n";
-    getClassMethodId = jni::safeGetMethodID(env, javaLangClassClazz, "getClass", "()Ljava/lang/Class;");
-    std::cout << "Class Class::getClass(): " << getClassMethodId << "\n";
+    javaLangClassClazz = safeFindClass(env, "Ljava/lang/Class;");
+    javaLogger->info("java.lang.Class: %", javaLangClassClazz);
+    getNameMethodId = safeGetMethodID(env, javaLangClassClazz, "getName", "()Ljava/lang/String;");
+    javaLogger->info("String Class::getName(): %", getNameMethodId);
+    getClassMethodId = safeGetMethodID(env, javaLangClassClazz, "getClass", "()Ljava/lang/Class;");
+    javaLogger->info("Class Class::getClass(): %", getClassMethodId);
   }
 
   std::string JavaLangClass::getName(JNIEnv* env, jobject jObject) const {
