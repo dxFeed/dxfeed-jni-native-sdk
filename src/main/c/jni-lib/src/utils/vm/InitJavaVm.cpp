@@ -9,7 +9,10 @@ namespace fs = std::filesystem;
 
 #include "dxfeed/utils/JNIUtils.hpp"
 
-namespace dxfeed::jni::internal {
+namespace dxfeed::jni {
+  const JavaLogger* javaLogger = nullptr;
+
+namespace internal {
   extern char dllFilePath[];
   const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
 
@@ -20,6 +23,7 @@ namespace dxfeed::jni::internal {
   const JavaLangSystem* javaLangSystem = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
   const DxJni* dxJni = nullptr;
+
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
     if (vmArgs) {
@@ -35,27 +39,30 @@ namespace dxfeed::jni::internal {
   }
 
   void dumpJavaInfo(JNIEnv* env) {
-    auto vendor = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vendor"));
-    auto version = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.version"));
-    auto versionDate = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.version.date"));
-    auto runtimeName = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.runtime.name"));
-    auto runtimeVersion = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.runtime.version"));
-    auto vmName = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.name"));
-    auto vmVendor = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.vendor"));
-    auto vmVersion = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.version"));
-    auto vmInfo = std::make_unique<const char*>(javaLangSystem->getProperty(env, "java.vm.info"));
+    auto vendor = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vendor"));
+    auto version = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.version"));
+    auto versionDate = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.version.date"));
+    auto runtimeName = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.runtime.name"));
+    auto runtimeVersion = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.runtime.version"));
+    auto vmName = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.name"));
+    auto vmVendor = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.vendor"));
+    auto vmVersion = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.version"));
+    auto vmInfo = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.info"));
 
-    std::cout << "JAVA_HOME info:" << std::endl;
-    std::cout << "\t" << *vendor << " version \"" << *version << "\" " << *versionDate << std::endl;
-    std::cout << "\t" << *runtimeName << " (build " << *runtimeVersion << ")" << std::endl;
-    std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
+    javaLogger->info("JAVA_HOME info:");
+    javaLogger->info("\t % version \"%\" %", *vendor, *version, *versionDate);
+    javaLogger->info("\t %, (build %)", *runtimeName, *runtimeVersion);
+    javaLogger->info("\t % %, (build %, %)", *vmName, *vmVendor, *vmVersion, *vmInfo);
   }
 
   void loadJNILibrary(JNIEnv* env) {
     javaLangClass = new JavaLangClass(env);
     javaLangSystem = new JavaLangSystem(env);
     javaLangSystem->load(env, dllFilePath);
-    std::cout << "Loaded DxFeed lib: " << dllFilePath << std::endl;
+    javaLogger->info("Loaded DxFeed lib: %", dllFilePath);
+    auto property = std::make_unique<const char*>(
+      javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));
+    javaLogger->info(" com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
     dumpJavaInfo(env);
     dxJni = DxJni::initDxJni(env);
   }
@@ -76,7 +83,7 @@ namespace dxfeed::jni::internal {
     std::cout << "APP_RUNTIME_PATH: " << runtimePath << std::endl;
 
     int vmOptionsCount = params->vmArgsCount + 1; // 1 for classpath
-    auto javaVmOptionsPtr = std::make_unique<JavaVMOption[]>(vmOptionsCount);
+    auto javaVmOptionsPtr = std::make_unique <JavaVMOption[]>(vmOptionsCount);
     auto javaVmOptions = javaVmOptionsPtr.get();
     std::string classPath = buildClassPath(runtimePath);
     javaVmOptions[0].optionString = classPath.data();
@@ -96,8 +103,10 @@ namespace dxfeed::jni::internal {
     if (flag == JNI_ERR) {
       throw std::runtime_error("Error creating VM. Exiting...n");
     }
+    javaLogger = new JavaLogger(jniEnv);
     javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
 
     loadJNILibrary(jniEnv);
   }
-}
+} // end of namespace dxfeed::jni::internal
+} // end of namespace dxfeed::jni

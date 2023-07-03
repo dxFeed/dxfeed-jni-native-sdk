@@ -10,11 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DxFeedJni {
-  static {
-    String property = System.getProperty("com.devexperts.qd.impl.matrix.Agent.MaxBufferSize");
-    System.out.println("[DxFeedJni]: After loading class " + DxFeedJni.class.getName() +
-        ", com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = " + property);
-  }
 
   private static class NativeEventData {
     private final byte[] byteData;

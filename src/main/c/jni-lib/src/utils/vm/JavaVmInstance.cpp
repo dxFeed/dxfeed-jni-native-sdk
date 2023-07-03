@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
-
 #include "dxfeed/utils/vm/JavaVmInstance.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
 
@@ -32,13 +30,13 @@ namespace dxfeed::jni::internal::vm {
       if (hr == JNI_EDETACHED) {
         hr = attachCurrentThread(&env);
         if (hr != JNI_OK) {
-          std::cerr << "Can't attachCurrentThread. Exiting..." << std::endl;
+          javaLogger->error("Can't attachCurrentThread. Exiting...");
         }
       } else {
-        std::cerr << "Can't getCurrenThread, error = " << hrToMsg(hr) << std::endl;
+        javaLogger->error("Can't getCurrenThread, error = %", hrToMsg(hr));
       }
     }
-    std::cout << "getCurrenThread, env = " << env << std::endl;
+    javaLogger->info("getCurrenThread, env = %", env);
     criticalSection_.leave();
     return env;
   }
@@ -47,7 +45,7 @@ namespace dxfeed::jni::internal::vm {
     criticalSection_.enter();
     jint hr = vm_->AttachCurrentThread((void**) env, nullptr);
     if (hr == JNI_OK) {
-      std::cout << "New thread is attached. tid: " /** PID */ << "\n"; // todo: getPid cross-platform
+      javaLogger->info("New thread is attached. tid: " /** PID */); // todo: getPid cross-platform
     } else {
       logHRESULT(*env, hr);
     }
@@ -62,7 +60,7 @@ namespace dxfeed::jni::internal::vm {
   }
 
   void JavaVmInstance::logErrMsg(JNIEnv* env, jint hr, const char* errMsg) {
-    std::cerr << "ENV = " << env << ", hr = " << hrToMsg(hr) << ", err = " << errMsg;
+    javaLogger->error("ENV = %, hr = %, err = %", env, hrToMsg(hr), errMsg);
   }
 
   void JavaVmInstance::logHRESULT(JNIEnv* env, jint hr) {
@@ -120,10 +118,10 @@ namespace dxfeed::jni::internal::vm {
   JavaVmInstance::DetachJniThreadOnExit::DetachJniThreadOnExit(JavaVM* vmPtr) : vmCached_(vmPtr) {}
 
   JavaVmInstance::DetachJniThreadOnExit::~DetachJniThreadOnExit() {
-    std::cout << "Detaching thread tid: " /** PID */ << "\n"; // todo: getPid cross-platform
+    javaLogger->info("Detaching thread tid: " /** PID */); // todo: getPid cross-platform
     jint hr = vmCached_->DetachCurrentThread();
     if (hr != JNI_OK) {
-      std::cerr << "hr = " << hrToMsg(hr);
+      javaLogger->error("hr = %", hrToMsg(hr));
     }
   }
 }
