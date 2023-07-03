@@ -5,7 +5,6 @@
 #include "dxfeed/DxIndexedEventSource.hpp"
 
 namespace dxfeed {
-  using namespace jni::internal;
   using namespace jni;
 
   // return JNI local references which will be invalid after passing them to VM
@@ -39,14 +38,14 @@ namespace dxfeed {
   }
 
   jobject DxSymbol::toWildcardSymbol(JNIEnv* env) {
-    jclass dxSymbolJniClass = dxJni->dxSymbolJniClass_;
+    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
     jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newWildCardSymbol",
                                                "()Lcom/dxfeed/api/osub/WildcardSymbol;");
     return env->CallStaticObjectMethod(dxSymbolJniClass, methodId);
   }
 
   jobject DxSymbol::toCandleSymbol(JNIEnv* env, const char* symbol) {
-    jclass dxSymbolJniClass = dxJni->dxSymbolJniClass_;
+    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
     jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newCandleSymbol",
                                                "(Ljava/lang/String;)Lcom/dxfeed/event/candle/CandleSymbol;");
     jstring jSymbolName = env->NewStringUTF(symbol);
@@ -56,14 +55,14 @@ namespace dxfeed {
   }
 
   jobject DxSymbol::toTimeSeriesSubscriptionSymbol(JNIEnv* env, jobject symbol, jlong fromTime) {
-    jclass dxSymbolJniClass = dxJni->dxSymbolJniClass_;
+    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
     jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newTimeSeriesSubscriptionSymbol",
                                                "(Ljava/lang/Object;J)Lcom/dxfeed/api/osub/TimeSeriesSubscriptionSymbol;");
     return env->CallStaticObjectMethod(dxSymbolJniClass, methodId, symbol, fromTime);
   }
 
   jobject DxSymbol::toIndexedEventSubscriptionSymbol(JNIEnv* env, jobject symbol, jobject indexedEventSource) {
-    jclass dxSymbolJniClass = dxJni->dxSymbolJniClass_;
+    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
     const char* methodSignature =
         "(Ljava/lang/Object;Lcom/dxfeed/event/IndexedEventSource;)Lcom/dxfeed/api/osub/IndexedEventSubscriptionSymbol;";
     jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newIndexedEventSubscriptionSymbol", methodSignature);

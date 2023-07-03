@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
-
 #include "dxfeed/utils/NativeEventReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
@@ -76,7 +74,7 @@ namespace dxfeed::jni {
       case DXFG_EVENT_PROFILE:
         return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
       default: {
-        std::cout << "NativeEventReader::toEvent = " << nullptr << std::endl;
+        javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
       }
     }

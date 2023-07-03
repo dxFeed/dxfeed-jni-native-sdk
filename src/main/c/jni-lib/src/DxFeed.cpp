@@ -10,7 +10,7 @@
 #include "dxfeed/DxSymbol.hpp"
 
 namespace dxfeed {
-  using namespace jni::internal;
+  using namespace jni;
 
   DxFeed::DxFeed(JNIEnv* env, jobject dxFeed) :
       dxFeed_(env->NewGlobalRef(dxFeed)),
@@ -18,7 +18,7 @@ namespace dxfeed {
   {}
 
   DxFeed::~DxFeed() {
-    jni::internal::jniEnv->DeleteGlobalRef(dxFeed_);
+    internal::jniEnv->DeleteGlobalRef(dxFeed_);
   }
 
   DxSubscription* DxFeed::createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType) {
@@ -30,19 +30,19 @@ namespace dxfeed {
   }
 
   void DxFeed::attachSubscription(graal_isolatethread_t* env, dxfg_subscription_t* pSubscription) {
-    jmethodID attachSubscriptionId = jni::safeGetMethodID(env, dxFeedClass_, "attachSubscription",
+    jmethodID attachSubscriptionId = safeGetMethodID(env, dxFeedClass_, "attachSubscription",
                                                           "(Lcom/dxfeed/api/DXFeedSubscription;)V;");
     env->CallVoidMethod(dxFeed_, attachSubscriptionId, pSubscription);
   }
 
   void DxFeed::detachSubscription(graal_isolatethread_t* env, dxfg_subscription_t* pSubscription) {
-    jmethodID detachSubscriptionId = jni::safeGetMethodID(env, dxFeedClass_, "detachSubscription",
+    jmethodID detachSubscriptionId = safeGetMethodID(env, dxFeedClass_, "detachSubscription",
                                                           "(Lcom/dxfeed/api/DXFeedSubscription;)V;");
     env->CallVoidMethod(dxFeed_, detachSubscriptionId, pSubscription);
   }
 
   void DxFeed::detachSubscriptionAndClear(graal_isolatethread_t* env, dxfg_subscription_t* pSubscription) {
-    jmethodID detachSubscriptionId = jni::safeGetMethodID(env, dxFeedClass_, "detachSubscriptionAndClear",
+    jmethodID detachSubscriptionId = safeGetMethodID(env, dxFeedClass_, "detachSubscriptionAndClear",
                                                           "(Lcom/dxfeed/api/DXFeedSubscription;)V;");
     env->CallVoidMethod(dxFeed_, detachSubscriptionId, pSubscription);
   }
@@ -53,17 +53,18 @@ namespace dxfeed {
     jobject jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
 
     const char* className = getEventClassType(eventTypeClass);
-    jclass eventTypeClazz = jni::safeFindClass(env, className);
+    jclass eventTypeClazz = safeFindClass(env, className);
 
+    const auto dxJniClazz = internal::dxJni->dxFeedJniClass_;
     jmethodID getLastEventIfSubscribedId =
-      jni::safeGetStaticMethodID(env, dxJni->dxFeedJniClass_, "getLastEventIfSubscribed",
-             "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/Object;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;");
+      safeGetStaticMethodID(env, dxJniClazz, "getLastEventIfSubscribed",
+                            "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/Object;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;");
 
-    jobject nativeEventData = env->CallStaticObjectMethod(dxJni->dxFeedJniClass_, getLastEventIfSubscribedId, dxFeed_,
-                                             eventTypeClazz, jSymbol);
+    jobject nativeEventData = env->CallStaticObjectMethod(dxJniClazz, getLastEventIfSubscribedId, dxFeed_,
+                                                          eventTypeClazz, jSymbol);
     dxfg_event_type_t* pEventType = nullptr;
     if (nativeEventData) {
-      jni::NativeEventData data{env};
+      NativeEventData data{env};
       data.toNativeEvent(nativeEventData, &pEventType);
     }
 
@@ -75,17 +76,18 @@ namespace dxfeed {
   }
 
   void DxFeed::getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pEventType) {
-    jmethodID getLastEventId = jni::safeGetStaticMethodID(env, dxJni->dxFeedJniClass_, "getLastEvent",
-              "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;");
+    const auto dxFeedJniClazz = internal::dxJni->dxFeedJniClass_;
+    jmethodID getLastEventId = safeGetStaticMethodID(env, dxFeedJniClazz, "getLastEvent",
+             "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;");
 
     auto dxEventT = r_cast<DxEventT*>(pEventType);
     jstring jSymbolName = env->NewStringUTF(dxEventT->symbol_);
     const char* className = getEventClassType(dxEventT->eventType_.clazz);
-    jclass eventTypeClass = jni::safeFindClass(env, className);
-    jobject nativeEventData = env->CallStaticObjectMethod(dxJni->dxFeedJniClass_, getLastEventId, dxFeed_,
+    jclass eventTypeClass = safeFindClass(env, className);
+    jobject nativeEventData = env->CallStaticObjectMethod(dxFeedJniClazz, getLastEventId, dxFeed_,
                                                           jSymbolName, eventTypeClass);
     if (nativeEventData) {
-      jni::NativeEventData data{env};
+      NativeEventData data{env};
       data.toNativeEvent(nativeEventData, &pEventType);
     }
 

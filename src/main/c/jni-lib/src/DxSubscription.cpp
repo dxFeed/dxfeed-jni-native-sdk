@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <jni.h>
-#include <iostream>
 
 #include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/listeners/DxEventListener.hpp"
@@ -11,7 +10,6 @@
 
 namespace dxfeed {
   using namespace jni;
-  using namespace jni::internal;
 
   DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
@@ -30,23 +28,23 @@ namespace dxfeed {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     int32_t size = eventClazzes->size;
     jclass clazzArrayClass = env->FindClass("Ljava/lang/Class;");
-    std::cout << "clazzArrayClass:" << clazzArrayClass << "\n";
+    javaLogger->info("clazzArrayClass: %", clazzArrayClass);
     jobjectArray array = env->NewObjectArray(size, clazzArrayClass, nullptr);
-    std::cout << "array:" << array << "\n";
+    javaLogger->info("array: %", array);
     for (int i = 0; i < size; ++i) {
       dxfg_event_clazz_t* pClazz = eventClazzes->elements[i];
-      std::cout << "\tpClazz << = " << pClazz << ", *pClazz: " << *pClazz << "\n";
+      javaLogger->info("\t pClazz = %, *pClazz = ", pClazz, *pClazz);
       const char* className = getEventClassType(*pClazz);
-      std::cout << "\tarray[" << i << "] = " << className << "\n";
+      javaLogger->info("\t array[\"%\"] = %", i, className);
       jclass eventTypeClass = safeFindClass(env, className);
-      std::cout << "\teventTypeClass = " << eventTypeClass << "\n";
+      javaLogger->info("\teventTypeClass = %", eventTypeClass);
       env->SetObjectArrayElement(array, i, eventTypeClass);
     }
     jmethodID createSubscriptionId2 = safeGetMethodID(env, dxFeedClass, "createSubscription",
                                                            "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
-    std::cout << "createSubscriptionId2:" << createSubscriptionId2 << "\n";
+    javaLogger->info("createSubscriptionId2: %", createSubscriptionId2);
     jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
-    std::cout << "pDxSubscription:" << pDxSubscription << "\n";
+    javaLogger->info("pDxSubscription: %", pDxSubscription);
 
     subscription_ = env->NewGlobalRef(pDxSubscription);
     env->DeleteLocalRef(array);
@@ -56,18 +54,18 @@ namespace dxfeed {
   }
 
   DxSubscription::~DxSubscription() {
-    jniEnv->DeleteGlobalRef(subscription_);
+    internal::jniEnv->DeleteGlobalRef(subscription_);
   }
 
   void DxSubscription::addListener(JNIEnv* env, DxEventListener* listener) const {
-    auto dxSymbolClass = dxJni->dxSubscriptionJniClass_;
+    auto dxSymbolClass = internal::dxJni->dxSubscriptionJniClass_;
     jmethodID methodId = safeGetStaticMethodID(env, dxSymbolClass, "addEventListener",
                                                "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
     env->CallStaticVoidMethod(dxSymbolClass, methodId, subscription_, listener->javaListenerId_);
   }
 
   void DxSubscription::removeListener(JNIEnv* env, DxEventListener* listener) const {
-    auto dxSymbolClass = dxJni->dxSubscriptionJniClass_;
+    auto dxSymbolClass = internal::dxJni->dxSubscriptionJniClass_;
     jmethodID methodId = safeGetStaticMethodID(env, dxSymbolClass, "removeEventListener",
                                                "(Lcom/dxfeed/api/DXFeedSubscription;J)V");
     env->CallStaticVoidMethod(dxSymbolClass, methodId, subscription_, listener->javaListenerId_);

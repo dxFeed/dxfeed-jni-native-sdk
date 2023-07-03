@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
 #include "dxfeed/utils/NativeEventData.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
@@ -12,7 +11,7 @@ namespace dxfeed::jni {
       r_cast<jclass>(safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni$NativeEventData;"))
     )
   {
-    std::cout << "com.dxfeed.api.DxFeedJni$NativeEventData: " << dxNativeEventDataClass_ << "\n";
+    javaLogger->info("com.dxfeed.api.DxFeedJni$NativeEventData: %", dxNativeEventDataClass_);
     byteData_ = safeGetFieldID(env, dxNativeEventDataClass_, "byteData", "[B");
     doubleData_ = safeGetFieldID(env, dxNativeEventDataClass_, "doubleData", "[D");
   }
@@ -33,7 +32,7 @@ namespace dxfeed::jni {
 
     // return newEventType via arg-pointer
     dxfg_event_type_t* pEventType = *ppEventType;
-    dxfg_event_type_t* pType = jni::NativeEventReader::toEvent(&byteData, &doubleData, pEventType->clazz);
+    dxfg_event_type_t* pType = NativeEventReader::toEvent(&byteData, &doubleData, pEventType->clazz);
     delete pEventType;
     *ppEventType = pType;
 

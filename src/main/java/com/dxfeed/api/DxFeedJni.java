@@ -1,5 +1,6 @@
 package com.dxfeed.api;
 
+import com.devexperts.logging.Logging;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.market.Quote;
 
@@ -10,9 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DxFeedJni {
+  private static Logging logger = Logging.getLogging(DxFeedJni.class);
+
   static {
     String property = System.getProperty("com.devexperts.qd.impl.matrix.Agent.MaxBufferSize");
-    System.out.println("[DxFeedJni]: After loading class " + DxFeedJni.class.getName() +
+    logger.info("[DxFeedJni]: After loading class " + DxFeedJni.class.getName() +
         ", com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = " + property);
   }
 
