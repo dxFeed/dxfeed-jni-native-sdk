@@ -18,6 +18,7 @@ namespace dxfeed::jni {
     static dxfg_trade_t* toTrade(const char** pByteData, const double** pDoubleData);
     static dxfg_profile_t* toProfile(const char** pByteData, const double** pDoubleData);
     static dxfg_underlying_t* toUnderlying(const char** pByteData, const double** pDoubleData);
+    static dxfg_theo_price_t* toTheoPrice(const char** pByteData, const double** pDoubleData);
   };
 }
 

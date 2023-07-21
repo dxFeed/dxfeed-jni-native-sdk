@@ -6,6 +6,7 @@ import com.dxfeed.api.serializers.*;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.market.*;
+import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 
 import java.util.List;
@@ -40,6 +41,9 @@ public class NativeEventsList {
       } else if (event instanceof Underlying) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_UNDERLYING.eventOrdinal();
         UnderlyingToNative.convert((Underlying) event, pBytes, pDoubles, i);
+      } else if (event instanceof TheoPrice) {
+        pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_THEO_PRICE.eventOrdinal();
+        TheoPriceToNative.convert((TheoPrice) event, pBytes, pDoubles, i);
       } else {
         throw new IllegalStateException("Event mapping for " + event.getClass().getName() + " is not implemented");
       }
