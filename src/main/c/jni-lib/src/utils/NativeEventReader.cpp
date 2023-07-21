@@ -73,6 +73,8 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
       case DXFG_EVENT_PROFILE:
         return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
+      case DXFG_EVENT_UNDERLYING:
+        return r_cast <dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -186,5 +188,24 @@ namespace dxfeed::jni {
     profile->shares = readDouble(pDoubleData);
     profile->free_float = readDouble(pDoubleData);
     return profile;
+  }
+
+  dxfg_underlying_t* NativeEventReader::toUnderlying(const char** pByteData, const double** pDoubleData) {
+    auto* underlying = new dxfg_underlying_t();
+    underlying->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
+    underlying->market_event.event_symbol = readString(pByteData);
+    underlying->market_event.event_time = readLong(pByteData);
+
+    underlying->event_flags = readInt(pByteData);
+    underlying->index = readLong(pByteData);
+
+    underlying->volatility = readDouble(pDoubleData);
+    underlying->front_volatility = readDouble(pDoubleData);
+    underlying->back_volatility = readDouble(pDoubleData);
+    underlying->call_volume = readDouble(pDoubleData);
+    underlying->put_volume = readDouble(pDoubleData);
+    underlying->put_call_ratio = readDouble(pDoubleData);
+
+    return underlying;
   }
 }
