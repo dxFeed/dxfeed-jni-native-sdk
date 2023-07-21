@@ -74,7 +74,9 @@ namespace dxfeed::jni {
       case DXFG_EVENT_PROFILE:
         return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
       case DXFG_EVENT_UNDERLYING:
-        return r_cast <dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
+      case DXFG_EVENT_THEO_PRICE:
+        return r_cast<dxfg_event_type_t*>(toTheoPrice(pByteData, pDoubleData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -207,5 +209,24 @@ namespace dxfeed::jni {
     underlying->put_call_ratio = readDouble(pDoubleData);
 
     return underlying;
+  }
+
+  dxfg_theo_price_t* NativeEventReader::toTheoPrice(const char** pByteData, const double** pDoubleData) {
+    auto* theoPrice = new dxfg_theo_price_t();
+    theoPrice->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
+    theoPrice->market_event.event_symbol = readString(pByteData);
+    theoPrice->market_event.event_time = readLong(pByteData);
+
+    theoPrice->event_flags = readInt(pByteData);
+    theoPrice->index = readLong(pByteData);
+
+    theoPrice->price = readDouble(pDoubleData);
+    theoPrice->underlying_price = readDouble(pDoubleData);
+    theoPrice->delta = readDouble(pDoubleData);
+    theoPrice->gamma = readDouble(pDoubleData);
+    theoPrice->dividend = readDouble(pDoubleData);
+    theoPrice->interest = readDouble(pDoubleData);
+
+    return theoPrice;
   }
 }

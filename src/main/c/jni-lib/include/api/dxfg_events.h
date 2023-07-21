@@ -201,6 +201,23 @@ typedef struct dxfg_underlying_t {
 } dxfg_underlying_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/TheoPrice.html">Javadoc</a>
+ */
+typedef struct dxfg_theo_price_t {
+  dxfg_market_event_t market_event;
+  //    dxfg_time_series_event_t time_series_event;
+  //    dxfg_lasting_event_t lasting_event;
+  int32_t event_flags;
+  int64_t index;
+  double price;
+  double underlying_price;
+  double delta;
+  double gamma;
+  double dividend;
+  double interest;
+} dxfg_theo_price_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeBase.html">Javadoc</a>
  */
 typedef struct dxfg_trade_base_t {
