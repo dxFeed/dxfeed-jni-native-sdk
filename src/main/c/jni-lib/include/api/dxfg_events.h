@@ -177,6 +177,30 @@ typedef struct dxfg_candle_t {
 } dxfg_candle_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/DailyCandle.html">Javadoc</a>
+ */
+typedef struct dxfg_daily_candle_t {
+    dxfg_candle_t candle;
+} dxfg_daily_candle_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Underlying.html">Javadoc</a>
+ */
+typedef struct dxfg_underlying_t {
+  dxfg_market_event_t market_event;
+  //    dxfg_time_series_event_t time_series_event;
+  //    dxfg_lasting_event_t lasting_event;
+  int32_t event_flags;
+  int64_t index;
+  double volatility;
+  double front_volatility;
+  double back_volatility;
+  double call_volume;
+  double put_volume;
+  double put_call_ratio;
+} dxfg_underlying_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeBase.html">Javadoc</a>
  */
 typedef struct dxfg_trade_base_t {
