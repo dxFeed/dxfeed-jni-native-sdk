@@ -257,6 +257,16 @@ typedef struct dxfg_configuration_t {
 } dxfg_configuration_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html">Javadoc</a>
+ */
+typedef struct dxfg_message_t {
+  dxfg_event_type_t event_type;
+  const char *event_symbol;
+  int64_t event_time;
+  void *attachment;
+} dxfg_message_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html">Javadoc</a>
  */
 typedef struct dxfg_time_and_sale_t {
