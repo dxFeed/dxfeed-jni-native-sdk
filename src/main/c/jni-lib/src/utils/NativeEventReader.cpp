@@ -77,6 +77,8 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
       case DXFG_EVENT_THEO_PRICE:
         return r_cast<dxfg_event_type_t*>(toTheoPrice(pByteData, pDoubleData));
+      case DXFG_EVENT_CONFIGURATION:
+        return r_cast<dxfg_event_type_t*>(toConfiguration(pByteData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -229,4 +231,15 @@ namespace dxfeed::jni {
 
     return theoPrice;
   }
+
+  dxfg_configuration_t* NativeEventReader::toConfiguration(const char** pByteData) {
+    auto* configuration = new dxfg_configuration_t();
+    configuration->event_type.clazz = DXFG_EVENT_CONFIGURATION;
+    configuration->event_symbol = readString(pByteData);
+    configuration->event_time = readLong(pByteData);
+    configuration->version = readInt(pByteData);
+    // configuration->attachment = readBlob();
+    return configuration;
+  }
+
 }
