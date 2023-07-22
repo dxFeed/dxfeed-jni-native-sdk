@@ -79,6 +79,8 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toTheoPrice(pByteData, pDoubleData));
       case DXFG_EVENT_CONFIGURATION:
         return r_cast<dxfg_event_type_t*>(toConfiguration(pByteData));
+      case DXFG_EVENT_MESSAGE:
+        return r_cast<dxfg_event_type_t*>(toMessage(pByteData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -233,13 +235,25 @@ namespace dxfeed::jni {
   }
 
   dxfg_configuration_t* NativeEventReader::toConfiguration(const char** pByteData) {
-    auto* configuration = new dxfg_configuration_t();
+    auto* configuration = new dxfg_configuration_t();// todo: make wrapper to get attachment fromJava
     configuration->event_type.clazz = DXFG_EVENT_CONFIGURATION;
     configuration->event_symbol = readString(pByteData);
     configuration->event_time = readLong(pByteData);
     configuration->version = readInt(pByteData);
+    // todo: read next ID of type LONG, ID points to java.lang.Object attachment in Java
     // configuration->attachment = readBlob();
     return configuration;
   }
+
+  dxfg_message_t* NativeEventReader::toMessage(const char** pByteData) {
+    auto* message = new dxfg_message_t(); // todo: make wrapper to get attachment from Java
+    message->event_type.clazz = DXFG_EVENT_MESSAGE;
+    message->event_symbol = readString(pByteData);
+    message->event_time = readLong(pByteData);
+    // todo: read next ID of type LONG, ID points to java.lang.Object attachment in Java
+    // message->attachment = readBlob(pByteData);
+    return message;
+  }
+
 
 }

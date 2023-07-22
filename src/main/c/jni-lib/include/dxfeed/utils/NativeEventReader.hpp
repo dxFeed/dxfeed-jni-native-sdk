@@ -20,6 +20,7 @@ namespace dxfeed::jni {
     static dxfg_underlying_t* toUnderlying(const char** pByteData, const double** pDoubleData);
     static dxfg_theo_price_t* toTheoPrice(const char** pByteData, const double** pDoubleData);
     static dxfg_configuration_t* toConfiguration(const char** pByteData);
+    static dxfg_message_t* toMessage(const char** pByteData);
   };
 }
 
