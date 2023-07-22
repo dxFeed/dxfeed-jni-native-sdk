@@ -24,4 +24,10 @@ public class DxFeedEventMarket {
       return event.getTimeMillisSequence(); // package private method
     }
   }
+
+  public static class OptionSalePackagePrivate {
+    public static int getFlags(OptionSale event) {
+      return event.getFlags(); // package private method
+    }
+  }
 }
