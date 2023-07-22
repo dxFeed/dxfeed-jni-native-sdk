@@ -286,6 +286,29 @@ typedef struct dxfg_time_and_sale_t {
 } dxfg_time_and_sale_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OptionSale.html">Javadoc</a>
+ */
+typedef struct dxfg_option_sale_t {
+  dxfg_market_event_t market_event;
+  //    dxfg_indexed_event_t indexed_event;
+  int32_t event_flags;
+  int64_t index;
+  int64_t time_sequence;
+  int32_t time_nano_part;
+  int16_t exchange_code;
+  double price;
+  double size;
+  double bid_price;
+  double ask_price;
+  const char* exchange_sale_conditions;
+  int32_t flags;
+  double underlying_price;
+  double volatility;
+  double delta;
+  const char* option_symbol;
+} dxfg_option_sale_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OrderBase.html">Javadoc</a>
  */
 typedef struct dxfg_order_base_t {

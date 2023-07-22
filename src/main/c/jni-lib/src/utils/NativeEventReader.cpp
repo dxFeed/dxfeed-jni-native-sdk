@@ -81,6 +81,8 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toConfiguration(pByteData));
       case DXFG_EVENT_MESSAGE:
         return r_cast<dxfg_event_type_t*>(toMessage(pByteData));
+      case DXFG_EVENT_OPTION_SALE:
+        return r_cast<dxfg_event_type_t*>(toOptionSale(pByteData, pDoubleData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -255,5 +257,29 @@ namespace dxfeed::jni {
     return message;
   }
 
+  dxfg_option_sale_t* NativeEventReader::toOptionSale(const char** pByteData, const double** pDoubleData) {
+    auto* optionSale = new dxfg_option_sale_t();
+    optionSale->market_event.event_type.clazz = DXFG_EVENT_OPTION_SALE;
+    optionSale->market_event.event_symbol = readString(pByteData);
+    optionSale->market_event.event_time = readLong(pByteData);
+    optionSale->event_flags = readInt(pByteData);
+    optionSale->index = readLong(pByteData);
+    optionSale->time_sequence = readLong(pByteData);
+    optionSale->time_nano_part = readInt(pByteData);
+    optionSale->exchange_code = readInt16_t(pByteData);
+    optionSale->flags = readInt(pByteData);
+
+    optionSale->exchange_sale_conditions = readString(pByteData);
+    optionSale->option_symbol = readString(pByteData);
+
+    optionSale->price = readDouble(pDoubleData);
+    optionSale->size = readDouble(pDoubleData);
+    optionSale->bid_price = readDouble(pDoubleData);
+    optionSale->ask_price = readDouble(pDoubleData);
+    optionSale->underlying_price = readDouble(pDoubleData);
+    optionSale->volatility = readDouble(pDoubleData);
+    optionSale->delta = readDouble(pDoubleData);
+    return optionSale;
+  }
 
 }
