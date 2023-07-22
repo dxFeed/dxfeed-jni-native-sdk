@@ -243,6 +243,25 @@ typedef struct dxfg_trade_t {
 } dxfg_trade_t;
 
 /**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeETH.html">Javadoc</a>
+ */
+typedef struct dxfg_trade_eth_t {
+  dxfg_trade_base_t trade_base;
+} dxfg_trade_eth_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Configuration.html">Javadoc</a>
+ */
+typedef struct dxfg_configuration_t {
+  dxfg_event_type_t event_type;
+  //    dxfg_lasting_event_t lasting_event;
+  const char *event_symbol;
+  int64_t event_time;
+  int32_t version;
+  void *attachment;
+} dxfg_configuration_t;
+
+/**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html">Javadoc</a>
  */
 typedef struct dxfg_time_and_sale_t {
