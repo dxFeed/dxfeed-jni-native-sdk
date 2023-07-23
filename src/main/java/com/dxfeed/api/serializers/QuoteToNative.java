@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
-import com.dxfeed.event.market.DxFeedEventMarket;
+import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Quote;
 
 public class QuoteToNative {
@@ -31,7 +31,7 @@ public class QuoteToNative {
   public static void convert(Quote event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
     CString eventSymbol = new CString(event.getEventSymbol());
     long eventTime = event.getEventTime();                                                          // 8
-    int timeMillisSequence = DxFeedEventMarket.QuotePackagePrivate.getTimeMillisSequence(event);    // 4
+    int timeMillisSequence = DxFeedEventMarketPackagePrivate.getTimeMillisSequence(event);          // 4
     int timeNanoPart = event.getTimeNanoPart();                                                     // 4
     long bidTime = event.getBidTime();                                                              // 8
     char bidExchangeCode = event.getBidExchangeCode();                                              // 2

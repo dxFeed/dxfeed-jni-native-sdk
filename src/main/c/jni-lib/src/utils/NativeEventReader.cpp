@@ -83,6 +83,14 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toMessage(pByteData));
       case DXFG_EVENT_OPTION_SALE:
         return r_cast<dxfg_event_type_t*>(toOptionSale(pByteData, pDoubleData));
+      case DXFG_EVENT_ORDER_BASE:
+        return r_cast<dxfg_event_type_t*>(toOrderBase(pByteData, pDoubleData));
+      case DXFG_EVENT_ORDER:
+        return r_cast<dxfg_event_type_t*>(toOrder(pByteData, pDoubleData));
+      case DXFG_EVENT_ANALYTIC_ORDER:
+        return r_cast<dxfg_event_type_t*>(toAnalyticsOrder(pByteData, pDoubleData));
+      case DXFG_EVENT_SPREAD_ORDER:
+        return r_cast<dxfg_event_type_t*>(toSpreadOrder(pByteData, pDoubleData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -282,4 +290,64 @@ namespace dxfeed::jni {
     return optionSale;
   }
 
+  dxfg_order_base_t* NativeEventReader::toOrderBase(const char** pByteData, const double** pDoubleData) {
+    auto* orderBase = new dxfg_order_base_t();
+    readOrder(pByteData, pDoubleData, orderBase);
+    return orderBase;
+  }
+
+  dxfg_order_t* NativeEventReader::toOrder(const char** pByteData, const double** pDoubleData) {
+    auto* order = new dxfg_order_t();
+    readOrder(pByteData, pDoubleData, &order->order_base);
+    order->market_maker = readString(pByteData);
+    return order;
+  }
+
+  dxfg_analytic_order_t* NativeEventReader::toAnalyticsOrder(const char** pByteData, const double** pDoubleData) {
+    auto* analyticsOrder = new dxfg_analytic_order_t();
+
+    dxfg_order_t& order = analyticsOrder->order;
+
+    dxfg_order_base_t& orderBase = order.order_base;
+    readOrder(pByteData, pDoubleData, &orderBase);
+
+    order.market_maker = readString(pByteData);
+
+    analyticsOrder->iceberg_flags = readInt(pByteData);
+    analyticsOrder->iceberg_peak_size = readDouble(pDoubleData);
+    analyticsOrder->iceberg_hidden_size = readDouble(pDoubleData);
+    analyticsOrder->iceberg_executed_size = readDouble(pDoubleData);
+    return analyticsOrder;
+  }
+
+  dxfg_spread_order_t* NativeEventReader::toSpreadOrder(const char** pByteData, const double** pDoubleData) {
+    auto* order = new dxfg_spread_order_t();
+    readOrder(pByteData, pDoubleData, &order->order_base);
+    order->spread_symbol = readString(pByteData);
+    return order;
+  }
+
+  void NativeEventReader::readOrder(const char** pByteData, const double** pDoubleData,
+                                    dxfg_order_base_t* const orderBase)
+  {
+    orderBase->market_event.event_type.clazz = DXFG_EVENT_ORDER_BASE;
+    orderBase->market_event.event_symbol = readString(pByteData);
+    orderBase->market_event.event_time = readLong(pByteData);
+    orderBase->event_flags = readInt(pByteData);
+    orderBase->index = readLong(pByteData);
+    orderBase->time_sequence = readLong(pByteData);
+    orderBase->time_nano_part = readInt(pByteData);
+    orderBase->action_time = readLong(pByteData);
+    orderBase->order_id = readLong(pByteData);
+    orderBase->aux_order_id = readLong(pByteData);
+    orderBase->count = readLong(pByteData);
+    orderBase->flags = readInt(pByteData);
+    orderBase->trade_id = readLong(pByteData);
+
+    orderBase->price = readDouble(pDoubleData);
+    orderBase->size = readDouble(pDoubleData);
+    orderBase->executed_size = readDouble(pDoubleData);
+    orderBase->trade_price = readDouble(pDoubleData);
+    orderBase->trade_size = readDouble(pDoubleData);
+  }
 }

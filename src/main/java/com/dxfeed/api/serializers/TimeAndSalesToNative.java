@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
-import com.dxfeed.event.market.DxFeedEventMarket;
+import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.TimeAndSale;
 
 public class TimeAndSalesToNative {
@@ -38,7 +38,7 @@ public class TimeAndSalesToNative {
     long index = event.getIndex();                                              // 8
     int timeNanoPart = event.getTimeNanoPart();                                 // 4
     char exchangeCode = event.getExchangeCode();                                // 2
-    int flags = DxFeedEventMarket.TimeAndSalePackagePrivate.getFlags(event);    // 4
+    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);                // 4
     CString exchangeSaleConditions = new CString(event.getExchangeSaleConditions());
     CString buyer = new CString(event.getBuyer());
     CString seller = new CString(event.getSeller());

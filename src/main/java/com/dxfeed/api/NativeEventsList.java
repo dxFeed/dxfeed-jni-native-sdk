@@ -55,6 +55,8 @@ public class NativeEventsList {
       } else if (event instanceof OptionSale) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_OPTION_SALE.eventOrdinal();
         OptionSaleToNative.convert((OptionSale) event, pBytes, pDoubles, i);
+      } else if (event instanceof OrderBase) {
+        pEventTypes[i] = OrderToNative.convert((OrderBase) event, pBytes, pDoubles, i);
       } else {
         throw new IllegalStateException("Event mapping for " + event.getClass().getName() + " is not implemented");
       }
