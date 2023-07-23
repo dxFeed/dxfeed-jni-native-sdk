@@ -315,21 +315,17 @@ typedef struct dxfg_order_base_t {
   dxfg_market_event_t market_event;
   //    dxfg_indexed_event_t indexed_event;
   int32_t event_flags;
-
   int64_t index;
   int64_t time_sequence;
   int32_t time_nano_part;
-
   int64_t action_time;
   int64_t order_id;
   int64_t aux_order_id;
-
   double price;
   double size;
   double executed_size;
   int64_t count;
   int32_t flags;
-
   int64_t trade_id;
   double trade_price;
   double trade_size;
@@ -342,6 +338,25 @@ typedef struct dxfg_order_t {
   dxfg_order_base_t order_base;
   const char* market_maker;
 } dxfg_order_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html">Javadoc</a>
+ */
+typedef struct dxfg_analytic_order_t {
+  dxfg_order_t order_base;
+  double iceberg_peak_size;
+  double iceberg_hidden_size;
+  double iceberg_executed_size;
+  int32_t iceberg_flags;
+} dxfg_analytic_order_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html">Javadoc</a>
+ */
+typedef struct dxfg_spread_order_t {
+  dxfg_order_base_t order_base;
+  const char* spread_symbol;
+} dxfg_spread_order_t;
 
 typedef struct dxfg_event_type_list {
   int32_t size;
