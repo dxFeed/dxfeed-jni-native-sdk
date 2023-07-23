@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
-import com.dxfeed.event.market.DxFeedEventMarket;
+import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Profile;
 
 public class ProfileToNative {
@@ -41,7 +41,7 @@ public class ProfileToNative {
     long haltStartTime = event.getHaltStartTime();                          // 8
     long haltEndTime = event.getHaltEndTime();                              // 8
     int exDividendDayId = event.getExDividendDayId();                       // 4
-    int flags = DxFeedEventMarket.ProfilePackagePrivate.getFlags(event);    // 4
+    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);            // 4
     CString description = new CString(event.getDescription());
     CString statusReason = new CString(event.getStatusReason());
 
