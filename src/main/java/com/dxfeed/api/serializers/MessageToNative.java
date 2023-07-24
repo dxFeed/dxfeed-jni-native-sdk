@@ -1,7 +1,6 @@
 package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.event.misc.Message;
 
 import java.util.HashMap;
