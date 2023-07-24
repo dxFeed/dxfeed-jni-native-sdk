@@ -8,6 +8,7 @@ import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.market.*;
 import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.event.misc.Message;
+import com.dxfeed.event.option.Greeks;
 import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 
@@ -40,7 +41,13 @@ public class NativeEventsList {
       } else if (event instanceof Profile) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_PROFILE.eventOrdinal();
         ProfileToNative.convert((Profile) event, pBytes, pDoubles, i);
-      } else if (event instanceof Underlying) {
+      } else if (event instanceof Summary) {
+        pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SUMMARY.eventOrdinal();
+        SummaryToNative.convert((Summary) event, pBytes, pDoubles, i);
+      } else if (event instanceof Greeks) {
+        pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_GREEKS.eventOrdinal();
+        GreeksToNative.convert((Greeks) event, pBytes, pDoubles, i);
+      }else if (event instanceof Underlying) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_UNDERLYING.eventOrdinal();
         UnderlyingToNative.convert((Underlying) event, pBytes, pDoubles, i);
       } else if (event instanceof TheoPrice) {
