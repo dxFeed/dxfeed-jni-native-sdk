@@ -73,6 +73,10 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
       case DXFG_EVENT_PROFILE:
         return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
+      case DXFG_EVENT_SUMMARY:
+        return r_cast<dxfg_event_type_t*>(toSummary(pByteData, pDoubleData));
+      case DXFG_EVENT_GREEKS:
+        return r_cast<dxfg_event_type_t*>(toGreeks(pByteData, pDoubleData));
       case DXFG_EVENT_UNDERLYING:
         return r_cast<dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
       case DXFG_EVENT_THEO_PRICE:
@@ -204,6 +208,45 @@ namespace dxfeed::jni {
     profile->shares = readDouble(pDoubleData);
     profile->free_float = readDouble(pDoubleData);
     return profile;
+  }
+
+  dxfg_summary_t* NativeEventReader::toSummary(const char** pByteData, const double** pDoubleData) {
+    auto summary = new dxfg_summary_t();
+    summary->market_event.event_type.clazz = DXFG_EVENT_SUMMARY;
+    summary->market_event.event_symbol = readString(pByteData);
+    summary->market_event.event_time = readLong(pByteData);
+    summary->day_id = readInt(pByteData);
+    summary->prev_day_id = readInt(pByteData);
+    summary->open_interest = readLong(pByteData);
+    summary->flags = readInt(pByteData);
+
+    summary->day_open_price = readDouble(pDoubleData);
+    summary->day_high_price = readDouble(pDoubleData);
+    summary->day_low_price = readDouble(pDoubleData);
+    summary->day_close_price = readDouble(pDoubleData);
+    summary->prev_day_close_price = readDouble(pDoubleData);
+    summary->prev_day_volume = readDouble(pDoubleData);
+
+    return summary;
+  }
+
+  dxfg_greeks_t* NativeEventReader::toGreeks(const char** pByteData, const double** pDoubleData) {
+    auto greeks = new dxfg_greeks_t();
+    greeks->market_event.event_type.clazz = DXFG_EVENT_GREEKS;
+    greeks->market_event.event_symbol = readString(pByteData);
+    greeks->market_event.event_time = readLong(pByteData);
+    greeks->event_flags = readInt(pByteData);
+    greeks->index = readLong(pByteData);
+
+    greeks->price = readDouble(pDoubleData);
+    greeks->volatility = readDouble(pDoubleData);
+    greeks->delta = readDouble(pDoubleData);
+    greeks->gamma = readDouble(pDoubleData);
+    greeks->theta = readDouble(pDoubleData);
+    greeks->rho = readDouble(pDoubleData);
+    greeks->vega = readDouble(pDoubleData);
+
+    return greeks;
   }
 
   dxfg_underlying_t* NativeEventReader::toUnderlying(const char** pByteData, const double** pDoubleData) {
