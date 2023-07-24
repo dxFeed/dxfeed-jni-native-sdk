@@ -95,6 +95,8 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toAnalyticsOrder(pByteData, pDoubleData));
       case DXFG_EVENT_SPREAD_ORDER:
         return r_cast<dxfg_event_type_t*>(toSpreadOrder(pByteData, pDoubleData));
+      case DXFG_EVENT_SERIES:
+        return r_cast<dxfg_event_type_t*>(toSeries(pByteData, pDoubleData));
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;
@@ -368,6 +370,27 @@ namespace dxfeed::jni {
     readOrder(pByteData, pDoubleData, &order->order_base);
     order->spread_symbol = readString(pByteData);
     return order;
+  }
+
+  dxfg_series_t* NativeEventReader::toSeries(const char** pByteData, const double** pDoubleData) {
+    auto* series = new dxfg_series_t();
+    series->market_event.event_type.clazz = DXFG_EVENT_SERIES;
+    series->market_event.event_symbol = readString(pByteData);
+    series->market_event.event_time = readLong(pByteData);
+
+    series->event_flags = readInt(pByteData);
+    series->index = readLong(pByteData);
+    series->time_sequence = readLong(pByteData);
+    series->expiration = readInt(pByteData);
+
+    series->volatility = readDouble(pDoubleData);
+    series->call_volume = readDouble(pDoubleData);
+    series->put_volume = readDouble(pDoubleData);
+    series->put_call_ratio = readDouble(pDoubleData);
+    series->forward_price = readDouble(pDoubleData);
+    series->dividend = readDouble(pDoubleData);
+    series->interest = readDouble(pDoubleData);
+    return series;
   }
 
   void NativeEventReader::readOrder(const char** pByteData, const double** pDoubleData,
