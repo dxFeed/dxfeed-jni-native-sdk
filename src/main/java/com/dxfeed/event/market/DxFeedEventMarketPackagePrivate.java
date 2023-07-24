@@ -13,6 +13,10 @@ public class DxFeedEventMarketPackagePrivate {
     return event.getFlags();
   }
 
+  public static int getFlags(Summary event) {
+    return event.getFlags();
+  }
+
   public static int getTimeMillisSequence(Quote event) {
     return event.getTimeMillisSequence();
   }
