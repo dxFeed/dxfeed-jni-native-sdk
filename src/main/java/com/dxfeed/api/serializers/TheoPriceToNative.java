@@ -4,7 +4,6 @@ package com.dxfeed.api.serializers;
 import com.dxfeed.api.buffers.ChunkedByteBuffer;
 import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
 import com.dxfeed.event.option.TheoPrice;
-import com.dxfeed.event.option.Underlying;
 
 public class TheoPriceToNative {
   /**
