@@ -9,6 +9,7 @@ import com.dxfeed.event.market.*;
 import com.dxfeed.event.misc.Configuration;
 import com.dxfeed.event.misc.Message;
 import com.dxfeed.event.option.Greeks;
+import com.dxfeed.event.option.Series;
 import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 
@@ -64,6 +65,9 @@ public class NativeEventsList {
         OptionSaleToNative.convert((OptionSale) event, pBytes, pDoubles, i);
       } else if (event instanceof OrderBase) {
         pEventTypes[i] = OrderToNative.convert((OrderBase) event, pBytes, pDoubles, i);
+      } else if (event instanceof Series) {
+        pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SERIES.eventOrdinal();
+        SeriesToNative.convert((Series) event, pBytes, pDoubles, i);
       } else {
         throw new IllegalStateException("Event mapping for " + event.getClass().getName() + " is not implemented");
       }

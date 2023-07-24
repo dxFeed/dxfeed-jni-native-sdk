@@ -394,6 +394,25 @@ typedef struct dxfg_spread_order_t {
   const char* spread_symbol;
 } dxfg_spread_order_t;
 
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Series.html">Javadoc</a>
+ */
+typedef struct dxfg_series_t {
+  dxfg_market_event_t market_event;
+  //    dxfg_indexed_event_t indexed_event;
+  int32_t event_flags;
+  int64_t index;
+  int64_t time_sequence;
+  int32_t expiration;
+  double volatility;
+  double call_volume;
+  double put_volume;
+  double put_call_ratio;
+  double forward_price;
+  double dividend;
+  double interest;
+} dxfg_series_t;
+
 typedef struct dxfg_event_type_list {
   int32_t size;
   dxfg_event_type_t const* const* elements;
