@@ -28,6 +28,7 @@ namespace dxfeed::jni {
     static dxfg_order_t* toOrder(const char** pByteData, const double** pDoubleData);
     static dxfg_analytic_order_t* toAnalyticsOrder(const char** pByteData, const double** pDoubleData);
     static dxfg_spread_order_t* toSpreadOrder(const char** pByteData, const double** pDoubleData);
+    static dxfg_series_t* toSeries(const char** pByteData, const double** pDoubleData);
 
     static void readOrder(const char** pByteData, const double** pDoubleData, dxfg_order_base_t* orderBase);
   };
