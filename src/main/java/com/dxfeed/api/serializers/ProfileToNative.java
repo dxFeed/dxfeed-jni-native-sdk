@@ -8,31 +8,32 @@ import com.dxfeed.event.market.Profile;
 public class ProfileToNative {
   /**
    * typedef struct dxfg_market_event_t {
-   * dxfg_event_type_t event_type;
-   * const char *event_symbol;
-   * int64_t event_time;
+   *    dxfg_event_type_t event_type;
+   *    const char *event_symbol;
+   *    int64_t event_time;
    * } dxfg_market_event_t;
-   * <p>
-   * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L158
+   *
+   * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L158
+   *
    * typedef struct dxfg_profile_t {
-   * dxfg_market_event_t market_event;
-   * //    dxfg_lasting_event_t lasting_event;
-   * const char *description;
-   * const char *status_reason;
-   * int64_t halt_start_time;
-   * int64_t halt_end_time;
-   * double high_limit_price;
-   * double low_limit_price;
-   * double high_52_week_price;
-   * double low_52_week_price;
-   * double beta;
-   * double earnings_per_share;
-   * double dividend_frequency;
-   * double ex_dividend_amount;
-   * int32_t ex_dividend_day_id;
-   * double shares;
-   * double free_float;
-   * int32_t flags;
+   *    dxfg_market_event_t market_event;
+   *    //    dxfg_lasting_event_t lasting_event;
+   *    const char *description;
+   *    const char *status_reason;
+   *    int64_t halt_start_time;
+   *    int64_t halt_end_time;
+   *    double high_limit_price;
+   *    double low_limit_price;
+   *    double high_52_week_price;
+   *    double low_52_week_price;
+   *    double beta;
+   *    double earnings_per_share;
+   *    double dividend_frequency;
+   *    double ex_dividend_amount;
+   *    int32_t ex_dividend_day_id;
+   *    double shares;
+   *    double free_float;
+   *    int32_t flags;
    * } dxfg_profile_t;
    */
   public static void convert(Profile event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {

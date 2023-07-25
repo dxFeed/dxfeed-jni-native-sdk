@@ -8,9 +8,9 @@ import com.dxfeed.event.market.OptionSale;
 public class OptionSaleToNative {
   /**
    * typedef struct dxfg_market_event_t {
-   * dxfg_event_type_t event_type;
-   * const char *event_symbol;
-   * int64_t event_time;
+   *    dxfg_event_type_t event_type;
+   *    const char *event_symbol;
+   *    int64_t event_time;
    * } dxfg_market_event_t;
    *
    * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L360

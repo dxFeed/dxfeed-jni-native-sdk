@@ -20,34 +20,32 @@ public class OrderToNative {
 
   /**
    * typedef struct dxfg_market_event_t {
-   * dxfg_event_type_t event_type;
-   * const char *event_symbol;
-   * int64_t event_time;
+   *    dxfg_event_type_t event_type;
+   *    const char *event_symbol;
+   *    int64_t event_time;
    * } dxfg_market_event_t;
-   * <p>
-   * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L384
-   * <p>
-   * typedef struct dxfg_order_base_t {
-   * dxfg_market_event_t market_event;
-   * //    dxfg_indexed_event_t indexed_event;
-   * int32_t event_flags;
-   * int64_t index;
-   * int64_t time_sequence;
-   * int32_t time_nano_part;
-   * int64_t action_time;
-   * int64_t order_id;
-   * int64_t aux_order_id;
-   * double price;
-   * double size;
-   * double executed_size;
-   * int64_t count;
-   * int32_t flags;
-   * int64_t trade_id;
-   * double trade_price;
-   * double trade_size;
-   * } dxfg_order_base_t;
    *
-   * @return
+   * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L384
+   *
+   * typedef struct dxfg_order_base_t {
+   *    dxfg_market_event_t market_event;
+   *    //    dxfg_indexed_event_t indexed_event;
+   *    int32_t event_flags;
+   *    int64_t index;
+   *    int64_t time_sequence;
+   *    int32_t time_nano_part;
+   *    int64_t action_time;
+   *    int64_t order_id;
+   *    int64_t aux_order_id;
+   *    double price;
+   *    double size;
+   *    double executed_size;
+   *    int64_t count;
+   *    int32_t flags;
+   *    int64_t trade_id;
+   *    double trade_price;
+   *    double trade_size;
+   * } dxfg_order_base_t;
    */
 
   private static byte convertOrderBase(OrderBase event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
