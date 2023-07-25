@@ -8,24 +8,25 @@ import com.dxfeed.event.market.Quote;
 public class QuoteToNative {
   /**
    * typedef struct dxfg_market_event_t {
-   * dxfg_event_type_t event_type;
-   * const char *event_symbol;
-   * int64_t event_time;
+   *    dxfg_event_type_t event_type;
+   *    const char *event_symbol;
+   *    int64_t event_time;
    * } dxfg_market_event_t;
-   * <p>
-   * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L140
+   *
+   * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L140
+   *
    * typedef struct dxfg_quote_t {
-   * dxfg_market_event_t market_event;
-   * int32_t time_millis_sequence;
-   * int32_t time_nano_part;
-   * int64_t bid_time;
-   * int16_t bid_exchange_code;
-   * double bid_price;
-   * double bid_size;
-   * int64_t ask_time;
-   * int16_t ask_exchange_code;
-   * double ask_price;
-   * double ask_size;
+   *    dxfg_market_event_t market_event;
+   *    int32_t time_millis_sequence;
+   *    int32_t time_nano_part;
+   *    int64_t bid_time;
+   *    int16_t bid_exchange_code;
+   *    double bid_price;
+   *    double bid_size;
+   *    int64_t ask_time;
+   *    int16_t ask_exchange_code;
+   *    double ask_price;
+   *    double ask_size;
    * } dxfg_quote_t;
    */
   public static void convert(Quote event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
