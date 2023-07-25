@@ -8,26 +8,27 @@ import com.dxfeed.event.market.TimeAndSale;
 public class TimeAndSalesToNative {
   /**
    * typedef struct dxfg_market_event_t {
-   * dxfg_event_type_t event_type;
-   * const char *event_symbol;
-   * int64_t event_time;
+   *    dxfg_event_type_t event_type;
+   *    const char *event_symbol;
+   *    int64_t event_time;
    * } dxfg_market_event_t;
-   * <p>
-   * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L340
+   *
+   * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L340
+   *
    * typedef struct dxfg_time_and_sale_t {
-   * dxfg_market_event_t market_event;
-   * int32_t event_flags;
-   * int64_t index;
-   * int32_t time_nano_part;
-   * int16_t exchange_code;
-   * double price;
-   * double size;
-   * double bid_price;
-   * double ask_price;
-   * const char *exchange_sale_conditions;
-   * int32_t flags;
-   * const char *buyer;
-   * const char *seller;
+   *    dxfg_market_event_t market_event;
+   *    int32_t event_flags;
+   *    int64_t index;
+   *    int32_t time_nano_part;
+   *    int16_t exchange_code;
+   *    double price;
+   *    double size;
+   *    double bid_price;
+   *    double ask_price;
+   *    const char *exchange_sale_conditions;
+   *    int32_t flags;
+   *    const char *buyer;
+   *    const char *seller;
    * } dxfg_time_and_sale_t;
    */
 

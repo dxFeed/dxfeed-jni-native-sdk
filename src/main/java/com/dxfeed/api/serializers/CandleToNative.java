@@ -8,30 +8,31 @@ import com.dxfeed.event.candle.CandleSymbol;
 public class CandleToNative {
   /**
    * typedef struct dxfg_candle_symbol_t {
-   * dxfg_symbol_t supper;
-   * const char* symbol;
+   *    dxfg_symbol_t supper;
+   *    const char* symbol;
    * } dxfg_candle_symbol_t;
-   * <p>
-   * // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
+   *
+   * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L219
+   *
    * typedef struct dxfg_candle_t {
-   * dxfg_event_type_t event_type;
-   * //  dxfg_time_series_event_t time_series_event;
-   * //  dxfg_lasting_event_t lasting_event;
-   * dxfg_candle_symbol_t *event_symbol;
-   * int32_t event_flags;
-   * int64_t event_time;
-   * int64_t index;
-   * int64_t count;
-   * double open;
-   * double high;
-   * double low;
-   * double close;
-   * double volume;
-   * double vwap;
-   * double bid_volume;
-   * double ask_volume;
-   * double imp_volatility;
-   * double open_interest;
+   *    dxfg_event_type_t event_type;
+   *    //  dxfg_time_series_event_t time_series_event;
+   *    //  dxfg_lasting_event_t lasting_event;
+   *    dxfg_candle_symbol_t *event_symbol;
+   *    int32_t event_flags;
+   *    int64_t event_time;
+   *    int64_t index;
+   *    int64_t count;
+   *    double open;
+   *    double high;
+   *    double low;
+   *    double close;
+   *    double volume;
+   *    double vwap;
+   *    double bid_volume;
+   *    double ask_volume;
+   *    double imp_volatility;
+   *    double open_interest;
    * } dxfg_candle_t;
    */
 
