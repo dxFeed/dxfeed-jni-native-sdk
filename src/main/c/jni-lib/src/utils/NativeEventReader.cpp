@@ -351,7 +351,7 @@ namespace dxfeed::jni {
   dxfg_analytic_order_t* NativeEventReader::toAnalyticsOrder(const char** pByteData, const double** pDoubleData) {
     auto* analyticsOrder = new dxfg_analytic_order_t();
 
-    dxfg_order_t& order = analyticsOrder->order_base;
+    dxfg_order_t& order = analyticsOrder->order;
 
     dxfg_order_base_t& orderBase = order.order_base;
     readOrder(pByteData, pDoubleData, &orderBase);

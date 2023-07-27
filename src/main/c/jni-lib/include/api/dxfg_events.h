@@ -5,15 +5,16 @@
 
 #ifdef __cplusplus
 extern "C" {
-#    include <cstdint>
+#include <cstdint>
 #else
-#    include <stdint.h>
+#include <stdint.h>
 #endif
 
 #include "dxfg_javac.h"
 
 typedef enum dxfg_indexed_event_source_type_t {
-  INDEXED_EVENT_SOURCE = 0, ORDER_SOURCE
+  INDEXED_EVENT_SOURCE = 0,
+  ORDER_SOURCE
 } dxfg_indexed_event_source_type_t;
 
 typedef struct dxfg_indexed_event_source_t {
@@ -23,7 +24,11 @@ typedef struct dxfg_indexed_event_source_t {
 } dxfg_indexed_event_source_t;
 
 typedef enum dxfg_symbol_type_t {
-  STRING = 0, CANDLE, WILDCARD, INDEXED_EVENT_SUBSCRIPTION, TIME_SERIES_SUBSCRIPTION
+  STRING = 0,
+  CANDLE,
+  WILDCARD,
+  INDEXED_EVENT_SUBSCRIPTION,
+  TIME_SERIES_SUBSCRIPTION
 } dxfg_symbol_type_t;
 
 typedef struct dxfg_symbol_t {
@@ -379,7 +384,7 @@ typedef struct dxfg_order_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html">Javadoc</a>
  */
 typedef struct dxfg_analytic_order_t {
-  dxfg_order_t order_base;
+  dxfg_order_t order;
   double iceberg_peak_size;
   double iceberg_hidden_size;
   double iceberg_executed_size;
@@ -423,25 +428,27 @@ typedef struct dxfg_event_clazz_list_t {
   dxfg_event_clazz_t** elements;
 } dxfg_event_clazz_list_t;
 
-dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* thread, const char* symbol, dxfg_symbol_type_t symbolType);
-int32_t dxfg_Symbol_release(graal_isolatethread_t* thread, dxfg_symbol_t* symbol);
-dxfg_event_type_t* dxfg_EventType_new(graal_isolatethread_t* thread, const char* symbolName, dxfg_event_clazz_t clazz);
-int32_t dxfg_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
-
-
-// if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
-dxfg_indexed_event_source_t* dxfg_IndexedEventSource_new(graal_isolatethread_t* thread, const char* source);
-int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t* thread, dxfg_indexed_event_source_t* source);
-dxfg_indexed_event_source_t* dxfg_IndexedEvent_getSource(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
+dxfg_symbol_t*                dxfg_Symbol_new(graal_isolatethread_t* thread, const char* symbol, dxfg_symbol_type_t symbolType);
+int32_t                       dxfg_Symbol_release(graal_isolatethread_t* thread, dxfg_symbol_t* symbol);
+dxfg_event_type_t*            dxfg_EventType_new(graal_isolatethread_t* thread, const char* symbolName, dxfg_event_clazz_t clazz);
+int32_t                       dxfg_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
 
 // free the memory occupied by the с data structure (list and all events)
-int32_t dxfg_CList_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_list* eventTypes);
+int32_t                       dxfg_CList_EventType_release(graal_isolatethread_t* thread,
+                                                           dxfg_event_type_list* eventTypes);
 
 // free the memory occupied by the с data structure (list and all int-pointer)
-int32_t dxfg_CList_EventClazz_release(graal_isolatethread_t* thread, dxfg_event_clazz_list_t* eventClazzes);
+int32_t                       dxfg_CList_EventClazz_release(graal_isolatethread_t* thread,
+                                                            dxfg_event_clazz_list_t* eventClazzes);
 
 // free the memory occupied by the с data structure (list and all int-pointer)
-int32_t dxfg_CList_symbol_release(graal_isolatethread_t* thread, dxfg_symbol_list*);
+int32_t                       dxfg_CList_symbol_release(graal_isolatethread_t* thread, dxfg_symbol_list*);
+
+dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
+
+// if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
+dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t* thread, const char* source);
+int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t* thread, dxfg_indexed_event_source_t* source);
 
 #ifdef __cplusplus
 }
