@@ -1,8 +1,8 @@
 
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.option.Underlying;
 
 public class UnderlyingToNative {
@@ -30,34 +30,19 @@ public class UnderlyingToNative {
    * } dxfg_underlying_t;
    */
 
-  public static void convert(Underlying event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int eventIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                      // 8
-    int eventFlags = event.getEventFlags();                                     // 4
-    long index = event.getIndex();                                              // 8
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8);
-
-    pBytes.addChunk(eventIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-
-    double volatility = event.getVolatility();            // 1
-    double frontVolatility = event.getFrontVolatility();  // 1
-    double backVolatility = event.getBackVolatility();    // 1
-    double callVolume = event.getCallVolume();            // 1
-    double pullVolume = event.getPutVolume();             // 1
-    double putCallVolume = event.getPutCallRatio();       // 1
+  public static void convert(Underlying event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());   // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());       // 8
+    pBytes.writeInt(event.getEventFlags());       // 4
+    pBytes.writeLong(event.getIndex());           // 8
 
     // DOUBLE DATA
-    pDoubles.addChunk(eventIdx, 6);
-    pDoubles.write(volatility);
-    pDoubles.write(frontVolatility);
-    pDoubles.write(backVolatility);
-    pDoubles.write(callVolume);
-    pDoubles.write(pullVolume);
-    pDoubles.write(putCallVolume);
+    pDoubles.write(event.getVolatility());
+    pDoubles.write(event.getFrontVolatility());
+    pDoubles.write(event.getBackVolatility());
+    pDoubles.write(event.getCallVolume());
+    pDoubles.write(event.getPutVolume());
+    pDoubles.write(event.getPutCallRatio());
   }
 }

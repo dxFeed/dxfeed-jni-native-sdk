@@ -1,7 +1,7 @@
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Profile;
 
@@ -36,52 +36,27 @@ public class ProfileToNative {
    *    int32_t flags;
    * } dxfg_profile_t;
    */
-  public static void convert(Profile event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                  // 8
-    long haltStartTime = event.getHaltStartTime();                          // 8
-    long haltEndTime = event.getHaltEndTime();                              // 8
-    int exDividendDayId = event.getExDividendDayId();                       // 4
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);            // 4
-    CString description = new CString(event.getDescription());
-    CString statusReason = new CString(event.getStatusReason());
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (8) + (8) + (4) + (4) +
-        description.totalAllocatedBytes + statusReason.totalAllocatedBytes;
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);            // 8
-    pBytes.writeLong(haltStartTime);        // 8
-    pBytes.writeLong(haltEndTime);          // 8
-    pBytes.writeInt(exDividendDayId);       // 4
-    pBytes.writeInt(flags);                 // 4
-    pBytes.writeString(description);
-    pBytes.writeString(statusReason);
+  public static void convert(Profile event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                           // 8
+    pBytes.writeLong(event.getHaltStartTime());                       // 8
+    pBytes.writeLong(event.getHaltEndTime());                         // 8
+    pBytes.writeInt(event.getExDividendDayId());                      // 4
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event)); // 4
+    pBytes.writeString(event.getDescription());                       // 2 + descriptionLength
+    pBytes.writeString(event.getStatusReason());                      // 2 + statusReasonLength
 
     // DOUBLE DATA
-    double highLimitPrice = event.getHighLimitPrice();          // 1
-    double lowLimitPrice = event.getLowLimitPrice();            // 1
-    double high52WeekPrice = event.getHigh52WeekPrice();        // 1
-    double low52WeekPrice = event.getLow52WeekPrice();          // 1
-    double beta = event.getBeta();                              // 1
-    double earningsPerShare = event.getEarningsPerShare();      // 1
-    double dividendFrequency = event.getDividendFrequency();    // 1
-    double dividendAmount = event.getExDividendAmount();        // 1
-    double shares = event.getShares();                          // 1
-    double freeFloat = event.getFreeFloat();                    // 1
-
-    // DOUBLE DATA
-    pDoubles.addChunk(chunkIdx, 10);
-    pDoubles.write(highLimitPrice);
-    pDoubles.write(lowLimitPrice);
-    pDoubles.write(high52WeekPrice);
-    pDoubles.write(low52WeekPrice);
-    pDoubles.write(beta);
-    pDoubles.write(earningsPerShare);
-    pDoubles.write(dividendFrequency);
-    pDoubles.write(dividendAmount);
-    pDoubles.write(shares);
-    pDoubles.write(freeFloat);
+    pDoubles.write(event.getHighLimitPrice());
+    pDoubles.write(event.getLowLimitPrice());
+    pDoubles.write(event.getHigh52WeekPrice());
+    pDoubles.write(event.getLow52WeekPrice());
+    pDoubles.write(event.getBeta());
+    pDoubles.write(event.getEarningsPerShare());
+    pDoubles.write(event.getDividendFrequency());
+    pDoubles.write(event.getExDividendAmount());
+    pDoubles.write(event.getShares());
+    pDoubles.write(event.getFreeFloat());
   }
 }

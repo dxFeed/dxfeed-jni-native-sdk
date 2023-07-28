@@ -1,8 +1,8 @@
 
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.option.TheoPrice;
 
 public class TheoPriceToNative {
@@ -31,34 +31,19 @@ public class TheoPriceToNative {
    * } dxfg_theo_price_t;
    */
 
-  public static void convert(TheoPrice event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int eventIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                      // 8
-    int eventFlags = event.getEventFlags();                                     // 4
-    long index = event.getIndex();                                              // 8
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8);
-
-    pBytes.addChunk(eventIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-
-    double price = event.getPrice();                      // 1
-    double underlyingPrice = event.getUnderlyingPrice();  // 1
-    double delta = event.getDelta();                      // 1
-    double gamma = event.getGamma();                      // 1
-    double dividend = event.getDividend();                // 1
-    double interest = event.getInterest();                // 1
+  public static void convert(TheoPrice event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());   // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());       // 8
+    pBytes.writeInt(event.getEventFlags());       // 4
+    pBytes.writeLong(event.getIndex());           // 8
 
     // DOUBLE DATA
-    pDoubles.addChunk(eventIdx, 6);
-    pDoubles.write(price);
-    pDoubles.write(underlyingPrice);
-    pDoubles.write(delta);
-    pDoubles.write(gamma);
-    pDoubles.write(dividend);
-    pDoubles.write(interest);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getUnderlyingPrice());
+    pDoubles.write(event.getDelta());
+    pDoubles.write(event.getGamma());
+    pDoubles.write(event.getDividend());
+    pDoubles.write(event.getInterest());
   }
 }

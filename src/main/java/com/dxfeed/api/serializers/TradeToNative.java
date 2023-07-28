@@ -1,7 +1,7 @@
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.TradeBase;
 
@@ -30,39 +30,21 @@ public class TradeToNative {
    *    int32_t flags;
    * } dxfg_trade_base_t;
    */
-  public static void convert(TradeBase event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                  // 8
-    long timeSequence = event.getTimeSequence();                            // 8
-    int timeNanoPart = event.getTimeNanoPart();                             // 4
-    char exchangeCode = event.getExchangeCode();                            // 2
-    int dayId = event.getDayId();                                           // 4
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);            // 4
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (8) + (4) + (2) + (4) + (4);
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);        // 8
-    pBytes.writeLong(timeSequence);     // 8
-    pBytes.writeInt(timeNanoPart);      // 4
-    pBytes.writeChar(exchangeCode);     // 2
-    pBytes.writeInt(dayId);             // 4
-    pBytes.writeInt(flags);             // 4
+  public static void convert(TradeBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                           // 8
+    pBytes.writeLong(event.getTimeSequence());                        // 8
+    pBytes.writeInt(event.getTimeNanoPart());                         // 4
+    pBytes.writeChar(event.getExchangeCode());                        // 2
+    pBytes.writeInt(event.getDayId());                                // 4
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event)); // 4
 
     // DOUBLE DATA
-    double price = event.getPrice();              // 1
-    double change = event.getChange();            // 1
-    double size = event.getSize();                // 1
-    double dayVolume = event.getDayVolume();      // 1
-    double dayTurnover = event.getDayTurnover();  // 1
-
-    // DOUBLE DATA
-    pDoubles.addChunk(chunkIdx, 5);
-    pDoubles.write(price);
-    pDoubles.write(change);
-    pDoubles.write(size);
-    pDoubles.write(dayVolume);
-    pDoubles.write(dayTurnover);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getChange());
+    pDoubles.write(event.getSize());
+    pDoubles.write(event.getDayVolume());
+    pDoubles.write(event.getDayTurnover());
   }
 }
