@@ -1,7 +1,7 @@
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.option.Series;
 
 public class SeriesToNative {
@@ -31,40 +31,22 @@ public class SeriesToNative {
    * } dxfg_series_t;
    */
 
-  public static void convert(Series event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int eventIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                     // 8
-    int eventFlags = event.getEventFlags();                    // 4
-    long index = event.getIndex();                             // 8
-    long timeSequence = event.getTimeSequence();               // 8
-    int expiration = event.getExpiration();                    // 8
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (8) + (8);
-
-    pBytes.addChunk(eventIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-    pBytes.writeLong(timeSequence);             // 8
-    pBytes.writeInt(expiration);                // 8
-
-    double volatility = event.getVolatility();        // 1
-    double callVolume = event.getCallVolume();        // 1
-    double putVolume = event.getPutVolume();          // 1
-    double putCallRatio = event.getPutCallRatio();    // 1
-    double forwardPrice = event.getForwardPrice();    // 1
-    double dividend = event.getDividend();            // 1
-    double interest = event.getInterest();            // 1
+  public static void convert(Series event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());  // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());      // 8
+    pBytes.writeInt(event.getEventFlags());      // 4
+    pBytes.writeLong(event.getIndex());          // 8
+    pBytes.writeLong(event.getTimeSequence());   // 8
+    pBytes.writeInt(event.getExpiration());      // 8
 
     // DOUBLE DATA
-    pDoubles.addChunk(eventIdx, 7);
-    pDoubles.write(volatility);
-    pDoubles.write(callVolume);
-    pDoubles.write(putVolume);
-    pDoubles.write(putCallRatio);
-    pDoubles.write(forwardPrice);
-    pDoubles.write(dividend);
-    pDoubles.write(interest);
+    pDoubles.write(event.getVolatility());
+    pDoubles.write(event.getCallVolume());
+    pDoubles.write(event.getPutVolume());
+    pDoubles.write(event.getPutCallRatio());
+    pDoubles.write(event.getForwardPrice());
+    pDoubles.write(event.getDividend());
+    pDoubles.write(event.getInterest());
   }
 }

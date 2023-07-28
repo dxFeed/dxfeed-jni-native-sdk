@@ -1,4 +1,4 @@
-package com.dxfeed.api.serializers;
+package com.dxfeed.api.buffers;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;

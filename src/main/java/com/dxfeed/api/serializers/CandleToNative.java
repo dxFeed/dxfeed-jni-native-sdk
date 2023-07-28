@@ -1,9 +1,8 @@
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.candle.Candle;
-import com.dxfeed.event.candle.CandleSymbol;
 
 public class CandleToNative {
   /**
@@ -37,46 +36,24 @@ public class CandleToNative {
    */
 
   // todo: sync about CandleSymbol
-  public static void convert(Candle event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-    CandleSymbol candleSymbol = event.getEventSymbol();
-    CString eventSymbol = new CString(candleSymbol.toString());
-    int eventFlags = event.getEventFlags();         // 4
-    long eventTime = event.getEventTime();          // 8
-    long index = event.getIndex();                  // 8
-    long count = event.getCount();                  // 8
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (4) + (8) + (8) + (8);
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeInt(eventFlags);            // 4
-    pBytes.writeLong(eventTime);            // 8
-    pBytes.writeLong(index);                // 8
-    pBytes.writeLong(count);                // 8
+  public static void convert(Candle event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol().toString());  // 2 + eventSymbolLength
+    pBytes.writeInt(event.getEventFlags());                 // 4
+    pBytes.writeLong(event.getEventTime());                 // 8
+    pBytes.writeLong(event.getIndex());                     // 8
+    pBytes.writeLong(event.getCount());                     // 8
 
     // DOUBLE DATA
-    double open = event.getOpen();                      // 1
-    double high = event.getHigh();                      // 1
-    double low = event.getLow();                        // 1
-    double close = event.getClose();                    // 1
-    double volume = event.getVolume();                  // 1
-    double vwap = event.getVWAP();                      // 1
-    double bidVolume = event.getBidVolume();            // 1
-    double askVolume = event.getAskVolume();            // 1
-    double impVolatility = event.getImpVolatility();    // 1
-    double openInterest = event.getOpenInterest();      // 1
-
-    // DOUBLE DATA
-    pDoubles.addChunk(chunkIdx, 10);
-    pDoubles.write(open);
-    pDoubles.write(high);
-    pDoubles.write(low);
-    pDoubles.write(close);
-    pDoubles.write(volume);
-    pDoubles.write(vwap);
-    pDoubles.write(bidVolume);
-    pDoubles.write(askVolume);
-    pDoubles.write(impVolatility);
-    pDoubles.write(openInterest);
+    pDoubles.write(event.getOpen());
+    pDoubles.write(event.getHigh());
+    pDoubles.write(event.getLow());
+    pDoubles.write(event.getClose());
+    pDoubles.write(event.getVolume());
+    pDoubles.write(event.getVWAP());
+    pDoubles.write(event.getBidVolume());
+    pDoubles.write(event.getAskVolume());
+    pDoubles.write(event.getImpVolatility());
+    pDoubles.write(event.getOpenInterest());
   }
 }
