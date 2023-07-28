@@ -1,7 +1,7 @@
 package com.dxfeed.api;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.api.serializers.*;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
@@ -16,58 +16,58 @@ import com.dxfeed.event.option.Underlying;
 import java.util.List;
 
 public class NativeEventsList {
-  private ChunkedByteBuffer pBytes;
-  private ChunkedDoubleBuffer pDoubles;
+  private ByteBuffer pBytes;
+  private DoubleBuffer pDoubles;
   public byte[] pEventTypes;
 
   NativeEventsList(List<EventType<?>> eventList) {
     int eventCount = eventList.size();
-    pBytes = new ChunkedByteBuffer(eventCount);
-    pDoubles = new ChunkedDoubleBuffer(eventCount);
+    pBytes = new ByteBuffer(eventCount);
+    pDoubles = new DoubleBuffer(eventCount);
     pEventTypes = new byte[eventCount];
     for (int i = 0; i < eventCount; ++i) {
       EventType<?> event = eventList.get(i);
       if (event instanceof TimeAndSale) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE.eventOrdinal();
-        TimeAndSalesToNative.convert((TimeAndSale) event, pBytes, pDoubles, i);
+        TimeAndSalesToNative.convert((TimeAndSale) event, pBytes, pDoubles);
       } else if (event instanceof Quote) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_QUOTE.eventOrdinal();
-        QuoteToNative.convert((Quote) event, pBytes, pDoubles, i);
+        QuoteToNative.convert((Quote) event, pBytes, pDoubles);
       } else if (event instanceof Candle) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CANDLE.eventOrdinal();
-        CandleToNative.convert((Candle) event, pBytes, pDoubles, i);
+        CandleToNative.convert((Candle) event, pBytes, pDoubles);
       } else if (event instanceof TradeBase) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TRADE.eventOrdinal();
-        TradeToNative.convert((TradeBase) event, pBytes, pDoubles, i);
+        TradeToNative.convert((TradeBase) event, pBytes, pDoubles);
       } else if (event instanceof Profile) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_PROFILE.eventOrdinal();
-        ProfileToNative.convert((Profile) event, pBytes, pDoubles, i);
+        ProfileToNative.convert((Profile) event, pBytes, pDoubles);
       } else if (event instanceof Summary) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SUMMARY.eventOrdinal();
-        SummaryToNative.convert((Summary) event, pBytes, pDoubles, i);
+        SummaryToNative.convert((Summary) event, pBytes, pDoubles);
       } else if (event instanceof Greeks) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_GREEKS.eventOrdinal();
-        GreeksToNative.convert((Greeks) event, pBytes, pDoubles, i);
+        GreeksToNative.convert((Greeks) event, pBytes, pDoubles);
       }else if (event instanceof Underlying) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_UNDERLYING.eventOrdinal();
-        UnderlyingToNative.convert((Underlying) event, pBytes, pDoubles, i);
+        UnderlyingToNative.convert((Underlying) event, pBytes, pDoubles);
       } else if (event instanceof TheoPrice) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_THEO_PRICE.eventOrdinal();
-        TheoPriceToNative.convert((TheoPrice) event, pBytes, pDoubles, i);
+        TheoPriceToNative.convert((TheoPrice) event, pBytes, pDoubles);
       } else if (event instanceof Configuration) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CONFIGURATION.eventOrdinal();
-        ConfigurationToNative.convert((Configuration) event, pBytes, i);
+        ConfigurationToNative.convert((Configuration) event, pBytes);
       } else if (event instanceof Message) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_MESSAGE.eventOrdinal();
-        MessageToNative.convert((Message) event, pBytes, i);
+        MessageToNative.convert((Message) event, pBytes);
       } else if (event instanceof OptionSale) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_OPTION_SALE.eventOrdinal();
-        OptionSaleToNative.convert((OptionSale) event, pBytes, pDoubles, i);
+        OptionSaleToNative.convert((OptionSale) event, pBytes, pDoubles);
       } else if (event instanceof OrderBase) {
-        pEventTypes[i] = OrderToNative.convert((OrderBase) event, pBytes, pDoubles, i);
+        pEventTypes[i] = OrderToNative.convert((OrderBase) event, pBytes, pDoubles);
       } else if (event instanceof Series) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SERIES.eventOrdinal();
-        SeriesToNative.convert((Series) event, pBytes, pDoubles, i);
+        SeriesToNative.convert((Series) event, pBytes, pDoubles);
       } else {
         throw new IllegalStateException("Event mapping for " + event.getClass().getName() + " is not implemented");
       }

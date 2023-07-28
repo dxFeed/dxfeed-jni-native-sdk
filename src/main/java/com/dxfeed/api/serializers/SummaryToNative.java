@@ -1,8 +1,8 @@
 
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Summary;
 
@@ -32,38 +32,21 @@ public class SummaryToNative {
    * } dxfg_summary_t;
    */
 
-  public static void convert(Summary event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int eventIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                            // 8
-    int dayId = event.getDayId();                                     // 4
-    int prevDayId = event.getPrevDayId();                             // 4
-    long openInterest = event.getOpenInterest();                      // 8
-    int index = DxFeedEventMarketPackagePrivate.getFlags(event);      // 4
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (4) + (8) + (4);
-
-    pBytes.addChunk(eventIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(dayId);                     // 4
-    pBytes.writeInt(prevDayId);                 // 4
-    pBytes.writeLong(openInterest);             // 8
-    pBytes.writeInt(index);                     // 4
-
-    double dayOpenPrice = event.getDayOpenPrice();              // 1
-    double dayHighPrice = event.getDayHighPrice();              // 1
-    double dayLowPrice = event.getDayLowPrice();                // 1
-    double dayClosePrice = event.getDayClosePrice();            // 1
-    double prevDayClosePrice = event.getPrevDayClosePrice();    // 1
-    double prevDayVolume = event.getPrevDayVolume();            // 1
+  public static void convert(Summary event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                           // 8
+    pBytes.writeInt(event.getDayId());                                // 4
+    pBytes.writeInt(event.getPrevDayId());                            // 4
+    pBytes.writeLong(event.getOpenInterest());                        // 8
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event)); // 4
 
     // DOUBLE DATA
-    pDoubles.addChunk(eventIdx, 6);
-    pDoubles.write(dayOpenPrice);
-    pDoubles.write(dayHighPrice);
-    pDoubles.write(dayLowPrice);
-    pDoubles.write(dayClosePrice);
-    pDoubles.write(prevDayClosePrice);
-    pDoubles.write(prevDayVolume);
+    pDoubles.write(event.getDayOpenPrice());
+    pDoubles.write(event.getDayHighPrice());
+    pDoubles.write(event.getDayLowPrice());
+    pDoubles.write(event.getDayClosePrice());
+    pDoubles.write(event.getPrevDayClosePrice());
+    pDoubles.write(event.getPrevDayVolume());
   }
 }

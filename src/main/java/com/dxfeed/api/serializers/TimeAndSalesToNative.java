@@ -1,7 +1,7 @@
 package com.dxfeed.api.serializers;
 
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.TimeAndSale;
 
@@ -32,42 +32,23 @@ public class TimeAndSalesToNative {
    * } dxfg_time_and_sale_t;
    */
 
-  public static void convert(TimeAndSale event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int eventIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                      // 8
-    int eventFlags = event.getEventFlags();                                     // 4
-    long index = event.getIndex();                                              // 8
-    int timeNanoPart = event.getTimeNanoPart();                                 // 4
-    char exchangeCode = event.getExchangeCode();                                // 2
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);                // 4
-    CString exchangeSaleConditions = new CString(event.getExchangeSaleConditions());
-    CString buyer = new CString(event.getBuyer());
-    CString seller = new CString(event.getSeller());
+  public static void convert(TimeAndSale event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                         // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                             // 8
+    pBytes.writeInt(event.getEventFlags());                             // 4
+    pBytes.writeLong(event.getIndex());                                 // 8
+    pBytes.writeInt(event.getTimeNanoPart());                           // 4
+    pBytes.writeChar(event.getExchangeCode());                          // 2
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event));   // 4
+    pBytes.writeString(event.getExchangeSaleConditions());              // 2 + exchangeSaleConditionsLength
+    pBytes.writeString(event.getBuyer());                               // 2 + buyerLength
+    pBytes.writeString(event.getSeller());                              // 2 + sellerLength
 
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (4) + (2) + (4) +
-        exchangeSaleConditions.totalAllocatedBytes + buyer.totalAllocatedBytes + seller.totalAllocatedBytes;
-
-    pBytes.addChunk(eventIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-    pBytes.writeInt(timeNanoPart);              // 4
-    pBytes.writeChar(exchangeCode);             // 2
-    pBytes.writeInt(flags);                     // 4
-    pBytes.writeString(exchangeSaleConditions);
-    pBytes.writeString(buyer);
-    pBytes.writeString(seller);
-
-    double price = event.getPrice();        // 1
-    double size = event.getSize();          // 1
-    double bidPrice = event.getBidPrice();  // 1
-    double askPrice = event.getAskPrice();  // 1
     // DOUBLE DATA
-    pDoubles.addChunk(eventIdx, 4);
-    pDoubles.write(price);
-    pDoubles.write(size);
-    pDoubles.write(bidPrice);
-    pDoubles.write(askPrice);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getSize());
+    pDoubles.write(event.getBidPrice());
+    pDoubles.write(event.getAskPrice());
   }
 }

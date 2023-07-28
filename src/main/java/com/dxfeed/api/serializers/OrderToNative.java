@@ -1,20 +1,20 @@
 package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.DxfgEventClazzT;
-import com.dxfeed.api.buffers.ChunkedByteBuffer;
-import com.dxfeed.api.buffers.ChunkedDoubleBuffer;
+import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.*;
 
 public class OrderToNative {
-  public static byte convert(OrderBase event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
+  public static byte convert(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     if (event instanceof AnalyticOrder) {
-      return convertAnalyticsOrder((AnalyticOrder) event, pBytes, pDoubles, chunkIdx);
+      return convertAnalyticsOrder((AnalyticOrder) event, pBytes, pDoubles);
     } else if (event instanceof Order) {
-      return convertOrder((Order)event, pBytes, pDoubles, chunkIdx);
+      return convertOrder((Order)event, pBytes, pDoubles);
     } else if (event instanceof SpreadOrder) {
-      return convertSpreadOrder((SpreadOrder) event, pBytes, pDoubles, chunkIdx);
+      return convertSpreadOrder((SpreadOrder) event, pBytes, pDoubles);
     } else {
-      return convertOrderBase(event, pBytes, pDoubles, chunkIdx);
+      return convertOrderBase(event, pBytes, pDoubles);
     }
   }
 
@@ -48,51 +48,27 @@ public class OrderToNative {
    * } dxfg_order_base_t;
    */
 
-  private static byte convertOrderBase(OrderBase event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                  // 8
-    int eventFlags = event.getEventFlags();                                 // 4
-    long index = event.getIndex();                                          // 8
-    long timeSequence = event.getTimeSequence();                            // 8
-    int timeNanoPart = event.getTimeNanoPart();                             // 4
-    long actionTime = event.getActionTime();                                // 8
-    long orderId = event.getOrderId();                                      // 8
-    long auxOrderId = event.getAuxOrderId();                                // 8
-    long count = event.getCount();                                          // 8
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);            // 4
-    long tradeId = event.getTradeId();                                      // 8
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (8) + (4) + (8) + (8) + (8) + (8) + (4) + (8);
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);            // 2 + eventSymbolLength
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-    pBytes.writeLong(timeSequence);             // 8
-    pBytes.writeInt(timeNanoPart);              // 4
-    pBytes.writeLong(actionTime);               // 8
-    pBytes.writeLong(orderId);                  // 8
-    pBytes.writeLong(auxOrderId);               // 8
-    pBytes.writeLong(count);                    // 8
-    pBytes.writeInt(flags);                     // 4
-    pBytes.writeLong(tradeId);                  // 8
+  private static byte convertOrderBase(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                         // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                             // 8
+    pBytes.writeInt(event.getEventFlags());                             // 4
+    pBytes.writeLong(event.getIndex());                                 // 8
+    pBytes.writeLong(event.getTimeSequence());                          // 8
+    pBytes.writeInt(event.getTimeNanoPart());                           // 4
+    pBytes.writeLong(event.getActionTime());                            // 8
+    pBytes.writeLong(event.getOrderId());                               // 8
+    pBytes.writeLong(event.getAuxOrderId());                            // 8
+    pBytes.writeLong(event.getCount());                                 // 8
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event));   // 4
+    pBytes.writeLong(event.getTradeId());                               // 8
 
     // DOUBLE DATA
-    double price = event.getPrice();                // 1
-    double size = event.getSize();                  // 1
-    double executedSize = event.getExecutedSize();  // 1
-    double tradePrice = event.getTradePrice();      // 1
-    double tradeSize = event.getTradeSize();        // 1
-
-    // DOUBLE DATA
-    int doublesCount = 5;
-    pDoubles.addChunk(chunkIdx, doublesCount);
-    pDoubles.write(price);
-    pDoubles.write(size);
-    pDoubles.write(executedSize);
-    pDoubles.write(tradePrice);
-    pDoubles.write(tradeSize);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getSize());
+    pDoubles.write(event.getExecutedSize());
+    pDoubles.write(event.getTradePrice());
+    pDoubles.write(event.getTradeSize());
     return DxfgEventClazzT.DXFG_EVENT_ORDER_BASE.eventOrdinal();
   }
 
@@ -107,54 +83,28 @@ public class OrderToNative {
    * @return
    */
 
-  private static byte convertOrder(Order event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                  // 8
-    int eventFlags = event.getEventFlags();                                 // 4
-    long index = event.getIndex();                                          // 8
-    long timeSequence = event.getTimeSequence();                            // 8
-    int timeNanoPart = event.getTimeNanoPart();                             // 4
-    long actionTime = event.getActionTime();                                // 8
-    long orderId = event.getOrderId();                                      // 8
-    long auxOrderId = event.getAuxOrderId();                                // 8
-    long count = event.getCount();                                          // 8
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);            // 4
-    long tradeId = event.getTradeId();                                      // 8
-    CString marketMaker = new CString(event.getMarketMaker());
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (8) + (4) + (8) + (8) + (8) + (8) + (4) + (8)
-        + marketMaker.totalAllocatedBytes;
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-    pBytes.writeLong(timeSequence);             // 8
-    pBytes.writeInt(timeNanoPart);              // 4
-    pBytes.writeLong(actionTime);               // 8
-    pBytes.writeLong(orderId);                  // 8
-    pBytes.writeLong(auxOrderId);               // 8
-    pBytes.writeLong(count);                    // 8
-    pBytes.writeInt(flags);                     // 4
-    pBytes.writeLong(tradeId);                  // 8
-    pBytes.writeString(marketMaker);
+  private static byte convertOrder(Order event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                         // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                             // 8
+    pBytes.writeInt(event.getEventFlags());                             // 4
+    pBytes.writeLong(event.getIndex());                                 // 8
+    pBytes.writeLong(event.getTimeSequence());                          // 8
+    pBytes.writeInt(event.getTimeNanoPart());                           // 4
+    pBytes.writeLong(event.getActionTime());                            // 8
+    pBytes.writeLong(event.getOrderId());                               // 8
+    pBytes.writeLong(event.getAuxOrderId());                            // 8
+    pBytes.writeLong(event.getCount());                                 // 8
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event));   // 4
+    pBytes.writeLong(event.getTradeId());                               // 8
+    pBytes.writeString(event.getMarketMaker());                         // 2 + marketMakerLength
 
     // DOUBLE DATA
-    double price = event.getPrice();                // 1
-    double size = event.getSize();                  // 1
-    double executedSize = event.getExecutedSize();  // 1
-    double tradePrice = event.getTradePrice();      // 1
-    double tradeSize = event.getTradeSize();        // 1
-
-    // DOUBLE DATA
-    int doublesCount = 5;
-    pDoubles.addChunk(chunkIdx, doublesCount);
-    pDoubles.write(price);
-    pDoubles.write(size);
-    pDoubles.write(executedSize);
-    pDoubles.write(tradePrice);
-    pDoubles.write(tradeSize);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getSize());
+    pDoubles.write(event.getExecutedSize());
+    pDoubles.write(event.getTradePrice());
+    pDoubles.write(event.getTradeSize());
 
     return DxfgEventClazzT.DXFG_EVENT_ORDER.eventOrdinal();
   }
@@ -170,54 +120,28 @@ public class OrderToNative {
    * @return
    */
 
-  private static byte convertSpreadOrder(SpreadOrder event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles, int chunkIdx) {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                  // 8
-    int eventFlags = event.getEventFlags();                                 // 4
-    long index = event.getIndex();                                          // 8
-    long timeSequence = event.getTimeSequence();                            // 8
-    int timeNanoPart = event.getTimeNanoPart();                             // 4
-    long actionTime = event.getActionTime();                                // 8
-    long orderId = event.getOrderId();                                      // 8
-    long auxOrderId = event.getAuxOrderId();                                // 8
-    long count = event.getCount();                                          // 8
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);            // 4
-    long tradeId = event.getTradeId();                                      // 8
-    CString spreadSymbol = new CString(event.getSpreadSymbol());
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (8) + (4) + (8) + (8) + (8) + (8) + (4) + (8)
-        + spreadSymbol.totalAllocatedBytes;
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-    pBytes.writeLong(timeSequence);             // 8
-    pBytes.writeInt(timeNanoPart);              // 4
-    pBytes.writeLong(actionTime);               // 8
-    pBytes.writeLong(orderId);                  // 8
-    pBytes.writeLong(auxOrderId);               // 8
-    pBytes.writeLong(count);                    // 8
-    pBytes.writeInt(flags);                     // 4
-    pBytes.writeLong(tradeId);                  // 8
-    pBytes.writeString(spreadSymbol);
+  private static byte convertSpreadOrder(SpreadOrder event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                         // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                             // 8
+    pBytes.writeInt(event.getEventFlags());                             // 4
+    pBytes.writeLong(event.getIndex());                                 // 8
+    pBytes.writeLong(event.getTimeSequence());                          // 8
+    pBytes.writeInt(event.getTimeNanoPart());                           // 4
+    pBytes.writeLong(event.getActionTime());                            // 8
+    pBytes.writeLong(event.getOrderId());                               // 8
+    pBytes.writeLong(event.getAuxOrderId());                            // 8
+    pBytes.writeLong(event.getCount());                                 // 8
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event));   // 4
+    pBytes.writeLong(event.getTradeId());                               // 8
+    pBytes.writeString(event.getSpreadSymbol());                        // 2 + spreadSymbolLength
 
     // DOUBLE DATA
-    double price = event.getPrice();                // 1
-    double size = event.getSize();                  // 1
-    double executedSize = event.getExecutedSize();  // 1
-    double tradePrice = event.getTradePrice();      // 1
-    double tradeSize = event.getTradeSize();        // 1
-
-    // DOUBLE DATA
-    int doublesCount = 5;
-    pDoubles.addChunk(chunkIdx, doublesCount);
-    pDoubles.write(price);
-    pDoubles.write(size);
-    pDoubles.write(executedSize);
-    pDoubles.write(tradePrice);
-    pDoubles.write(tradeSize);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getSize());
+    pDoubles.write(event.getExecutedSize());
+    pDoubles.write(event.getTradePrice());
+    pDoubles.write(event.getTradeSize());
 
     return DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER.eventOrdinal();
   }
@@ -236,62 +160,31 @@ public class OrderToNative {
    *
    */
 
-  private static byte convertAnalyticsOrder(AnalyticOrder event, ChunkedByteBuffer pBytes, ChunkedDoubleBuffer pDoubles,
-                                            int chunkIdx)
-  {
-    CString eventSymbol = new CString(event.getEventSymbol());
-    long eventTime = event.getEventTime();                                      // 8
-    int eventFlags = event.getEventFlags();                                     // 4
-    long index = event.getIndex();                                              // 8
-    long timeSequence = event.getTimeSequence();                                // 8
-    int timeNanoPart = event.getTimeNanoPart();                                 // 4
-    long actionTime = event.getActionTime();                                    // 8
-    long orderId = event.getOrderId();                                          // 8
-    long auxOrderId = event.getAuxOrderId();                                    // 8
-    long count = event.getCount();                                              // 8
-    int flags = DxFeedEventMarketPackagePrivate.getFlags(event);                // 4
-    long tradeId = event.getTradeId();                                          // 8
-    int icebergFlags = DxFeedEventMarketPackagePrivate.getIcebergFlags(event);  // 4
-
-    int totalSize = eventSymbol.totalAllocatedBytes + (8) + (4) + (8) + (8) + (4) + (8) + (8) + (8) + (8) + (4) + (8)
-        + (4);
-
-    pBytes.addChunk(chunkIdx, totalSize);
-    pBytes.writeString(eventSymbol);
-    pBytes.writeLong(eventTime);                // 8
-    pBytes.writeInt(eventFlags);                // 4
-    pBytes.writeLong(index);                    // 8
-    pBytes.writeLong(timeSequence);             // 8
-    pBytes.writeInt(timeNanoPart);              // 4
-    pBytes.writeLong(actionTime);               // 8
-    pBytes.writeLong(orderId);                  // 8
-    pBytes.writeLong(auxOrderId);               // 8
-    pBytes.writeLong(count);                    // 8
-    pBytes.writeInt(flags);                     // 4
-    pBytes.writeLong(tradeId);                  // 8
-    pBytes.writeInt(icebergFlags);              // 4
+  private static byte convertAnalyticsOrder(AnalyticOrder event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    // BYTE DATA
+    pBytes.writeString(event.getEventSymbol());                               // 2 + eventSymbolLength
+    pBytes.writeLong(event.getEventTime());                                   // 8
+    pBytes.writeInt(event.getEventFlags());                                   // 4
+    pBytes.writeLong(event.getIndex());                                       // 8
+    pBytes.writeLong(event.getTimeSequence());                                // 8
+    pBytes.writeInt(event.getTimeNanoPart());                                 // 4
+    pBytes.writeLong(event.getActionTime());                                  // 8
+    pBytes.writeLong(event.getOrderId());                                     // 8
+    pBytes.writeLong(event.getAuxOrderId());                                  // 8
+    pBytes.writeLong(event.getCount());                                       // 8
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getFlags(event));         // 4
+    pBytes.writeLong(event.getTradeId());                                     // 8
+    pBytes.writeInt(DxFeedEventMarketPackagePrivate.getIcebergFlags(event));  // 4
 
     // DOUBLE DATA
-    double price = event.getPrice();                              // 1
-    double size = event.getSize();                                // 1
-    double executedSize = event.getExecutedSize();                // 1
-    double tradePrice = event.getTradePrice();                    // 1
-    double tradeSize = event.getTradeSize();                      // 1
-    double icebergPeakSize = event.getIcebergPeakSize();          // 1
-    double icebergHiddenSize = event.getIcebergHiddenSize();      // 1
-    double icebergExecutedSize = event.getIcebergExecutedSize();  // 1
-
-    // DOUBLE DATA
-    int doublesCount = 8;
-    pDoubles.addChunk(chunkIdx, doublesCount);
-    pDoubles.write(price);
-    pDoubles.write(size);
-    pDoubles.write(executedSize);
-    pDoubles.write(tradePrice);
-    pDoubles.write(tradeSize);
-    pDoubles.write(icebergPeakSize);
-    pDoubles.write(icebergHiddenSize);
-    pDoubles.write(icebergExecutedSize);
+    pDoubles.write(event.getPrice());
+    pDoubles.write(event.getSize());
+    pDoubles.write(event.getExecutedSize());
+    pDoubles.write(event.getTradePrice());
+    pDoubles.write(event.getTradeSize());
+    pDoubles.write(event.getIcebergPeakSize());
+    pDoubles.write(event.getIcebergHiddenSize());
+    pDoubles.write(event.getIcebergExecutedSize());
 
     return DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER.eventOrdinal();
   }
