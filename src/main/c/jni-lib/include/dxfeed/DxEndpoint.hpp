@@ -24,6 +24,8 @@ namespace dxfeed {
     DxEndpoint& operator=(DxEndpoint&& other) = delete;
 
     dxfg_endpoint_role_t getRole(JNIEnv* pEnv) const;
+    int32_t user(JNIEnv* env, const char* userName);
+    int32_t password(JNIEnv* env, const char* password);
     int32_t connect(JNIEnv* env, const char* address);
     DxFeed* getFeed(JNIEnv* env) const;
     void close(JNIEnv* env) const;

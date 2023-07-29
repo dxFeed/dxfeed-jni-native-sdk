@@ -111,6 +111,18 @@ dxfg_endpoint_role_t dxfg_DXEndpoint_getRole(graal_isolatethread_t* thread, dxfg
   return pDxEndpoint->getRole(thread);
 }
 
+int32_t dxfg_DXEndpoint_user(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* user) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->user(thread, user);
+  return JNI_OK;
+}
+
+int32_t dxfg_DXEndpoint_password(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* password) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->password(thread, password);
+  return JNI_OK;
+}
+
 int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* address) {
   auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
   return pDxEndpoint->connect(thread, address);

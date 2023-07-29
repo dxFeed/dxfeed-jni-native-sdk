@@ -24,6 +24,32 @@ namespace dxfeed {
     return static_cast<dxfg_endpoint_role_t>(role);
   }
 
+  int32_t DxEndpoint::user(JNIEnv* env, const char* userName) {
+    jmethodID connectMethodId = safeGetMethodID(env, dxEndpointClass_, "user", "(Ljava/lang/String;)"
+                                                                            "Lcom/dxfeed/api/DXEndpoint;");
+    jstring jUserName = env->NewStringUTF(userName);
+    jobject pDxEndpoint = env->CallObjectMethod(dxEndpoint_, connectMethodId, jUserName);
+    env->DeleteLocalRef(jUserName);
+    // todo: CallObjectMethod returns this, so do we have to replace jobject?
+    env->DeleteGlobalRef(dxEndpoint_);
+    dxEndpoint_ = env->NewGlobalRef(pDxEndpoint);
+    env->DeleteLocalRef(pDxEndpoint);
+    return JNI_OK;
+  }
+
+  int32_t DxEndpoint::password(JNIEnv* env, const char* password) {
+    jmethodID connectMethodId = safeGetMethodID(env, dxEndpointClass_, "password", "(Ljava/lang/String;)"
+                                                                                   "Lcom/dxfeed/api/DXEndpoint;");
+    jstring jPassword = env->NewStringUTF(password);
+    jobject pDxEndpoint = env->CallObjectMethod(dxEndpoint_, connectMethodId, jPassword);
+    env->DeleteLocalRef(jPassword);
+    // todo: CallObjectMethod returns this, so do we have to replace jobject?
+    env->DeleteGlobalRef(dxEndpoint_);
+    dxEndpoint_ = env->NewGlobalRef(pDxEndpoint);
+    env->DeleteLocalRef(pDxEndpoint);
+    return JNI_OK;
+  }
+
   int32_t DxEndpoint::connect(JNIEnv* env, const char* address) {
     jmethodID connectMethodId = safeGetMethodID(env, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
     jstring addr = env->NewStringUTF(address);
