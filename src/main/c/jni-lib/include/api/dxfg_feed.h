@@ -68,10 +68,6 @@ dxfg_event_type_list*             dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_is
 int32_t dxfg_DXFeed_getLastEvent(graal_isolatethread_t* thread, dxfg_feed_t* feed, dxfg_event_type_t* event);
 int32_t dxfg_DXFeed_getLastEvents(graal_isolatethread_t* thread, dxfg_feed_t* feed, dxfg_event_type_list* events);
 
-int32_t                           dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread,
-                                                                                dxfg_time_series_subscription_t* sub,
-                                                                                int64_t fromTime);
-
 
 /** @} */ // end of Feed
 

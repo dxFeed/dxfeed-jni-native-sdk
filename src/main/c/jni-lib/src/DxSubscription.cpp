@@ -156,4 +156,14 @@ namespace dxfeed {
     env->CallVoidMethod(subscription_, closeMethodId);
     env->DeleteLocalRef(dxFeedSubscription);
   }
+
+  int32_t DxSubscription::setTime(graal_isolatethread_t* env, int64_t time) {
+    jclass dxFeedSubscriptionClass = env->GetObjectClass(subscription_);
+    jmethodID setTimeMethodId = safeGetMethodID(env, dxFeedSubscriptionClass, "setTime","(J)V");
+    if (setTimeMethodId) {
+      env->CallVoidMethod(subscription_, setTimeMethodId, time);
+    }
+    env->DeleteLocalRef(dxFeedSubscriptionClass);
+    return JNI_ERR;
+  }
 }

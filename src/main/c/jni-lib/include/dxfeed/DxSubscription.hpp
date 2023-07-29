@@ -36,6 +36,9 @@ namespace dxfeed {
     int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
     void close(JNIEnv* env) const;
 
+    // DxFeedTimeSeriesSubscription methods
+    int32_t setTime(graal_isolatethread_t* pEnv, int64_t time);
+
   private:
     jobject subscription_;
 

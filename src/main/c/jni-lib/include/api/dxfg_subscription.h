@@ -110,6 +110,10 @@ int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_iso
                                                                        dxfg_subscription_t* sub,
                                                                        dxfg_observable_subscription_change_listener_t* listener);
 
+int32_t                   dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread,
+                                                                        dxfg_time_series_subscription_t* sub,
+                                                                        int64_t fromTime);
+
 /** @} */ // end of Subscription
 
 #ifdef __cplusplus

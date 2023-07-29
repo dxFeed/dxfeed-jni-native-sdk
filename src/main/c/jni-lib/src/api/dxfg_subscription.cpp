@@ -54,3 +54,9 @@ int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_su
   auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
   return pDxSubscription->setSymbol(thread, pSymbol);
 }
+
+int32_t dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread,
+                                                      dxfg_time_series_subscription_t* sub, int64_t fromTime) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
+  return pDxSubscription->setTime(thread, fromTime);
+}
