@@ -100,6 +100,12 @@ int32_t dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* en
   return JNI_OK;
 }
 
+int32_t dxfg_DXEndpoint_closeAndAwaitTermination(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->closeAndAwaitTermination(thread);
+  return JNI_OK;
+}
+
 dxfg_endpoint_role_t dxfg_DXEndpoint_getRole(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
   auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
   return pDxEndpoint->getRole(thread);

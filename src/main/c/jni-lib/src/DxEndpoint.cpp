@@ -48,6 +48,11 @@ namespace dxfeed {
     env->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 
+  void DxEndpoint::closeAndAwaitTermination(JNIEnv* env) const {
+    jmethodID closeMethodId = safeGetMethodID(env, dxEndpointClass_, "closeAndAwaitTermination", "()V");
+    env->CallVoidMethod(dxEndpoint_, closeMethodId);
+  }
+
   void DxEndpoint::awaitNotConnected(JNIEnv* env) const {
     jmethodID closeMethodId = safeGetMethodID(env, dxEndpointClass_, "awaitNotConnected", "()V");
     env->CallVoidMethod(dxEndpoint_, closeMethodId);

@@ -27,6 +27,7 @@ namespace dxfeed {
     int32_t connect(JNIEnv* env, const char* address);
     DxFeed* getFeed(JNIEnv* env) const;
     void close(JNIEnv* env) const;
+    void closeAndAwaitTermination(JNIEnv* pEnv) const;
     void awaitNotConnected(JNIEnv* env) const;
     dxfg_endpoint_state_t getState(JNIEnv* pEnv);
     void addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
