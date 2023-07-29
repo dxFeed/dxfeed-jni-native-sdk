@@ -38,7 +38,10 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
         dxfg_DXEndpoint_release(thread, dxfeed::r_cast<dxfg_endpoint_t*>(object));
       } else if (name == dxfeed::DxEndpointBuilder::JAVA_CLASS_NAME) {
         dxfg_DXEndpointBuilder_release(thread, dxfeed::r_cast<dxfg_endpoint_builder_t*>(object));
-      } else if (name == dxfeed::DxSubscription::JAVA_CLASS_NAME) {
+      } else if (
+        name == dxfeed::DxSubscription::JAVA_CLASS_SUBSCRIPTION_NAME ||
+        name == dxfeed::DxSubscription::JAVA_CLASS_TIME_SERIES_SUBSCRIPTION_NAME)
+      {
         dxfg_DXSubscription_release(thread, dxfeed::r_cast<dxfg_subscription_t*> (object));
       } else {
         ss << ", LEAKED: " << pObject;

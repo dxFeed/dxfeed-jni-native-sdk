@@ -11,12 +11,34 @@
 namespace dxfeed {
   using namespace jni;
 
-  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType) {
+  DxSubscription* DxSubscription::createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType) {
+    return new DxSubscription(env, connection, eventType, false);
+  }
+
+  DxSubscription* DxSubscription::createSubscription(JNIEnv* env, jobject connection,
+                                                     dxfg_event_clazz_list_t* eventClazzes)
+  {
+    return new DxSubscription(env, connection, eventClazzes, false);
+  }
+
+
+  DxTimeSeriesSubscription* DxSubscription::createTimeSeriesSubscription(JNIEnv* env, jobject connection,
+                                                                                         dxfg_event_clazz_t eventType)
+  {
+    return new DxSubscription(env, connection, eventType, true);
+  }
+
+  DxTimeSeriesSubscription* DxSubscription::createTimeSeriesSubscription(JNIEnv* env, jobject connection,
+                                                                                         dxfg_event_clazz_list_t* eventClazzes)
+  {
+    return new DxSubscription(env, connection, eventClazzes, true);
+  }
+
+  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_t eventType, bool isTimeSeries) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     const char* className = getEventClassType(eventType);
     jclass eventTypeClass = safeFindClass(env, className);
-    jmethodID createSubscriptionId = safeGetMethodID(env, dxFeedClass, "createSubscription",
-                                                     "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
+    jmethodID createSubscriptionId = getMethodId(env, dxFeedClass, isTimeSeries, false);
     jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId, eventTypeClass);
     subscription_ = env->NewGlobalRef(pDxSubscription);
     env->DeleteLocalRef(pDxSubscription);
@@ -24,7 +46,19 @@ namespace dxfeed {
     env->DeleteLocalRef(dxFeedClass);
   }
 
-  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_list_t* eventClazzes) {
+  jmethodID DxSubscription::getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray) {
+    const char* subscriptionSignature = argIsArray
+      ? "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;"
+      : "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;";
+    const char* timeSeriesSubscriptionSignature = argIsArray
+      ? "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedTimeSeriesSubscription;"
+      : "(Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedTimeSeriesSubscription;";
+    return isTimeSeries
+          ? safeGetMethodID(env, clazz, "createSubscription", subscriptionSignature)
+          : safeGetMethodID(env, clazz, "createTimeSeriesSubscription", timeSeriesSubscriptionSignature);
+  }
+
+  DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_list_t* eventClazzes, bool isTimeSeries) {
     jclass dxFeedClass = env->GetObjectClass(dxFeed);
     int32_t size = eventClazzes->size;
     jclass clazzArrayClass = env->FindClass("Ljava/lang/Class;");
@@ -40,8 +74,7 @@ namespace dxfeed {
       javaLogger->info("\teventTypeClass = %", eventTypeClass);
       env->SetObjectArrayElement(array, i, eventTypeClass);
     }
-    jmethodID createSubscriptionId2 = safeGetMethodID(env, dxFeedClass, "createSubscription",
-                                                           "([Ljava/lang/Class;)Lcom/dxfeed/api/DXFeedSubscription;");
+    jmethodID createSubscriptionId2 = getMethodId(env, dxFeedClass, isTimeSeries, true);
     javaLogger->info("createSubscriptionId2: %", createSubscriptionId2);
     jobject pDxSubscription = env->CallObjectMethod(dxFeed, createSubscriptionId2, array);
     javaLogger->info("pDxSubscription: %", pDxSubscription);

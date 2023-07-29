@@ -12,6 +12,7 @@ namespace dxfeed {
   const char* getEventClassType(dxfg_event_type_t eventType);
   const char* getEventClassType(dxfg_event_clazz_t eventTypeClazz);
   struct DxSubscription;
+  typedef struct DxSubscription DxTimeSeriesSubscription;
 
   struct DxFeed {
     DxFeed(JNIEnv* env, jobject obj);
@@ -22,8 +23,11 @@ namespace dxfeed {
     DxFeed& operator=(const DxFeed& other) = delete;
     DxFeed& operator=(DxFeed&& other) = delete;
 
+    static dxfg_feed_t* getInstance(JNIEnv* env);
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
+    DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
+    DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
     void attachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
     void detachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
     void detachSubscriptionAndClear(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);

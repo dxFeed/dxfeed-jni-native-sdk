@@ -7,15 +7,21 @@
 #include <string>
 
 #include "api/dxfg_events.h"
+#include "DxFeed.hpp"
 
 namespace dxfeed {
   struct DxEventListener;
 
   struct DxSubscription final {
-    constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.DXFeedSubscription";
+    constexpr static const char JAVA_CLASS_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
+    constexpr static const char JAVA_CLASS_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
 
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClazzes);
+    static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
+    static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClazzes);
+    static DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, jobject connection,
+                                                                  dxfg_event_clazz_t eventType);
+    static DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, jobject connection,
+                                                                  dxfg_event_clazz_list_t* eventClazzes);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
@@ -32,6 +38,10 @@ namespace dxfeed {
 
   private:
     jobject subscription_;
+
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClazzes, bool isTimeSeries);
+    static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
   };
 } // namespace dxfeed
 

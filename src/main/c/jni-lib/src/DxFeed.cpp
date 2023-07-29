@@ -21,12 +21,28 @@ namespace dxfeed {
     internal::jniEnv->DeleteGlobalRef(dxFeed_);
   }
 
+  // todo: make singleton
+  dxfg_feed_t* DxFeed::getInstance(graal_isolatethread_t* env) {
+    const auto dxFeedJniClazz = internal::dxJni->dxFeedJniClass_;
+    jmethodID getInstanceId = safeGetStaticMethodID(env, dxFeedJniClazz, "getInstance", "()Lcom/dxfeed/api/DXFeed;");
+    jobject dxFeedObject = env->CallStaticObjectMethod(dxFeedJniClazz, getInstanceId);
+    return dxfeed::r_cast<dxfg_feed_t*>(new DxFeed(env, dxFeedObject));
+  }
+
   DxSubscription* DxFeed::createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType) {
-    return new DxSubscription(env, dxFeed_, eventType);
+    return DxSubscription::createSubscription(env, dxFeed_, eventType);
   }
 
   DxSubscription* DxFeed::createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClazzes) {
-    return new DxSubscription(env, dxFeed_, eventClazzes);
+    return DxSubscription::createSubscription(env, dxFeed_, eventClazzes);
+  }
+
+  DxTimeSeriesSubscription* DxFeed::createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_t eventClazzes) {
+    return DxSubscription::createTimeSeriesSubscription(env, dxFeed_, eventClazzes);
+  }
+
+  DxTimeSeriesSubscription* DxFeed::createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType) {
+    return DxSubscription::createTimeSeriesSubscription(env, dxFeed_, eventType);
   }
 
   void DxFeed::attachSubscription(graal_isolatethread_t* env, dxfg_subscription_t* pSubscription) {
