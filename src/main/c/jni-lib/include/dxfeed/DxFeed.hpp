@@ -32,7 +32,8 @@ namespace dxfeed {
     void detachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
     void detachSubscriptionAndClear(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
 
-    dxfg_event_type_t* getLastEventIfSubscribed(graal_isolatethread_t* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
+    dxfg_event_type_t* getLastEventIfSubscribed(graal_isolatethread_t* env, dxfg_event_clazz_t clazz,
+                                                dxfg_symbol_t* pSymbol);
     void getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pType);
     void getLastEvents(graal_isolatethread_t* env, dxfg_event_type_list* pList);
 

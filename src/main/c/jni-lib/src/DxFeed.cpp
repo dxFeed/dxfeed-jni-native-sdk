@@ -93,8 +93,9 @@ namespace dxfeed {
 
   void DxFeed::getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pEventType) {
     const auto dxFeedJniClazz = internal::dxJni->dxFeedJniClass_;
-    jmethodID getLastEventId = safeGetStaticMethodID(env, dxFeedJniClazz, "getLastEvent",
-             "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;");
+    const char* getLastEventSignature =
+      "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;";
+    jmethodID getLastEventId = safeGetStaticMethodID(env, dxFeedJniClazz, "getLastEvent", getLastEventSignature);
 
     auto dxEventT = r_cast<DxEventT*>(pEventType);
     jstring jSymbolName = env->NewStringUTF(dxEventT->symbol_);
@@ -113,7 +114,27 @@ namespace dxfeed {
   }
 
   void DxFeed::getLastEvents(graal_isolatethread_t* env, dxfg_event_type_list* pList) {
-    // todo: implement
+    const auto dxFeedJniClazz = internal::dxJni->dxFeedJniClass_;
+    const char* getLastEventSignature =
+      "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/DxFeedJni$NativeEventData;";
+    jmethodID getLastEventId = safeGetStaticMethodID(env, dxFeedJniClazz, "getLastEvent", getLastEventSignature);
+
+    for (int i = 0; i < pList->size; ++i) {
+      dxfg_event_type_t* pEventType = pList->elements[i];
+      auto dxEventT = r_cast <DxEventT*>(pEventType);
+      jstring jSymbolName = env->NewStringUTF(dxEventT->symbol_);
+      const char* className = getEventClassType(dxEventT->eventType_.clazz);
+      jclass eventTypeClass = safeFindClass(env, className);
+      jobject nativeEventData = env->CallStaticObjectMethod(dxFeedJniClazz, getLastEventId, dxFeed_,
+                                                            jSymbolName, eventTypeClass);
+      if (nativeEventData) {
+        NativeEventData data{env};
+        data.toNativeEvent(nativeEventData, &pEventType);
+      }
+      env->DeleteLocalRef(nativeEventData);
+      env->DeleteLocalRef(eventTypeClass);
+      env->DeleteLocalRef(jSymbolName);
+    }
   }
 
   const char* getEventClassType(dxfg_event_clazz_t eventTypeClazz) {
