@@ -100,6 +100,11 @@ int32_t dxfg_DXEndpoint_close(graal_isolatethread_t* thread, dxfg_endpoint_t* en
   return JNI_OK;
 }
 
+dxfg_endpoint_role_t dxfg_DXEndpoint_getRole(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  return pDxEndpoint->getRole(thread);
+}
+
 int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, const char* address) {
   auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
   return pDxEndpoint->connect(thread, address);
@@ -114,6 +119,11 @@ int32_t dxfg_DXEndpoint_awaitNotConnected(graal_isolatethread_t* thread, dxfg_en
   auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
   pDxEndpoint->awaitNotConnected(thread);
   return JNI_OK;
+}
+
+dxfg_endpoint_state_t dxfg_DXEndpoint_getState(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  return pDxEndpoint->getState(thread);
 }
 
 int32_t dxfg_DXEndpoint_addStateChangeListener(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint,

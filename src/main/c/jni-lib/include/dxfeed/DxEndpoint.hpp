@@ -23,10 +23,12 @@ namespace dxfeed {
     DxEndpoint& operator=(const DxEndpoint& other) = delete;
     DxEndpoint& operator=(DxEndpoint&& other) = delete;
 
+    dxfg_endpoint_role_t getRole(JNIEnv* pEnv);
     int32_t connect(JNIEnv* env, const char* address);
     DxFeed* getFeed(JNIEnv* env) const;
     void close(JNIEnv* env) const;
     void awaitNotConnected(JNIEnv* env) const;
+    dxfg_endpoint_state_t getState(JNIEnv* pEnv);
     void addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
     void removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
 

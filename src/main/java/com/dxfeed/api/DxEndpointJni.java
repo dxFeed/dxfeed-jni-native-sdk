@@ -10,6 +10,14 @@ public class DxEndpointJni {
     return DXEndpoint.getInstance(role);
   }
 
+  private static int getRole(DXEndpoint endpoint) {
+    return endpoint.getRole().ordinal();
+  }
+
+  private static int getState(DXEndpoint endpoint) {
+    return endpoint.getState().ordinal();
+  }
+
   private static long newStateChangeEventListener(long userCallback, long userData) {
     long id = DxFeedJni.nextHandleId();
     System.out.println("DxEndpointJni::newStateChangeEventListener, nativeHandle = " + id);

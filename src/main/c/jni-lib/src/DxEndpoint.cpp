@@ -17,6 +17,13 @@ namespace dxfeed {
     internal::jniEnv->DeleteGlobalRef(dxEndpoint_);
   }
 
+  dxfg_endpoint_role_t DxEndpoint::getRole(JNIEnv* env) {
+    auto dxEndpointClass = internal::dxJni->dxEndpointJniClass_;
+    jmethodID getInstanceId = safeGetStaticMethodID(env, dxEndpointClass, "getRole", "(Lcom/dxfeed/api/DXEndpoint)I;");
+    auto role = env->CallIntMethod(dxEndpointClass, getInstanceId, dxEndpoint_);
+    return static_cast<dxfg_endpoint_role_t>(role);
+  }
+
   int32_t DxEndpoint::connect(JNIEnv* env, const char* address) {
     jmethodID connectMethodId = safeGetMethodID(env, dxEndpointClass_, "connect", "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;");
     jstring addr = env->NewStringUTF(address);
@@ -44,6 +51,13 @@ namespace dxfeed {
   void DxEndpoint::awaitNotConnected(JNIEnv* env) const {
     jmethodID closeMethodId = safeGetMethodID(env, dxEndpointClass_, "awaitNotConnected", "()V");
     env->CallVoidMethod(dxEndpoint_, closeMethodId);
+  }
+
+  dxfg_endpoint_state_t DxEndpoint::getState(JNIEnv* env) {
+    auto dxEndpointClass = internal::dxJni->dxEndpointJniClass_;
+    jmethodID getInstanceId = safeGetStaticMethodID(env, dxEndpointClass, "getState", "(Lcom/dxfeed/api/DXEndpoint)I;");
+    auto role = env->CallIntMethod(dxEndpointClass, getInstanceId, dxEndpoint_);
+    return static_cast<dxfg_endpoint_state_t>(role);
   }
 
   void DxEndpoint::addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) {
