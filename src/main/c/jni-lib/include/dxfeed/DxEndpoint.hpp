@@ -31,6 +31,7 @@ namespace dxfeed {
     void removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
 
     static DxEndpoint* getInstance(JNIEnv* env);
+    static DxEndpoint* getInstance(JNIEnv* env, dxfg_endpoint_role_t dxfgEndpointRole);
 
   private:
     jobject dxEndpoint_ = nullptr;

@@ -73,4 +73,18 @@ namespace dxfeed {
     env->DeleteLocalRef(dxEndpointClass);
     return result;
   }
+
+  DxEndpoint* DxEndpoint::getInstance(JNIEnv* env, dxfg_endpoint_role_t dxfgEndpointRole) {
+    auto dxEndpointClass = internal::dxJni->dxEndpointJniClass_;
+    jmethodID getInstanceId = safeGetStaticMethodID(env, dxEndpointClass, "getInstance",
+                                                    "(I)Lcom/dxfeed/api/DXEndpoint;");
+    jobject dxEndpoint = env->CallStaticObjectMethod(dxEndpointClass, getInstanceId, dxfgEndpointRole);
+    DxEndpoint* result = nullptr;
+    if (dxEndpoint) {
+      result = new DxEndpoint(env, dxEndpoint);
+      env->DeleteLocalRef(dxEndpoint);
+    }
+    env->DeleteLocalRef(dxEndpointClass);
+    return result;
+  }
 }

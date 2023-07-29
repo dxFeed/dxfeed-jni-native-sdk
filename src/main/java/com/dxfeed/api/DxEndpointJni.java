@@ -5,6 +5,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DxEndpointJni {
   // callbacks from native
+  private static DXEndpoint getInstance(int dxfgEndpointRole) {
+    DXEndpoint.Role role = DXEndpoint.Role.values()[dxfgEndpointRole];
+    return DXEndpoint.getInstance(role);
+  }
+
   private static long newStateChangeEventListener(long userCallback, long userData) {
     long id = DxFeedJni.nextHandleId();
     System.out.println("DxEndpointJni::newStateChangeEventListener, nativeHandle = " + id);
