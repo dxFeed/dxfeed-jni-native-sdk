@@ -128,6 +128,30 @@ int32_t dxfg_DXEndpoint_connect(graal_isolatethread_t* thread, dxfg_endpoint_t* 
   return pDxEndpoint->connect(thread, address);
 }
 
+int32_t dxfg_DXEndpoint_reconnect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->reconnect(thread);
+  return JNI_OK;
+}
+
+int32_t dxfg_DXEndpoint_disconnect(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->disconnect(thread);
+  return JNI_OK;
+}
+
+int32_t dxfg_DXEndpoint_disconnectAndClear(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->disconnectAndClear(thread);
+  return JNI_OK;
+}
+
+int32_t dxfg_DXEndpoint_awaitProcessed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  pDxEndpoint->awaitProcessed(thread);
+  return JNI_OK;
+}
+
 dxfg_feed_t* dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
   auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
   return dxfeed::r_cast<dxfg_feed_t*>(pDxEndpoint->getFeed(thread));

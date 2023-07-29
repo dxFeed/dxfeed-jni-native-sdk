@@ -55,10 +55,26 @@ namespace dxfeed {
     jstring addr = env->NewStringUTF(address);
     jobject pDxEndpoint = env->CallObjectMethod(dxEndpoint_, connectMethodId, addr);
     env->DeleteLocalRef(addr);
+    // todo: CallObjectMethod returns this, so do we have to replace jobject?
     env->DeleteGlobalRef(dxEndpoint_);
     dxEndpoint_ = env->NewGlobalRef(pDxEndpoint);
     env->DeleteLocalRef(pDxEndpoint);
     return JNI_OK;
+  }
+
+  void DxEndpoint::reconnect(JNIEnv* env) const {
+    jmethodID reconnectMethodId = safeGetMethodID(env, dxEndpointClass_, "reconnect", "()V");
+    env->CallVoidMethod(dxEndpoint_, reconnectMethodId);
+  }
+
+  void DxEndpoint::disconnect(JNIEnv* env) const {
+    jmethodID reconnectMethodId = safeGetMethodID(env, dxEndpointClass_, "disconnect", "()V");
+    env->CallVoidMethod(dxEndpoint_, reconnectMethodId);
+  }
+
+  void DxEndpoint::disconnectAndClear(JNIEnv* env) const {
+    jmethodID reconnectMethodId = safeGetMethodID(env, dxEndpointClass_, "disconnectAndClear", "()V");
+    env->CallVoidMethod(dxEndpoint_, reconnectMethodId);
   }
 
   DxFeed* DxEndpoint::getFeed(JNIEnv* env) const {
@@ -76,6 +92,11 @@ namespace dxfeed {
 
   void DxEndpoint::closeAndAwaitTermination(JNIEnv* env) const {
     jmethodID closeMethodId = safeGetMethodID(env, dxEndpointClass_, "closeAndAwaitTermination", "()V");
+    env->CallVoidMethod(dxEndpoint_, closeMethodId);
+  }
+
+  void DxEndpoint::awaitProcessed(JNIEnv* env) const {
+    jmethodID closeMethodId = safeGetMethodID(env, dxEndpointClass_, "awaitProcessed", "()V");
     env->CallVoidMethod(dxEndpoint_, closeMethodId);
   }
 

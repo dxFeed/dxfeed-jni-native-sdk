@@ -27,9 +27,13 @@ namespace dxfeed {
     int32_t user(JNIEnv* env, const char* userName);
     int32_t password(JNIEnv* env, const char* password);
     int32_t connect(JNIEnv* env, const char* address);
+    void reconnect(JNIEnv* env) const;
+    void disconnect(JNIEnv* env) const;
+    void disconnectAndClear(JNIEnv* env) const;
     DxFeed* getFeed(JNIEnv* env) const;
     void close(JNIEnv* env) const;
     void closeAndAwaitTermination(JNIEnv* pEnv) const;
+    void awaitProcessed(JNIEnv* env) const;
     void awaitNotConnected(JNIEnv* env) const;
     dxfg_endpoint_state_t getState(JNIEnv* pEnv) const;
     void addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) const;
