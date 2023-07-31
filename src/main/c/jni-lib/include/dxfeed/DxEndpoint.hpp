@@ -38,6 +38,7 @@ namespace dxfeed {
     dxfg_endpoint_state_t getState(JNIEnv* pEnv) const;
     void addStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) const;
     void removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener) const;
+    dxfg_event_clazz_list_t* getEventTypes(JNIEnv* env);
 
     static DxEndpoint* getInstance(JNIEnv* env);
     static DxEndpoint* getInstance(JNIEnv* env, dxfg_endpoint_role_t dxfgEndpointRole);

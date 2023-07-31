@@ -153,4 +153,27 @@ namespace dxfeed {
     env->DeleteLocalRef(dxEndpointClass);
     return result;
   }
+
+  // todo: check
+  dxfg_event_clazz_list_t* DxEndpoint::getEventTypes(JNIEnv* env) {
+    auto dxEndpointClass = internal::dxJni->dxEndpointJniClass_;
+    jmethodID getEventTypesId = safeGetMethodID(env, dxEndpointClass, "getEventTypes", "(Lcom/dxfeed/api/DXEndpoint;)[Z");
+
+    auto eventTypeBytes = r_cast<jbyteArray>(env->CallObjectMethod(dxEndpoint_, getEventTypesId));
+    jint size = env->GetArrayLength(eventTypeBytes);
+    auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(eventTypeBytes, 0));
+
+    auto result = new dxfg_event_clazz_list_t();
+    result->size = size;
+    result->elements = new dxfg_event_clazz_t*[size];
+    for (int i = 0; i < size; ++i) {
+      auto* pClazz = new dxfg_event_clazz_t { static_cast<dxfg_event_clazz_t>(pEventTypeData[i]) };
+      result->elements[i] = pClazz;
+    }
+
+    env->ReleasePrimitiveArrayCritical(eventTypeBytes, pEventTypeData, 0);
+    env->DeleteLocalRef(eventTypeBytes);
+
+    return result;
+  }
 }

@@ -186,3 +186,8 @@ int32_t dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t* thread,
   pDxEndpoint->removeStateChangeListener(thread, stateChangeListener);
   return JNI_OK;
 }
+
+dxfg_event_clazz_list_t* dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint) {
+  auto* pDxEndpoint = dxfeed::r_cast<dxfeed::DxEndpoint*>(endpoint);
+  return pDxEndpoint->getEventTypes(thread);
+}
