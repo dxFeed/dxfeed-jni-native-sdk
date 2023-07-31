@@ -56,7 +56,8 @@ int32_t dxfg_DXEndpoint_Builder_withProperties(graal_isolatethread_t* thread, dx
 int32_t dxfg_DXEndpoint_Builder_supportsProperty(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder,
                                                  const char* key)
 {
-  return JNI_OK;
+  auto pDxEndpointBuilder = dxfeed::r_cast<dxfeed::DxEndpointBuilder*>(builder);
+  return pDxEndpointBuilder->supportsProperty(thread, key) ? JNI_OK : JNI_ERR;
 }
 
 dxfg_endpoint_t* dxfg_DXEndpoint_Builder_build(graal_isolatethread_t* thread, dxfg_endpoint_builder_t* builder)

@@ -91,7 +91,10 @@ namespace dxfeed {
     //java/util/Properties;
   }
 
-  void DxEndpointBuilder::supportsProperty(JNIEnv* env, const char* key) {
+  bool DxEndpointBuilder::supportsProperty(JNIEnv* env, const char* key) {
+    jmethodID supportsPropertyId = safeGetMethodID(env, dxEndpointBuilderClass_, "supportsProperty",
+                                                   "(Ljava/lang/String;)Z");
+    return env->CallBooleanMethod(dxEndpointBuilder_, supportsPropertyId);
   }
 
   jobject DxEndpointBuilder::rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder) {
