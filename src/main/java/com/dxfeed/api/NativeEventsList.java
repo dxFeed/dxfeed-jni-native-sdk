@@ -15,12 +15,12 @@ import com.dxfeed.event.option.Underlying;
 
 import java.util.List;
 
-public class NativeEventsList {
+public class NativeEventsList<T extends EventType<?>> {
   private ByteBuffer pBytes;
   private DoubleBuffer pDoubles;
   public byte[] pEventTypes;
 
-  NativeEventsList(List<EventType<?>> eventList) {
+  NativeEventsList(List<T> eventList) {
     int eventCount = eventList.size();
     pBytes = new ByteBuffer(eventCount);
     pDoubles = new DoubleBuffer(eventCount);

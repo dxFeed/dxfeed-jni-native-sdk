@@ -8,7 +8,7 @@ public class DxSubscriptionJni {
     long id = DxFeedJni.nextHandleId();
     System.out.println("DxSubscriptionJni::newEventListener, nativeHandle = " + id);
     DXFeedEventListener<EventType<?>> listener = eventList -> {
-      NativeEventsList nativeTS = new NativeEventsList(eventList);
+      NativeEventsList<EventType<?>> nativeTS = new NativeEventsList<>(eventList);
       nOnEventListener(eventList.size(), nativeTS.byteData(), nativeTS.doubleData(), nativeTS.pEventTypes,
           userCallback, userData);
       nativeTS.clear();

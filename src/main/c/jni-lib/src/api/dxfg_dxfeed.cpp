@@ -65,6 +65,22 @@ dxfg_event_type_t* dxfg_DXFeed_getLastEventIfSubscribed(graal_isolatethread_t* t
   return pDxFeed->getLastEventIfSubscribed(thread, eventClazz, symbol);
 }
 
+dxfg_event_type_list* dxfg_DXFeed_getIndexedEventsIfSubscribed(graal_isolatethread_t* thread, dxfg_feed_t* feed,
+                                                               dxfg_event_clazz_t eventClazz, dxfg_symbol_t* symbol,
+                                                               const char* source)
+{
+  auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
+  return pDxFeed->getIndexedEventsIfSubscribed(thread, eventClazz, symbol, source);
+}
+
+dxfg_event_type_list* dxfg_DXFeed_getTimeSeriesIfSubscribed(graal_isolatethread_t* thread,
+                                                            dxfg_feed_t* feed, dxfg_event_clazz_t eventClazz,
+                                                            dxfg_symbol_t* symbol, int64_t from_time, int64_t to_time)
+{
+  auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
+  return pDxFeed->getTimeSeriesIfSubscribed(thread, eventClazz, symbol, from_time, to_time);
+}
+
 int32_t dxfg_DXFeed_getLastEvent(graal_isolatethread_t* thread, dxfg_feed_t* feed, dxfg_event_type_t* event) {
   auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
   pDxFeed->getLastEvent(thread, event);
