@@ -70,6 +70,16 @@ int32_t dxfg_CList_EventClazz_release(graal_isolatethread_t* thread, dxfg_event_
   return JNI_OK;
 }
 
+int32_t dxfg_CList_symbol_release(graal_isolatethread_t* thread, dxfg_symbol_list* symbolList) {
+  for (int i = 0; i < symbolList->size; ++i) {
+    delete symbolList->elements[i];
+  }
+  delete[] symbolList->elements;
+  symbolList->size = 0;
+  symbolList->elements = nullptr;
+  return JNI_OK;
+}
+
 dxfg_indexed_event_source_t* dxfg_IndexedEventSource_new(graal_isolatethread_t* env, const char* source) {
   return dxfeed::r_cast<dxfg_indexed_event_source_t*>(new dxfeed::DxIndexedEventSource(env, source));
 }
