@@ -9,7 +9,6 @@
 #include "api/dxfg_feed.h"
 
 namespace dxfeed {
-  const char* getEventClassType(dxfg_event_type_t eventType);
   const char* getEventClassType(dxfg_event_clazz_t eventTypeClazz);
   struct DxSubscription;
   typedef struct DxSubscription DxTimeSeriesSubscription;
@@ -28,16 +27,15 @@ namespace dxfeed {
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
     DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
-    void attachSubscription(JNIEnv* pEnv, dxfg_subscription_t* pSubscription);
-    void detachSubscription(JNIEnv* pEnv, dxfg_subscription_t* pSubscription);
-    void detachSubscriptionAndClear(JNIEnv* pEnv, dxfg_subscription_t* pSubscription);
+    void attachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription);
+    void detachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription);
+    void detachSubscriptionAndClear(JNIEnv* env, dxfg_subscription_t* pSubscription);
 
-    dxfg_event_type_t* getLastEventIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz,
-                                                dxfg_symbol_t* pSymbol);
+    dxfg_event_type_t* getLastEventIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
     void getLastEvent(JNIEnv* env, dxfg_event_type_t* pType);
     void getLastEvents(JNIEnv* env, dxfg_event_type_list* pList);
 
-    dxfg_event_type_list* getIndexedEventsIfSubscribed(JNIEnv* pEnv, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
+    dxfg_event_type_list* getIndexedEventsIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
                                                        const char* string);
 
     dxfg_event_type_list* getTimeSeriesIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
