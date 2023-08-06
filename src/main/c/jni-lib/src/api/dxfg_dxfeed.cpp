@@ -16,10 +16,10 @@ dxfg_subscription_t* dxfg_DXFeed_createSubscription(graal_isolatethread_t* threa
 }
 
 dxfg_subscription_t* dxfg_DXFeed_createSubscription2(graal_isolatethread_t* thread,
-                                                     dxfg_feed_t* feed, dxfg_event_clazz_list_t* eventClazzes)
+                                                     dxfg_feed_t* feed, dxfg_event_clazz_list_t* eventClasses)
 {
   auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
-  return dxfeed::r_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(thread, eventClazzes));
+  return dxfeed::r_cast<dxfg_subscription_t*>(pDxFeed->createSubscription(thread, eventClasses));
 }
 
 dxfg_time_series_subscription_t* dxfg_DXFeed_createTimeSeriesSubscription(graal_isolatethread_t* thread,
@@ -32,10 +32,10 @@ dxfg_time_series_subscription_t* dxfg_DXFeed_createTimeSeriesSubscription(graal_
 
 dxfg_time_series_subscription_t*  dxfg_DXFeed_createTimeSeriesSubscription2(graal_isolatethread_t* thread,
                                                                             dxfg_feed_t* feed,
-                                                                            dxfg_event_clazz_list_t* eventClazzes)
+                                                                            dxfg_event_clazz_list_t* eventClasses)
 {
   auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
-  return dxfeed::r_cast<dxfg_time_series_subscription_t*>(pDxFeed->createTimeSeriesSubscription(thread, eventClazzes));
+  return dxfeed::r_cast<dxfg_time_series_subscription_t*>(pDxFeed->createTimeSeriesSubscription(thread, eventClasses));
 }
 
 int32_t dxfg_DXFeed_attachSubscription(graal_isolatethread_t* thread, dxfg_feed_t* feed, dxfg_subscription_t* sub) {

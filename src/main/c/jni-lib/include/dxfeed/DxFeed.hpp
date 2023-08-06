@@ -31,13 +31,11 @@ namespace dxfeed {
     void detachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription);
     void detachSubscriptionAndClear(JNIEnv* env, dxfg_subscription_t* pSubscription);
 
-    dxfg_event_type_t* getLastEventIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
     void getLastEvent(JNIEnv* env, dxfg_event_type_t* pType);
     void getLastEvents(JNIEnv* env, dxfg_event_type_list* pList);
-
+    dxfg_event_type_t* getLastEventIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
     dxfg_event_type_list* getIndexedEventsIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
                                                        const char* string);
-
     dxfg_event_type_list* getTimeSeriesIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
                                                     int64_t fromTime, int64_t toTime);
 
