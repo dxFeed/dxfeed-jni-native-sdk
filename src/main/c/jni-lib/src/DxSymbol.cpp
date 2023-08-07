@@ -38,34 +38,45 @@ namespace dxfeed {
   }
 
   jobject DxSymbol::toWildcardSymbol(JNIEnv* env) {
-    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
-    jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newWildCardSymbol",
-                                               "()Lcom/dxfeed/api/osub/WildcardSymbol;");
-    return env->CallStaticObjectMethod(dxSymbolJniClass, methodId);
+    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    const char* methodName = "newWildCardSymbol";
+    const char* methodSignature = "()Lcom/dxfeed/api/osub/WildcardSymbol;";
+    jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
+    jobject jSymbol = env->CallStaticObjectMethod(jDxSymbolJniClass, methodId);
+    env->DeleteLocalRef(jDxSymbolJniClass);
+    return jSymbol;
   }
 
   jobject DxSymbol::toCandleSymbol(JNIEnv* env, const char* symbol) {
-    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
-    jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newCandleSymbol",
-                                               "(Ljava/lang/String;)Lcom/dxfeed/event/candle/CandleSymbol;");
+    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    const char* methodName = "newCandleSymbol";
+    const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/event/candle/CandleSymbol;";
+    jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
     jstring jSymbolName = env->NewStringUTF(symbol);
-    jobject result = env->CallStaticObjectMethod(dxSymbolJniClass, methodId, jSymbolName);
+    jobject jSymbol = env->CallStaticObjectMethod(jDxSymbolJniClass, methodId, jSymbolName);
     env->DeleteLocalRef(jSymbolName);
-    return result;
+    env->DeleteLocalRef(jDxSymbolJniClass);
+    return jSymbol;
   }
 
   jobject DxSymbol::toTimeSeriesSubscriptionSymbol(JNIEnv* env, jobject symbol, jlong fromTime) {
-    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
-    jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newTimeSeriesSubscriptionSymbol",
-                                               "(Ljava/lang/Object;J)Lcom/dxfeed/api/osub/TimeSeriesSubscriptionSymbol;");
-    return env->CallStaticObjectMethod(dxSymbolJniClass, methodId, symbol, fromTime);
+    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    const char* methodName = "newTimeSeriesSubscriptionSymbol";
+    const char* methodSignature = "(Ljava/lang/Object;J)Lcom/dxfeed/api/osub/TimeSeriesSubscriptionSymbol;";
+    jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
+    jobject jSymbol = env->CallStaticObjectMethod(jDxSymbolJniClass, methodId, symbol, fromTime);
+    env->DeleteLocalRef(jDxSymbolJniClass);
+    return jSymbol;
   }
 
   jobject DxSymbol::toIndexedEventSubscriptionSymbol(JNIEnv* env, jobject symbol, jobject indexedEventSource) {
-    jclass dxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    const char* methodName = "newIndexedEventSubscriptionSymbol";
     const char* methodSignature =
         "(Ljava/lang/Object;Lcom/dxfeed/event/IndexedEventSource;)Lcom/dxfeed/api/osub/IndexedEventSubscriptionSymbol;";
-    jmethodID methodId = safeGetStaticMethodID(env, dxSymbolJniClass, "newIndexedEventSubscriptionSymbol", methodSignature);
-    return env->CallStaticObjectMethod(dxSymbolJniClass, methodId, symbol, indexedEventSource);
+    jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
+    jobject jSymbol = env->CallStaticObjectMethod(jDxSymbolJniClass, methodId, symbol, indexedEventSource);
+    env->DeleteLocalRef(jDxSymbolJniClass);
+    return jSymbol;
   }
 }
