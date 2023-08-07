@@ -42,26 +42,13 @@ namespace dxfeed {
   }
 
   void DxEndpointBuilder::withRole(JNIEnv* env, dxfg_endpoint_role_t role) {
-    const char* methodName = "withRole";
-    const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Role;)Lcom/dxfeed/api/DXEndpoint$Builder;";
-    jmethodID methodId = safeGetMethodID(env, dxEndpointBuilderClass_, methodName, methodSignature);
-    jobjectArray jRoleEnumValues = roleEnumValues(env);
-    jobject jRole = env->GetObjectArrayElement(jRoleEnumValues, role);
-    jobject jNewBuilder = env->CallObjectMethod(dxEndpointBuilder_, methodId, jRole);
-    env->DeleteLocalRef(jRole);
-    env->DeleteLocalRef(jRoleEnumValues);
-    
+    auto jDxEndpointJniClass = dxfeed::jni::internal::dxJni->dxEndpointJniClass_;
+    const char* methodName = "buildWithRole";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Builder;I)Lcom/dxfeed/api/DXEndpoint$Builder;";
+    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    jobject jNewBuilder = env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxEndpointBuilder_, role);
     dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
     env->DeleteLocalRef(jNewBuilder);
-  }
-
-  jobjectArray DxEndpointBuilder::roleEnumValues(JNIEnv* env) {
-    jclass jRoleClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint$Role;");
-    const char* methodName = "values";
-    const char* methodSignature = "()[Lcom/dxfeed/api/DXEndpoint$Role;";
-    jmethodID methodId = safeGetStaticMethodID(env, jRoleClass, methodName, methodSignature);    
-    env->DeleteLocalRef(jRoleClass);
-    return r_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, methodId));
   }
 
   void DxEndpointBuilder::withName(JNIEnv* env, const char* name) {

@@ -13,6 +13,11 @@ public class DxEndpointJni {
     return DXEndpoint.getInstance(role);
   }
 
+  private static DXEndpoint.Builder buildWithRole(DXEndpoint.Builder builder, int dxfgEndpointRole) {
+    DXEndpoint.Role role = DXEndpoint.Role.values()[dxfgEndpointRole];
+    return builder.withRole(role);
+  }
+
   private static int getRole(DXEndpoint endpoint) {
     return endpoint.getRole().ordinal();
   }
