@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <jni.h>
-#include <iostream>
 
 #include "javah/com_dxfeed_api_DxEndpointJni.h"
 #include "javah/com_dxfeed_api_DxSubscriptionJni.h"
@@ -55,7 +54,7 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   auto pDoubleData = (const double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
   auto pEventTypes = (const char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
 
-  const auto& events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
+  auto events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
 
   env->ReleasePrimitiveArrayCritical(jDoubles, const_cast<double*>(pDoubleData), 0);
   env->ReleasePrimitiveArrayCritical(jBytes, const_cast<char*>(pByteData), 0);
@@ -80,7 +79,7 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
   auto pDoubleData = (double*) jDoubles;
   auto pEventTypes = (char*) jEventTypes;
 
-  const auto& events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
+  auto events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
 
   auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
   auto userData = dxfeed::r_cast<void*>(jUserData);
