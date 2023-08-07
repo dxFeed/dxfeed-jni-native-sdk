@@ -29,6 +29,7 @@ namespace dxfeed {
     void withProperties(JNIEnv* env, const char* file_path);
     bool supportsProperty(JNIEnv* env, const char* key);
   private:
+    static jobjectArray roleEnumValues(JNIEnv* env);
     static jobject rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder);
 
     jobject dxEndpointBuilder_ = nullptr;

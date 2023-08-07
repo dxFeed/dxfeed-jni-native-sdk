@@ -11,18 +11,19 @@ namespace dxfeed {
   using namespace jni;
   
   DxEndpointBuilder::DxEndpointBuilder(JNIEnv* env) {
-    jclass dxEndpointClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
-    javaLogger->info("dxEndpointClass: %", dxEndpointClass);
-    jmethodID newBuilderMethodId = safeGetStaticMethodID(env, dxEndpointClass, "newBuilder",
-                                                              "()Lcom/dxfeed/api/DXEndpoint$Builder;");
-    javaLogger->info("newBuilderMethodId: %", dxEndpointClass);
-    jobject pDxEndpointBuilder = env->CallStaticObjectMethod(dxEndpointClass, newBuilderMethodId);
-    dxEndpointBuilder_ = env->NewGlobalRef(pDxEndpointBuilder);
-    env->DeleteLocalRef(pDxEndpointBuilder);
+    jclass jDxEndpointClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint;");
+//    javaLogger->info("jDxEndpointClass: %", jDxEndpointClass);
+    const char* methodName = "newBuilder";
+    const char* methodSignature = "()Lcom/dxfeed/api/DXEndpoint$Builder;";
+    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointClass, methodName, methodSignature);
+//    javaLogger->info("methodId: %", jDxEndpointClass);
+    jobject jDxEndpointBuilder = env->CallStaticObjectMethod(jDxEndpointClass, methodId);
+    dxEndpointBuilder_ = env->NewGlobalRef(jDxEndpointBuilder);
+    env->DeleteLocalRef(jDxEndpointBuilder);
     javaLogger->info("dxEndpointBuilder_: %", dxEndpointBuilder_);
     dxEndpointBuilderClass_ = env->GetObjectClass(dxEndpointBuilder_);
     javaLogger->info("dxEndpointBuilderClass: %", dxEndpointBuilderClass_);
-    env->DeleteLocalRef(dxEndpointClass);
+    env->DeleteLocalRef(jDxEndpointClass);
   }
 
   DxEndpointBuilder::~DxEndpointBuilder() {
@@ -30,71 +31,81 @@ namespace dxfeed {
   }
 
   DxEndpoint* DxEndpointBuilder::build(JNIEnv* env) {
-    jmethodID buildId = safeGetMethodID(env, dxEndpointBuilderClass_, "build", "()Lcom/dxfeed/api/DXEndpoint;");
-    javaLogger->info("buildId: %", buildId);
-    jobject pDxEndpoint = env->CallObjectMethod(dxEndpointBuilder_, buildId);
-    javaLogger->info("DxEndpoint OBJECT: %", pDxEndpoint);
-    auto* pEndpoint = new DxEndpoint(env, pDxEndpoint);
-    env->DeleteLocalRef(pDxEndpoint);
+    const char* methodName = "build";
+    const char* methodSignature = "()Lcom/dxfeed/api/DXEndpoint;";
+    jmethodID methodId = safeGetMethodID(env, dxEndpointBuilderClass_, methodName, methodSignature);
+    jobject jDxEndpoint = env->CallObjectMethod(dxEndpointBuilder_, methodId);
+    javaLogger->info("DxEndpoint OBJECT: %", jDxEndpoint);
+    auto* pEndpoint = new DxEndpoint(env, jDxEndpoint);
+    env->DeleteLocalRef(jDxEndpoint);
     return pEndpoint;
   }
 
   void DxEndpointBuilder::withRole(JNIEnv* env, dxfg_endpoint_role_t role) {
-    jmethodID withRoleId = safeGetMethodID(env, dxEndpointBuilderClass_, "withRole",
-                                             "(Lcom/dxfeed/api/DXEndpoint$Role;)Lcom/dxfeed/api/DXEndpoint$Builder;");
-    // todo: extract method for RoleId
-    javaLogger->info("withRoleId: %", withRoleId);
-    jclass jRoleClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint$Role;");
-    javaLogger->info("jRoleClass: %", jRoleClass);
-    jmethodID valuesId = safeGetStaticMethodID(env, jRoleClass, "values", "()[Lcom/dxfeed/api/DXEndpoint$Role;");
-    javaLogger->info("valuesId: %", valuesId);
-    auto jRoleArray = r_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, valuesId));
-    jobject jRole = env->GetObjectArrayElement(jRoleArray, role);
-    jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withRoleId, jRole);
+    const char* methodName = "withRole";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Role;)Lcom/dxfeed/api/DXEndpoint$Builder;";
+    jmethodID methodId = safeGetMethodID(env, dxEndpointBuilderClass_, methodName, methodSignature);
+    jobjectArray jRoleEnumValues = roleEnumValues(env);
+    jobject jRole = env->GetObjectArrayElement(jRoleEnumValues, role);
+    jobject jNewBuilder = env->CallObjectMethod(dxEndpointBuilder_, methodId, jRole);
     env->DeleteLocalRef(jRole);
-    env->DeleteLocalRef(jRoleArray);
+    env->DeleteLocalRef(jRoleEnumValues);
+    
+    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
+    env->DeleteLocalRef(jNewBuilder);
+  }
+
+  jobjectArray DxEndpointBuilder::roleEnumValues(JNIEnv* env) {
+    jclass jRoleClass = safeFindClass(env, "Lcom/dxfeed/api/DXEndpoint$Role;");
+    const char* methodName = "values";
+    const char* methodSignature = "()[Lcom/dxfeed/api/DXEndpoint$Role;";
+    jmethodID methodId = safeGetStaticMethodID(env, jRoleClass, methodName, methodSignature);    
     env->DeleteLocalRef(jRoleClass);
-    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, newBuilder);
-    env->DeleteLocalRef(newBuilder);
+    return r_cast<jobjectArray>(env->CallStaticObjectMethod(jRoleClass, methodId));
   }
 
   void DxEndpointBuilder::withName(JNIEnv* env, const char* name) {
-    jmethodID withNameId = safeGetMethodID(env, dxEndpointBuilderClass_, "withName",
-                                             "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;");
-    javaLogger->info("withNameId: %", withNameId);
+    const char* methodName = "withName";
+    const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;";
+    jmethodID methodId = safeGetMethodID(env, dxEndpointBuilderClass_, methodName, methodSignature);
     jstring jName = env->NewStringUTF(name);
-    jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withNameId, jName);
+    jobject jNewBuilder = env->CallObjectMethod(dxEndpointBuilder_, methodId, jName);
     env->DeleteLocalRef(jName);
-    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, newBuilder);
-    env->DeleteLocalRef(newBuilder);
+    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
+    env->DeleteLocalRef(jNewBuilder);
   }
 
   void DxEndpointBuilder::withProperty(JNIEnv* env, const char* key, const char* value) {
-    jmethodID withPropertyId = safeGetMethodID(env, dxEndpointBuilderClass_, "withProperty",
-                                                "(Ljava/lang/String;Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;");
-    javaLogger->info("withPropertyId: %", withPropertyId);
+    const char* methodName = "withProperty";
+    const char* methodSignature = "(Ljava/lang/String;Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;";
+    jmethodID methodId = safeGetMethodID(env, dxEndpointBuilderClass_, methodName, methodSignature);
     jstring jKey = env->NewStringUTF(key);
     jstring jValue = env->NewStringUTF(value);
-    jobject newBuilder = env->CallObjectMethod(dxEndpointBuilder_, withPropertyId, jKey, jValue);
+    jobject jNewBuilder = env->CallObjectMethod(dxEndpointBuilder_, methodId, jKey, jValue);
     env->DeleteLocalRef(jKey);
     env->DeleteLocalRef(jValue);
-    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, newBuilder);
-    env->DeleteLocalRef(newBuilder);
+    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
+    env->DeleteLocalRef(jNewBuilder);
   }
 
   void DxEndpointBuilder::withProperties(JNIEnv* env, const char* filePath) {
     jclass jPropertiesClass = safeFindClass(env, "Ljava/util/Properties;");
     javaLogger->info("jPropertiesClass: %", jPropertiesClass);
-    jmethodID loadId = safeGetMethodID(env, jPropertiesClass, "load", "(Ljava/io/InputStream;)V");
-    javaLogger->info("loadId: %", loadId);
+    const char* methodName = "load";
+    const char* methodSignature = "(Ljava/io/InputStream;)V";
+    jmethodID loadId = safeGetMethodID(env, jPropertiesClass, methodName, methodSignature);    
     env->DeleteLocalRef(jPropertiesClass);
     //java/util/Properties;
   }
 
   bool DxEndpointBuilder::supportsProperty(JNIEnv* env, const char* key) {
-    jmethodID supportsPropertyId = safeGetMethodID(env, dxEndpointBuilderClass_, "supportsProperty",
-                                                   "(Ljava/lang/String;)Z");
-    return env->CallBooleanMethod(dxEndpointBuilder_, supportsPropertyId);
+    const char* methodName = "supportsProperty";
+    const char* methodSignature = "(Ljava/lang/String;)Z";
+    jmethodID methodId = safeGetMethodID(env, dxEndpointBuilderClass_, methodName, methodSignature);
+    jstring jKey = env->NewStringUTF(key);
+    jboolean result = env->CallBooleanMethod(dxEndpointBuilder_, methodId, jKey);
+    env->DeleteLocalRef(jKey);
+    return result;
   }
 
   jobject DxEndpointBuilder::rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder) {
