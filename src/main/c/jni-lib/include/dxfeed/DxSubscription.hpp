@@ -17,11 +17,11 @@ namespace dxfeed {
     constexpr static const char JAVA_CLASS_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
 
     static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
-    static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClazzes);
+    static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses);
     static DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, jobject connection,
                                                                   dxfg_event_clazz_t eventType);
     static DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, jobject connection,
-                                                                  dxfg_event_clazz_list_t* eventClazzes);
+                                                                  dxfg_event_clazz_list_t* eventClasses);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
@@ -37,13 +37,13 @@ namespace dxfeed {
     void close(JNIEnv* env) const;
 
     // DxFeedTimeSeriesSubscription methods
-    int32_t setTime(graal_isolatethread_t* pEnv, int64_t time);
+    int32_t setTime(JNIEnv* pEnv, int64_t time) const;
 
   private:
     jobject subscription_;
 
     DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClazzes, bool isTimeSeries);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries);
     static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
   };
 } // namespace dxfeed
