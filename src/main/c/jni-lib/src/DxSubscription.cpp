@@ -115,7 +115,7 @@ namespace dxfeed {
     env->CallStaticVoidMethod(dxSymbolClass, methodId, subscription_, listener->javaListenerId_);
   }
 
-  void DxSubscription::removeListener(JNIEnv* env, DxEventListener* listener) const {
+  void DxSubscription::removeListener(JNIEnv* env, DxEventListener* listener) {
     auto dxSymbolClass = internal::dxJni->dxSubscriptionJniClass_;
     const char* methodName = "removeEventListener";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;J)V";
@@ -123,7 +123,7 @@ namespace dxfeed {
     env->CallStaticVoidMethod(dxSymbolClass, methodId, subscription_, listener->javaListenerId_);
   }
 
-  int32_t DxSubscription::addSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
+  int32_t DxSubscription::addSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) {
     const char* methodName = "addSymbols";
     const char* methodSignature = "(Ljava/lang/Object;)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
@@ -135,7 +135,7 @@ namespace dxfeed {
     return jSymbol ? JNI_OK : JNI_ERR;
   }
 
-  int32_t DxSubscription::addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const {
+  int32_t DxSubscription::addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
     int32_t size = symbols->size;
     jclass jObjectArrayClass = env->FindClass("Ljava/lang/Object;");
     jobjectArray jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
@@ -154,7 +154,7 @@ namespace dxfeed {
     return JNI_OK;
   }
 
-  int32_t DxSubscription::setSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
+  int32_t DxSubscription::setSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) {
     const char* methodName = "setSymbols";
     const char* methodSignature = "([Ljava/lang/Object;)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
@@ -166,7 +166,7 @@ namespace dxfeed {
     return jSymbol ? JNI_OK : JNI_ERR;
   }
 
-  int32_t DxSubscription::setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const {
+  int32_t DxSubscription::setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
     int32_t size = symbols->size;
     jclass jObjectArrayClass = env->FindClass("Ljava/lang/Object;");
     jobjectArray jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
@@ -184,14 +184,14 @@ namespace dxfeed {
     env->DeleteLocalRef(jSymbolsArray);
   }
 
-  void DxSubscription::close(JNIEnv* env) const {
+  void DxSubscription::close(JNIEnv* env) {
     const char* methodName = "close";
     const char* methodSignature = "()V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
     env->CallVoidMethod(subscription_, methodId);
   }
 
-  int32_t DxSubscription::setTime(graal_isolatethread_t* env, int64_t time) const {
+  int32_t DxSubscription::setTime(graal_isolatethread_t* env, int64_t time) {
     const char* methodName = "setTime";
     const char* methodSignature = "(J)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
@@ -199,7 +199,7 @@ namespace dxfeed {
     return JNI_OK;
   }
 
-  int32_t DxSubscription::removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
+  int32_t DxSubscription::removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) {
     const char* methodName = "removeSymbols";
     const char* methodSignature = "([Ljava/lang/Object;)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
@@ -211,7 +211,7 @@ namespace dxfeed {
     return jSymbol ? JNI_OK : JNI_ERR;
   }
 
-  int32_t DxSubscription::removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const {
+  int32_t DxSubscription::removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
     int32_t size = symbols->size;
     jclass jObjectArrayClass = env->FindClass("Ljava/lang/Object;");
     jobjectArray jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
@@ -230,7 +230,7 @@ namespace dxfeed {
     return JNI_OK;
   }
 
-  int32_t DxSubscription::attach(JNIEnv* env, DxFeed* pFeed) const {
+  int32_t DxSubscription::attach(JNIEnv* env, DxFeed* pFeed) {
     const char* methodName = "attach";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeed;)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
@@ -238,7 +238,7 @@ namespace dxfeed {
     return JNI_OK;
   }
 
-  int32_t DxSubscription::detach(JNIEnv* env, DxFeed* pFeed) const {
+  int32_t DxSubscription::detach(JNIEnv* env, DxFeed* pFeed) {
     const char* methodName = "detach";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeed;)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
