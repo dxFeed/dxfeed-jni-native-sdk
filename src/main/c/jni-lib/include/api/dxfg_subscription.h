@@ -68,9 +68,9 @@ dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChang
   dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed function_subscriptionClosed,
   void* user_data);
 
-dxfg_subscription_t*      dxfg_DXFeedSubscription_new(graal_isolatethread_t* thread, dxfg_event_clazz_t eventClazz);
+dxfg_subscription_t*      dxfg_DXFeedSubscription_new(graal_isolatethread_t* thread, dxfg_event_clazz_t eventClass);
 dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t* thread,
-                                                       dxfg_event_clazz_list_t* eventClazzes);
+                                                       dxfg_event_clazz_list_t* eventClasses);
 int32_t                   dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t* subscription);
 int32_t                   dxfg_DXFeedSubscription_close(graal_isolatethread_t* thread, dxfg_subscription_t* sub);
 int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread,

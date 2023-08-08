@@ -16,12 +16,10 @@ namespace dxfeed {
     constexpr static const char JAVA_CLASS_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
     constexpr static const char JAVA_CLASS_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
 
-    static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
-    static DxSubscription* createSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses);
-    static DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, jobject connection,
-                                                                  dxfg_event_clazz_t eventType);
-    static DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, jobject connection,
-                                                                  dxfg_event_clazz_list_t* eventClasses);
+    DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType, bool isTimeSeries = false);
+    DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries = false);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
@@ -39,11 +37,13 @@ namespace dxfeed {
     // DxFeedTimeSeriesSubscription methods
     int32_t setTime(JNIEnv* pEnv, int64_t time) const;
 
+    int32_t removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol);
+    int32_t removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
+
   private:
+    jclass dxSubscriptionClass_;
     jobject subscription_;
 
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries);
     static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
   };
 } // namespace dxfeed
