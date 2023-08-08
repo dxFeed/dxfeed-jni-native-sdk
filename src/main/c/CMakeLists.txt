@@ -4,8 +4,8 @@ project(native_jni_sdk)
 
 set(CMAKE_CXX_STANDARD 17)
 
-#set(JAVA_HOME /Users/Andrey.Mikhalev/Documents/Tools/graalvm-ce-java17-22.1.0-dev/Contents/Home)
-set(JAVA_HOME D:/Tools/labsjdk-ce-17.0.6-jvmci-22.3-b13)
+set(JAVA_HOME /Users/Andrey.Mikhalev/Documents/Tools/graalvm-ce-java17-22.1.0-dev/Contents/Home)
+#set(JAVA_HOME D:/Tools/labsjdk-ce-17.0.6-jvmci-22.3-b13)
 message("JAVA_HOME = " ${JAVA_HOME})
 
 set(JNI_COMMON_INCLUDE ${JAVA_HOME}/include)

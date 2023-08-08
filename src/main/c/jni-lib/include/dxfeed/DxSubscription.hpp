@@ -13,13 +13,13 @@ namespace dxfeed {
   struct DxEventListener;
 
   struct DxSubscription final {
-    constexpr static const char JAVA_CLASS_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
-    constexpr static const char JAVA_CLASS_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
+    constexpr static const char DX_FEED_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
+    constexpr static const char DX_FEED_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedTimeSeriesSubscription";
 
-    DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType, bool isTimeSeries = false);
-    DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries = false);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries);
+    DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
+    DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries = false);
+    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries = false);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
