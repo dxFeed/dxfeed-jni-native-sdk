@@ -23,6 +23,7 @@ namespace dxfeed {
     DxFeed& operator=(DxFeed&& other) = delete;
 
     static dxfg_feed_t* getInstance(JNIEnv* env);
+    jobject getJavaObject() const;
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
     DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);

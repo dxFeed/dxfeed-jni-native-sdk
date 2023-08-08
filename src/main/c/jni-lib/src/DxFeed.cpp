@@ -31,6 +31,10 @@ namespace dxfeed {
     return dxfeed::r_cast<dxfg_feed_t*>(new DxFeed(env, jDxFeedObject));
   }
 
+  jobject DxFeed::getJavaObject() const {
+    return dxFeed_;
+  }
+
   DxSubscription* DxFeed::createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType) {
     return new dxfeed::DxSubscription(env, dxFeed_, eventType, false);
   }

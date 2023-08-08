@@ -166,6 +166,24 @@ namespace dxfeed {
     return jSymbol ? JNI_OK : JNI_ERR;
   }
 
+  int32_t DxSubscription::setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const {
+    int32_t size = symbols->size;
+    jclass jObjectArrayClass = env->FindClass("Ljava/lang/Object;");
+    jobjectArray jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
+    for (int i = 0; i < size; ++i) {
+      dxfg_symbol_t* symbol = symbols->elements[i];
+      jobject jSymbol = DxSymbol::toJavaObject(env, symbol);
+      env->SetObjectArrayElement(jSymbolsArray, i, jSymbol);
+    }
+
+    const char* methodName = "setSymbols";
+    const char* methodSignature = "([Ljava/lang/Object;)V";
+    jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName,methodSignature);
+    env->CallVoidMethod(subscription_, methodId, jSymbolsArray);
+    env->DeleteLocalRef(jObjectArrayClass);
+    env->DeleteLocalRef(jSymbolsArray);
+  }
+
   void DxSubscription::close(JNIEnv* env) const {
     const char* methodName = "close";
     const char* methodSignature = "()V";
@@ -178,10 +196,10 @@ namespace dxfeed {
     const char* methodSignature = "(J)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
     env->CallVoidMethod(subscription_, methodId, time);    
-    return JNI_ERR;
+    return JNI_OK;
   }
 
-  int32_t DxSubscription::removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) {
+  int32_t DxSubscription::removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const {
     const char* methodName = "removeSymbols";
     const char* methodSignature = "([Ljava/lang/Object;)V";
     jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
@@ -193,7 +211,7 @@ namespace dxfeed {
     return jSymbol ? JNI_OK : JNI_ERR;
   }
 
-  int32_t DxSubscription::removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
+  int32_t DxSubscription::removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const {
     int32_t size = symbols->size;
     jclass jObjectArrayClass = env->FindClass("Ljava/lang/Object;");
     jobjectArray jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
@@ -209,6 +227,22 @@ namespace dxfeed {
     env->CallVoidMethod(subscription_, methodId, jSymbolsArray);
     env->DeleteLocalRef(jObjectArrayClass);
     env->DeleteLocalRef(jSymbolsArray);
+    return JNI_OK;
+  }
+
+  int32_t DxSubscription::attach(JNIEnv* env, DxFeed* pFeed) const {
+    const char* methodName = "attach";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeed;)V";
+    jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
+    env->CallVoidMethod(subscription_, methodId, pFeed->getJavaObject());
+    return JNI_OK;
+  }
+
+  int32_t DxSubscription::detach(JNIEnv* env, DxFeed* pFeed) const {
+    const char* methodName = "detach";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeed;)V";
+    jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
+    env->CallVoidMethod(subscription_, methodId, pFeed->getJavaObject());
     return JNI_OK;
   }
 }

@@ -72,11 +72,30 @@ int32_t dxfg_DXFeedSubscription_removeSymbols(graal_isolatethread_t* thread, dxf
   return pDxSubscription->removeSymbols(thread, symbols);
 }
 
+int32_t dxfg_DXFeedSubscription_attach(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_t* feed) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
+  return pDxSubscription->attach(thread, pDxFeed);
+}
+
+int32_t dxfg_DXFeedSubscription_detach(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_t* feed) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
+  return pDxSubscription->detach(thread, pDxFeed);
+}
+
 int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
                                           dxfg_symbol_t* pSymbol)
 {
   auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
   return pDxSubscription->setSymbol(thread, pSymbol);
+}
+
+int32_t dxfg_DXFeedSubscription_setSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
+                                           dxfg_symbol_list* symbols)
+{
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  return pDxSubscription->setSymbols(thread, symbols);
 }
 
 int32_t dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread,

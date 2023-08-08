@@ -27,18 +27,20 @@ namespace dxfeed {
     DxSubscription& operator=(const DxSubscription& other) = delete;
     DxSubscription& operator=(DxSubscription&& other) = delete;
 
+    void close(JNIEnv* env) const;
     void addListener(JNIEnv* env, DxEventListener* listener) const;
     void removeListener(JNIEnv* env, DxEventListener* listener) const;
     int32_t addSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
     int32_t addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
+    int32_t removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const;
+    int32_t removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
+    int32_t attach(JNIEnv* env, DxFeed* pFeed) const;
+    int32_t detach(JNIEnv* env, DxFeed* pFeed) const;
     int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
-    void close(JNIEnv* env) const;
+    int32_t setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
 
     // DxFeedTimeSeriesSubscription methods
     int32_t setTime(JNIEnv* pEnv, int64_t time) const;
-
-    int32_t removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol);
-    int32_t removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
 
   private:
     jclass dxSubscriptionClass_;
