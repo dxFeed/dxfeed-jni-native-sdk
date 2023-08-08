@@ -27,7 +27,7 @@ namespace dxfeed::jni {
   namespace internal {
     extern JNIEnv* jniEnv;
     extern JVMInstance* javaVM;
-    extern const JavaLangSystem* javaLangSystem;
+    extern JavaLangSystem* javaLangSystem;
     extern const JavaLangClass* javaLangClass;
     extern const DxJni* dxJni;
 

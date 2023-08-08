@@ -27,20 +27,20 @@ namespace dxfeed {
     DxSubscription& operator=(const DxSubscription& other) = delete;
     DxSubscription& operator=(DxSubscription&& other) = delete;
 
-    void close(JNIEnv* env) const;
-    void addListener(JNIEnv* env, DxEventListener* listener) const;
-    void removeListener(JNIEnv* env, DxEventListener* listener) const;
-    int32_t addSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
-    int32_t addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
-    int32_t removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) const;
-    int32_t removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
-    int32_t attach(JNIEnv* env, DxFeed* pFeed) const;
-    int32_t detach(JNIEnv* env, DxFeed* pFeed) const;
-    int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol) const;
-    int32_t setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) const;
+    void close(JNIEnv* env);
+    void addListener(JNIEnv* env, DxEventListener* listener);
+    void removeListener(JNIEnv* env, DxEventListener* listener);
+    int32_t addSymbol(JNIEnv* env, dxfg_symbol_t* symbol);
+    int32_t addSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
+    int32_t removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol);
+    int32_t removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
+    int32_t attach(JNIEnv* env, DxFeed* pFeed);
+    int32_t detach(JNIEnv* env, DxFeed* pFeed);
+    int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol);
+    int32_t setSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
 
     // DxFeedTimeSeriesSubscription methods
-    int32_t setTime(JNIEnv* pEnv, int64_t time) const;
+    int32_t setTime(JNIEnv* pEnv, int64_t time);
 
   private:
     jclass dxSubscriptionClass_;
