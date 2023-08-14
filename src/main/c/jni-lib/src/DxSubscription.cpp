@@ -278,4 +278,24 @@ namespace dxfeed {
     return result;
   }
 
+  int32_t DxSubscription::containsEventType(JNIEnv* env, dxfg_event_clazz_t eventTypeClass) {
+    const char* methodName = "containsEventType";
+    const char* methodSignature = "(Ljava/lang/Class;)Z";
+    const char* className = getEventClassType(eventTypeClass);
+    jclass jEventTypeClazz = safeFindClass(env, className);
+    jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
+    jboolean result = env->CallBooleanMethod(subscription_, methodId, jEventTypeClazz);
+
+    env->DeleteLocalRef(jEventTypeClazz);
+    return result ? JNI_OK : JNI_ERR;
+  }
+
+  dxfg_symbol_list* DxSubscription::getSymbols(JNIEnv* env) {
+    auto dxSubscriptionJniClass = internal::dxJni->dxSubscriptionJniClass_;
+    const char* methodName = "getSymbols";
+    const char* methodSignature = nullptr;
+    // todo: finish
+    return nullptr;
+  }
+
 }

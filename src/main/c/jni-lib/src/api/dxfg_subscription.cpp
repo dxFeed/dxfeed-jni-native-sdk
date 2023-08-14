@@ -95,6 +95,19 @@ dxfg_event_clazz_list_t* dxfg_DXFeedSubscription_getEventTypes(graal_isolatethre
   return pDxSubscription->getEventTypes(thread);
 }
 
+int32_t dxfg_DXFeedSubscription_containsEventType(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
+                                                  dxfg_event_clazz_t eventClazz)
+{
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  return pDxSubscription->containsEventType(thread, eventClazz);
+}
+
+dxfg_symbol_list* dxfg_DXFeedSubscription_getSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  return pDxSubscription->getSymbols(thread);
+}
+
+
 int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
                                           dxfg_symbol_t* pSymbol)
 {
