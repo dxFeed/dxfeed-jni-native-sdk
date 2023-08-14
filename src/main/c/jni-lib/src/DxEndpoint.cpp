@@ -80,9 +80,9 @@ namespace dxfeed {
     auto dxEndpointClass = internal::dxJni->dxEndpointJniClass_;
     const char* methodName = "getEventTypes";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;)[Z";
-    jmethodID methodId = safeGetMethodID(env, dxEndpointClass, methodName, methodSignature);
+    jmethodID methodId = safeGetStaticMethodID(env, dxEndpointClass, methodName, methodSignature);
 
-    auto jByteArray = r_cast <jbyteArray>(env->CallObjectMethod(dxEndpoint_, methodId));
+    auto jByteArray = r_cast <jbyteArray>(env->CallStaticObjectMethod(dxEndpointClass, methodId, dxEndpoint_));
     jint size = env->GetArrayLength(jByteArray);
     auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(jByteArray, 0));
 
