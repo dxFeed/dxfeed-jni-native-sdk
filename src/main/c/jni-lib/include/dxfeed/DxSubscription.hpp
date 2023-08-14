@@ -36,6 +36,8 @@ namespace dxfeed {
     int32_t removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
     int32_t attach(JNIEnv* env, DxFeed* pFeed);
     int32_t detach(JNIEnv* env, DxFeed* pFeed);
+    int32_t isClosed(JNIEnv* env);
+    dxfg_event_clazz_list_t* getEventTypes(JNIEnv* env);
     int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol);
     int32_t setSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
 

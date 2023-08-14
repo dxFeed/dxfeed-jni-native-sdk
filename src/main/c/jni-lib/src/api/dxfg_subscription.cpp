@@ -84,6 +84,17 @@ int32_t dxfg_DXFeedSubscription_detach(graal_isolatethread_t* thread, dxfg_subsc
   return pDxSubscription->detach(thread, pDxFeed);
 }
 
+int32_t dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  return pDxSubscription->isClosed(thread);
+}
+
+dxfg_event_clazz_list_t* dxfg_DXFeedSubscription_getEventTypes(graal_isolatethread_t* thread, dxfg_subscription_t* sub)
+{
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  return pDxSubscription->getEventTypes(thread);
+}
+
 int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
                                           dxfg_symbol_t* pSymbol)
 {

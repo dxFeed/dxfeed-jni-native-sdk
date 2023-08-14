@@ -2,6 +2,9 @@ package com.dxfeed.api;
 
 import com.dxfeed.event.EventType;
 
+import java.util.Iterator;
+import java.util.Set;
+
 public class DxSubscriptionJni {
   // callbacks from native
   private static long newEventListener(long userCallback, long userData) {
@@ -33,6 +36,17 @@ public class DxSubscriptionJni {
       System.out.println("DxSubscriptionJni::removeEventListener, nativeHandle = " + nativeHandleId);
       sub.removeEventListener(eventListener);
     }
+  }
+
+  private static byte[] getEventTypes(DXFeedSubscription<EventType<?>> sub) {
+    Set<Class<? extends EventType<?>>> eventTypes = sub.getEventTypes();
+    Iterator<Class<? extends EventType<?>>> iterator = eventTypes.iterator();
+    int eventsCount = eventTypes.size();
+    byte[] pEventTypes = new byte[eventsCount];
+    for (int i = 0; i < eventsCount && iterator.hasNext(); ++i) {
+      pEventTypes[i] = DxfgEventClazzT.fromClass(iterator.next());
+    }
+    return pEventTypes;
   }
 
   private static native void nOnEventListener(int size, byte[] byteData, double[] doubleData,

@@ -245,4 +245,37 @@ namespace dxfeed {
     env->CallVoidMethod(subscription_, methodId, pFeed->getJavaObject());
     return JNI_OK;
   }
+
+  int32_t DxSubscription::isClosed(JNIEnv* env) {
+    const char* methodName = "isClosed";
+    const char* methodSignature = "()Z";
+    jmethodID methodId = safeGetMethodID(env, dxSubscriptionClass_, methodName, methodSignature);
+    jboolean result = env->CallBooleanMethod(subscription_, methodId);
+    return result ? JNI_OK : JNI_ERR;
+  }
+
+  dxfg_event_clazz_list_t* DxSubscription::getEventTypes(JNIEnv* env) {
+    auto dxSubscriptionClass = internal::dxJni->dxSubscriptionJniClass_;
+    const char* methodName = "getEventTypes";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)[Z";
+    jmethodID methodId = safeGetStaticMethodID(env, dxSubscriptionClass, methodName, methodSignature);
+
+    auto jByteArray = r_cast<jbyteArray>(env->CallStaticObjectMethod(dxSubscriptionClass, methodId, subscription_));
+    jint size = env->GetArrayLength(jByteArray);
+    auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(jByteArray, 0));
+
+    auto result = new dxfg_event_clazz_list_t();
+    result->size = size;
+    result->elements = new dxfg_event_clazz_t*[size];
+    for (int i = 0; i < size; ++i) {
+      auto* pClazz = new dxfg_event_clazz_t { static_cast<dxfg_event_clazz_t>(pEventTypeData[i]) };
+      result->elements[i] = pClazz;
+    }
+
+    env->ReleasePrimitiveArrayCritical(jByteArray, pEventTypeData, 0);
+    env->DeleteLocalRef(jByteArray);
+
+    return result;
+  }
+
 }
