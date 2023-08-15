@@ -7,9 +7,9 @@
 namespace dxfeed::jni {
   NativeEventsList::NativeEventsList(JNIEnv* env):
     env_(env),
-    dxNativeEventsListClass_(r_cast <jclass>(safeFindClass(env, "Lcom/dxfeed/api/NativeEventsList;"))),
-    dxByteBuffer_(r_cast<jclass>(safeFindClass(env, "Lcom/dxfeed/api/buffers/ByteBuffer;"))),
-    dxDoubleBuffer_(r_cast<jclass>(safeFindClass(env, "Lcom/dxfeed/api/buffers/DoubleBuffer;")))
+    dxNativeEventsListClass_(safeFindClass(env, "Lcom/dxfeed/api/NativeEventsList;")),
+    dxByteBuffer_(safeFindClass(env, "Lcom/dxfeed/api/buffers/ByteBuffer;")),
+    dxDoubleBuffer_(safeFindClass(env, "Lcom/dxfeed/api/buffers/DoubleBuffer;"))
   {
     javaLogger->info("com.dxfeed.api.NativeEventsList: %", dxNativeEventsListClass_);
     byteBuffer_ = safeGetFieldID(env, dxNativeEventsListClass_, "pBytes", "Lcom/dxfeed/api/buffers/ByteBuffer;");

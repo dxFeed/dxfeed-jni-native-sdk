@@ -32,6 +32,8 @@ namespace dxfeed {
     int32_t id_;
     const char* name_;
     jobject indexedEventSource_;
+
+    constexpr static const char DX_INDEXED_EVENT_SOURCE_CLASS_NAME[] = "Lcom/dxfeed/api/DxIndexedEventSource;";
   };
 } // namespace dxfeed
 

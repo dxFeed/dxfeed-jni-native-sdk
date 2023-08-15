@@ -10,7 +10,7 @@ namespace dxfeed {
   using namespace jni;
 
   DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const char* name) {
-    jclass jDxClass = safeFindClass(env, "Lcom/dxfeed/api/DxIndexedEventSource;");
+    jclass jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_CLASS_NAME);
     const char* methodName = "newOrderSourceByName";
     const char* methodSignature = "(Ljava/lang/String;[J)Lcom/dxfeed/event/IndexedEventSource;";
     jmethodID methodId = safeGetStaticMethodID(env, jDxClass, methodName, methodSignature);
@@ -29,25 +29,25 @@ namespace dxfeed {
   }
 
   DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const int32_t sourceId) {
-    jclass jDxClass = safeFindClass(env, "Lcom/dxfeed/api/DxIndexedEventSource;");
+    jclass jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_CLASS_NAME);
     const char* methodName = "newOrderSourceById";
     const char* methodSignature = "(I[J)Lcom/dxfeed/event/market/OrderSource;";
     jmethodID methodId = safeGetStaticMethodID(env, jDxClass, methodName, methodSignature);
     jlongArray data = env->NewLongArray(2);
-    indexedEventSource_ = env->NewGlobalRef(
-        env->CallStaticObjectMethod(jDxClass, methodId, sourceId, data)
-    );
+    jobject jObject = env->CallStaticObjectMethod(jDxClass, methodId, sourceId, data);
+    indexedEventSource_ = env->NewGlobalRef(jObject);
     name_ = getName(env);
     auto jLongData = r_cast<jlong*>(env->GetPrimitiveArrayCritical(data, 0));
     type_ = static_cast<dxfg_indexed_event_source_type_t>(jLongData[0]);
     id_ = static_cast<int32_t>(jLongData[1]);
     env->ReleasePrimitiveArrayCritical(data, jLongData, 0);
+    env->DeleteLocalRef(jObject);
     env->DeleteLocalRef(data);
     env->DeleteLocalRef(jDxClass);
   }
 
   const char* DxIndexedEventSource::getName(JNIEnv* env) {
-    jclass jEventSourceClass = env->GetObjectClass(indexedEventSource_);
+    auto jEventSourceClass = env->GetObjectClass(indexedEventSource_);
     const char* methodName = "name";
     const char* methodSignature = "()Ljava/lang/String;";
     jmethodID methodId = safeGetMethodID(env, jEventSourceClass, methodName, methodSignature);
