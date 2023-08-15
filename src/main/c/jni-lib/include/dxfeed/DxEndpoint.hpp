@@ -13,6 +13,7 @@ namespace dxfeed {
   struct DxStateChangeListener;
 
   struct DxEndpoint final {
+    constexpr static const char DX_JNI_ENDPOINT_CLASS_NAME[] = "Lcom/dxfeed/api/DxEndpointJni;";
     constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.impl.DXEndpointImpl";
 
     explicit DxEndpoint(JNIEnv* env, jobject dxEndpoint);
@@ -23,6 +24,7 @@ namespace dxfeed {
     DxEndpoint& operator=(const DxEndpoint& other) = delete;
     DxEndpoint& operator=(DxEndpoint&& other) = delete;
 
+    static jobject newBuilder(JNIEnv* env);
     static DxEndpoint* getInstance(JNIEnv* env);
     static DxEndpoint* getInstance(JNIEnv* env, dxfg_endpoint_role_t dxfgEndpointRole);
 
@@ -45,7 +47,8 @@ namespace dxfeed {
     void removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
   private:
     jobject dxEndpoint_ = nullptr;
-    jclass dxEndpointClass_;
+
+    constexpr static const char DX_ENDPOINT_CLASS_NAME[] = "Lcom/dxfeed/api/DXEndpoint;";
   };
 }
 

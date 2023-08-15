@@ -8,17 +8,7 @@
 #include "javah/com_dxfeed_api_DxEndpointJni.h"
 
 namespace dxfeed::jni {
-  struct DxJni {
-    _jclass* const dxEndpointJniClass_;
-    _jclass* const dxFeedJniClass_;
-    _jclass* const dxSubscriptionJniClass_;
-    _jclass* const dxSymbolJniClass_;
-
-    static DxJni* initDxJni(JNIEnv* env);
-
-  private:
-    explicit DxJni(JNIEnv* env);
-  };
+  void initDxJni(JNIEnv* env);
 
   static JNINativeMethod nDxEndpoint[] = {
     {"nOnStateChangeListener", "(IIJJ)V", (void*) &Java_com_dxfeed_api_DxEndpointJni_nOnStateChangeListener},};

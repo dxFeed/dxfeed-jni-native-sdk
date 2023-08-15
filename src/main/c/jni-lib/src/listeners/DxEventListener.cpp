@@ -7,7 +7,7 @@ namespace dxfeed {
   DxEventListener::DxEventListener(jlong listenerId): javaListenerId_(listenerId) {}
 
   DxEventListener* DxEventListener::create(JNIEnv* env, dxfg_feed_event_listener_function callback, void* userData) {
-    auto dxSubscriptionJniClass = dxfeed::jni::internal::dxJni->dxSubscriptionJniClass_;
+    auto dxSubscriptionJniClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxSubscriptionJni;");
     jmethodID newEventListenerId = jni::safeGetStaticMethodID(env, dxSubscriptionJniClass, "newEventListener", "(JJ)J");
     jlong result = env->CallStaticLongMethod(dxSubscriptionJniClass, newEventListenerId, callback, userData);
     return new DxEventListener(result);

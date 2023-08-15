@@ -42,7 +42,9 @@ namespace dxfeed {
 
   private:
     jobject dxFeed_ = nullptr;
-    jclass dxFeedClass_ = nullptr;
+
+    constexpr static const char DX_FEED_CLASS_NAME[] = "Lcom/dxfeed/api/DXFeed;";
+    constexpr static const char DX_FEED_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxFeedJni;";
   };
 }
 

@@ -32,7 +32,6 @@ namespace dxfeed {
     static jobject rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder);
 
     jobject dxEndpointBuilder_ = nullptr;
-    jclass dxEndpointBuilderClass_ = nullptr;
   };
 }
 

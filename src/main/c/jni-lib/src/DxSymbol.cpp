@@ -37,8 +37,14 @@ namespace dxfeed {
     } 
   }
 
+  dxfg_symbol_t* DxSymbol::fromJavaObject(JNIEnv* env, jobject pSymbol) {
+    jclass pJclass = env->GetObjectClass(pSymbol);
+    return nullptr;
+  }
+
+
   jobject DxSymbol::toWildcardSymbol(JNIEnv* env) {
-    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    jclass jDxSymbolJniClass = safeFindClass(env, DX_SYMBOL_JNI_CLASS_NAME);
     const char* methodName = "newWildCardSymbol";
     const char* methodSignature = "()Lcom/dxfeed/api/osub/WildcardSymbol;";
     jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
@@ -48,7 +54,7 @@ namespace dxfeed {
   }
 
   jobject DxSymbol::toCandleSymbol(JNIEnv* env, const char* symbol) {
-    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    jclass jDxSymbolJniClass = safeFindClass(env, DX_SYMBOL_JNI_CLASS_NAME);
     const char* methodName = "newCandleSymbol";
     const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/event/candle/CandleSymbol;";
     jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
@@ -60,7 +66,7 @@ namespace dxfeed {
   }
 
   jobject DxSymbol::toTimeSeriesSubscriptionSymbol(JNIEnv* env, jobject symbol, jlong fromTime) {
-    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    jclass jDxSymbolJniClass = safeFindClass(env, DX_SYMBOL_JNI_CLASS_NAME);
     const char* methodName = "newTimeSeriesSubscriptionSymbol";
     const char* methodSignature = "(Ljava/lang/Object;J)Lcom/dxfeed/api/osub/TimeSeriesSubscriptionSymbol;";
     jmethodID methodId = safeGetStaticMethodID(env, jDxSymbolJniClass, methodName, methodSignature);
@@ -70,7 +76,7 @@ namespace dxfeed {
   }
 
   jobject DxSymbol::toIndexedEventSubscriptionSymbol(JNIEnv* env, jobject symbol, jobject indexedEventSource) {
-    jclass jDxSymbolJniClass = internal::dxJni->dxSymbolJniClass_;
+    jclass jDxSymbolJniClass = safeFindClass(env, DX_SYMBOL_JNI_CLASS_NAME);
     const char* methodName = "newIndexedEventSubscriptionSymbol";
     const char* methodSignature =
         "(Ljava/lang/Object;Lcom/dxfeed/event/IndexedEventSource;)Lcom/dxfeed/api/osub/IndexedEventSubscriptionSymbol;";
