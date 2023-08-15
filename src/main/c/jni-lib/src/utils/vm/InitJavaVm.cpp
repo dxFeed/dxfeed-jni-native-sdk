@@ -22,8 +22,6 @@ namespace internal {
   JVMInstance* javaVM = nullptr;
   JavaLangSystem* javaLangSystem = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
-  const DxJni* dxJni = nullptr;
-
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
     if (vmArgs) {
@@ -64,7 +62,7 @@ namespace internal {
       javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));
     javaLogger->info(" com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
     dumpJavaInfo(env);
-    dxJni = DxJni::initDxJni(env);
+    initDxJni(env);
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {
@@ -83,7 +81,7 @@ namespace internal {
     std::cout << "APP_RUNTIME_PATH: " << runtimePath << std::endl;
 
     int vmOptionsCount = params->vmArgsCount + 1; // 1 for classpath
-    auto javaVmOptionsPtr = std::make_unique <JavaVMOption[]>(vmOptionsCount);
+    auto javaVmOptionsPtr = std::make_unique<JavaVMOption[]>(vmOptionsCount);
     auto javaVmOptions = javaVmOptionsPtr.get();
     std::string classPath = buildClassPath(runtimePath);
     javaVmOptions[0].optionString = classPath.data();
@@ -103,8 +101,8 @@ namespace internal {
     if (flag == JNI_ERR) {
       throw std::runtime_error("Error creating VM. Exiting...n");
     }
-    javaLogger = new JavaLogger(jniEnv);
     javaVM = new vm::JavaVmInstance(javaVmPtr, vmArgs.version);
+    javaLogger = new JavaLogger(jniEnv);
 
     loadJNILibrary(jniEnv);
   }

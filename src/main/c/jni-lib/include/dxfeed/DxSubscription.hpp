@@ -13,8 +13,8 @@ namespace dxfeed {
   struct DxEventListener;
 
   struct DxSubscription final {
-    constexpr static const char DX_FEED_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedSubscription";
-    constexpr static const char DX_FEED_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedTimeSeriesSubscription";
+    constexpr static const char JAVA_SUBSCRIPTION_CLASS_NAME[] = "com.dxfeed.api.DXFeedSubscription";
+    constexpr static const char JAVA_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedTimeSeriesSubscription";
 
     DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses);
@@ -47,10 +47,11 @@ namespace dxfeed {
     int32_t setTime(JNIEnv* pEnv, int64_t time);
 
   private:
-    jclass dxSubscriptionClass_;
     jobject subscription_;
 
     static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
+    constexpr static const char DX_FEED_SUBSCRIPTION_CLASS_NAME[] = "Lcom/dxfeed/api/DXFeedSubscription;";
+    constexpr static const char DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxSubscriptionJni;";
   };
 } // namespace dxfeed
 

@@ -39,8 +39,8 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
       } else if (name == dxfeed::DxEndpointBuilder::JAVA_CLASS_NAME) {
         dxfg_DXEndpointBuilder_release(thread, dxfeed::r_cast<dxfg_endpoint_builder_t*>(object));
       } else if (
-        name == dxfeed::DxSubscription::DX_FEED_SUBSCRIPTION_NAME ||
-        name == dxfeed::DxSubscription::DX_FEED_TIME_SERIES_SUBSCRIPTION_NAME
+        name == dxfeed::DxSubscription::JAVA_SUBSCRIPTION_CLASS_NAME ||
+        name == dxfeed::DxSubscription::JAVA_TIME_SERIES_SUBSCRIPTION_NAME
       ) {
         dxfg_DXSubscription_release(thread, dxfeed::r_cast<dxfg_subscription_t*> (object));
       } else {
