@@ -14,20 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DxFeedJni {
-  private static Logging logger = Logging.getLogging(DxFeedJni.class);
-
-  static {
-//    DXEndpoint instance = DXEndpoint.getInstance();
-//    instance.getEventTypes();
-//
-//    DXFeed instance1 = DXFeed.getInstance();
-//    instance1.getLastEventIfSubscribed();
-
-    String property = System.getProperty("com.devexperts.qd.impl.matrix.Agent.MaxBufferSize");
-    logger.info("[DxFeedJni]: After loading class " + DxFeedJni.class.getName() +
-        ", com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = " + property);
-  }
-
   public static final ConcurrentHashMap<Long, Object> nativeObjectsMap = new ConcurrentHashMap<>();
   private static final AtomicLong nativeHandleId = new AtomicLong();
 

@@ -19,14 +19,18 @@ namespace dxfeed::jni {
   JavaLogger::JavaLogger(JNIEnv* env) :
     env_(env)
   {
-    jclass dxFeedJniClazz = env->FindClass("Lcom/dxfeed/api/DxFeedJni;");
-    jfieldID fieldId = env->GetStaticFieldID(dxFeedJniClazz, "logger", "Lcom/devexperts/logging/Logging;");
-    logger_ = env->NewGlobalRef(env->GetStaticObjectField(dxFeedJniClazz, fieldId));
+    jclass jDevexLoggingClazz = env->FindClass("Lcom/devexperts/logging/Logging;");
+    jmethodID id = env->GetStaticMethodID(jDevexLoggingClazz, "getLogging", "(Ljava/lang/String;)"
+                                                                    "Lcom/devexperts/logging/Logging;");
+    jstring pJstring = env->NewStringUTF("NativeLogger");
+    logger_ = env->CallStaticObjectMethod(jDevexLoggingClazz, id, pJstring);
+    env->DeleteLocalRef(pJstring);
+
     jclass serrClazz = env->GetObjectClass(logger_);
     logInfo_ = jni::safeGetMethodID(env_, serrClazz, "info", "(Ljava/lang/String;)V");
     logErr_ = jni::safeGetMethodID(env_, serrClazz, "error", "(Ljava/lang/String;)V");
     env->DeleteLocalRef(serrClazz);
-    env->DeleteLocalRef(dxFeedJniClazz);
+    env->DeleteLocalRef(jDevexLoggingClazz);
   }
 
   JavaLogger const& JavaLogger::info(const std::string& str) const {

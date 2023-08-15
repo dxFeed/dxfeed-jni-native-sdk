@@ -60,6 +60,9 @@ namespace internal {
     javaLangSystem = new JavaLangSystem(env);
     javaLangSystem->load(env, dllFilePath);
     javaLogger->info("Loaded DxFeed lib: %", dllFilePath);
+    auto property = std::make_unique<const char*>(
+      javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));
+    javaLogger->info(" com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
     dumpJavaInfo(env);
     dxJni = DxJni::initDxJni(env);
   }
