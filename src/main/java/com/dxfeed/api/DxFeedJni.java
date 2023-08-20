@@ -21,6 +21,10 @@ public class DxFeedJni {
     return nativeHandleId.incrementAndGet();
   }
 
+  private static void loadLibrary(String libPath) {
+    System.load(libPath);
+  }
+
   private static <E extends LastingEvent<?>> NativeEventsList<E> getLastEventIfSubscribed(DXFeed feed,
                                                                                       Class<E> eventTypeClass,
                                                                                       Object symbol) {
