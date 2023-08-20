@@ -5,12 +5,11 @@
 
 namespace dxfeed::jni {
   JavaLangClass::JavaLangClass(JNIEnv* env) {
-    javaLangClassClazz = safeFindClass(env, "Ljava/lang/Class;");
+    auto javaLangClassClazz = safeFindClass(env, "Ljava/lang/Class;");
     javaLogger->info("java.lang.Class: %", javaLangClassClazz);
     getNameMethodId = safeGetMethodID(env, javaLangClassClazz, "getName", "()Ljava/lang/String;");
     javaLogger->info("String Class::getName(): %", getNameMethodId);
-    getClassMethodId = safeGetMethodID(env, javaLangClassClazz, "getClass", "()Ljava/lang/Class;");
-    javaLogger->info("Class Class::getClass(): %", getClassMethodId);
+    env->DeleteLocalRef(javaLangClassClazz);
   }
 
   std::string JavaLangClass::getName(JNIEnv* env, jobject jObject) const {
