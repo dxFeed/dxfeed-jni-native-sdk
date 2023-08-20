@@ -29,7 +29,7 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
   std::stringstream ss;
   ss << "dxfg_JavaObjectHandler_release: ";
   if (object) {
-    jobject pObject = object->dxfg_java_object_handle;
+    auto pObject = object->dxfg_java_object_handle;
     ss << "\t dxfg_java_object_handle: " << pObject;
     const auto& name = pObject ? dxfeed::jni::internal::javaLangClass->getName(thread, pObject) : "";
     if (!name.empty()) {

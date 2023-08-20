@@ -20,8 +20,8 @@ namespace dxfeed {
     auto jDxEndpointClass = safeFindClass(env, DxEndpoint::DX_ENDPOINT_CLASS_NAME);
     const char* methodName = "newBuilder";
     const char* methodSignature = "()Lcom/dxfeed/api/DXEndpoint$Builder;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    jobject builder = env->CallStaticObjectMethod(jDxEndpointClass, methodId);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto builder = env->CallStaticObjectMethod(jDxEndpointClass, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
     return builder;
   }
@@ -30,8 +30,8 @@ namespace dxfeed {
     auto jDxEndpointClass = safeFindClass(env, DX_ENDPOINT_CLASS_NAME);
     const char* methodName = "getInstance";
     const char* methodSignature = "()Lcom/dxfeed/api/DXEndpoint;";
-    jmethodID getInstanceId = safeGetStaticMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    jobject jDxEndpoint = env->CallStaticObjectMethod(jDxEndpointClass, getInstanceId);
+    auto getInstanceId = safeGetStaticMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto jDxEndpoint = env->CallStaticObjectMethod(jDxEndpointClass, getInstanceId);
     DxEndpoint* result = nullptr;
     if (jDxEndpoint) {
       result = new DxEndpoint(env, jDxEndpoint);
@@ -45,8 +45,8 @@ namespace dxfeed {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "getInstance";
     const char* methodSignature = "(I)Lcom/dxfeed/api/DXEndpoint;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
-    jobject jDxEndpoint = env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxfgEndpointRole);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    auto jDxEndpoint = env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxfgEndpointRole);
     DxEndpoint* result = nullptr;
     if (jDxEndpoint) {
       result = new DxEndpoint(env, jDxEndpoint);
@@ -60,8 +60,8 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "getFeed";
     const char* methodSignature = "()Lcom/dxfeed/api/DXFeed;";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    jobject jDxFeed = env->CallObjectMethod(dxEndpoint_, methodId);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto jDxFeed = env->CallObjectMethod(dxEndpoint_, methodId);
     auto* pFeed = new DxFeed(env, jDxFeed);
     env->DeleteLocalRef(jDxFeed);
     env->DeleteLocalRef(jDxEndpointClass);
@@ -72,7 +72,7 @@ namespace dxfeed {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "getRole";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint)I;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
     auto role = env->CallIntMethod(jDxEndpointJniClass, methodId, dxEndpoint_);
     env->DeleteLocalRef(jDxEndpointJniClass);
     return static_cast<dxfg_endpoint_role_t>(role);
@@ -82,7 +82,7 @@ namespace dxfeed {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "getState";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint)I;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
     auto role = env->CallStaticIntMethod(jDxEndpointJniClass, methodId, dxEndpoint_);
     env->DeleteLocalRef(jDxEndpointJniClass);
     return static_cast<dxfg_endpoint_state_t>(role);
@@ -93,7 +93,7 @@ namespace dxfeed {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "getEventTypes";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;)[B";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
 
     auto jByteArray = r_cast <jbyteArray>(env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxEndpoint_));
     jint size = env->GetArrayLength(jByteArray);
@@ -118,9 +118,9 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "user";
     const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    jstring jUserName = env->NewStringUTF(userName);
-    jobject jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jUserName);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto jUserName = env->NewStringUTF(userName);
+    auto jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jUserName);
     env->DeleteLocalRef(jUserName);
     // todo: CallObjectMethod returns this, so do we have to replace jobject?
     env->DeleteGlobalRef(dxEndpoint_);
@@ -134,9 +134,9 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "password";
     const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    jstring jPassword = env->NewStringUTF(password);
-    jobject jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jPassword);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto jPassword = env->NewStringUTF(password);
+    auto jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jPassword);
     env->DeleteLocalRef(jPassword);
     // todo: CallObjectMethod returns this, so do we have to replace jobject?
     env->DeleteGlobalRef(dxEndpoint_);
@@ -150,9 +150,9 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "connect";
     const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint;";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    jstring jAddress = env->NewStringUTF(address);
-    jobject jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jAddress);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto jAddress = env->NewStringUTF(address);
+    auto jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jAddress);
     env->DeleteLocalRef(jAddress);
     // todo: CallObjectMethod returns this, so do we have to replace jobject?
     env->DeleteGlobalRef(dxEndpoint_);
@@ -166,7 +166,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "reconnect";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -175,7 +175,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "disconnect";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -184,7 +184,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "disconnectAndClear";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -193,7 +193,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "close";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -202,7 +202,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "closeAndAwaitTermination";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -211,7 +211,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "awaitProcessed";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -220,7 +220,7 @@ namespace dxfeed {
     auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "awaitNotConnected";
     const char* methodSignature = "()V";
-    jmethodID methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
     env->CallVoidMethod(dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
@@ -229,7 +229,7 @@ namespace dxfeed {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "addStateChangeEventListener";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;J)V";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
     env->CallStaticVoidMethod(jDxEndpointJniClass, methodId, dxEndpoint_, listener->javaListenerId_);
     env->DeleteLocalRef(jDxEndpointJniClass);
   }
@@ -238,7 +238,7 @@ namespace dxfeed {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "removeStateChangeEventListener";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;J)V";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
     env->CallStaticVoidMethod(jDxEndpointJniClass, methodId, dxEndpoint_, listener->javaListenerId_);
     env->DeleteLocalRef(jDxEndpointJniClass);
   }
