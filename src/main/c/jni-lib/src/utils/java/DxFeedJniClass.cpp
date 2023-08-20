@@ -7,14 +7,19 @@
 
 namespace dxfeed::jni {
   void initDxJni(JNIEnv* env) {
-    jclass dxEndpointJniClass = safeFindClass(env, "Lcom/dxfeed/api/DxEndpointJni;");
-    javaLogger->info("com.dxfeed.api.DxEndpointJniClass: %", dxEndpointJniClass);
     javaLogger->info("com.dxfeed.api.DxFeedJniClass: %", safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;"));
-    jclass dxSubscriptionJniClass = safeFindClass(env, "Lcom/dxfeed/api/DxSubscriptionJni;");
-    javaLogger->info("com.dxfeed.api.DxSubscriptionJniClass: %", dxSubscriptionJniClass);
     javaLogger->info("com.dxfeed.api.DxSymbolJniClass: %", safeFindClass(env, "Lcom/dxfeed/api/DxSymbolJni;"));
+
+    auto dxEndpointJniClass = safeFindClass(env, "Lcom/dxfeed/api/DxEndpointJni;");
+    javaLogger->info("com.dxfeed.api.DxEndpointJniClass: %", dxEndpointJniClass);
     jint nEndpointLoaded = env->RegisterNatives(dxEndpointJniClass, nDxEndpoint, 1);
+    env->DeleteLocalRef(dxEndpointJniClass);
+
+    auto dxSubscriptionJniClass = safeFindClass(env, "Lcom/dxfeed/api/DxSubscriptionJni;");
+    javaLogger->info("com.dxfeed.api.DxSubscriptionJniClass: %", dxSubscriptionJniClass);
     jint nSubscriptionLoaded = env->RegisterNatives(dxSubscriptionJniClass, nDxSubscription, 1);
+    env->DeleteLocalRef(dxSubscriptionJniClass);
+
     auto msg = (nEndpointLoaded == JNI_OK && nSubscriptionLoaded == JNI_OK) ? "JNI_OK" : "Failed";
     javaLogger->info("RegisterNatives result: %", msg);
   }
