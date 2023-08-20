@@ -53,10 +53,18 @@ namespace internal {
     javaLogger->info("\t % %, (build %, %)", *vmName, *vmVendor, *vmVersion, *vmInfo);
   }
 
+  void loadLibrary(JNIEnv* env, const char* libPath) {
+    const auto jDxFeedJniClazz = safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;");
+    auto loadMethodId = safeGetStaticMethodID(env, jDxFeedJniClazz, "loadLibrary", "(Ljava/lang/String;)V");
+    jstring pStr = env->NewStringUTF(libPath);
+    env->CallStaticVoidMethod(jDxFeedJniClazz, loadMethodId, pStr);
+    env->DeleteLocalRef(pStr);
+  }
+
   void loadJNILibrary(JNIEnv* env) {
     javaLangClass = new JavaLangClass(env);
     javaLangSystem = new JavaLangSystem(env);
-    javaLangSystem->load(env, dllFilePath);
+    loadLibrary(env, dllFilePath);
     javaLogger->info("Loaded DxFeed lib: %", dllFilePath);
     auto property = std::make_unique<const char*>(
       javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));

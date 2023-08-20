@@ -17,12 +17,6 @@ namespace dxfeed::jni {
     javaLogger->info("String System::setProperty(String key, String value): %", setPropMethodId);
   }
 
-  void JavaLangSystem::load(JNIEnv* env, const char* libPath) const {
-    jstring pStr = env->NewStringUTF(libPath);
-    env->CallStaticVoidMethod(javaLangSystemClazz, loadMethodId, pStr);
-    env->DeleteLocalRef(pStr);
-  }
-
   const char* JavaLangSystem::getProperty(JNIEnv* env, const char* key) const {
     jstring jKey = env->NewStringUTF(key);
     auto jValue = r_cast<jstring>(env->CallStaticObjectMethod(javaLangSystemClazz, getPropMethodId, jKey));
