@@ -60,14 +60,14 @@ namespace dxfeed::jni {
   }
 
   JavaLogger const& JavaLogger::logInfo(const char* data) const {
-    jstring jString = env_->NewStringUTF(data);
+    auto jString = env_->NewStringUTF(data);
     env_->CallVoidMethod(logger_, logInfo_, jString);
     env_->DeleteLocalRef(jString);
     return *this;
   }
 
   JavaLogger const& JavaLogger::logError(const char* data) const {
-    jstring jString = env_->NewStringUTF(data);
+    auto jString = env_->NewStringUTF(data);
     env_->CallVoidMethod(logger_, logErr_, jString);
     env_->DeleteLocalRef(jString);
     return *this;
