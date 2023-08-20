@@ -34,8 +34,8 @@ namespace dxfeed::jni {
   }
 
   void NativeEventList::toNativeEvent(jobject nativeEventList, dxfg_event_type_t** ppEventType) {
-    jobject byteBuffer = env_->GetObjectField(nativeEventList, byteBuffer_);
-    jobject doubleBuffer = env_->GetObjectField(nativeEventList, doubleBuffer_);
+    auto byteBuffer = env_->GetObjectField(nativeEventList, byteBuffer_);
+    auto doubleBuffer = env_->GetObjectField(nativeEventList, doubleBuffer_);
 
     auto byteArray = r_cast<jbyteArray>(env_->CallObjectMethod(byteBuffer, toByteData_));
     auto doubleArray = r_cast<jbyteArray>(env_->CallObjectMethod(doubleBuffer, toDoubleData_));
@@ -62,8 +62,8 @@ namespace dxfeed::jni {
   }
 
   void NativeEventList::toNativeEventList(jobject nativeEventList, dxfg_event_type_list** ppEventTypeList) {
-    jobject byteBuffer = env_->GetObjectField(nativeEventList, byteBuffer_);
-    jobject doubleBuffer = env_->GetObjectField(nativeEventList, doubleBuffer_);
+    auto byteBuffer = env_->GetObjectField(nativeEventList, byteBuffer_);
+    auto doubleBuffer = env_->GetObjectField(nativeEventList, doubleBuffer_);
 
     auto byteArray = r_cast<jbyteArray>(env_->CallObjectMethod(byteBuffer, toByteData_));
     auto doubleArray = r_cast<jbyteArray>(env_->CallObjectMethod(doubleBuffer, toDoubleData_));

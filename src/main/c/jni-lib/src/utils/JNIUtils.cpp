@@ -35,7 +35,7 @@ namespace dxfeed::jni {
   jmethodID safeGetMethod(JNIEnv* env, JMethodIdProvider provider, jclass clazz, const char* methodName,
                                const char* signature)
   {
-    jmethodID method = (env->*provider)(clazz, methodName, signature);
+    auto method = (env->*provider)(clazz, methodName, signature);
     if (!method) {
       auto errMsg = "Can't find method " + std::string(methodName) + " with signature " + std::string(signature);
       std::cerr << errMsg << std::endl;

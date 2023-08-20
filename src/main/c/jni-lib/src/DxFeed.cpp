@@ -25,8 +25,8 @@ namespace dxfeed {
     auto jDxFeedJniClazz = safeFindClass(env, DX_FEED_CLASS_NAME);
     const char* methodName = "getInstance";
     const char* methodSignature = "()Lcom/dxfeed/api/DXFeed;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
-    jobject jDxFeedObject = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId);
+    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    auto jDxFeedObject = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId);
     env->DeleteLocalRef(jDxFeedJniClazz);
     return dxfeed::r_cast<dxfg_feed_t*>(new DxFeed(env, jDxFeedObject));
   }
@@ -42,12 +42,12 @@ namespace dxfeed {
     const char* methodName = "getLastEventIfSubscribed";
     const char* methodSignature =
       "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/Object;)Lcom/dxfeed/api/NativeEventList;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
 
     const char* className = getEventClassType(eventTypeClass);
-    jclass jEventTypeClazz = safeFindClass(env, className);
-    jobject jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
-    jobject jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClazz, jSymbol);
+    auto jEventTypeClazz = safeFindClass(env, className);
+    auto jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
+    auto jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClazz, jSymbol);
     dxfg_event_type_t* pEventType = nullptr;
     if (jNativeEventList) {
       NativeEventList list {env};
@@ -67,13 +67,13 @@ namespace dxfeed {
     const char* methodName = "getLastEvent";
     const char* methodSignature =
       "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/NativeEventList;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
 
     auto dxEventT = r_cast<DxEventT*>(pEventType);
     const char* className = getEventClassType(dxEventT->eventType_.clazz);
-    jclass jEventTypeClass = safeFindClass(env, className);
-    jstring jSymbolName = env->NewStringUTF(dxEventT->symbol_);
-    jobject jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jSymbolName,
+    auto jEventTypeClass = safeFindClass(env, className);
+    auto jSymbolName = env->NewStringUTF(dxEventT->symbol_);
+    auto jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jSymbolName,
                                                            jEventTypeClass);
     if (jNativeEventList) {
       NativeEventList list {env};
@@ -91,15 +91,15 @@ namespace dxfeed {
     const char* methodName = "getLastEvent";
     const char* methodSignature =
       "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/NativeEventList;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
 
     for (int i = 0; i < pList->size; ++i) {
       dxfg_event_type_t* pEventType = pList->elements[i];
       auto dxEventT = r_cast<DxEventT*>(pEventType);
       const char* className = getEventClassType(dxEventT->eventType_.clazz);
-      jclass jEventTypeClass = safeFindClass(env, className);
-      jstring jSymbolName = env->NewStringUTF(dxEventT->symbol_);
-      jobject jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jSymbolName,
+      auto jEventTypeClass = safeFindClass(env, className);
+      auto jSymbolName = env->NewStringUTF(dxEventT->symbol_);
+      auto jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jSymbolName,
                                                              jEventTypeClass);
       if (jNativeEventList) {
         NativeEventList data{env};
@@ -119,13 +119,13 @@ namespace dxfeed {
     const char* methodName = "getIndexedEventsIfSubscribed";
     const char* methodSignature =
       "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/Object;Ljava/lang/String;)Lcom/dxfeed/api/NativeEventList;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
 
     const char* className = getEventClassType(clazz);
-    jclass jEventTypeClass = safeFindClass(env, className);
-    jobject jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
-    jstring jSource = env->NewStringUTF(source);
-    jobject jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
+    auto jEventTypeClass = safeFindClass(env, className);
+    auto jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
+    auto jSource = env->NewStringUTF(source);
+    auto jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
                                                            jSymbol, jSource);
 
     auto* resultEventList = new dxfg_event_type_list();
@@ -150,12 +150,12 @@ namespace dxfeed {
     const char* methodName = "getTimeSeriesIfSubscribed";
     const char* methodSignature =
       "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/Object;Ljava/lang/String;)Lcom/dxfeed/api/NativeEventList;";
-    jmethodID methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
 
     const char* className = getEventClassType(clazz);
-    jclass jEventTypeClass = safeFindClass(env, className);
-    jobject jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
-    jobject jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
+    auto jEventTypeClass = safeFindClass(env, className);
+    auto jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
+    auto jNativeEventList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
                                                            jSymbol, fromTime, toTime);
 
     auto* resultEventList = new dxfg_event_type_list();
@@ -191,7 +191,7 @@ namespace dxfeed {
     auto jDxFeedClass = env->GetObjectClass(dxFeed_);
     const char* methodName = "attachSubscription";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
-    jmethodID methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
     env->CallVoidMethod(dxFeed_, methodId, pSubscription);
     env->DeleteLocalRef(jDxFeedClass);
   }
@@ -200,7 +200,7 @@ namespace dxfeed {
     auto jDxFeedClass = env->GetObjectClass(dxFeed_);
     const char* methodName = "detachSubscription";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
-    jmethodID methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
     env->CallVoidMethod(dxFeed_, methodId, pSubscription);
     env->DeleteLocalRef(jDxFeedClass);
   }
@@ -209,7 +209,7 @@ namespace dxfeed {
     auto jDxFeedClass = env->GetObjectClass(dxFeed_);
     const char* methodName = "detachSubscriptionAndClear";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
-    jmethodID methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
+    auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
     env->CallVoidMethod(dxFeed_, methodId, pSubscription);
     env->DeleteLocalRef(jDxFeedClass);
   }
