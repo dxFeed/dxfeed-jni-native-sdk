@@ -13,7 +13,6 @@ namespace dxfeed::jni {
     void setProperty(JNIEnv* env, const char* key, const char* value);
 
   private:
-    jclass javaLangSystemClazz = nullptr;
     jmethodID loadMethodId = nullptr;
     jmethodID getPropMethodId = nullptr;
     jmethodID setPropMethodId = nullptr;

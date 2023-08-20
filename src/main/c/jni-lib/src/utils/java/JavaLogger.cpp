@@ -19,18 +19,18 @@ namespace dxfeed::jni {
   JavaLogger::JavaLogger(JNIEnv* env) :
     env_(env)
   {
-    jclass jDevexLoggingClazz = safeFindClass(env, "Lcom/devexperts/logging/Logging;");
-    jmethodID id = env->GetStaticMethodID(jDevexLoggingClazz, "getLogging", "(Ljava/lang/String;)"
+    auto jDevexLoggingClazz = safeFindClass(env, "Lcom/devexperts/logging/Logging;");
+    auto id = jni::safeGetStaticMethodID(env, jDevexLoggingClazz, "getLogging", "(Ljava/lang/String;)"
                                                                     "Lcom/devexperts/logging/Logging;");
-    jstring pJstring = env->NewStringUTF("NativeLogger");
+    auto pJstring = env->NewStringUTF("NativeLogger");
     logger_ = env->CallStaticObjectMethod(jDevexLoggingClazz, id, pJstring);
     env->DeleteLocalRef(pJstring);
+    env->DeleteLocalRef(jDevexLoggingClazz);
 
-    jclass serrClazz = env->GetObjectClass(logger_);
+    auto serrClazz = env->GetObjectClass(logger_);
     logInfo_ = jni::safeGetMethodID(env_, serrClazz, "info", "(Ljava/lang/String;)V");
     logErr_ = jni::safeGetMethodID(env_, serrClazz, "error", "(Ljava/lang/String;)V");
     env->DeleteLocalRef(serrClazz);
-    env->DeleteLocalRef(jDevexLoggingClazz);
   }
 
   JavaLogger const& JavaLogger::info(const std::string& str) const {
