@@ -1,0 +1,9 @@
+/.idea/
+/target/
+/src/main/c/.idea
+/src/main/c/build
+/src/main/c/cmake-build-debug
+/src/main/c/cmake-build-release
+/toolkit
+/dependency-reduced-pom.xml
+/dxfeed-jni-native-sdk.iml
