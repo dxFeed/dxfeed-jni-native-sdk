@@ -11,7 +11,7 @@ namespace dxfeed::jni {
 
     void load(JNIEnv* env, const char* libPath) const;
     const char* getProperty(JNIEnv* env, const char* key) const;
-    void setProperty(JNIEnv* env, const char* key, const char* value) const;
+    void setProperty(JNIEnv* env, const char* key, const char* value);
 
   private:
     jclass javaLangSystemClazz = nullptr;
