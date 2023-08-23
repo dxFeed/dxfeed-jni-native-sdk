@@ -8,6 +8,7 @@ import com.dxfeed.event.market.Quote;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,7 +31,7 @@ public class DxFeedJni {
                                                                                       Object symbol) {
     E lastEvent = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
     System.out.println("DxFeedJni::getLastEventIfSubscribed = " + lastEvent);
-    return (lastEvent != null) ? new NativeEventsList<>(List.of(lastEvent)) : null;
+    return (lastEvent != null) ? new NativeEventsList<>(Collections.singletonList(lastEvent)) : null;
   }
 
   private static <E extends LastingEvent<?>> NativeEventsList<E> getLastEvent(DXFeed feed, Class<E> eventTypeClass,
@@ -40,7 +41,7 @@ public class DxFeedJni {
     feed.getLastEvent(event);
     System.out.println("event after getLastEvent = " + event);
     if (event instanceof Quote) {
-      return new NativeEventsList<>(List.of(event));
+      return new NativeEventsList<>(Collections.singletonList(event));
     }
     return null;
   }
