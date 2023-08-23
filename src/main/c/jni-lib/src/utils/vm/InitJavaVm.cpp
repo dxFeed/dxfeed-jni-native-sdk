@@ -20,7 +20,7 @@ namespace internal {
 
   JNIEnv* jniEnv = nullptr;
   JVMInstance* javaVM = nullptr;
-  const JavaLangSystem* javaLangSystem = nullptr;
+  JavaLangSystem* javaLangSystem = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
   const DxJni* dxJni = nullptr;
 

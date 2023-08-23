@@ -4,7 +4,7 @@
 #include "dxfeed/utils/JNICommon.hpp"
 
 int32_t dxfg_system_set_property(graal_isolatethread_t* thread, const char* key, const char* value) {
-  const auto* pSystem = dxfeed::jni::internal::javaLangSystem;
+  auto* pSystem = dxfeed::jni::internal::javaLangSystem;
   pSystem->setProperty(thread, key, value);
   return JNI_OK;
 }
