@@ -40,7 +40,7 @@ namespace dxfeed::jni {
     return result;
   }
 
-  void JavaLangSystem::setProperty(JNIEnv* env, const char* key, const char* value) const {
+  void JavaLangSystem::setProperty(JNIEnv* env, const char* key, const char* value) {
     jstring jKey = env->NewStringUTF(key);
     jstring jValue = env->NewStringUTF(value);
     env->CallStaticObjectMethod(javaLangSystemClazz, setPropMethodId, jKey, jValue);
