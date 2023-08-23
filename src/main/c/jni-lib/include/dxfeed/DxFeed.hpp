@@ -9,9 +9,9 @@
 #include "api/dxfg_feed.h"
 
 namespace dxfeed {
-  const char* getEventClassType(dxfg_event_type_t eventType);
   const char* getEventClassType(dxfg_event_clazz_t eventTypeClazz);
   struct DxSubscription;
+  typedef struct DxSubscription DxTimeSeriesSubscription;
 
   struct DxFeed {
     DxFeed(JNIEnv* env, jobject obj);
@@ -22,15 +22,23 @@ namespace dxfeed {
     DxFeed& operator=(const DxFeed& other) = delete;
     DxFeed& operator=(DxFeed&& other) = delete;
 
+    static dxfg_feed_t* getInstance(JNIEnv* env);
+    jobject getJavaObject() const;
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxSubscription* createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
-    void attachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
-    void detachSubscription(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
-    void detachSubscriptionAndClear(graal_isolatethread_t* pEnv, dxfg_subscription_t* pSubscription);
+    DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
+    DxTimeSeriesSubscription* createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType);
+    void attachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription);
+    void detachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription);
+    void detachSubscriptionAndClear(JNIEnv* env, dxfg_subscription_t* pSubscription);
 
-    dxfg_event_type_t* getLastEventIfSubscribed(graal_isolatethread_t* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
-    void getLastEvent(graal_isolatethread_t* env, dxfg_event_type_t* pType);
-    void getLastEvents(graal_isolatethread_t* env, dxfg_event_type_list* pList);
+    void getLastEvent(JNIEnv* env, dxfg_event_type_t* pType);
+    void getLastEvents(JNIEnv* env, dxfg_event_type_list* pList);
+    dxfg_event_type_t* getLastEventIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol);
+    dxfg_event_type_list* getIndexedEventsIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
+                                                       const char* string);
+    dxfg_event_type_list* getTimeSeriesIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz, dxfg_symbol_t* pSymbol,
+                                                    int64_t fromTime, int64_t toTime);
 
   private:
     jobject dxFeed_ = nullptr;
