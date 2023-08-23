@@ -40,7 +40,7 @@ set(SOURCE_FILES
     src/utils/JNIUtils.cpp
     src/utils/LoadJvmLib.cpp
     src/utils/java/JavaLogger.cpp
-    src/utils/NativeEventData.cpp
+    src/utils/NativeEventsList.cpp
     src/utils/NativeEventReader.cpp
     src/utils/java/DxFeedJniClass.cpp
     src/utils/java/JavaLangClass.cpp
