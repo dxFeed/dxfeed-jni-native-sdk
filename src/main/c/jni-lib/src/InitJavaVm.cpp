@@ -6,7 +6,6 @@
 
 #include "dxfeed/utils/InitJavaVm.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/JavaProperty.hpp"
 
 #include <filesystem>
 
@@ -15,6 +14,7 @@ namespace fs = std::filesystem;
 namespace dxfeed::jni::internal {
   JNIEnv* jniEnv = nullptr;
   JVMInstance* javaVM = nullptr;
+  const JavaLangSystem* javaLangSystem = nullptr;
 
   std::string buildClassPath(const fs::path& runtimePath) {
     auto jarPath = fs::absolute(runtimePath).append("java-libs");
@@ -45,42 +45,31 @@ namespace dxfeed::jni::internal {
     }
   }
 
-  void dumpJavaInfo(jclass pJclass, jmethodID methodId) {
-    auto vendor = JavaProperty{jniEnv, pJclass, methodId, "java.vendor"};
-    auto version = JavaProperty{jniEnv, pJclass, methodId, "java.version"};
-    auto versionDate = JavaProperty{jniEnv, pJclass, methodId, "java.version.date"};
-    auto runtimeName = JavaProperty{jniEnv, pJclass, methodId, "java.runtime.name"};
-    auto runtimeVersion = JavaProperty{jniEnv, pJclass, methodId, "java.runtime.version"};
-    auto vmName = JavaProperty{jniEnv, pJclass, methodId, "java.vm.name"};
-    auto vmVendor = JavaProperty{jniEnv, pJclass, methodId, "java.vm.vendor"};
-    auto vmVersion = JavaProperty{jniEnv, pJclass, methodId, "java.vm.version"};
-    auto vmInfo = JavaProperty{jniEnv, pJclass, methodId, "java.vm.info"};
+  void dumpJavaInfo() {
+    auto vendor = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vendor"));
+    auto version = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.version"));
+    auto versionDate = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.version.date"));
+    auto runtimeName = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.runtime.name"));
+    auto runtimeVersion = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.runtime.version"));
+    auto vmName = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.name"));
+    auto vmVendor = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.vendor"));
+    auto vmVersion = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.version"));
+    auto vmInfo = std::make_unique<const char*>(javaLangSystem->getProperty(jniEnv, "java.vm.info"));
 
     std::cout << "JAVA_HOME info:" << std::endl;
-    std::cout << "\t" << vendor << " version \"" << version << "\" " << versionDate << std::endl;
-    std::cout << "\t" << runtimeName << " (build " << runtimeVersion << ")" << std::endl;
-    std::cout << "\t" << vmName << " " << vmVendor << " (build" << vmVersion << ", " << vmInfo << ")" << std::endl;
+    std::cout << "\t" << *vendor << " version \"" << *version << "\" " << *versionDate << std::endl;
+    std::cout << "\t" << *runtimeName << " (build " << *runtimeVersion << ")" << std::endl;
+    std::cout << "\t" << *vmName << " " << *vmVendor << " (build" << *vmVersion << ", " << *vmInfo << ")" << std::endl;
   }
 
   void loadJNILibrary(const char* path) {
-    jclass javaLangSystemClazz = jni::safeFindClass(jniEnv, "Ljava/lang/System;");
-    std::cout << "java.lang.System: " << javaLangSystemClazz << "\n";
-    jmethodID loadMethodId = jni::safeGetStaticMethodID(jniEnv, javaLangSystemClazz, "load", "(Ljava/lang/String;)V");
-    std::cout << "void System::load(String path): " << loadMethodId << "\n";
-    jstring pJstring = jniEnv->NewStringUTF(path);
-    jniEnv->CallStaticVoidMethod(javaLangSystemClazz, loadMethodId, pJstring);
-
-    jmethodID getPropMethodId = jni::safeGetStaticMethodID(jniEnv, javaLangSystemClazz, "getProperty",
-                                                           "(Ljava/lang/String;)Ljava/lang/String;");
-    std::cout << "void System::getProperty(String path): " << getPropMethodId << "\n";
-    dumpJavaInfo(javaLangSystemClazz, getPropMethodId);
+    javaLangSystem = new JavaLangSystem(jniEnv);
+    javaLangSystem->load(jniEnv, path);
+    dumpJavaInfo();
 
     jclass clazz = jni::safeFindClass(jniEnv, "Lcom/dxfeed/api/JniTest;");
     std::cout << "\tclazz com/dxfeed/api/JniTest: " << clazz << std::endl;
     jni::registerNativeMethods(jniEnv, clazz);
-
-    jniEnv->DeleteLocalRef(pJstring);
-    jniEnv->DeleteLocalRef(javaLangSystemClazz);
     jniEnv->DeleteLocalRef(clazz);
   }
 

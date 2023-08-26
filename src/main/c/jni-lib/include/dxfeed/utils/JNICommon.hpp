@@ -18,6 +18,7 @@ namespace dxfeed::jni {
   namespace internal {
     extern JNIEnv* jniEnv;
     extern JVMInstance* javaVM;
+    extern const JavaLangSystem* javaLangSystem;
 
     typedef jint(JNICALL* CreateJavaVM_t)(JavaVM** pvm, void** env, void* args);
     typedef jclass(JNICALL* FindClassFromBootLoader_t)(JNIEnv* env, const char* name);

@@ -23,7 +23,7 @@ extern "C" {
  * @param[in] value The value of the system property.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-int32_t dxfg_system_set_property(graal_isolatethread_t *thread, const char *key, const char *value);
+int32_t dxfg_system_set_property(graal_isolatethread_t* thread, const char* key, const char* value);
 
 /**
  * @brief Gets the system property indicated by the specified key.
@@ -32,7 +32,7 @@ int32_t dxfg_system_set_property(graal_isolatethread_t *thread, const char *key,
  * @param[in] key The name of the system property.
  * @return The string value of the system property, or null if there is no property with that key or error occur.
  */
-const char *dxfg_system_get_property(graal_isolatethread_t *thread, const char *key);
+const char* dxfg_system_get_property(graal_isolatethread_t* thread, const char* key);
 
 /**
  * @brief Frees pointer that was previously allocated in Java method (by UnmanagedMemory).
@@ -40,7 +40,7 @@ const char *dxfg_system_get_property(graal_isolatethread_t *thread, const char *
  * @param[in] ptr The pointer to release. Pointer not valid after function call. Pointer can be NULL.
  * @return 0 - if the operation was successful; otherwise, an error code.
  */
-int32_t dxfg_system_release_property(graal_isolatethread_t *thread, const char *value);
+int32_t dxfg_system_release_property(graal_isolatethread_t* thread, const char* value);
 
 /** @} */ // end of System
 
