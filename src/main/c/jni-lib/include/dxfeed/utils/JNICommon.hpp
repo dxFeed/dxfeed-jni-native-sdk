@@ -21,7 +21,7 @@ namespace dxfeed::jni {
   };
 
   constexpr char JAVA_HOME[] = "JAVA_HOME";
-  const char* getJavaHome(VMOptions* params);
+  const char* getJavaHomeFromEnv();
   extern const JavaLogger* javaLogger;
 
   namespace internal {

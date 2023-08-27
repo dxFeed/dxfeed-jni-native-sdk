@@ -5,20 +5,12 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
-  const char* getJavaHome(VMOptions* params) {
+  const char* getJavaHomeFromEnv() {
     const char* javaHome = std::getenv(JAVA_HOME);
-    const char* msg = "Use JAVA_HOME from ENV: ";
-    if (params) {
-      auto javaHomeCustom = r_cast<VMOptions*>(params)->javaHome;
-      if (javaHomeCustom) {
-        msg = "Use custom JAVA_HOME from VmOptions: ";
-        javaHome = javaHomeCustom;
-      }
-    }
     if (!javaHome) {
       throw std::runtime_error("Can't find JAVA_HOME in ENV or in VmOptions!");
     }
-    std::cout << msg << javaHome << std::endl;
+    std::cout << "Use JAVA_HOME from ENV: " << javaHome << std::endl;
     return javaHome;
   }
 
