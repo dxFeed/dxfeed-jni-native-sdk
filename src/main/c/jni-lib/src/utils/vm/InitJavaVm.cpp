@@ -83,6 +83,14 @@ namespace internal {
     return "-Djava.class.path=" + jarPath.string();
   }
 
+  void dumpJavaCmd(const JavaVMOption* javaVmOptions, int vmOptionsCount) {
+    std::cout << "Run cmd \"java";
+    for (int i = 0; i < vmOptionsCount; ++i) {
+      std::cout << " " << javaVmOptions[i].optionString;
+    }
+    std::cout << "\"" << std::endl;
+  }
+
   void initJavaVM(VMOptions* params) {
     loadJVMLibrary(params->javaHome);
 
@@ -96,7 +104,7 @@ namespace internal {
     javaVmOptions[0].optionString = classPath.data();
     addJavaVMArgs(javaVmOptions + 1, params->vmArgs, params->vmArgsCount);
 
-    std::cout << "Run cmd \"java " << javaVmOptions->optionString << "\"" << std::endl;
+    dumpJavaCmd(javaVmOptions, vmOptionsCount);
 
     JavaVMInitArgs vmArgs;
     vmArgs.version = JNI_VERSION_1_8;

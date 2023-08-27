@@ -5,10 +5,13 @@
 
 int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t **isolate, graal_isolatethread_t **thread) {
   if (dxfeed::jni::internal::javaVM == nullptr) {
-    auto javaHome = dxfeed::jni::getJavaHome(dxfeed::r_cast<dxfeed::jni::VMOptions*>(params));
-    // todo: get VmArgs and VmArgCount from params;
-    dxfeed::jni::VMOptions options = { javaHome, nullptr, 0 };
-    dxfeed::jni::internal::initJavaVM(&options);
+    if (params) {
+      auto vmOptions = dxfeed::r_cast<dxfeed::jni::VMOptions*>(params);
+      dxfeed::jni::internal::initJavaVM(vmOptions);
+    } else {
+      dxfeed::jni::VMOptions vmOptions { dxfeed::jni::getJavaHomeFromEnv(), nullptr, 0};
+      dxfeed::jni::internal::initJavaVM(&vmOptions);
+    }
     *isolate = (void*) dxfeed::jni::internal::javaVM;
     *thread = dxfeed::jni::internal::jniEnv;
   }
