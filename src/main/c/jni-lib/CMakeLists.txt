@@ -22,15 +22,17 @@ set(SOURCE_FILES
     src/dllmain.cpp
     src/DxEndpoint.cpp
     src/DxEndpointBuilder.cpp
+    src/DxEventT.cpp
     src/DxFeed.cpp
     src/DxIndexedEventSource.cpp
-    src/DxEventT.cpp
+    src/DxPublisher.cpp
     src/DxSubscription.cpp
     src/DxSymbol.cpp
     src/api/dxfg_api.cpp
     src/api/dxfg_dxfeed.cpp
     src/api/dxfg_endpoint.cpp
     src/api/dxfg_events.cpp
+    src/api/dxfg_publisher.cpp
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp
     src/api/graal_isolate.cpp
@@ -39,12 +41,12 @@ set(SOURCE_FILES
     src/utils/JNIBridgeImpl.cpp
     src/utils/JNIUtils.cpp
     src/utils/LoadJvmLib.cpp
-    src/utils/java/JavaLogger.cpp
     src/utils/NativeEventsList.cpp
     src/utils/NativeEventReader.cpp
     src/utils/java/DxFeedJniClass.cpp
     src/utils/java/JavaLangClass.cpp
     src/utils/java/JavaLangSystem.cpp
+    src/utils/java/JavaLogger.cpp
     src/utils/vm/InitJavaVm.cpp
     src/utils/vm/JavaVmInstance.cpp
     ${CRITICAL_SECTION_IMPL}
