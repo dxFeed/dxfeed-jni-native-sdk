@@ -30,6 +30,20 @@ typedef struct dxfg_java_object_handler_list {
   dxfg_java_object_handler** elements;
 } dxfg_java_object_handler_list;
 
+/* todo: implement later
+  typedef struct dxfg_string_list {
+      int32_t size;
+      const char **elements;
+  } dxfg_string_list;
+
+  typedef struct dxfg_executor_t {
+      dxfg_java_object_handler handler;
+  } dxfg_executor_t;
+
+  typedef struct dxfg_input_stream_t {
+      dxfg_java_object_handler handler;
+  } dxfg_input_stream_t;
+*/
 
 typedef void (* dxfg_finalize_function)(graal_isolatethread_t* thread, void* user_data);
 
@@ -41,6 +55,22 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
 
 // free the memory occupied by the с data structure (list and all elements) and release the reference to the java object for all elements
 int dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler_list*);
+
+/* todo: implement later
+int32_t dxfg_String_release(graal_isolatethread_t *thread, const char* string);
+int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list* string);
+
+// read the "Threads and locks" sections at https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html
+dxfg_executor_t*  dxfg_Executors_newFixedThreadPool(graal_isolatethread_t *thread, int nThreads, const char* nameThreads);
+dxfg_executor_t*  dxfg_Executors_newScheduledThreadPool(graal_isolatethread_t *thread, int nThreads, const char* nameThreads);
+dxfg_executor_t*  dxfg_ExecutorBaseOnConcurrentLinkedQueue_new(graal_isolatethread_t *thread);
+int32_t           dxfg_ExecutorBaseOnConcurrentLinkedQueue_processAllPendingTasks(graal_isolatethread_t *thread, dxfg_executor_t *executor);
+
+dxfg_input_stream_t*   dxfg_ByteArrayInputStream_new(graal_isolatethread_t *thread, const char* bytes, int32_t size);
+
+int32_t           dxfg_gc(graal_isolatethread_t *thread); // only for testing
+dxfg_java_object_handler*  dxfg_throw_exception(graal_isolatethread_t *thread); // only for testing
+*/
 
 /** @} */ // end of Javac
 

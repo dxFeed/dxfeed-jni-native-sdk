@@ -111,6 +111,29 @@ typedef struct dxfg_market_event_t {
   int64_t event_time;
 } dxfg_market_event_t;
 
+///**
+// * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/LastingEvent.html">Javadoc</a>
+// */
+// typedef struct dxfg_lasting_event_t {
+//} dxfg_lasting_event_t;
+//
+///**
+// * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/IndexedEvent.html">Javadoc</a>
+// */
+// typedef struct dxfg_indexed_event_t {
+//    //    dxfg_indexed_event_source_t source;
+//    //    int32_t event_flags;
+//    //    int64_t index;
+//} dxfg_indexed_event_t;
+//
+///**
+// * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/TimeSeriesEvent.html">Javadoc</a>
+// */
+// typedef struct dxfg_time_series_event_t {
+//    dxfg_indexed_event_t indexed_event;
+//    //    int64_t time;
+//} dxfg_time_series_event_t;
+
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Quote.html">Javadoc</a>
  */
@@ -432,23 +455,30 @@ dxfg_symbol_t*                dxfg_Symbol_new(graal_isolatethread_t* thread, con
 int32_t                       dxfg_Symbol_release(graal_isolatethread_t* thread, dxfg_symbol_t* symbol);
 dxfg_event_type_t*            dxfg_EventType_new(graal_isolatethread_t* thread, const char* symbolName, dxfg_event_clazz_t clazz);
 int32_t                       dxfg_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
-
-// free the memory occupied by the с data structure (list and all events)
-int32_t                       dxfg_CList_EventType_release(graal_isolatethread_t* thread,
-                                                           dxfg_event_type_list* eventTypes);
-
-// free the memory occupied by the с data structure (list and all int-pointer)
-int32_t                       dxfg_CList_EventClazz_release(graal_isolatethread_t* thread,
-                                                            dxfg_event_clazz_list_t* eventClazzes);
-
-// free the memory occupied by the с data structure (list and all int-pointer)
-int32_t                       dxfg_CList_symbol_release(graal_isolatethread_t* thread, dxfg_symbol_list*);
-
+int32_t                       dxfg_CList_EventType_release(graal_isolatethread_t* thread, dxfg_event_type_list* eventTypes); // free the memory occupied by the с data structure (list and all events)
+int32_t                       dxfg_CList_EventClazz_release(graal_isolatethread_t* thread, dxfg_event_clazz_list_t* eventClazzes); // free the memory occupied by the с data structure (list and all int-pointer)
+int32_t                       dxfg_CList_symbol_release(graal_isolatethread_t* thread, dxfg_symbol_list*); // free the memory occupied by the с data structure (list and all int-pointer)
 dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t* thread, dxfg_event_type_t* eventType);
-
-// if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
-dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t* thread, const char* source);
+dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t* thread, const char* source); // if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
 int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t* thread, dxfg_indexed_event_source_t* source);
+
+/* todo: implement later
+typedef struct dxfg_observable_subscription_change_listener_t {
+    dxfg_java_object_handler handler;
+} dxfg_observable_subscription_change_listener_t;
+
+typedef void (*dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded)(graal_isolatethread_t *thread, dxfg_symbol_list *symbols, void *user_data);
+typedef void (*dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved)(graal_isolatethread_t *thread, dxfg_symbol_list *symbols, void *user_data);
+typedef void (*dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed)(graal_isolatethread_t *thread, void *user_data);
+
+dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChangeListener_new(
+    graal_isolatethread_t *thread,
+    dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded function_symbolsAdded,
+    dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved function_symbolsRemoved,
+    dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed function_subscriptionClosed,
+    void *user_data
+);
+*/
 
 #ifdef __cplusplus
 }
