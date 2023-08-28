@@ -69,50 +69,28 @@ dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChang
   void* user_data);
 
 dxfg_subscription_t*      dxfg_DXFeedSubscription_new(graal_isolatethread_t* thread, dxfg_event_clazz_t eventClass);
-dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t* thread,
-                                                       dxfg_event_clazz_list_t* eventClasses);
+dxfg_subscription_t*      dxfg_DXFeedSubscription_new2(graal_isolatethread_t* thread, dxfg_event_clazz_list_t* eventClasses);
 int32_t                   dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t* subscription);
 int32_t                   dxfg_DXFeedSubscription_close(graal_isolatethread_t* thread, dxfg_subscription_t* sub);
-int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread,
-                                                                   dxfg_subscription_t* sub,
-                                                                   dxfg_feed_event_listener_t* listener);
-int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t* thread,
-                                                                      dxfg_subscription_t* sub,
-                                                                      dxfg_feed_event_listener_t* listener);
-int32_t                   dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                            dxfg_symbol_t* pSymbol);
-int32_t                   dxfg_DXFeedSubscription_addSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                             dxfg_symbol_list* symbols);
-int32_t                   dxfg_DXFeedSubscription_removeSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                               dxfg_symbol_t* symbol);
-int32_t                   dxfg_DXFeedSubscription_removeSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                            dxfg_symbol_list* symbols);
-int32_t                   dxfg_DXFeedSubscription_attach(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                         dxfg_feed_t* feed);
-int32_t                   dxfg_DXFeedSubscription_detach(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                         dxfg_feed_t* feed);
+int32_t                   dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener);
+int32_t                   dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener);
+int32_t                   dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_symbol_t* pSymbol);
+int32_t                   dxfg_DXFeedSubscription_addSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_symbol_list* symbols);
+int32_t                   dxfg_DXFeedSubscription_removeSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_symbol_t* symbol);
+int32_t                   dxfg_DXFeedSubscription_removeSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_symbol_list* symbols);
+int32_t                   dxfg_DXFeedSubscription_clear(graal_isolatethread_t *thread, dxfg_subscription_t *sub);
+int32_t                   dxfg_DXFeedSubscription_attach(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_t* feed);
+int32_t                   dxfg_DXFeedSubscription_detach(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_t* feed);
 int32_t                   dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t* thread, dxfg_subscription_t* sub);
 dxfg_event_clazz_list_t*  dxfg_DXFeedSubscription_getEventTypes(graal_isolatethread_t* thread, dxfg_subscription_t* sub);
-int32_t                   dxfg_DXFeedSubscription_containsEventType(graal_isolatethread_t* thread,
-                                                                    dxfg_subscription_t* sub,
-                                                                    dxfg_event_clazz_t eventClazz);
+int32_t                   dxfg_DXFeedSubscription_containsEventType(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_event_clazz_t eventClazz);
 dxfg_symbol_list*         dxfg_DXFeedSubscription_getSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub);
-int32_t                   dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                            dxfg_symbol_t* symbol);
-int32_t                   dxfg_DXFeedSubscription_setSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                             dxfg_symbol_list* symbols);
-dxfg_symbol_list*         dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isolatethread_t* thread,
-                                                                      dxfg_subscription_t* sub);
-int32_t                   dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t* thread,
-                                                                    dxfg_subscription_t* sub,
-                                                                    dxfg_observable_subscription_change_listener_t* listener);
-int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t* thread,
-                                                                       dxfg_subscription_t* sub,
-                                                                       dxfg_observable_subscription_change_listener_t* listener);
-
-int32_t                   dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread,
-                                                                        dxfg_time_series_subscription_t* sub,
-                                                                        int64_t fromTime);
+int32_t                   dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_symbol_t* symbol);
+int32_t                   dxfg_DXFeedSubscription_setSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_symbol_list* symbols);
+dxfg_symbol_list*         dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub);
+int32_t                   dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_observable_subscription_change_listener_t* listener);
+int32_t                   dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_observable_subscription_change_listener_t* listener);
+int32_t                   dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread, dxfg_time_series_subscription_t* sub, int64_t fromTime);
 
 /** @} */ // end of Subscription
 
