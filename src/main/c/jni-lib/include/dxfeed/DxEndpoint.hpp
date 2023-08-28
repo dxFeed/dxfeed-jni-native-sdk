@@ -7,6 +7,7 @@
 #include <cstdint>
 
 #include "api/dxfg_endpoint.h"
+#include "DxPublisher.hpp"
 
 namespace dxfeed {
   struct DxFeed;
@@ -29,6 +30,7 @@ namespace dxfeed {
     static DxEndpoint* getInstance(JNIEnv* env, dxfg_endpoint_role_t dxfgEndpointRole);
 
     DxFeed* getFeed(JNIEnv* env) const;
+    DxPublisher* getPublisher(JNIEnv* env) const;
     dxfg_endpoint_role_t getRole(JNIEnv* pEnv) const;
     dxfg_endpoint_state_t getState(JNIEnv* pEnv) const;
     dxfg_event_clazz_list_t* getEventTypes(JNIEnv* env) const;
