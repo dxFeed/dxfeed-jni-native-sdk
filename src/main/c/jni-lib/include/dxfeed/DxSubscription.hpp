@@ -16,6 +16,7 @@ namespace dxfeed {
     constexpr static const char JAVA_SUBSCRIPTION_CLASS_NAME[] = "com.dxfeed.api.DXFeedSubscription";
     constexpr static const char JAVA_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedTimeSeriesSubscription";
 
+    static DxObservableSubscription* createDxObservableSubscription(JNIEnv* env, jobject observableSubxcription);
     DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
     DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses);
     DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries = false);
@@ -49,6 +50,8 @@ namespace dxfeed {
 
   private:
     jobject subscription_;
+
+    DxSubscription(JNIEnv* env, jobject observableSubscription);
 
     static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
     constexpr static const char DX_FEED_SUBSCRIPTION_CLASS_NAME[] = "Lcom/dxfeed/api/DXFeedSubscription;";

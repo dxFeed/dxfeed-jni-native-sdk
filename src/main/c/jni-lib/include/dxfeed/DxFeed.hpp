@@ -12,6 +12,7 @@ namespace dxfeed {
   const char* getEventClassType(dxfg_event_clazz_t eventTypeClazz);
   struct DxSubscription;
   typedef struct DxSubscription DxTimeSeriesSubscription;
+  typedef struct DxSubscription DxObservableSubscription;
 
   struct DxFeed {
     DxFeed(JNIEnv* env, jobject obj);

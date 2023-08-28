@@ -2,6 +2,7 @@
 
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxFeed.hpp"
+#include "dxfeed/DxPublisher.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 
@@ -66,6 +67,18 @@ namespace dxfeed {
     env->DeleteLocalRef(jDxFeed);
     env->DeleteLocalRef(jDxEndpointClass);
     return pFeed;
+  }
+
+  DxPublisher* DxEndpoint::getPublisher(JNIEnv* env) const {
+    auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
+    const char* methodName = "getPublisher";
+    const char* methodSignature = "()Lcom/dxfeed/api/DXPublisher;";
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    auto jDxPublisher = env->CallObjectMethod(dxEndpoint_, methodId);
+    auto* pPublisher = new DxPublisher(env, jDxPublisher);
+    env->DeleteLocalRef(jDxPublisher);
+    env->DeleteLocalRef(jDxEndpointClass);
+    return pPublisher;
   }
 
   dxfg_endpoint_role_t DxEndpoint::getRole(JNIEnv* env) const {

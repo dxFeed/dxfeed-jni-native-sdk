@@ -11,6 +11,15 @@
 namespace dxfeed {
   using namespace jni;
 
+  DxObservableSubscription* DxSubscription::createDxObservableSubscription(JNIEnv* env, jobject observableSubscription)
+  {
+    return new DxSubscription(env, observableSubscription);
+  }
+
+  DxSubscription::DxSubscription(JNIEnv* env, jobject observableSubscription):
+    subscription_(env->NewGlobalRef(observableSubscription))
+  {}
+
   DxSubscription::DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType) {
     auto jDxSubscriptionClass = safeFindClass(env, DX_FEED_SUBSCRIPTION_CLASS_NAME);
     const char* className = getEventClassType(eventType);
