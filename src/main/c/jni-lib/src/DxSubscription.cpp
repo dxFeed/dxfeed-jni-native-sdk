@@ -247,6 +247,16 @@ namespace dxfeed {
     return JNI_OK;
   }
 
+  int32_t DxSubscription::clear(JNIEnv* env) {
+    auto jDxSubscriptionClass = env->GetObjectClass(subscription_);
+    const char* methodName = "clear";
+    const char* methodSignature = "()V";
+    auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
+    env->CallVoidMethod(subscription_, methodId);
+    env->DeleteLocalRef(jDxSubscriptionClass);
+    return JNI_OK;
+  }
+
   int32_t DxSubscription::attach(JNIEnv* env, DxFeed* pFeed) {
     auto jDxSubscriptionClass = env->GetObjectClass(subscription_);
     const char* methodName = "attach";
