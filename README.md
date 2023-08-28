@@ -269,7 +269,7 @@ Find useful information in our self-service dxFeed Knowledge Base:
 - [x] [FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#FEED) connects
   to the remote data
   feed provider and is optimized for real-time or delayed data processing
-- [ ] [STREAM_FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_FEED)
+- [x] [STREAM_FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_FEED)
   is similar to
   FEED and also connects to the remote data feed provider but is designed for bulk data parsing from
   files
