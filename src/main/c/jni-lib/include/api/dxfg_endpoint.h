@@ -119,6 +119,9 @@ int32_t                   dxfg_DXEndpoint_addStateChangeListener(graal_isolateth
 int32_t                   dxfg_DXEndpoint_removeStateChangeListener(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint, dxfg_endpoint_state_change_listener_t* listener);
 dxfg_feed_t*              dxfg_DXEndpoint_getFeed(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
 dxfg_publisher_t*         dxfg_DXEndpoint_getPublisher(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
+/* todo: implement later
+int32_t                   dxfg_DXEndpoint_executor(graal_isolatethread_t *thread, dxfg_endpoint_t *endpoint, dxfg_executor_t *executor);
+*/
 dxfg_event_clazz_list_t*  dxfg_DXEndpoint_getEventTypes(graal_isolatethread_t* thread, dxfg_endpoint_t* endpoint);
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
