@@ -48,48 +48,81 @@ Java API and implementing them in the native library.
 
 ### Implementation details and usage
 
-**todo:** _text_
-
 ```C
 #include <iostream>
+#include <chrono>
 #include <thread>
 
-#include "api/Api.h"
-#include "api/Subscription.h"
-#include "api/Connection.h"
+#include "api/dxfg_api.h"
+#include "api/dxfg_catch_exception.h"
+#include "dxfeed/utils/JNICommon.hpp"
+
+void printEvent(const dxfg_event_type_t* pEvent) {
+  if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
+    const auto* time_and_sale = (const dxfg_time_and_sale_t*) pEvent;
+    printf(
+      "C: TIME_AND_SALE{event_symbol=%s, bid_price=%f, exchange_sale_conditions=%s, buyer=%s, seller=%s}\n",
+      time_and_sale->market_event.event_symbol,
+      time_and_sale->bid_price,
+      time_and_sale->exchange_sale_conditions,
+      time_and_sale->buyer,
+      time_and_sale->seller
+    );
+  }
+  fflush(stdout);
+}
+
+void c_print(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *user_data) {
+  for (int i = 0; i < events->size; ++i) {
+    printEvent(events->elements[i]);
+  }
+}
 
 int main(int argc, char** argv) {
-  // load cmd args  
+    // load cmd args
+  const int defaultArgSize = 4;
+  if (argc < defaultArgSize) {
+    std::cerr << "Error: expected 3 args: <JAVA_HOME, address:port, symbol, ... VMOptions >" << std::endl;
+    return -1;
+  }
   const auto javaHomePath = argv[1];
-  const int vmOptionsSize = 1;
-  const char* jvmArgs[vmOptionsSize] = { "-Xmx12G" };
   const auto address = argv[2];
   const auto symbol = argv[3];
 
-  // init context, connection, subscription
-  std::cout << "Connection to address:" << address << std::endl;
-  dxfeed_init(javaHomePath, jvmArgs, vmOptionsSize);
-  void* dxFeed = dxfeed_get_instance();
-  auto connection = dxfeed_create_connection(dxFeed, address);
-  auto subscription = dxfeed_create_subscription(connection, 0);
+  // init java VM
+  const int vmOptionsSize = 2;
+  const char* jvmArgs[vmOptionsSize] = { "-Xmx12G", "-Dcom.devexperts.qd.impl.matrix.Agent.MaxBufferSize=50000000" };
+  dxfeed::jni::VMOptions vmOptions { javaHomePath, jvmArgs, vmOptionsSize };
+  graal_isolate_t* isolate;
+  graal_isolatethread_t* thread;
+  int hr = graal_create_isolate(&vmOptions, &isolate, &thread);
+  if (hr == JNI_OK) {
+    // init context, connection, subscription
+    std::cout << "Connection to address:" << address << std::endl;
+    dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
+    dxfg_DXEndpoint_connect(thread, endpoint, address);
+    dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
+    dxfg_subscription_t* subscriptionTimeAndSale = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_TIME_AND_SALE);
 
-  // add listener with user code
-  dxfeed_add_listener(subscription, [](const void *events, int count) {
-    auto timeAndSaleList = reinterpret_cast<const TimeAndSale*>(events);
-    for (int i = 0; i < count; ++i) {
-      auto quote = std::make_shared<TimeAndSale>(timeAndSaleList[i]);
-      // todo: work
-    }
-  });
+    // add listener with user code
+    dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
+    dxfg_DXFeedSubscription_addEventListener(thread, subscriptionTimeAndSale, listener);
 
-  // add symbol to subscription
-  dxfeed_add_symbol(subscription, symbol);
-  
-  // sleep then clean up
-  std::chrono::hours hours(24); 
-  std::this_thread::sleep_for(hours);
-  delete (dxfeed::Subscription*)subscription;
-  delete (dxfeed::Connection*) connection;
+    dxfg_string_symbol_t symbolAAPL;
+    symbolAAPL.supper.type = STRING;
+    symbolAAPL.symbol = symbol;
+
+    // add symbol to subscription
+    dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
+
+    // sleep then clean up
+    std::chrono::seconds seconds(30);
+    std::this_thread::sleep_for(seconds);
+
+    dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
+    dxfg_JavaObjectHandler_release(thread, &listener->handler);
+    dxfg_JavaObjectHandler_release(thread, &subscriptionTimeAndSale->handler);
+    dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
 }
 ```
 
@@ -105,11 +138,30 @@ There are the following usage examples:
 $ git clone https://github.com/dxFeed/dxfeed-jni-native-sdk.git
 $ cd dxfeed-jni-native-sdk
 $ mvn clean package
-$ cd native
-$ sh build_release.sh
-$ cd build
-$ ./native_app $JAVA_HOME 127.0.0.1:6666 ETH/USD:GDAX -Xmx12G
 ```
+
+* <details> 
+   <summary>Unix systems</summary>
+   
+   ```
+   $ cd src/main/c
+   $ sh build_release.sh
+   $ cd build
+   $ ./time_and_sale $JAVA_HOME 127.0.0.1:6666 ETH/USD:GDAX -Xmx12G
+   ```
+</details>
+   
+*  <details> 
+      <summary>Windows x64</summary> 
+ 
+   ```
+   $ cd src/main/c
+   $ build_release.cmd
+   $ cd build
+   $ ./time_and_sale.exe $JAVA_HOME 127.0.0.1:6666 ETH/USD:GDAX -Xmx12G
+   ```    
+</details>
+
 
 ### Artifacts build by CI:
 
@@ -135,68 +187,68 @@ Find useful information in our self-service dxFeed Knowledge Base:
 - [x] [TimeAndSale](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TimeAndSale.html)
   represents a trade or
   other market event with price, like market open/close price, etc.
-- [ ] [AnalyticOrder](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html) represents an
+- [x] [AnalyticOrder](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/AnalyticOrder.html) represents an
   extension of Order introducing analytic information, e.g., adding iceberg-related
   information to this order
-- [ ] [Candle](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html) event with
+- [x] [Candle](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html) event with
   open, high, low, and
   close prices and other information for a specific period
-- [ ] [Configuration](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Configuration.html) is an event with an
+- [x] [Configuration](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Configuration.html) is an event with an
   application-specific attachment
-- [ ] [Greeks](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Greeks.html) is a snapshot
+- [x] [Greeks](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Greeks.html) is a snapshot
   of the option
   price, Black-Scholes volatility, and Greeks
-- [ ] [Message](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html) is an event
+- [x] [Message](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/misc/Message.html) is an event
   with an
   application-specific attachment
-- [ ] [OptionSale](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OptionSale.html) is a
+- [x] [OptionSale](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OptionSale.html) is a
   represents a trade or another market event with the price (for example, market open/close price,
   etc.) for each option symbol listed under the specified Underlying.
-- [ ] [Order](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Order.html) is a snapshot
+- [x] [Order](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Order.html) is a snapshot
   of the full available
   market depth for a symbol
-- [ ] [Profile](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Profile.html) is a
+- [x] [Profile](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Profile.html) is a
   snapshot that contains the
   security instrument description
-- [ ] [Quote](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Quote.html) is a snapshot
+- [x] [Quote](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Quote.html) is a snapshot
   of the best bid and
   ask prices and other fields that change with each quote
-- [ ] [Series](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Series.html) is a snapshot
+- [x] [Series](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Series.html) is a snapshot
   of computed values
   available for all options series for a given underlying symbol based on options market prices
-- [ ] [SpreadOrder](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html) is
+- [x] [SpreadOrder](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html) is
   a snapshot of the
   full available market depth for all spreads
-- [ ] [Summary](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Summary.html) is a
+- [x] [Summary](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Summary.html) is a
   snapshot of the trading
   session, including session highs, lows, etc.
-- [ ] [TheoPrice](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/TheoPrice.html) is a
+- [x] [TheoPrice](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/TheoPrice.html) is a
   snapshot of the
   theoretical option price computation that is periodically performed
   by [dxPrice](http://www.devexperts.com/en/products/price.html) model-free computation
-- [ ] [Trade](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Trade.html) is a snapshot
+- [x] [Trade](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/Trade.html) is a snapshot
   of the price and size
   of the last trade during regular trading hours and an overall day
   volume and day turnover
-- [ ] [TradeETH](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeETH.html) is a
+- [x] [TradeETH](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/TradeETH.html) is a
   snapshot of the price
   and size of the last trade during extended trading hours and the extended
   trading hours day volume and day turnover
-- [ ] [Underlying](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Underlying.html) is a
+- [x] [Underlying](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/option/Underlying.html) is a
   snapshot of computed
   values available for an option underlying symbol based on the market’s option prices
 
 ### Subscription Symbols
 
 - [x] String
-- [ ] [CandleSymbol](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleSymbol.html) symbol used
+- [x] [CandleSymbol](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/CandleSymbol.html) symbol used
   with [DXFeedSubscription](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html)
   class to subscribe for [Candle](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/Candle.html) events
-- [ ] [IndexedSubscriptionSymbol](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/IndexedEventSubscriptionSymbol.html)
+- [x] [IndexedSubscriptionSymbol](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/IndexedEventSubscriptionSymbol.html)
   represents subscription to a specific source of indexed events
-- [ ] [TimeSeriesSubscriptionSymbol](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/TimeSeriesSubscriptionSymbol.html) 
+- [x] [TimeSeriesSubscriptionSymbol](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/TimeSeriesSubscriptionSymbol.html) 
   represents subscription to time-series events
-- [ ] [WildcardSymbol.ALL](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/WildcardSymbol.html)   represents a
+- [x] [WildcardSymbol.ALL](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/osub/WildcardSymbol.html)   represents a
   *wildcard* subscription to all events of the specific event type
 
 ### Subscriptions & Models
@@ -204,32 +256,32 @@ Find useful information in our self-service dxFeed Knowledge Base:
 - [x] [CreateSubscription](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedSubscription.html)
   creates a new
   subscription for multiple event types *attached* to a specified feed
-- [ ] [CreateTimeSeriesSubscription](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedTimeSeriesSubscription.html)
+- [x] [CreateTimeSeriesSubscription](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeedTimeSeriesSubscription.html)
   extends DXFeedSubscription to conveniently subscribe to time series of events for a set of symbols
   and event
   types ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/api/DXFeedConnect.java))
-- [ ] [GetLastEvent](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEvent-E-)
+- [x] [GetLastEvent](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEvent-E-)
   returns the last
   event for the specified event
   instance ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/api/DXFeedSample.java))
-- [ ] [GetLastEvents](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEvents-java.util.Collection-)
+- [x] [GetLastEvents](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEvents-java.util.Collection-)
   returns the last events for the specified event instances list
 - [ ] [GetLastEventPromise](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEventPromise-java.lang.Class-java.lang.Object-)
   requests the last event for the specified event type and
   symbol ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/console/LastEventsConsole.java))
 - [ ] [GetLastEventsPromises](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEventsPromises-java.lang.Class-java.util.Collection-)
   requests the last events for the specified event type and symbol collection
-- [ ] [GetLastEventIfSubscribed](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEventIfSubscribed-java.lang.Class-java.lang.Object-)
+- [x] [GetLastEventIfSubscribed](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getLastEventIfSubscribed-java.lang.Class-java.lang.Object-)
   returns the last event for the specified event type and symbol if there’s a subscription for it
 - [ ] [GetIndexedEventsPromise](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getIndexedEventsPromise-java.lang.Class-java.lang.Object-com.dxfeed.event.IndexedEventSource-)
   requests an indexed events list for the specified event type, symbol, and source
-- [ ] [GetIndexedEventsIfSubscribed](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getIndexedEventsIfSubscribed-java.lang.Class-java.lang.Object-com.dxfeed.event.IndexedEventSource-)
+- [x] [GetIndexedEventsIfSubscribed](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getIndexedEventsIfSubscribed-java.lang.Class-java.lang.Object-com.dxfeed.event.IndexedEventSource-)
   requests an indexed events list for the specified event type, symbol, and source if there’s a
   subscription for it
 - [ ] [GetTimeSeriesPromise](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getTimeSeriesPromise-java.lang.Class-java.lang.Object-long-long-)
   requests time series of events for the specified event type, symbol, and time
   range ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/_simple_/FetchDailyCandles.java))
-- [ ] [GetTimeSeriesIfSubscribed](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getTimeSeriesIfSubscribed-java.lang.Class-java.lang.Object-long-long-)
+- [x] [GetTimeSeriesIfSubscribed](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXFeed.html#getTimeSeriesIfSubscribed-java.lang.Class-java.lang.Object-long-long-)
   requests time series of events for the specified event type, symbol, and time range if there’s a
   subscription for it
 - [ ] [TimeSeriesEventModel](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/model/TimeSeriesEventModel.html) -
@@ -269,19 +321,19 @@ Find useful information in our self-service dxFeed Knowledge Base:
 - [x] [FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#FEED) connects
   to the remote data
   feed provider and is optimized for real-time or delayed data processing
-- [ ] [STREAM_FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_FEED)
+- [x] [STREAM_FEED](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_FEED)
   is similar to
   FEED and also connects to the remote data feed provider but is designed for bulk data parsing from
   files
-- [ ] [LOCAL_HUB](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#LOCAL_HUB)
+- [x] [LOCAL_HUB](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#LOCAL_HUB)
   is a local hub
   without the ability to establish network connections. Events published via publisher are delivered
   to local feed only.
-- [ ] [PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#PUBLISHER)
+- [x] [PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#PUBLISHER)
   connects to the
   remote publisher hub (also known as multiplexor) or creates a publisher on the local
   host ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/_simple_/WriteTapeFile.java))
-- [ ] [STREAM_PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_PUBLISHER)
+- [x] [STREAM_PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_PUBLISHER)
   is
   similar to PUBLISHER and also connects to the remote publisher hub, but is designed for bulk data
   publishing
