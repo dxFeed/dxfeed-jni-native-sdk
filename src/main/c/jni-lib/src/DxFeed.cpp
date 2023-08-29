@@ -62,54 +62,54 @@ namespace dxfeed {
     return pEventType;
   }
 
+  // todo: check
   void DxFeed::getLastEvent(JNIEnv* env, dxfg_event_type_t* pEventType) {
-    auto jDxFeedJniClazz = safeFindClass(env, DX_FEED_JNI_CLASS_NAME);
-    const char* methodName = "getLastEvent";
-    const char* methodSignature =
-      "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/NativeEventsList;";
-    auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
-
-    auto dxEventT = r_cast<DxEventT*>(pEventType);
-    const char* className = getEventClassType(dxEventT->eventType_.clazz);
-    auto jEventTypeClass = safeFindClass(env, className);
-    auto jSymbolName = env->NewStringUTF(dxEventT->symbol_);
-    auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jSymbolName,
-                                                           jEventTypeClass);
-    if (jNativeEventsList) {
-      NativeEventsList list {env};
-      list.toNativeEvent(jNativeEventsList, &pEventType);
-    }
-
-    env->DeleteLocalRef(jNativeEventsList);
-    env->DeleteLocalRef(jSymbolName);
-    env->DeleteLocalRef(jEventTypeClass);
-    env->DeleteLocalRef(jDxFeedJniClazz);
+    dxfg_event_type_list list { 1, &pEventType };
+    getLastEvents(env, &list);
   }
 
+  // todo: check
   void DxFeed::getLastEvents(JNIEnv* env, dxfg_event_type_list* pList) {
     auto jDxFeedJniClazz = safeFindClass(env, DX_FEED_JNI_CLASS_NAME);
-    const char* methodName = "getLastEvent";
+    const char* methodName = "getLastEvents";
     const char* methodSignature =
-      "(Lcom/dxfeed/api/DXFeed;Ljava/lang/Class;Ljava/lang/String;)Lcom/dxfeed/api/NativeEventsList;";
+      "(Lcom/dxfeed/api/DXFeed;[Ljava/lang/Class;[Ljava/lang/String;)Lcom/dxfeed/api/NativeEventsList;";
     auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
 
-    for (int i = 0; i < pList->size; ++i) {
+    auto size = pList->size;
+    auto jClazzClass = safeFindClass(env, "Ljava/lang/Class;");
+    auto jClassArray = env->NewObjectArray(size, jClazzClass, nullptr);
+    auto jStringClass = safeFindClass(env, "Ljava/lang/String;");
+    auto jStringArray = env->NewObjectArray(size, jStringClass, nullptr);
+
+    for (int i = 0; i < size; ++i) {
       dxfg_event_type_t* pEventType = pList->elements[i];
       auto dxEventT = r_cast<DxEventT*>(pEventType);
       const char* className = getEventClassType(dxEventT->eventType_.clazz);
       auto jEventTypeClass = safeFindClass(env, className);
       auto jSymbolName = env->NewStringUTF(dxEventT->symbol_);
-      auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jSymbolName,
-                                                             jEventTypeClass);
-      if (jNativeEventsList) {
-        NativeEventsList data{env};
-        data.toNativeEvent(jNativeEventsList, &pEventType);
-      }
-      env->DeleteLocalRef(jNativeEventsList);
-      env->DeleteLocalRef(jSymbolName);
+
+      env->SetObjectArrayElement(jClassArray, i, jEventTypeClass);
+      env->SetObjectArrayElement(jStringArray, i, jSymbolName);
+
+      // https://forums.oracle.com/ords/apexds/post/use-deletelocalref-with-setobjectarrayelement-0632
+      // https://stackoverflow.com/questions/4369974/using-deletelocalref-after-setobjectarrayelement-when-building-array-in-jni
       env->DeleteLocalRef(jEventTypeClass);
-      env->DeleteLocalRef(jDxFeedJniClazz);
+      env->DeleteLocalRef(jSymbolName);
     }
+
+    auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jClassArray, jStringArray);
+    if (jNativeEventsList) {
+      NativeEventsList data{env};
+      data.toNativeEventsList(jNativeEventsList, &pList);
+    }
+    env->DeleteLocalRef(jNativeEventsList);
+    env->DeleteLocalRef(jStringArray);
+    env->DeleteLocalRef(jStringClass);
+    env->DeleteLocalRef(jClassArray);
+    env->DeleteLocalRef(jClazzClass);
+
+    env->DeleteLocalRef(jDxFeedJniClazz);
   }
 
   dxfg_event_type_list* DxFeed::getIndexedEventsIfSubscribed(JNIEnv* env, dxfg_event_clazz_t clazz,
