@@ -4,10 +4,10 @@ import com.dxfeed.event.IndexedEvent;
 import com.dxfeed.event.LastingEvent;
 import com.dxfeed.event.TimeSeriesEvent;
 import com.dxfeed.event.market.OrderSource;
-import com.dxfeed.event.market.Quote;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,23 +27,29 @@ public class DxFeedJni {
   }
 
   private static <E extends LastingEvent<?>> NativeEventsList<E> getLastEventIfSubscribed(DXFeed feed,
-                                                                                      Class<E> eventTypeClass,
-                                                                                      Object symbol) {
+                                                                                          Class<E> eventTypeClass,
+                                                                                          Object symbol)
+  {
     E lastEvent = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
     System.out.println("DxFeedJni::getLastEventIfSubscribed = " + lastEvent);
     return (lastEvent != null) ? new NativeEventsList<>(Collections.singletonList(lastEvent)) : null;
   }
 
-  private static <E extends LastingEvent<?>> NativeEventsList<E> getLastEvent(DXFeed feed, Class<E> eventTypeClass,
-                                                                              String eventName) {
-    E event = createEventByClass(eventTypeClass, eventName);
-    System.out.println("event before getLastEvent = " + event);
-    feed.getLastEvent(event);
-    System.out.println("event after getLastEvent = " + event);
-    if (event instanceof Quote) {
-      return new NativeEventsList<>(Collections.singletonList(event));
+  private static <E extends LastingEvent<?>> NativeEventsList<E> getLastEvents(DXFeed feed,
+                                                                               Class<E>[] eventTypeClassList,
+                                                                               String[] eventNameList)
+  {
+    assert eventTypeClassList.length == eventNameList.length;
+    int size = eventNameList.length;
+    List<E> events = new ArrayList<>();
+    for (int i = 0; i < size; ++i) {
+      Class<E> eventTypeClass = eventTypeClassList[i];
+      String eventName = eventNameList[i];
+      E event = createEventByClass(eventTypeClass, eventName);
+      events.add(event);
     }
-    return null;
+    feed.getLastEvents(events);
+    return new NativeEventsList<>(events);
   }
 
   private static <E extends LastingEvent<?>> E createEventByClass(Class<E> eventTypeClass, String eventName) {
