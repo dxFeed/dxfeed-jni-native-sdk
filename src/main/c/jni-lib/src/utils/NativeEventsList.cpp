@@ -91,4 +91,10 @@ namespace dxfeed::jni {
     env_->DeleteLocalRef(doubleBuffer);
     env_->DeleteLocalRef(byteBuffer);
   }
+
+  jobject NativeEventsList::fromNativeEventsList(JNIEnv* env, dxfg_event_type_list* pList) {
+    // todo: convert
+    return nullptr;
+  }
+
 }

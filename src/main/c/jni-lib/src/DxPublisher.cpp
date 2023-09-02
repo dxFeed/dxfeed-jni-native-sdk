@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#include "dxfeed/DxFeed.hpp"
 #include "dxfeed/DxPublisher.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/DxFeed.hpp"
+#include "dxfeed/utils/NativeEventsList.hpp"
 
 namespace dxfeed {
   using namespace jni;
@@ -31,7 +32,8 @@ namespace dxfeed {
     const char* methodName = "publishEvents";
     const char* methodSignature = "(Ljava/util/Collection;)V";
     auto methodId = safeGetMethodID(env, jDxPublisherClazz, methodName, methodSignature);
-    env->CallVoidMethod(dxPublisher_, methodId /*, todo: convert events from native to Java...*/);
+    auto nativeEventsList = NativeEventsList::fromNativeEventsList(env, events);
+    env->CallVoidMethod(dxPublisher_, methodId, nativeEventsList);
     env->DeleteLocalRef(jDxPublisherClazz);
     return JNI_OK;
   }
