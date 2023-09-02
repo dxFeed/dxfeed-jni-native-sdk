@@ -183,9 +183,9 @@ namespace dxfeed {
 
   const char* DxSymbol::jStringToUTF8(JNIEnv* env, jstring jString) {
     const char* jData = env->GetStringUTFChars(jString, 0);
-    int32_t len = strlen(jData);
+    auto len = static_cast<int32_t>(strlen(jData));
     char* copiedData = new char[len + 1];
-    copiedData[len] = '/0';
+    copiedData[len] = 0;
     memcpy(copiedData, jData, len);
     env->ReleaseStringUTFChars(jString, jData);
     return copiedData;
