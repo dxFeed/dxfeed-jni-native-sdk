@@ -242,6 +242,8 @@ namespace dxfeed {
         return "Lcom/dxfeed/event/misc/Message;";
       case DXFG_EVENT_TIME_AND_SALE:
         return "Lcom/dxfeed/event/market/TimeAndSale;";
+      case DXFG_EVENT_OPTION_SALE:
+        return "Lcom/dxfeed/event/market/OptionSale;";
       case DXFG_EVENT_ORDER_BASE:
         return "Lcom/dxfeed/event/market/OrderBase;";
       case DXFG_EVENT_ORDER:
@@ -252,7 +254,6 @@ namespace dxfeed {
         return "Lcom/dxfeed/event/market/SpreadOrder;";
       case DXFG_EVENT_SERIES:
         return "Lcom/dxfeed/event/option/Series;";
-      case DXFG_EVENT_OPTION_SALE: // todo: there is no class in QD
       default:
         return nullptr;
     }
