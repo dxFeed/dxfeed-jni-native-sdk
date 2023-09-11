@@ -15,7 +15,7 @@ namespace dxfeed::jni {
 
     void toNativeEvent(jobject nativeEventsList, dxfg_event_type_t** ppEventType);
     void toNativeEventsList(jobject nativeEventsList, dxfg_event_type_list** ppEventTypeList);
-    static jobject fromNativeEventsList(JNIEnv* env, dxfg_event_type_list* pList);
+    jobject fromNativeEventsList(dxfg_event_type_list* pList);
   private:
     JNIEnv* env_;
     jclass dxNativeEventsListClass_;
@@ -26,6 +26,9 @@ namespace dxfeed::jni {
     jfieldID doubleBuffer_;
     jmethodID toDoubleData_;
     jfieldID pEventTypes_;
+    jmethodID toList_;
+
+    constexpr static const char NATIVE_EVENTS_LIST_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/NativeEventsList;";
   };
 }
 
