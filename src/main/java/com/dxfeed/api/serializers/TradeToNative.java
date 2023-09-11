@@ -3,6 +3,7 @@ package com.dxfeed.api.serializers;
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
+import com.dxfeed.event.market.Trade;
 import com.dxfeed.event.market.TradeBase;
 
 public class TradeToNative {
@@ -46,5 +47,10 @@ public class TradeToNative {
     pDoubles.write(event.getSize());
     pDoubles.write(event.getDayVolume());
     pDoubles.write(event.getDayTurnover());
+  }
+
+  public static Trade fromNative(byte[] byteData, double[] doubleData) {
+    Trade trade = new Trade();
+    return trade;
   }
 }

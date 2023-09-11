@@ -2,6 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
 
 public class CandleToNative {
@@ -55,5 +56,10 @@ public class CandleToNative {
     pDoubles.write(event.getAskVolume());
     pDoubles.write(event.getImpVolatility());
     pDoubles.write(event.getOpenInterest());
+  }
+
+  public static Candle fromNative(byte[] byteData, double[] doubleData) {
+    Candle candle = new Candle();
+    return candle;
   }
 }

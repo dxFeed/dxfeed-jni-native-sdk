@@ -59,4 +59,9 @@ public class ProfileToNative {
     pDoubles.write(event.getShares());
     pDoubles.write(event.getFreeFloat());
   }
+
+  public static Profile fromNative(byte[] byteData, double[] doubleData) {
+    Profile profile = new Profile();
+    return profile;
+  }
 }

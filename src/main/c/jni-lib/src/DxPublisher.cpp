@@ -32,7 +32,8 @@ namespace dxfeed {
     const char* methodName = "publishEvents";
     const char* methodSignature = "(Ljava/util/Collection;)V";
     auto methodId = safeGetMethodID(env, jDxPublisherClazz, methodName, methodSignature);
-    auto nativeEventsList = NativeEventsList::fromNativeEventsList(env, events);
+    NativeEventsList list {env};
+    auto nativeEventsList = list.fromNativeEventsList(events);;
     env->CallVoidMethod(dxPublisher_, methodId, nativeEventsList);
     env->DeleteLocalRef(jDxPublisherClazz);
     return JNI_ERR;

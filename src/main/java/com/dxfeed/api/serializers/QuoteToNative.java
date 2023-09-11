@@ -46,4 +46,9 @@ public class QuoteToNative {
     pDoubles.write(event.getAskPrice());
     pDoubles.write(event.getAskSize());
   }
+
+  public static Quote fromNative(byte[] byteData, double[] doubleData) {
+    Quote quote = new Quote();
+    return quote;
+  }
 }

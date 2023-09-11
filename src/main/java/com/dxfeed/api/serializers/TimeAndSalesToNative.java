@@ -51,4 +51,9 @@ public class TimeAndSalesToNative {
     pDoubles.write(event.getBidPrice());
     pDoubles.write(event.getAskPrice());
   }
+
+  public static TimeAndSale fromNative(int size, byte[] byteData, double[] doubleData) {
+    TimeAndSale tns = new TimeAndSale();
+    return tns;
+  }
 }
