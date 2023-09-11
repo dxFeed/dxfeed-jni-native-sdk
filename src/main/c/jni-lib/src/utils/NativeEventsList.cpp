@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/utils/NativeEventsList.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/NativeEventsList.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
+#include "dxfeed/utils/NativeEventWriter.hpp"
 
 namespace dxfeed::jni {
   NativeEventsList::NativeEventsList(JNIEnv* env):
@@ -18,6 +19,12 @@ namespace dxfeed::jni {
 
     toByteData_ = safeGetMethodID(env_, dxByteBuffer_, "toByteData", "()[B");
     toDoubleData_ = safeGetMethodID(env_, dxDoubleBuffer_, "toDoubleData", "()[D");
+
+    auto jDxFeedJniClazz = safeFindClass(env, NATIVE_EVENTS_LIST_JNI_CLASS_NAME);
+    const char* methodName = "toList";
+    const char* methodSignature = "([B[D[B)Ljava/util/List;";
+    toList_ = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
+    env_->DeleteLocalRef(jDxFeedJniClazz);
   }
 
   NativeEventsList::~NativeEventsList() {
@@ -25,6 +32,7 @@ namespace dxfeed::jni {
     env_->DeleteLocalRef(dxByteBuffer_);
     env_->DeleteLocalRef(dxNativeEventsListClass_);
 
+    toList_ = nullptr;
     toDoubleData_ = nullptr;
     toByteData_ = nullptr;
     doubleBuffer_ = nullptr;
@@ -92,9 +100,26 @@ namespace dxfeed::jni {
     env_->DeleteLocalRef(byteBuffer);
   }
 
-  jobject NativeEventsList::fromNativeEventsList(JNIEnv* env, dxfg_event_type_list* pList) {
-    // todo: convert
-    return nullptr;
+  jobject NativeEventsList::fromNativeEventsList(dxfg_event_type_list* pList) {
+    auto size = pList->size;
+    NativeEventWriter writer;
+    for (int i = 0; i < size; ++i) {
+      writer.writeEvent(pList->elements[i]);
+    }
+
+    auto jDxFeedJniClazz = safeFindClass(env_, NATIVE_EVENTS_LIST_JNI_CLASS_NAME);
+    auto jByteData = writer.byteData(env_);
+    auto jDoubleData = writer.doubleData(env_);
+    auto jEventTypes = writer.eventTypes(env_);
+
+    auto result = env_->CallStaticObjectMethod(jDxFeedJniClazz, toList_, jByteData, jDoubleData, jEventTypes);
+
+    env_->DeleteLocalRef(jEventTypes);
+    env_->DeleteLocalRef(jDoubleData);
+    env_->DeleteLocalRef(jByteData);
+    env_->DeleteLocalRef(jDxFeedJniClazz);
+
+    return result;
   }
 
 }

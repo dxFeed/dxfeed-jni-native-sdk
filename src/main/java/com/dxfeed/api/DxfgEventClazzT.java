@@ -12,73 +12,68 @@ import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 
 // https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#LL75C30-L75C30
-public enum DxfgEventClazzT {
-  DXFG_EVENT_QUOTE,      // LASTING
-  DXFG_EVENT_PROFILE,        // LASTING
-  DXFG_EVENT_SUMMARY,        // LASTING
-  DXFG_EVENT_GREEKS,         // LASTING + INDEXED -> TIME_SERIES
-  DXFG_EVENT_CANDLE,         // LASTING + INDEXED -> TIME_SERIES
-  DXFG_EVENT_DAILY_CANDLE,   // LASTING + INDEXED -> TIME_SERIES -> CANDLE
-  DXFG_EVENT_UNDERLYING,     // LASTING + INDEXED -> TIME_SERIES
-  DXFG_EVENT_THEO_PRICE,     // LASTING + INDEXED -> TIME_SERIES
+public final class DxfgEventClazzT {
+  public static final byte DXFG_EVENT_QUOTE = 0;      // LASTING
+  public static final byte DXFG_EVENT_PROFILE = 1;        // LASTING
+  public static final byte DXFG_EVENT_SUMMARY = 2;        // LASTING
+  public static final byte DXFG_EVENT_GREEKS = 3;         // LASTING + INDEXED -> TIME_SERIES
+  public static final byte DXFG_EVENT_CANDLE = 4;         // LASTING + INDEXED -> TIME_SERIES
+  public static final byte DXFG_EVENT_DAILY_CANDLE = 5;   // LASTING + INDEXED -> TIME_SERIES -> CANDLE
+  public static final byte DXFG_EVENT_UNDERLYING = 6;     // LASTING + INDEXED -> TIME_SERIES
+  public static final byte DXFG_EVENT_THEO_PRICE = 7;     // LASTING + INDEXED -> TIME_SERIES
   // abstract DXFG_EVENT_TRADE_BASE,     // LASTING
-  DXFG_EVENT_TRADE,          // LASTING -> TRADE_BASE
-  DXFG_EVENT_TRADE_ETH,      // LASTING -> TRADE_BASE
-  DXFG_EVENT_CONFIGURATION,  // LASTING
-  DXFG_EVENT_MESSAGE,        //
-  DXFG_EVENT_TIME_AND_SALE,  // INDEXED -> TIME_SERIES
-  DXFG_EVENT_ORDER_BASE,     // INDEXED
-  DXFG_EVENT_ORDER,          // INDEXED -> ORDER_BASE
-  DXFG_EVENT_ANALYTIC_ORDER, // INDEXED -> ORDER_BASE -> ORDER
-  DXFG_EVENT_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
-  DXFG_EVENT_SERIES,         // INDEXED
-  DXFG_EVENT_OPTION_SALE;    // INDEXED
-
-
-  public byte eventOrdinal() {
-    return (byte) this.ordinal();
-  }
+  public static final byte DXFG_EVENT_TRADE = 8;          // LASTING -> TRADE_BASE
+  public static final byte DXFG_EVENT_TRADE_ETH = 9;      // LASTING -> TRADE_BASE
+  public static final byte DXFG_EVENT_CONFIGURATION = 10;  // LASTING
+  public static final byte DXFG_EVENT_MESSAGE = 11;        //
+  public static final byte DXFG_EVENT_TIME_AND_SALE = 12;  // INDEXED -> TIME_SERIES
+  public static final byte DXFG_EVENT_ORDER_BASE = 13;     // INDEXED
+  public static final byte DXFG_EVENT_ORDER = 14;          // INDEXED -> ORDER_BASE
+  public static final byte DXFG_EVENT_ANALYTIC_ORDER = 15; // INDEXED -> ORDER_BASE -> ORDER
+  public static final byte DXFG_EVENT_SPREAD_ORDER = 16;   // INDEXED -> ORDER_BASE
+  public static final byte DXFG_EVENT_SERIES = 17;         // INDEXED
+  public static final byte DXFG_EVENT_OPTION_SALE = 18;    // INDEXED
 
   public static byte fromClass(Class<? extends EventType<?>> clazz) {
     String canonicalName = clazz.getCanonicalName();
     if (isEquals(Quote.class, canonicalName)) {
-      return DXFG_EVENT_QUOTE.eventOrdinal();
+      return DXFG_EVENT_QUOTE;
     } else if (isEquals(Profile.class, canonicalName)) {
-      return DXFG_EVENT_PROFILE.eventOrdinal();
+      return DXFG_EVENT_PROFILE;
     } else if (isEquals(Summary.class, canonicalName)) {
-      return DXFG_EVENT_SUMMARY.eventOrdinal();
+      return DXFG_EVENT_SUMMARY;
     } else if (isEquals(Greeks.class, canonicalName)) {
-      return DXFG_EVENT_GREEKS.eventOrdinal();
+      return DXFG_EVENT_GREEKS;
     } else if (isEquals(Candle.class, canonicalName)) {
-      return DXFG_EVENT_CANDLE.eventOrdinal();
+      return DXFG_EVENT_CANDLE;
     } else if (isEquals(DailyCandle.class, canonicalName)) {
-      return DXFG_EVENT_DAILY_CANDLE.eventOrdinal();
+      return DXFG_EVENT_DAILY_CANDLE;
     } else if (isEquals(Underlying.class, canonicalName)) {
-      return DXFG_EVENT_UNDERLYING.eventOrdinal();
+      return DXFG_EVENT_UNDERLYING;
     } else if (isEquals(TheoPrice.class, canonicalName)) {
-      return DXFG_EVENT_THEO_PRICE.eventOrdinal();
+      return DXFG_EVENT_THEO_PRICE;
     } else if (isEquals(Trade.class, canonicalName)) {
-      return DXFG_EVENT_TRADE.eventOrdinal();
+      return DXFG_EVENT_TRADE;
     } else if (isEquals(TradeETH.class, canonicalName)) {
-      return DXFG_EVENT_TRADE_ETH.eventOrdinal();
+      return DXFG_EVENT_TRADE_ETH;
     } else if (isEquals(Configuration.class, canonicalName)) {
-      return DXFG_EVENT_CONFIGURATION.eventOrdinal();
+      return DXFG_EVENT_CONFIGURATION;
     } else if (isEquals(Message.class, canonicalName)) {
-      return DXFG_EVENT_MESSAGE.eventOrdinal();
+      return DXFG_EVENT_MESSAGE;
     } else if (isEquals(TimeAndSale.class, canonicalName)) {
-      return DXFG_EVENT_TIME_AND_SALE.eventOrdinal();
+      return DXFG_EVENT_TIME_AND_SALE;
     } else if (isEquals(OrderBase.class, canonicalName)) {
-      return DXFG_EVENT_ORDER_BASE.eventOrdinal();
+      return DXFG_EVENT_ORDER_BASE;
     } else if (isEquals(Order.class, canonicalName)) {
-      return DXFG_EVENT_ORDER.eventOrdinal();
+      return DXFG_EVENT_ORDER;
     } else if (isEquals(AnalyticOrder.class, canonicalName)) {
-      return DXFG_EVENT_ANALYTIC_ORDER.eventOrdinal();
+      return DXFG_EVENT_ANALYTIC_ORDER;
     } else if (isEquals(SpreadOrder.class, canonicalName)) {
-      return DXFG_EVENT_SPREAD_ORDER.eventOrdinal();
+      return DXFG_EVENT_SPREAD_ORDER;
     } else if (isEquals(Series.class, canonicalName)) {
-      return DXFG_EVENT_SERIES.eventOrdinal();
+      return DXFG_EVENT_SERIES;
     } else if (isEquals(OptionSale.class, canonicalName)) {
-      return DXFG_EVENT_OPTION_SALE.eventOrdinal();
+      return DXFG_EVENT_OPTION_SALE;
     } else {
       throw new IllegalStateException("Can't find DxfgEventClazzT for " + canonicalName);
     }

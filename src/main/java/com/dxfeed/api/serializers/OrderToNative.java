@@ -69,7 +69,7 @@ public class OrderToNative {
     pDoubles.write(event.getExecutedSize());
     pDoubles.write(event.getTradePrice());
     pDoubles.write(event.getTradeSize());
-    return DxfgEventClazzT.DXFG_EVENT_ORDER_BASE.eventOrdinal();
+    return DxfgEventClazzT.DXFG_EVENT_ORDER_BASE;
   }
 
   /**
@@ -106,7 +106,7 @@ public class OrderToNative {
     pDoubles.write(event.getTradePrice());
     pDoubles.write(event.getTradeSize());
 
-    return DxfgEventClazzT.DXFG_EVENT_ORDER.eventOrdinal();
+    return DxfgEventClazzT.DXFG_EVENT_ORDER;
   }
 
   /**
@@ -143,7 +143,7 @@ public class OrderToNative {
     pDoubles.write(event.getTradePrice());
     pDoubles.write(event.getTradeSize());
 
-    return DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER.eventOrdinal();
+    return DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER;
   }
 
   /**
@@ -186,6 +186,6 @@ public class OrderToNative {
     pDoubles.write(event.getIcebergHiddenSize());
     pDoubles.write(event.getIcebergExecutedSize());
 
-    return DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER.eventOrdinal();
+    return DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER;
   }
 }
