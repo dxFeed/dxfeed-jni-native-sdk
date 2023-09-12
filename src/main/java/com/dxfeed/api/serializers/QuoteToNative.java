@@ -2,6 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Quote;
 
@@ -47,8 +48,23 @@ public class QuoteToNative {
     pDoubles.write(event.getAskSize());
   }
 
-  public static Quote fromNative(byte[] byteData, double[] doubleData) {
+  public static Quote fromNative(NativeEventsReader eventsReader) {
     Quote quote = new Quote();
+
+    quote.setEventSymbol(eventsReader.readString());
+    quote.setEventTime(eventsReader.readLong());
+    DxFeedEventMarketPackagePrivate.setTimeMillisSequence(quote, eventsReader.readInt());
+    quote.setTimeNanoPart(eventsReader.readInt());
+    quote.setBidTime(eventsReader.readLong());
+    quote.setBidExchangeCode(eventsReader.readChar());
+    quote.setAskTime(eventsReader.readLong());
+    quote.setAskExchangeCode(eventsReader.readChar());
+
+    quote.setBidPrice(eventsReader.readDouble());
+    quote.setBidSizeAsDouble(eventsReader.readDouble());
+    quote.setAskPrice(eventsReader.readDouble());
+    quote.setAskSizeAsDouble(eventsReader.readDouble());
+
     return quote;
   }
 }

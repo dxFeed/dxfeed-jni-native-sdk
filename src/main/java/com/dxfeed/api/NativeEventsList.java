@@ -2,6 +2,7 @@ package com.dxfeed.api;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.api.serializers.*;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
@@ -85,25 +86,26 @@ public class NativeEventsList<T extends EventType<?>> {
 
   public static List<EventType<?>> toList(byte[] byteData, double[] doubleData, byte[] eventTypes) {
     List<EventType<?>> eventList = new ArrayList<>();
+    NativeEventsReader eventsReader = new NativeEventsReader(byteData, doubleData);
     for (byte pEventType : eventTypes) {
-      eventList.add(readEvent(pEventType, byteData, doubleData));
+      eventList.add(readEvent(eventsReader, pEventType));
     }
     return eventList;
   }
 
-  private static EventType<?> readEvent(byte pEventType, byte[] byteData, double[] doubleData) {
+  private static EventType<?> readEvent(NativeEventsReader eventsReader, byte pEventType) {
     switch (pEventType) {
       case DxfgEventClazzT.DXFG_EVENT_QUOTE: {
-        return QuoteToNative.fromNative(byteData, doubleData);
+        return QuoteToNative.fromNative(eventsReader);
       }
       case DxfgEventClazzT.DXFG_EVENT_CANDLE: {
-        return CandleToNative.fromNative(byteData, doubleData);
+        return CandleToNative.fromNative(eventsReader);
       }
       case DxfgEventClazzT.DXFG_EVENT_TRADE: {
-        return TradeToNative.fromNative(byteData, doubleData);
+        return TradeToNative.fromNative(eventsReader);
       }
       case DxfgEventClazzT.DXFG_EVENT_PROFILE: {
-        return ProfileToNative.fromNative(byteData, doubleData);
+        return ProfileToNative.fromNative(eventsReader);
       }
       default:
         throw new IllegalStateException("Event mapping for event type " + pEventType + " is not implemented");
