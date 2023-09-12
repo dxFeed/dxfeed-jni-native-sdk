@@ -9,8 +9,16 @@ public class DxFeedEventMarketPackagePrivate {
     return event.getFlags();
   }
 
+  public static void setFlags(TradeBase event, int value) {
+    event.setFlags(value);
+  }
+
   public static int getFlags(Profile event) {
     return event.getFlags();
+  }
+
+  public static void setFlags(Profile event, int value) {
+    event.setFlags(value);
   }
 
   public static int getFlags(Summary event) {
@@ -19,6 +27,10 @@ public class DxFeedEventMarketPackagePrivate {
 
   public static int getTimeMillisSequence(Quote event) {
     return event.getTimeMillisSequence();
+  }
+
+  public static void setTimeMillisSequence(Quote event, int value) {
+    event.setTimeMillisSequence(value);
   }
 
   public static int getFlags(OptionSale event) {

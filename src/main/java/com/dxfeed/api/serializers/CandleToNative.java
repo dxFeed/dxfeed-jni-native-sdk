@@ -2,8 +2,9 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.event.EventType;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.candle.Candle;
+import com.dxfeed.event.candle.CandleSymbol;
 
 public class CandleToNative {
   /**
@@ -58,8 +59,26 @@ public class CandleToNative {
     pDoubles.write(event.getOpenInterest());
   }
 
-  public static Candle fromNative(byte[] byteData, double[] doubleData) {
+  public static Candle fromNative(NativeEventsReader eventsReader) {
     Candle candle = new Candle();
+
+    candle.setEventSymbol(CandleSymbol.valueOf(eventsReader.readString()));
+    candle.setEventFlags(eventsReader.readInt());
+    candle.setEventTime(eventsReader.readLong());
+    candle.setIndex(eventsReader.readLong());
+    candle.setCount(eventsReader.readLong());
+
+    candle.setOpen(eventsReader.readDouble());
+    candle.setHigh(eventsReader.readDouble());
+    candle.setLow(eventsReader.readDouble());
+    candle.setClose(eventsReader.readDouble());
+    candle.setVolumeAsDouble(eventsReader.readDouble());
+    candle.setVWAP(eventsReader.readDouble());
+    candle.setBidVolumeAsDouble(eventsReader.readDouble());
+    candle.setAskVolumeAsDouble(eventsReader.readDouble());
+    candle.setImpVolatility(eventsReader.readDouble());
+    candle.setOpenInterestAsDouble(eventsReader.readDouble());
+
     return candle;
   }
 }
