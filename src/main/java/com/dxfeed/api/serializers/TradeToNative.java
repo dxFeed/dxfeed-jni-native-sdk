@@ -50,22 +50,22 @@ public class TradeToNative {
     pDoubles.write(event.getDayTurnover());
   }
 
-  public static Trade fromNative(NativeEventsReader eventsReader) {
+  public static Trade fromNative(NativeEventsReader reader) {
     Trade trade = new Trade();
 
-    trade.setEventSymbol(eventsReader.readString());
-    trade.setEventTime(eventsReader.readLong());
-    trade.setTimeSequence(eventsReader.readLong());
-    trade.setTimeNanoPart(eventsReader.readInt());
-    trade.setExchangeCode(eventsReader.readChar());
-    trade.setDayId(eventsReader.readInt());
-    DxFeedEventMarketPackagePrivate.setFlags(trade, eventsReader.readInt());
+    trade.setEventSymbol(reader.readString());
+    trade.setEventTime(reader.readLong());
+    trade.setTimeSequence(reader.readLong());
+    trade.setTimeNanoPart(reader.readInt());
+    trade.setExchangeCode(reader.readChar());
+    trade.setDayId(reader.readInt());
+    DxFeedEventMarketPackagePrivate.setFlags(trade, reader.readInt());
 
-    trade.setPrice(eventsReader.readDouble());
-    trade.setChange(eventsReader.readDouble());
-    trade.setSizeAsDouble(eventsReader.readDouble());
-    trade.setDayVolumeAsDouble(eventsReader.readDouble());
-    trade.setDayTurnover(eventsReader.readDouble());
+    trade.setPrice(reader.readDouble());
+    trade.setChange(reader.readDouble());
+    trade.setSizeAsDouble(reader.readDouble());
+    trade.setDayVolumeAsDouble(reader.readDouble());
+    trade.setDayTurnover(reader.readDouble());
 
     return trade;
   }

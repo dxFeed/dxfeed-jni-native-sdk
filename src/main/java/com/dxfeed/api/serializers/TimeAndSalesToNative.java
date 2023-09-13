@@ -2,6 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.TimeAndSale;
 
@@ -52,8 +53,25 @@ public class TimeAndSalesToNative {
     pDoubles.write(event.getAskPrice());
   }
 
-  public static TimeAndSale fromNative(int size, byte[] byteData, double[] doubleData) {
+  public static TimeAndSale fromNative(NativeEventsReader reader) {
     TimeAndSale tns = new TimeAndSale();
+
+    tns.setEventSymbol(reader.readString());
+    tns.setEventTime(reader.readLong());
+    tns.setEventFlags(reader.readInt());
+    tns.setIndex(reader.readLong());
+    tns.setTimeNanoPart(reader.readInt());
+    tns.setExchangeCode(reader.readChar());
+    DxFeedEventMarketPackagePrivate.setFlags(tns, reader.readInt());
+    tns.setExchangeSaleConditions(reader.readString());
+    tns.setBuyer(reader.readString());
+    tns.setSeller(reader.readString());
+
+    tns.setPrice(reader.readDouble());
+    tns.setSizeAsDouble(reader.readDouble());
+    tns.setBidPrice(reader.readDouble());
+    tns.setAskPrice(reader.readDouble());
+
     return tns;
   }
 }

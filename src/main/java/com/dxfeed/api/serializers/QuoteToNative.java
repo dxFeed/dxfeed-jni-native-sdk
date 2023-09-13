@@ -48,22 +48,22 @@ public class QuoteToNative {
     pDoubles.write(event.getAskSize());
   }
 
-  public static Quote fromNative(NativeEventsReader eventsReader) {
+  public static Quote fromNative(NativeEventsReader reader) {
     Quote quote = new Quote();
 
-    quote.setEventSymbol(eventsReader.readString());
-    quote.setEventTime(eventsReader.readLong());
-    DxFeedEventMarketPackagePrivate.setTimeMillisSequence(quote, eventsReader.readInt());
-    quote.setTimeNanoPart(eventsReader.readInt());
-    quote.setBidTime(eventsReader.readLong());
-    quote.setBidExchangeCode(eventsReader.readChar());
-    quote.setAskTime(eventsReader.readLong());
-    quote.setAskExchangeCode(eventsReader.readChar());
+    quote.setEventSymbol(reader.readString());
+    quote.setEventTime(reader.readLong());
+    DxFeedEventMarketPackagePrivate.setTimeMillisSequence(quote, reader.readInt());
+    quote.setTimeNanoPart(reader.readInt());
+    quote.setBidTime(reader.readLong());
+    quote.setBidExchangeCode(reader.readChar());
+    quote.setAskTime(reader.readLong());
+    quote.setAskExchangeCode(reader.readChar());
 
-    quote.setBidPrice(eventsReader.readDouble());
-    quote.setBidSizeAsDouble(eventsReader.readDouble());
-    quote.setAskPrice(eventsReader.readDouble());
-    quote.setAskSizeAsDouble(eventsReader.readDouble());
+    quote.setBidPrice(reader.readDouble());
+    quote.setBidSizeAsDouble(reader.readDouble());
+    quote.setAskPrice(reader.readDouble());
+    quote.setAskSizeAsDouble(reader.readDouble());
 
     return quote;
   }
