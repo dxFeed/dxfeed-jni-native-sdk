@@ -3,6 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Summary;
 
@@ -48,5 +49,26 @@ public class SummaryToNative {
     pDoubles.write(event.getDayClosePrice());
     pDoubles.write(event.getPrevDayClosePrice());
     pDoubles.write(event.getPrevDayVolume());
+  }
+
+  public static Summary fromNative(NativeEventsReader reader) {
+    Summary summary = new Summary();
+
+    summary.setEventSymbol(reader.readString());
+    summary.setEventTime(reader.readLong());
+    summary.setDayId(reader.readInt());
+    summary.setPrevDayId(reader.readInt());
+    summary.setOpenInterest(reader.readLong());
+    summary.setOpenInterest(reader.readLong());
+    DxFeedEventMarketPackagePrivate.setFlags(summary, reader.readInt());
+
+    summary.setDayOpenPrice(reader.readDouble());
+    summary.setDayHighPrice(reader.readDouble());
+    summary.setDayLowPrice(reader.readDouble());
+    summary.setDayClosePrice(reader.readDouble());
+    summary.setPrevDayClosePrice(reader.readDouble());
+    summary.setPrevDayVolume(reader.readDouble());
+
+    return summary;
   }
 }

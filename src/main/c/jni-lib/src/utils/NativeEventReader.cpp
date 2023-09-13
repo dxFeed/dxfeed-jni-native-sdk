@@ -63,40 +63,58 @@ namespace dxfeed::jni {
 
   dxfg_event_type_t* NativeEventReader::toEvent(const char** pByteData, const double** pDoubleData, dxfg_event_clazz_t eventType) {
     switch (eventType) {
-      case DXFG_EVENT_TIME_AND_SALE:
-        return r_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
-      case DXFG_EVENT_QUOTE:
+      case DXFG_EVENT_QUOTE: {
         return r_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
-      case DXFG_EVENT_CANDLE:
-        return r_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
-      case DXFG_EVENT_TRADE:
-        return r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
-      case DXFG_EVENT_PROFILE:
+      }
+      case DXFG_EVENT_PROFILE: {
         return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
-      case DXFG_EVENT_SUMMARY:
+      }
+      case DXFG_EVENT_SUMMARY: {
         return r_cast<dxfg_event_type_t*>(toSummary(pByteData, pDoubleData));
-      case DXFG_EVENT_GREEKS:
+      }
+      case DXFG_EVENT_GREEKS: {
         return r_cast<dxfg_event_type_t*>(toGreeks(pByteData, pDoubleData));
-      case DXFG_EVENT_UNDERLYING:
+      }
+      case DXFG_EVENT_CANDLE: {
+        return r_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+      }
+      case DXFG_EVENT_UNDERLYING: {
         return r_cast<dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
-      case DXFG_EVENT_THEO_PRICE:
+      }
+      case DXFG_EVENT_THEO_PRICE: {
         return r_cast<dxfg_event_type_t*>(toTheoPrice(pByteData, pDoubleData));
-      case DXFG_EVENT_CONFIGURATION:
+      }
+      case DXFG_EVENT_TRADE_ETH:
+      case DXFG_EVENT_TRADE: {
+        return r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
+      }
+      case DXFG_EVENT_CONFIGURATION: {
         return r_cast<dxfg_event_type_t*>(toConfiguration(pByteData));
-      case DXFG_EVENT_MESSAGE:
+      }
+      case DXFG_EVENT_MESSAGE: {
         return r_cast<dxfg_event_type_t*>(toMessage(pByteData));
-      case DXFG_EVENT_OPTION_SALE:
-        return r_cast<dxfg_event_type_t*>(toOptionSale(pByteData, pDoubleData));
-      case DXFG_EVENT_ORDER_BASE:
+      }
+      case DXFG_EVENT_TIME_AND_SALE: {
+        return r_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
+      }
+      case DXFG_EVENT_ORDER_BASE: {
         return r_cast<dxfg_event_type_t*>(toOrderBase(pByteData, pDoubleData));
-      case DXFG_EVENT_ORDER:
+      }
+      case DXFG_EVENT_ORDER: {
         return r_cast<dxfg_event_type_t*>(toOrder(pByteData, pDoubleData));
-      case DXFG_EVENT_ANALYTIC_ORDER:
+      }
+      case DXFG_EVENT_ANALYTIC_ORDER: {
         return r_cast<dxfg_event_type_t*>(toAnalyticsOrder(pByteData, pDoubleData));
-      case DXFG_EVENT_SPREAD_ORDER:
+      }
+      case DXFG_EVENT_SPREAD_ORDER: {
         return r_cast<dxfg_event_type_t*>(toSpreadOrder(pByteData, pDoubleData));
-      case DXFG_EVENT_SERIES:
+      }
+      case DXFG_EVENT_SERIES: {
         return r_cast<dxfg_event_type_t*>(toSeries(pByteData, pDoubleData));
+      }
+      case DXFG_EVENT_OPTION_SALE: {
+        return r_cast<dxfg_event_type_t*>(toOptionSale(pByteData, pDoubleData));
+      }
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
         return nullptr;

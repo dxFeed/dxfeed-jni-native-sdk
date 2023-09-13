@@ -20,11 +20,15 @@ namespace dxfeed::jni {
     jbyteArray byteData(JNIEnv* env);
     jdoubleArray doubleData(JNIEnv* env);
   private:
-    void fromTimeAndSale(dxfg_time_and_sale_t* eventType);
     void fromQuote(dxfg_quote_t* eventType);
-    void fromCandle(dxfg_candle_t* eventType);
-    void fromTrade(dxfg_trade_base_t* eventType);
     void fromProfile(dxfg_profile_t* eventType);
+    void fromSummary(dxfg_summary_t* eventType);
+    void fromGreeks(dxfg_greeks_t* eventType);
+    void fromCandle(dxfg_candle_t* eventType);
+    void fromUnderlying(dxfg_underlying_t* eventType);
+    void fromTheoPrice(dxfg_theo_price_t* theo);
+    void fromTrade(dxfg_trade_base_t* eventType);
+    void fromTimeAndSale(dxfg_time_and_sale_t* eventType);
 
     inline void writeBytes(const int8_t* bytes, int32_t len);
     inline void writeString(const char* str);

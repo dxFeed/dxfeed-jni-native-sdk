@@ -3,6 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.option.TheoPrice;
 
 public class TheoPriceToNative {
@@ -45,5 +46,23 @@ public class TheoPriceToNative {
     pDoubles.write(event.getGamma());
     pDoubles.write(event.getDividend());
     pDoubles.write(event.getInterest());
+  }
+
+  public static TheoPrice fromNative(NativeEventsReader reader) {
+    TheoPrice theoPrice = new TheoPrice();
+
+    theoPrice.setEventSymbol(reader.readString());
+    theoPrice.setEventTime(reader.readLong());
+    theoPrice.setEventFlags(reader.readInt());
+    theoPrice.setIndex(reader.readLong());
+
+    theoPrice.setPrice(reader.readDouble());
+    theoPrice.setUnderlyingPrice(reader.readDouble());
+    theoPrice.setDelta(reader.readDouble());
+    theoPrice.setGamma(reader.readDouble());
+    theoPrice.setDividend(reader.readDouble());
+    theoPrice.setInterest(reader.readDouble());
+
+    return theoPrice;
   }
 }
