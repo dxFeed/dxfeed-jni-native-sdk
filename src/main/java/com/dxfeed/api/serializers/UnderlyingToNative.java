@@ -3,6 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.option.Underlying;
 
 public class UnderlyingToNative {
@@ -44,5 +45,23 @@ public class UnderlyingToNative {
     pDoubles.write(event.getCallVolume());
     pDoubles.write(event.getPutVolume());
     pDoubles.write(event.getPutCallRatio());
+  }
+
+  public static Underlying fromNative(NativeEventsReader reader) {
+    Underlying underlying = new Underlying();
+
+    underlying.setEventSymbol(reader.readString());
+    underlying.setEventTime(reader.readLong());
+    underlying.setEventFlags(reader.readInt());
+    underlying.setIndex(reader.readLong());
+
+    underlying.setVolatility(reader.readDouble());
+    underlying.setFrontVolatility(reader.readDouble());
+    underlying.setBackVolatility(reader.readDouble());
+    underlying.setCallVolume(reader.readDouble());
+    underlying.setPutVolume(reader.readDouble());
+    underlying.setPutCallRatio(reader.readDouble());
+
+    return underlying;
   }
 }

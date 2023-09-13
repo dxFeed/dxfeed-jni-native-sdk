@@ -86,26 +86,42 @@ public class NativeEventsList<T extends EventType<?>> {
 
   public static List<EventType<?>> toList(byte[] byteData, double[] doubleData, byte[] eventTypes) {
     List<EventType<?>> eventList = new ArrayList<>();
-    NativeEventsReader eventsReader = new NativeEventsReader(byteData, doubleData);
+    NativeEventsReader reader = new NativeEventsReader(byteData, doubleData);
     for (byte pEventType : eventTypes) {
-      eventList.add(readEvent(eventsReader, pEventType));
+      eventList.add(readEvent(reader, pEventType));
     }
     return eventList;
   }
 
-  private static EventType<?> readEvent(NativeEventsReader eventsReader, byte pEventType) {
+  private static EventType<?> readEvent(NativeEventsReader reader, byte pEventType) {
     switch (pEventType) {
       case DxfgEventClazzT.DXFG_EVENT_QUOTE: {
-        return QuoteToNative.fromNative(eventsReader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_CANDLE: {
-        return CandleToNative.fromNative(eventsReader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_TRADE: {
-        return TradeToNative.fromNative(eventsReader);
+        return QuoteToNative.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_PROFILE: {
-        return ProfileToNative.fromNative(eventsReader);
+        return ProfileToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_SUMMARY: {
+        return SummaryToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_GREEKS: {
+        return GreeksToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_CANDLE: {
+        return CandleToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_UNDERLYING: {
+        return UnderlyingToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_THEO_PRICE: {
+        return TheoPriceToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_TRADE:
+      case DxfgEventClazzT.DXFG_EVENT_TRADE_ETH: {
+        return TradeToNative.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE: {
+        return TimeAndSalesToNative.fromNative(reader);
       }
       default:
         throw new IllegalStateException("Event mapping for event type " + pEventType + " is not implemented");

@@ -5,6 +5,10 @@ public class DxFeedEventMarketPackagePrivate {
     return event.getFlags();
   }
 
+  public static void setFlags(TimeAndSale event, int value) {
+    event.setFlags(value);
+  }
+
   public static int getFlags(TradeBase event) {
     return event.getFlags();
   }
@@ -23,6 +27,10 @@ public class DxFeedEventMarketPackagePrivate {
 
   public static int getFlags(Summary event) {
     return event.getFlags();
+  }
+
+  public static void setFlags(Summary event, int value) {
+    event.setFlags(value);
   }
 
   public static int getTimeMillisSequence(Quote event) {

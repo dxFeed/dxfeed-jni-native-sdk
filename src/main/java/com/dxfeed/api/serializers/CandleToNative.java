@@ -59,25 +59,25 @@ public class CandleToNative {
     pDoubles.write(event.getOpenInterest());
   }
 
-  public static Candle fromNative(NativeEventsReader eventsReader) {
+  public static Candle fromNative(NativeEventsReader reader) {
     Candle candle = new Candle();
 
-    candle.setEventSymbol(CandleSymbol.valueOf(eventsReader.readString()));
-    candle.setEventFlags(eventsReader.readInt());
-    candle.setEventTime(eventsReader.readLong());
-    candle.setIndex(eventsReader.readLong());
-    candle.setCount(eventsReader.readLong());
+    candle.setEventSymbol(CandleSymbol.valueOf(reader.readString()));
+    candle.setEventFlags(reader.readInt());
+    candle.setEventTime(reader.readLong());
+    candle.setIndex(reader.readLong());
+    candle.setCount(reader.readLong());
 
-    candle.setOpen(eventsReader.readDouble());
-    candle.setHigh(eventsReader.readDouble());
-    candle.setLow(eventsReader.readDouble());
-    candle.setClose(eventsReader.readDouble());
-    candle.setVolumeAsDouble(eventsReader.readDouble());
-    candle.setVWAP(eventsReader.readDouble());
-    candle.setBidVolumeAsDouble(eventsReader.readDouble());
-    candle.setAskVolumeAsDouble(eventsReader.readDouble());
-    candle.setImpVolatility(eventsReader.readDouble());
-    candle.setOpenInterestAsDouble(eventsReader.readDouble());
+    candle.setOpen(reader.readDouble());
+    candle.setHigh(reader.readDouble());
+    candle.setLow(reader.readDouble());
+    candle.setClose(reader.readDouble());
+    candle.setVolumeAsDouble(reader.readDouble());
+    candle.setVWAP(reader.readDouble());
+    candle.setBidVolumeAsDouble(reader.readDouble());
+    candle.setAskVolumeAsDouble(reader.readDouble());
+    candle.setImpVolatility(reader.readDouble());
+    candle.setOpenInterestAsDouble(reader.readDouble());
 
     return candle;
   }

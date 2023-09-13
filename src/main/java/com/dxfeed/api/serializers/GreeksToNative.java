@@ -3,6 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.option.Greeks;
 
 public class GreeksToNative {
@@ -46,5 +47,24 @@ public class GreeksToNative {
     pDoubles.write(event.getTheta());
     pDoubles.write(event.getRho());
     pDoubles.write(event.getVega());
+  }
+
+  public static Greeks fromNative(NativeEventsReader reader) {
+    Greeks greeks = new Greeks();
+
+    greeks.setEventSymbol(reader.readString());
+    greeks.setEventTime(reader.readLong());
+    greeks.setEventFlags(reader.readInt());
+    greeks.setIndex(reader.readLong());
+
+    greeks.setPrice(reader.readDouble());
+    greeks.setVolatility(reader.readDouble());
+    greeks.setDelta(reader.readDouble());
+    greeks.setGamma(reader.readDouble());
+    greeks.setTheta(reader.readDouble());
+    greeks.setRho(reader.readDouble());
+    greeks.setVega(reader.readDouble());
+
+    return greeks;
   }
 }
