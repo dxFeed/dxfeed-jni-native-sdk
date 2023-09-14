@@ -7,7 +7,7 @@ import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Summary;
 
-public class SummaryToNative {
+public class SummaryMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -33,7 +33,7 @@ public class SummaryToNative {
    * } dxfg_summary_t;
    */
 
-  public static void convert(Summary event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(Summary event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                           // 8

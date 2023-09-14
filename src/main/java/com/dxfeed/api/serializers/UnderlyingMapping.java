@@ -6,7 +6,7 @@ import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.option.Underlying;
 
-public class UnderlyingToNative {
+public class UnderlyingMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -31,7 +31,7 @@ public class UnderlyingToNative {
    * } dxfg_underlying_t;
    */
 
-  public static void convert(Underlying event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(Underlying event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());   // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());       // 8

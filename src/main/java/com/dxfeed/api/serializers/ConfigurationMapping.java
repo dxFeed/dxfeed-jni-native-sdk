@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ConfigurationToNative {
+public class ConfigurationMapping {
   private static final Map<Long, Object> attachmentMap = new HashMap<>();
   private static final AtomicLong attachmentId = new AtomicLong();
 
@@ -26,7 +26,7 @@ public class ConfigurationToNative {
    * } dxfg_configuration_t;
    */
 
-  public static void convert(Configuration event, ByteBuffer pBytes) {
+  public static void toNative(Configuration event, ByteBuffer pBytes) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());  // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());      // 8

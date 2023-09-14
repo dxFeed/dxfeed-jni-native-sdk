@@ -6,7 +6,7 @@ import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.option.TheoPrice;
 
-public class TheoPriceToNative {
+public class TheoPriceMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -32,7 +32,7 @@ public class TheoPriceToNative {
    * } dxfg_theo_price_t;
    */
 
-  public static void convert(TheoPrice event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(TheoPrice event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());   // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());       // 8
