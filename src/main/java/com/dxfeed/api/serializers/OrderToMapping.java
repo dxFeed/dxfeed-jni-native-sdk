@@ -6,8 +6,8 @@ import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.*;
 
-public class OrderToNative {
-  public static byte convert(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+public class OrderToMapping {
+  public static byte toNative(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     if (event instanceof AnalyticOrder) {
       return convertAnalyticsOrder((AnalyticOrder) event, pBytes, pDoubles);
     } else if (event instanceof Order) {

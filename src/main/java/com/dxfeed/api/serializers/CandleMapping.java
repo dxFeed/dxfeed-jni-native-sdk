@@ -6,7 +6,7 @@ import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.CandleSymbol;
 
-public class CandleToNative {
+public class CandleMapping {
   /**
    * typedef struct dxfg_candle_symbol_t {
    *    dxfg_symbol_t supper;
@@ -38,7 +38,7 @@ public class CandleToNative {
    */
 
   // todo: sync about CandleSymbol
-  public static void convert(Candle event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(Candle event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol().toString());  // 2 + eventSymbolLength
     pBytes.writeInt(event.getEventFlags());                 // 4

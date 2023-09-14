@@ -31,45 +31,45 @@ public class NativeEventsList<T extends EventType<?>> {
       EventType<?> event = eventList.get(i);
       if (event instanceof TimeAndSale) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE;
-        TimeAndSalesToNative.convert((TimeAndSale) event, pBytes, pDoubles);
+        TimeAndSalesMapping.toNative((TimeAndSale) event, pBytes, pDoubles);
       } else if (event instanceof Quote) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_QUOTE;
-        QuoteToNative.convert((Quote) event, pBytes, pDoubles);
+        QuoteMapping.toNative((Quote) event, pBytes, pDoubles);
       } else if (event instanceof Candle) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CANDLE;
-        CandleToNative.convert((Candle) event, pBytes, pDoubles);
+        CandleMapping.toNative((Candle) event, pBytes, pDoubles);
       } else if (event instanceof TradeBase) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TRADE;
-        TradeToNative.convert((TradeBase) event, pBytes, pDoubles);
+        TradeMapping.toNative((TradeBase) event, pBytes, pDoubles);
       } else if (event instanceof Profile) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_PROFILE;
-        ProfileToNative.convert((Profile) event, pBytes, pDoubles);
+        ProfileMapping.toNative((Profile) event, pBytes, pDoubles);
       } else if (event instanceof Summary) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SUMMARY;
-        SummaryToNative.convert((Summary) event, pBytes, pDoubles);
+        SummaryMapping.toNative((Summary) event, pBytes, pDoubles);
       } else if (event instanceof Greeks) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_GREEKS;
-        GreeksToNative.convert((Greeks) event, pBytes, pDoubles);
+        GreeksMapping.toNative((Greeks) event, pBytes, pDoubles);
       }else if (event instanceof Underlying) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_UNDERLYING;
-        UnderlyingToNative.convert((Underlying) event, pBytes, pDoubles);
+        UnderlyingMapping.toNative((Underlying) event, pBytes, pDoubles);
       } else if (event instanceof TheoPrice) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_THEO_PRICE;
-        TheoPriceToNative.convert((TheoPrice) event, pBytes, pDoubles);
+        TheoPriceMapping.toNative((TheoPrice) event, pBytes, pDoubles);
       } else if (event instanceof Configuration) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CONFIGURATION;
-        ConfigurationToNative.convert((Configuration) event, pBytes);
+        ConfigurationMapping.toNative((Configuration) event, pBytes);
       } else if (event instanceof Message) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_MESSAGE;
-        MessageToNative.convert((Message) event, pBytes);
+        MessageMapping.toNative((Message) event, pBytes);
       } else if (event instanceof OptionSale) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_OPTION_SALE;
-        OptionSaleToNative.convert((OptionSale) event, pBytes, pDoubles);
+        OptionSaleMapping.toNative((OptionSale) event, pBytes, pDoubles);
       } else if (event instanceof OrderBase) {
-        pEventTypes[i] = OrderToNative.convert((OrderBase) event, pBytes, pDoubles);
+        pEventTypes[i] = OrderToMapping.toNative((OrderBase) event, pBytes, pDoubles);
       } else if (event instanceof Series) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SERIES;
-        SeriesToNative.convert((Series) event, pBytes, pDoubles);
+        SeriesMapping.toNative((Series) event, pBytes, pDoubles);
       } else {
         throw new IllegalStateException("Event mapping for " + event.getClass().getName() + " is not implemented");
       }
@@ -96,44 +96,44 @@ public class NativeEventsList<T extends EventType<?>> {
   private static EventType<?> readEvent(NativeEventsReader reader, byte pEventType) {
     switch (pEventType) {
       case DxfgEventClazzT.DXFG_EVENT_QUOTE: {
-        return QuoteToNative.fromNative(reader);
+        return QuoteMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_PROFILE: {
-        return ProfileToNative.fromNative(reader);
+        return ProfileMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_SUMMARY: {
-        return SummaryToNative.fromNative(reader);
+        return SummaryMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_GREEKS: {
-        return GreeksToNative.fromNative(reader);
+        return GreeksMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_CANDLE: {
-        return CandleToNative.fromNative(reader);
+        return CandleMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_UNDERLYING: {
-        return UnderlyingToNative.fromNative(reader);
+        return UnderlyingMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_THEO_PRICE: {
-        return TheoPriceToNative.fromNative(reader);
+        return TheoPriceMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_TRADE:
       case DxfgEventClazzT.DXFG_EVENT_TRADE_ETH: {
-        return TradeToNative.fromNative(reader);
+        return TradeMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE: {
-        return TimeAndSalesToNative.fromNative(reader);
+        return TimeAndSalesMapping.fromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_ORDER_BASE: {
-        return OrderToNative.orderBaseFromNative(reader);
+        return OrderToMapping.orderBaseFromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_ORDER: {
-        return OrderToNative.orderFromNative(reader);
+        return OrderToMapping.orderFromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER: {
-        return OrderToNative.analyticOrderFromNative(reader);
+        return OrderToMapping.analyticOrderFromNative(reader);
       }
       case DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER: {
-        return OrderToNative.spreadOrderFromNative(reader);
+        return OrderToMapping.spreadOrderFromNative(reader);
       }
       default:
         throw new IllegalStateException("Event mapping for event type " + pEventType + " is not implemented");

@@ -7,7 +7,7 @@ import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Trade;
 import com.dxfeed.event.market.TradeBase;
 
-public class TradeToNative {
+public class TradeMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -32,7 +32,7 @@ public class TradeToNative {
    *    int32_t flags;
    * } dxfg_trade_base_t;
    */
-  public static void convert(TradeBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(TradeBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                           // 8

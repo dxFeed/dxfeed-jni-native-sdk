@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MessageToNative {
+public class MessageMapping {
   private static final Map<Long, Object> attachmentMap = new HashMap<>();
   private static final AtomicLong attachmentId = new AtomicLong();
 
@@ -24,7 +24,7 @@ public class MessageToNative {
    * } dxfg_message_t;
    */
 
-  public static void convert(Message event, ByteBuffer pBytes) {
+  public static void toNative(Message event, ByteBuffer pBytes) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol()); // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());     // 8
