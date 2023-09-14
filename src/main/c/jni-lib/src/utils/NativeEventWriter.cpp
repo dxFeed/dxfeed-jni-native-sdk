@@ -2,6 +2,7 @@
 
 #include "dxfeed/utils/NativeEventWriter.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/events/QuoteMapping.h"
 
 namespace dxfeed::jni {
   NativeEventWriter::NativeEventWriter() {
@@ -56,7 +57,7 @@ namespace dxfeed::jni {
     eventTypes_.push_back(dxfgEventClazz);
     switch (dxfgEventClazz) {
       case DXFG_EVENT_QUOTE: {
-        fromQuote(r_cast<dxfg_quote_t*>(eventType));
+        QuoteMapping::fromQuote(r_cast<dxfg_quote_t*>(eventType), *this);
       }
       case DXFG_EVENT_PROFILE: {
         fromProfile(r_cast<dxfg_profile_t*>(eventType));
@@ -123,22 +124,6 @@ namespace dxfeed::jni {
     memcpy(data, doubleData_.data(), size);
     env->ReleasePrimitiveArrayCritical(pArray, data, 0);
     return pArray;
-  }
-
-  void NativeEventWriter::fromQuote(dxfg_quote_t* quote) {
-    writeString(quote->market_event.event_symbol);
-    writeInt64_t(quote->market_event.event_time);
-    writeInt32_t(quote->time_millis_sequence);
-    writeInt32_t(quote->time_nano_part);
-    writeInt64_t(quote->bid_time);
-    writeInt16_t(quote->bid_exchange_code);
-    writeInt64_t(quote->ask_time);
-    writeInt16_t(quote->ask_exchange_code);
-
-    writeDouble(quote->bid_price);
-    writeDouble(quote->bid_size);
-    writeDouble(quote->ask_price);
-    writeDouble(quote->ask_size);
   }
 
   void NativeEventWriter::fromProfile(dxfg_profile_t* profile) {

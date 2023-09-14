@@ -36,6 +36,8 @@ set(SOURCE_FILES
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp
     src/api/graal_isolate.cpp
+    src/events/EventReader.cpp
+    src/events/QuoteMapping.cpp
     src/listeners/DxEventListener.cpp
     src/listeners/DxStateChangeListener.cpp
     src/utils/JNIBridgeImpl.cpp
