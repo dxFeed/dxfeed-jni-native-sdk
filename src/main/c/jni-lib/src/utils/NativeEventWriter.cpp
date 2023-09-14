@@ -83,6 +83,18 @@ namespace dxfeed::jni {
       case DXFG_EVENT_TIME_AND_SALE: {
         fromTimeAndSale(r_cast<dxfg_time_and_sale_t*>(eventType));
       }
+      case DXFG_EVENT_ORDER_BASE: {
+        fromOrderBase(r_cast<dxfg_order_base_t*>(eventType));
+      }
+      case DXFG_EVENT_ORDER: {
+        fromOrder(r_cast<dxfg_order_t*>(eventType));
+      }
+      case DXFG_EVENT_ANALYTIC_ORDER: {
+        fromAnalyticOrder(r_cast<dxfg_analytic_order_t*>(eventType));
+      }
+      case DXFG_EVENT_SPREAD_ORDER: {
+        fromSpreadOrder(r_cast<dxfg_spread_order_t*>(eventType));
+      }
     }
   }
 
@@ -263,5 +275,45 @@ namespace dxfeed::jni {
     writeDouble(tns->size);
     writeDouble(tns->bid_price);
     writeDouble(tns->ask_price);
+  }
+
+  void NativeEventWriter::fromOrderBase(dxfg_order_base_t* orderBase) {
+    writeString(orderBase->market_event.event_symbol);
+    writeInt64_t(orderBase->market_event.event_time);
+    writeInt32_t(orderBase->event_flags);
+    writeInt64_t(orderBase->index);
+    writeInt64_t(orderBase->time_sequence);
+    writeInt32_t(orderBase->time_nano_part);
+    writeInt64_t(orderBase->action_time);
+    writeInt64_t(orderBase->order_id);
+    writeInt64_t(orderBase->aux_order_id);
+    writeInt64_t(orderBase->count);
+    writeInt32_t(orderBase->flags);
+    writeInt64_t(orderBase->trade_id);
+
+    writeDouble(orderBase->price);
+    writeDouble(orderBase->size);
+    writeDouble(orderBase->executed_size);
+    writeDouble(orderBase->trade_price);
+    writeDouble(orderBase->trade_size);
+  }
+
+  void NativeEventWriter::fromOrder(dxfg_order_t* order) {
+    fromOrderBase(&order->order_base);
+    writeString(order->market_maker);
+  }
+
+  void NativeEventWriter::fromSpreadOrder(dxfg_spread_order_t* order) {
+    fromOrderBase(&order->order_base);
+    writeString(order->spread_symbol);
+  }
+
+  void NativeEventWriter::fromAnalyticOrder(dxfg_analytic_order_t* analyticsOrder) {
+    fromOrder(&analyticsOrder->order);
+    writeInt32_t(analyticsOrder->iceberg_flags);
+
+    writeDouble(analyticsOrder->iceberg_peak_size);
+    writeDouble(analyticsOrder->iceberg_hidden_size);
+    writeDouble(analyticsOrder->iceberg_executed_size);
   }
 }

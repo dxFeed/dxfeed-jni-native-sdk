@@ -45,11 +45,23 @@ public class DxFeedEventMarketPackagePrivate {
     return event.getFlags();
   }
 
+  public static OrderBase createOrderBase() {
+    return new OrderBase();
+  }
+
   public static int getFlags(OrderBase event) {
     return event.getFlags();
   }
 
+  public static void setFlags(OrderBase event, int value) {
+    event.setFlags(value);
+  }
+
   public static int getIcebergFlags(AnalyticOrder event) {
     return event.getIcebergFlags();
+  }
+
+  public static void setIcebergFlags(AnalyticOrder event, int value) {
+    event.setIcebergFlags(value);
   }
 }
