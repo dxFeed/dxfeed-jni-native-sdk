@@ -29,6 +29,10 @@ namespace dxfeed::jni {
     void fromTheoPrice(dxfg_theo_price_t* theo);
     void fromTrade(dxfg_trade_base_t* eventType);
     void fromTimeAndSale(dxfg_time_and_sale_t* eventType);
+    void fromOrderBase(dxfg_order_base_t* eventType);
+    void fromOrder(dxfg_order_t* eventType);
+    void fromAnalyticOrder(dxfg_analytic_order_t* eventType);
+    void fromSpreadOrder(dxfg_spread_order_t* eventType);
 
     inline void writeBytes(const int8_t* bytes, int32_t len);
     inline void writeString(const char* str);
