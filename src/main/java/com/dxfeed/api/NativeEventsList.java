@@ -123,6 +123,18 @@ public class NativeEventsList<T extends EventType<?>> {
       case DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE: {
         return TimeAndSalesToNative.fromNative(reader);
       }
+      case DxfgEventClazzT.DXFG_EVENT_ORDER_BASE: {
+        return OrderToNative.orderBaseFromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_ORDER: {
+        return OrderToNative.orderFromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER: {
+        return OrderToNative.analyticOrderFromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER: {
+        return OrderToNative.spreadOrderFromNative(reader);
+      }
       default:
         throw new IllegalStateException("Event mapping for event type " + pEventType + " is not implemented");
     }
