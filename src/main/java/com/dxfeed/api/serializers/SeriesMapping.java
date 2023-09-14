@@ -4,7 +4,7 @@ import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.option.Series;
 
-public class SeriesToNative {
+public class SeriesMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -31,7 +31,7 @@ public class SeriesToNative {
    * } dxfg_series_t;
    */
 
-  public static void convert(Series event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(Series event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());  // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());      // 8

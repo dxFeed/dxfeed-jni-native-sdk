@@ -6,7 +6,7 @@ import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Profile;
 
-public class ProfileToNative {
+public class ProfileMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -37,7 +37,7 @@ public class ProfileToNative {
    *    int32_t flags;
    * } dxfg_profile_t;
    */
-  public static void convert(Profile event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(Profile event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                           // 8

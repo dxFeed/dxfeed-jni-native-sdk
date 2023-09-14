@@ -5,7 +5,7 @@ import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.OptionSale;
 
-public class OptionSaleToNative {
+public class OptionSaleMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -36,7 +36,7 @@ public class OptionSaleToNative {
    * } dxfg_option_sale_t;
    */
 
-  public static void convert(OptionSale event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(OptionSale event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                           // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                               // 8

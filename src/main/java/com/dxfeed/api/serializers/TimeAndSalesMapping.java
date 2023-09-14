@@ -6,7 +6,7 @@ import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.TimeAndSale;
 
-public class TimeAndSalesToNative {
+public class TimeAndSalesMapping {
   /**
    * typedef struct dxfg_market_event_t {
    *    dxfg_event_type_t event_type;
@@ -33,7 +33,7 @@ public class TimeAndSalesToNative {
    * } dxfg_time_and_sale_t;
    */
 
-  public static void convert(TimeAndSale event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static void toNative(TimeAndSale event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                         // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                             // 8
