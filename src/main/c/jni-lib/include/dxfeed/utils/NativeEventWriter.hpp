@@ -9,9 +9,6 @@
 
 namespace dxfeed::jni {
   struct NativeEventWriter {
-    using vector_uint8_t = std::vector<uint8_t>;
-    using vector_double = std::vector<double>;
-
     explicit NativeEventWriter();
     ~NativeEventWriter();
     void writeEvent(dxfg_event_type_t* eventType);
@@ -19,8 +16,14 @@ namespace dxfeed::jni {
     jbyteArray eventTypes(JNIEnv* env);
     jbyteArray byteData(JNIEnv* env);
     jdoubleArray doubleData(JNIEnv* env);
+
+    void writeString(const char* str);
+    void writeInt64_t(int64_t value);
+    void writeInt32_t(int32_t value);
+    void writeInt16_t(int16_t value);
+    void writeDouble(double value);
+
   private:
-    void fromQuote(dxfg_quote_t* eventType);
     void fromProfile(dxfg_profile_t* eventType);
     void fromSummary(dxfg_summary_t* eventType);
     void fromGreeks(dxfg_greeks_t* eventType);
@@ -35,11 +38,6 @@ namespace dxfeed::jni {
     void fromSpreadOrder(dxfg_spread_order_t* eventType);
 
     inline void writeBytes(const int8_t* bytes, int32_t len);
-    inline void writeString(const char* str);
-    inline void writeInt16_t(int16_t value);
-    inline void writeInt32_t(int32_t value);
-    inline void writeInt64_t(int64_t value);
-    inline void writeDouble(double value);
 
     std::vector<uint8_t> eventTypes_;
     std::vector<uint8_t> byteData_;

@@ -2,6 +2,7 @@
 
 #include "dxfeed/utils/NativeEventReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/events/QuoteMapping.h"
 
 namespace dxfeed::jni {
   template <typename T>
@@ -64,7 +65,7 @@ namespace dxfeed::jni {
   dxfg_event_type_t* NativeEventReader::toEvent(const char** pByteData, const double** pDoubleData, dxfg_event_clazz_t eventType) {
     switch (eventType) {
       case DXFG_EVENT_QUOTE: {
-        return r_cast<dxfg_event_type_t*>(toQuote(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(QuoteMapping::toQuote(pByteData, pDoubleData));
       }
       case DXFG_EVENT_PROFILE: {
         return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
@@ -144,24 +145,7 @@ namespace dxfeed::jni {
     return tns;
   }
 
-  dxfg_quote_t* NativeEventReader::toQuote(const char** pByteData, const double** pDoubleData) {
-    auto* quote = new dxfg_quote_t();
-    quote->market_event.event_type.clazz = DXFG_EVENT_QUOTE;
-    quote->market_event.event_symbol = readString(pByteData);
-    quote->market_event.event_time = readLong(pByteData);
-    quote->time_millis_sequence = readInt(pByteData);
-    quote->time_nano_part = readInt(pByteData);
-    quote->bid_time = readLong(pByteData);
-    quote->bid_exchange_code = readInt16_t(pByteData);
-    quote->ask_time = readLong(pByteData);
-    quote->ask_exchange_code = readInt16_t(pByteData);
 
-    quote->bid_price = readDouble(pDoubleData);
-    quote->bid_size = readDouble(pDoubleData);
-    quote->ask_price = readDouble(pDoubleData);
-    quote->ask_size = readDouble(pDoubleData);
-    return quote;
-  }
 
   dxfg_candle_t* NativeEventReader::toCandle(const char** pByteData, const double** pDoubleData) {
     auto* candle = new dxfg_candle_t();
