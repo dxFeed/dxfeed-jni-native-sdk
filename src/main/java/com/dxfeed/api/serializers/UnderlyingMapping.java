@@ -49,7 +49,6 @@ public class UnderlyingMapping {
 
   public static Underlying fromNative(NativeEventsReader reader) {
     Underlying underlying = new Underlying();
-
     underlying.setEventSymbol(reader.readString());
     underlying.setEventTime(reader.readLong());
     underlying.setEventFlags(reader.readInt());
@@ -61,7 +60,6 @@ public class UnderlyingMapping {
     underlying.setCallVolume(reader.readDouble());
     underlying.setPutVolume(reader.readDouble());
     underlying.setPutCallRatio(reader.readDouble());
-
     return underlying;
   }
 }

@@ -2,6 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.option.Series;
 
 public class SeriesMapping {
@@ -48,5 +49,24 @@ public class SeriesMapping {
     pDoubles.write(event.getForwardPrice());
     pDoubles.write(event.getDividend());
     pDoubles.write(event.getInterest());
+  }
+
+  public static Series fromNative(NativeEventsReader reader) {
+    Series series = new Series();
+    series.setEventSymbol(reader.readString());
+    series.setEventTime(reader.readLong());
+    series.setEventFlags(reader.readInt());
+    series.setIndex(reader.readLong());
+    series.setTimeSequence(reader.readLong());
+    series.setExpiration(reader.readInt());
+
+    series.setVolatility(reader.readDouble());
+    series.setCallVolume(reader.readDouble());
+    series.setPutVolume(reader.readDouble());
+    series.setPutCallRatio(reader.readDouble());
+    series.setForwardPrice(reader.readDouble());
+    series.setDividend(reader.readDouble());
+    series.setInterest(reader.readDouble());
+    return series;
   }
 }

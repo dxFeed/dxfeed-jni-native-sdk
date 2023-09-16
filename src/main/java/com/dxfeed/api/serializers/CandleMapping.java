@@ -41,8 +41,8 @@ public class CandleMapping {
   public static void toNative(Candle event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol().toString());  // 2 + eventSymbolLength
-    pBytes.writeInt(event.getEventFlags());                 // 4
     pBytes.writeLong(event.getEventTime());                 // 8
+    pBytes.writeInt(event.getEventFlags());                 // 4
     pBytes.writeLong(event.getIndex());                     // 8
     pBytes.writeLong(event.getCount());                     // 8
 
@@ -61,10 +61,9 @@ public class CandleMapping {
 
   public static Candle fromNative(NativeEventsReader reader) {
     Candle candle = new Candle();
-
     candle.setEventSymbol(CandleSymbol.valueOf(reader.readString()));
-    candle.setEventFlags(reader.readInt());
     candle.setEventTime(reader.readLong());
+    candle.setEventFlags(reader.readInt());
     candle.setIndex(reader.readLong());
     candle.setCount(reader.readLong());
 
@@ -78,7 +77,6 @@ public class CandleMapping {
     candle.setAskVolumeAsDouble(reader.readDouble());
     candle.setImpVolatility(reader.readDouble());
     candle.setOpenInterestAsDouble(reader.readDouble());
-
     return candle;
   }
 }

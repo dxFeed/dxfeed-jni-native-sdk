@@ -63,7 +63,6 @@ public class ProfileMapping {
 
   public static Profile fromNative(NativeEventsReader reader) {
     Profile profile = new Profile();
-
     profile.setEventSymbol(reader.readString());
     profile.setEventTime(reader.readLong());
     profile.setHaltStartTime(reader.readLong());
@@ -83,7 +82,6 @@ public class ProfileMapping {
     profile.setExDividendAmount(reader.readDouble());
     profile.setShares(reader.readDouble());
     profile.setFreeFloat(reader.readDouble());
-
     return profile;
   }
 }

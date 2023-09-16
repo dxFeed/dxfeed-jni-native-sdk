@@ -2,6 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.OptionSale;
 
@@ -57,5 +58,28 @@ public class OptionSaleMapping {
     pDoubles.write(event.getUnderlyingPrice());
     pDoubles.write(event.getVolatility());
     pDoubles.write(event.getDelta());
+  }
+
+  public static OptionSale fromNative(NativeEventsReader reader) {
+    OptionSale optionSale = new OptionSale();
+    optionSale.setEventSymbol(reader.readString());
+    optionSale.setEventTime(reader.readLong());
+    optionSale.setEventFlags(reader.readInt());
+    optionSale.setIndex(reader.readLong());
+    optionSale.setTimeSequence(reader.readLong());
+    optionSale.setTimeNanoPart(reader.readInt());
+    optionSale.setExchangeCode(reader.readChar());
+    DxFeedEventMarketPackagePrivate.setFlags(optionSale, reader.readInt());
+    optionSale.setExchangeSaleConditions(reader.readString());
+    optionSale.setOptionSymbol(reader.readString());
+
+    optionSale.setPrice(reader.readDouble());
+    optionSale.setSize(reader.readDouble());
+    optionSale.setBidPrice(reader.readDouble());
+    optionSale.setAskPrice(reader.readDouble());
+    optionSale.setUnderlyingPrice(reader.readDouble());
+    optionSale.setVolatility(reader.readDouble());
+    optionSale.setDelta(reader.readDouble());
+    return optionSale;
   }
 }

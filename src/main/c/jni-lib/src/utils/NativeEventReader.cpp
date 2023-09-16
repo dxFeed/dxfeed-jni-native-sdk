@@ -1,93 +1,65 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/utils/NativeEventReader.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/events/CandleMapping.h"
+#include "dxfeed/events/EventReader.h"
+#include "dxfeed/events/GreeksMapping.h"
+#include "dxfeed/events/OptionSaleMapping.h"
+#include "dxfeed/events/OrderMapping.h"
+#include "dxfeed/events/ProfileMapping.h"
 #include "dxfeed/events/QuoteMapping.h"
+#include "dxfeed/events/SeriesMapping.h"
+#include "dxfeed/events/SummaryMapping.h"
+#include "dxfeed/events/TheoPriceMapping.h"
+#include "dxfeed/events/TradeMapping.h"
+#include "dxfeed/events/TimeAndSaleMapping.h"
+#include "dxfeed/events/UnderlyingMapping.h"
+#include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/NativeEventReader.hpp"
 
 namespace dxfeed::jni {
-  template <typename T>
-  inline T readUByte(const char** pData) {
-    T val = (**pData) & 0xFF;
-    ++(*pData);
-    return val;
-  }
-
-  template <typename PrimitiveT>
-  inline PrimitiveT readPrimitive(const char** pData) {
-    PrimitiveT value = 0;
-    for (size_t n = 0; n < sizeof(PrimitiveT); ++n) {
-      value |= readUByte<PrimitiveT>(pData) << (n * 8);
-    }
-    return value;
-  }
-
-  inline int8_t readByte(const char** pData) {
-    return readUByte<int8_t>(pData);
-  }
-
-  inline int16_t readInt16_t(const char** pData) {
-    return readPrimitive<int16_t>(pData);
-  }
-
-  inline int32_t readInt(const char** pData) {
-    return readPrimitive<int32_t>(pData);
-  }
-
-  inline int64_t readLong(const char** pData) {
-    return readPrimitive<int64_t>(pData);
-  }
-
-  inline double readDouble(const double** pData) {
-    double value = **pData;
-    ++(*pData);
-    return value;
-  }
-
-  inline const char* readString(const char** pData) {
-    int16_t strSize = readInt16_t(pData);
-    const auto result = strSize ? *pData : "";
-    (*pData) += strSize;
-    return result;
-  }
-
-  std::vector<dxfg_event_type_t*> NativeEventReader::toEvents(int size, const char* pByteData, const double* pDoubleData,
+  std::vector<dxfg_event_type_t*> NativeEventReader::toEvents(int size,
+                                                              const char* pByteData,
+                                                              const double* pDoubleData,
                                                               const char* pEventTypes)
   {
     std::vector<dxfg_event_type_t*> events(size);
     for (int i = 0 ; i < size; ++i) {
 //      std::cout << "events[i] = " << i << ", pByteData = 0x" << (void*)pByteData << ", pDoubleData = 0x" << (void*)pDoubleData << std::endl;
-      auto eventType = static_cast<dxfg_event_clazz_t>(readByte(&pEventTypes));
+      auto eventType = static_cast<dxfg_event_clazz_t>(EventReader::readByte(&pEventTypes));
       events[i] = toEvent(&pByteData, &pDoubleData, eventType);
     }
     return events;
   }
 
-  dxfg_event_type_t* NativeEventReader::toEvent(const char** pByteData, const double** pDoubleData, dxfg_event_clazz_t eventType) {
+  dxfg_event_type_t* NativeEventReader::toEvent(const char** pByteData,
+                                                const double** pDoubleData,
+                                                dxfg_event_clazz_t eventType)
+  {
     switch (eventType) {
       case DXFG_EVENT_QUOTE: {
         return r_cast<dxfg_event_type_t*>(QuoteMapping::toQuote(pByteData, pDoubleData));
       }
       case DXFG_EVENT_PROFILE: {
-        return r_cast<dxfg_event_type_t*>(toProfile(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(ProfileMapping::toProfile(pByteData, pDoubleData));
       }
       case DXFG_EVENT_SUMMARY: {
-        return r_cast<dxfg_event_type_t*>(toSummary(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(SummaryMapping::toSummary(pByteData, pDoubleData));
       }
       case DXFG_EVENT_GREEKS: {
-        return r_cast<dxfg_event_type_t*>(toGreeks(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(GreeksMapping::toGreeks(pByteData, pDoubleData));
       }
       case DXFG_EVENT_CANDLE: {
-        return r_cast<dxfg_event_type_t*>(toCandle(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(CandleMapping::toCandle(pByteData, pDoubleData));
       }
       case DXFG_EVENT_UNDERLYING: {
-        return r_cast<dxfg_event_type_t*>(toUnderlying(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(UnderlyingMapping::toUnderlying(pByteData, pDoubleData));
       }
       case DXFG_EVENT_THEO_PRICE: {
-        return r_cast<dxfg_event_type_t*>(toTheoPrice(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(TheoPriceMapping::toTheoPrice(pByteData, pDoubleData));
       }
       case DXFG_EVENT_TRADE_ETH:
       case DXFG_EVENT_TRADE: {
-        return r_cast<dxfg_event_type_t*>(toTrade(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(TradeMapping::toTradeBase(pByteData, pDoubleData));
       }
       case DXFG_EVENT_CONFIGURATION: {
         return r_cast<dxfg_event_type_t*>(toConfiguration(pByteData));
@@ -96,25 +68,25 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(toMessage(pByteData));
       }
       case DXFG_EVENT_TIME_AND_SALE: {
-        return r_cast<dxfg_event_type_t*>(toTimeAndSale(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(TimeAndSaleMapping::toTimeAndSale(pByteData, pDoubleData));
       }
       case DXFG_EVENT_ORDER_BASE: {
-        return r_cast<dxfg_event_type_t*>(toOrderBase(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(OrderMapping::toOrderBase(pByteData, pDoubleData));
       }
       case DXFG_EVENT_ORDER: {
-        return r_cast<dxfg_event_type_t*>(toOrder(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(OrderMapping::toOrder(pByteData, pDoubleData));
       }
       case DXFG_EVENT_ANALYTIC_ORDER: {
-        return r_cast<dxfg_event_type_t*>(toAnalyticsOrder(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(OrderMapping::toAnalyticsOrder(pByteData, pDoubleData));
       }
       case DXFG_EVENT_SPREAD_ORDER: {
-        return r_cast<dxfg_event_type_t*>(toSpreadOrder(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(OrderMapping::toSpreadOrder(pByteData, pDoubleData));
       }
       case DXFG_EVENT_SERIES: {
-        return r_cast<dxfg_event_type_t*>(toSeries(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(SeriesMapping::toSeries(pByteData, pDoubleData));
       }
       case DXFG_EVENT_OPTION_SALE: {
-        return r_cast<dxfg_event_type_t*>(toOptionSale(pByteData, pDoubleData));
+        return r_cast<dxfg_event_type_t*>(OptionSaleMapping::toOptionSale(pByteData, pDoubleData));
       }
       default: {
         javaLogger->info("NativeEventReader::toEvent = ", nullptr);
@@ -123,180 +95,12 @@ namespace dxfeed::jni {
     }
   }
 
-  dxfg_time_and_sale_t* NativeEventReader::toTimeAndSale(const char** pByteData, const double** pDoubleData) {
-    auto* tns = new dxfg_time_and_sale_t();
-    tns->market_event.event_type.clazz = DXFG_EVENT_TIME_AND_SALE;
-    tns->market_event.event_symbol = readString(pByteData);
-    tns->market_event.event_time = readLong(pByteData);
-    tns->event_flags = readInt(pByteData);
-    tns->index = readLong(pByteData);
-    tns->time_nano_part = readInt(pByteData);
-    tns->exchange_code = readInt16_t(pByteData);
-    tns->flags = readInt(pByteData);
-
-    tns->exchange_sale_conditions = readString(pByteData);
-    tns->buyer = readString(pByteData);
-    tns->seller = readString(pByteData);
-
-    tns->price = readDouble(pDoubleData);
-    tns->size = readDouble(pDoubleData);
-    tns->bid_price = readDouble(pDoubleData);
-    tns->ask_price = readDouble(pDoubleData);
-    return tns;
-  }
-
-
-
-  dxfg_candle_t* NativeEventReader::toCandle(const char** pByteData, const double** pDoubleData) {
-    auto* candle = new dxfg_candle_t();
-    candle->event_type.clazz = DXFG_EVENT_CANDLE;
-    candle->event_symbol = readString(pByteData);
-    candle->event_time = readLong(pByteData);
-    candle->event_flags = readInt(pByteData);
-    candle->index = readLong(pByteData);
-    candle->count = readLong(pByteData);
-
-    candle->open = readDouble(pDoubleData);
-    candle->high = readDouble(pDoubleData);
-    candle->low = readDouble(pDoubleData);
-    candle->close = readDouble(pDoubleData);
-    candle->volume = readDouble(pDoubleData);
-    candle->vwap = readDouble(pDoubleData);
-    candle->bid_volume = readDouble(pDoubleData);
-    candle->ask_volume = readDouble(pDoubleData);
-    candle->imp_volatility = readDouble(pDoubleData);
-    candle->open_interest = readDouble(pDoubleData);
-    return candle;
-  }
-
-  dxfg_trade_t* NativeEventReader::toTrade(const char** pByteData, const double** pDoubleData) {
-    auto* trade = new dxfg_trade_base_t();
-    trade->market_event.event_type.clazz = DXFG_EVENT_TRADE;
-    trade->market_event.event_symbol = readString(pByteData);
-    trade->market_event.event_time = readLong(pByteData);
-    trade->time_sequence = readLong(pByteData);
-    trade->time_nano_part = readInt(pByteData);
-    trade->exchange_code = readInt16_t(pByteData);
-    trade->day_id = readInt(pByteData);
-    trade->flags = readInt(pByteData);
-
-    trade->price = readDouble(pDoubleData);
-    trade->change = readDouble(pDoubleData);
-    trade->size = readDouble(pDoubleData);
-    trade->day_volume = readDouble(pDoubleData);
-    trade->day_turnover = readDouble(pDoubleData);
-    return r_cast<dxfg_trade_t*>(trade);
-  }
-
-  dxfg_profile_t* NativeEventReader::toProfile(const char** pByteData, const double** pDoubleData) {
-    auto* profile = new dxfg_profile_t();
-    profile->market_event.event_type.clazz = DXFG_EVENT_PROFILE;
-    profile->market_event.event_symbol = readString(pByteData);
-    profile->market_event.event_time = readLong(pByteData);
-
-    profile->halt_start_time = readLong(pByteData);
-    profile->halt_end_time = readLong(pByteData);
-    profile->ex_dividend_day_id = readInt(pByteData);
-    profile->flags = readInt(pByteData);
-    profile->description = readString(pByteData);
-    profile->status_reason = readString(pByteData);
-
-    profile->high_limit_price = readDouble(pDoubleData);
-    profile->low_limit_price = readDouble(pDoubleData);
-    profile->high_52_week_price = readDouble(pDoubleData);
-    profile->low_52_week_price = readDouble(pDoubleData);
-    profile->beta = readDouble(pDoubleData);
-    profile->earnings_per_share = readDouble(pDoubleData);
-    profile->dividend_frequency = readDouble(pDoubleData);
-    profile->ex_dividend_amount = readDouble(pDoubleData);
-    profile->shares = readDouble(pDoubleData);
-    profile->free_float = readDouble(pDoubleData);
-    return profile;
-  }
-
-  dxfg_summary_t* NativeEventReader::toSummary(const char** pByteData, const double** pDoubleData) {
-    auto summary = new dxfg_summary_t();
-    summary->market_event.event_type.clazz = DXFG_EVENT_SUMMARY;
-    summary->market_event.event_symbol = readString(pByteData);
-    summary->market_event.event_time = readLong(pByteData);
-    summary->day_id = readInt(pByteData);
-    summary->prev_day_id = readInt(pByteData);
-    summary->open_interest = readLong(pByteData);
-    summary->flags = readInt(pByteData);
-
-    summary->day_open_price = readDouble(pDoubleData);
-    summary->day_high_price = readDouble(pDoubleData);
-    summary->day_low_price = readDouble(pDoubleData);
-    summary->day_close_price = readDouble(pDoubleData);
-    summary->prev_day_close_price = readDouble(pDoubleData);
-    summary->prev_day_volume = readDouble(pDoubleData);
-
-    return summary;
-  }
-
-  dxfg_greeks_t* NativeEventReader::toGreeks(const char** pByteData, const double** pDoubleData) {
-    auto greeks = new dxfg_greeks_t();
-    greeks->market_event.event_type.clazz = DXFG_EVENT_GREEKS;
-    greeks->market_event.event_symbol = readString(pByteData);
-    greeks->market_event.event_time = readLong(pByteData);
-    greeks->event_flags = readInt(pByteData);
-    greeks->index = readLong(pByteData);
-
-    greeks->price = readDouble(pDoubleData);
-    greeks->volatility = readDouble(pDoubleData);
-    greeks->delta = readDouble(pDoubleData);
-    greeks->gamma = readDouble(pDoubleData);
-    greeks->theta = readDouble(pDoubleData);
-    greeks->rho = readDouble(pDoubleData);
-    greeks->vega = readDouble(pDoubleData);
-
-    return greeks;
-  }
-
-  dxfg_underlying_t* NativeEventReader::toUnderlying(const char** pByteData, const double** pDoubleData) {
-    auto* underlying = new dxfg_underlying_t();
-    underlying->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
-    underlying->market_event.event_symbol = readString(pByteData);
-    underlying->market_event.event_time = readLong(pByteData);
-
-    underlying->event_flags = readInt(pByteData);
-    underlying->index = readLong(pByteData);
-
-    underlying->volatility = readDouble(pDoubleData);
-    underlying->front_volatility = readDouble(pDoubleData);
-    underlying->back_volatility = readDouble(pDoubleData);
-    underlying->call_volume = readDouble(pDoubleData);
-    underlying->put_volume = readDouble(pDoubleData);
-    underlying->put_call_ratio = readDouble(pDoubleData);
-
-    return underlying;
-  }
-
-  dxfg_theo_price_t* NativeEventReader::toTheoPrice(const char** pByteData, const double** pDoubleData) {
-    auto* theoPrice = new dxfg_theo_price_t();
-    theoPrice->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
-    theoPrice->market_event.event_symbol = readString(pByteData);
-    theoPrice->market_event.event_time = readLong(pByteData);
-
-    theoPrice->event_flags = readInt(pByteData);
-    theoPrice->index = readLong(pByteData);
-
-    theoPrice->price = readDouble(pDoubleData);
-    theoPrice->underlying_price = readDouble(pDoubleData);
-    theoPrice->delta = readDouble(pDoubleData);
-    theoPrice->gamma = readDouble(pDoubleData);
-    theoPrice->dividend = readDouble(pDoubleData);
-    theoPrice->interest = readDouble(pDoubleData);
-
-    return theoPrice;
-  }
-
   dxfg_configuration_t* NativeEventReader::toConfiguration(const char** pByteData) {
     auto* configuration = new dxfg_configuration_t();// todo: make wrapper to get attachment fromJava
     configuration->event_type.clazz = DXFG_EVENT_CONFIGURATION;
-    configuration->event_symbol = readString(pByteData);
-    configuration->event_time = readLong(pByteData);
-    configuration->version = readInt(pByteData);
+    configuration->event_symbol = EventReader::readString(pByteData);
+    configuration->event_time = EventReader::readLong(pByteData);
+    configuration->version = EventReader::readInt(pByteData);
     // todo: read next ID of type LONG, ID points to java.lang.Object attachment in Java
     // configuration->attachment = readBlob();
     return configuration;
@@ -305,117 +109,10 @@ namespace dxfeed::jni {
   dxfg_message_t* NativeEventReader::toMessage(const char** pByteData) {
     auto* message = new dxfg_message_t(); // todo: make wrapper to get attachment from Java
     message->event_type.clazz = DXFG_EVENT_MESSAGE;
-    message->event_symbol = readString(pByteData);
-    message->event_time = readLong(pByteData);
+    message->event_symbol = EventReader::readString(pByteData);
+    message->event_time = EventReader::readLong(pByteData);
     // todo: read next ID of type LONG, ID points to java.lang.Object attachment in Java
     // message->attachment = readBlob(pByteData);
     return message;
-  }
-
-  dxfg_option_sale_t* NativeEventReader::toOptionSale(const char** pByteData, const double** pDoubleData) {
-    auto* optionSale = new dxfg_option_sale_t();
-    optionSale->market_event.event_type.clazz = DXFG_EVENT_OPTION_SALE;
-    optionSale->market_event.event_symbol = readString(pByteData);
-    optionSale->market_event.event_time = readLong(pByteData);
-    optionSale->event_flags = readInt(pByteData);
-    optionSale->index = readLong(pByteData);
-    optionSale->time_sequence = readLong(pByteData);
-    optionSale->time_nano_part = readInt(pByteData);
-    optionSale->exchange_code = readInt16_t(pByteData);
-    optionSale->flags = readInt(pByteData);
-
-    optionSale->exchange_sale_conditions = readString(pByteData);
-    optionSale->option_symbol = readString(pByteData);
-
-    optionSale->price = readDouble(pDoubleData);
-    optionSale->size = readDouble(pDoubleData);
-    optionSale->bid_price = readDouble(pDoubleData);
-    optionSale->ask_price = readDouble(pDoubleData);
-    optionSale->underlying_price = readDouble(pDoubleData);
-    optionSale->volatility = readDouble(pDoubleData);
-    optionSale->delta = readDouble(pDoubleData);
-    return optionSale;
-  }
-
-  dxfg_order_base_t* NativeEventReader::toOrderBase(const char** pByteData, const double** pDoubleData) {
-    auto* orderBase = new dxfg_order_base_t();
-    readOrder(pByteData, pDoubleData, orderBase);
-    return orderBase;
-  }
-
-  dxfg_order_t* NativeEventReader::toOrder(const char** pByteData, const double** pDoubleData) {
-    auto* order = new dxfg_order_t();
-    readOrder(pByteData, pDoubleData, &order->order_base);
-    order->market_maker = readString(pByteData);
-    return order;
-  }
-
-  dxfg_analytic_order_t* NativeEventReader::toAnalyticsOrder(const char** pByteData, const double** pDoubleData) {
-    auto* analyticsOrder = new dxfg_analytic_order_t();
-
-    dxfg_order_t& order = analyticsOrder->order;
-
-    dxfg_order_base_t& orderBase = order.order_base;
-    readOrder(pByteData, pDoubleData, &orderBase);
-
-    order.market_maker = readString(pByteData);
-
-    analyticsOrder->iceberg_flags = readInt(pByteData);
-    analyticsOrder->iceberg_peak_size = readDouble(pDoubleData);
-    analyticsOrder->iceberg_hidden_size = readDouble(pDoubleData);
-    analyticsOrder->iceberg_executed_size = readDouble(pDoubleData);
-    return analyticsOrder;
-  }
-
-  dxfg_spread_order_t* NativeEventReader::toSpreadOrder(const char** pByteData, const double** pDoubleData) {
-    auto* order = new dxfg_spread_order_t();
-    readOrder(pByteData, pDoubleData, &order->order_base);
-    order->spread_symbol = readString(pByteData);
-    return order;
-  }
-
-  dxfg_series_t* NativeEventReader::toSeries(const char** pByteData, const double** pDoubleData) {
-    auto* series = new dxfg_series_t();
-    series->market_event.event_type.clazz = DXFG_EVENT_SERIES;
-    series->market_event.event_symbol = readString(pByteData);
-    series->market_event.event_time = readLong(pByteData);
-
-    series->event_flags = readInt(pByteData);
-    series->index = readLong(pByteData);
-    series->time_sequence = readLong(pByteData);
-    series->expiration = readInt(pByteData);
-
-    series->volatility = readDouble(pDoubleData);
-    series->call_volume = readDouble(pDoubleData);
-    series->put_volume = readDouble(pDoubleData);
-    series->put_call_ratio = readDouble(pDoubleData);
-    series->forward_price = readDouble(pDoubleData);
-    series->dividend = readDouble(pDoubleData);
-    series->interest = readDouble(pDoubleData);
-    return series;
-  }
-
-  void NativeEventReader::readOrder(const char** pByteData, const double** pDoubleData,
-                                    dxfg_order_base_t* const orderBase)
-  {
-    orderBase->market_event.event_type.clazz = DXFG_EVENT_ORDER_BASE;
-    orderBase->market_event.event_symbol = readString(pByteData);
-    orderBase->market_event.event_time = readLong(pByteData);
-    orderBase->event_flags = readInt(pByteData);
-    orderBase->index = readLong(pByteData);
-    orderBase->time_sequence = readLong(pByteData);
-    orderBase->time_nano_part = readInt(pByteData);
-    orderBase->action_time = readLong(pByteData);
-    orderBase->order_id = readLong(pByteData);
-    orderBase->aux_order_id = readLong(pByteData);
-    orderBase->count = readLong(pByteData);
-    orderBase->flags = readInt(pByteData);
-    orderBase->trade_id = readLong(pByteData);
-
-    orderBase->price = readDouble(pDoubleData);
-    orderBase->size = readDouble(pDoubleData);
-    orderBase->executed_size = readDouble(pDoubleData);
-    orderBase->trade_price = readDouble(pDoubleData);
-    orderBase->trade_size = readDouble(pDoubleData);
   }
 }

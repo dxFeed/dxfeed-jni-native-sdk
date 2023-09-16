@@ -51,7 +51,6 @@ public class GreeksMapping {
 
   public static Greeks fromNative(NativeEventsReader reader) {
     Greeks greeks = new Greeks();
-
     greeks.setEventSymbol(reader.readString());
     greeks.setEventTime(reader.readLong());
     greeks.setEventFlags(reader.readInt());
@@ -64,7 +63,6 @@ public class GreeksMapping {
     greeks.setTheta(reader.readDouble());
     greeks.setRho(reader.readDouble());
     greeks.setVega(reader.readDouble());
-
     return greeks;
   }
 }

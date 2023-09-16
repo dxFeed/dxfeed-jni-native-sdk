@@ -66,7 +66,7 @@ public class NativeEventsList<T extends EventType<?>> {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_OPTION_SALE;
         OptionSaleMapping.toNative((OptionSale) event, pBytes, pDoubles);
       } else if (event instanceof OrderBase) {
-        pEventTypes[i] = OrderToMapping.toNative((OrderBase) event, pBytes, pDoubles);
+        pEventTypes[i] = OrderToMapping.toNative(event, pBytes, pDoubles);
       } else if (event instanceof Series) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SERIES;
         SeriesMapping.toNative((Series) event, pBytes, pDoubles);
@@ -134,6 +134,12 @@ public class NativeEventsList<T extends EventType<?>> {
       }
       case DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER: {
         return OrderToMapping.spreadOrderFromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_OPTION_SALE: {
+        return OptionSaleMapping.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_SERIES: {
+        return SeriesMapping.fromNative(reader);
       }
       default:
         throw new IllegalStateException("Event mapping for event type " + pEventType + " is not implemented");

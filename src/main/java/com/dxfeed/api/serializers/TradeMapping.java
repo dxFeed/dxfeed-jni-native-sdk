@@ -52,7 +52,6 @@ public class TradeMapping {
 
   public static Trade fromNative(NativeEventsReader reader) {
     Trade trade = new Trade();
-
     trade.setEventSymbol(reader.readString());
     trade.setEventTime(reader.readLong());
     trade.setTimeSequence(reader.readLong());
@@ -66,7 +65,6 @@ public class TradeMapping {
     trade.setSizeAsDouble(reader.readDouble());
     trade.setDayVolumeAsDouble(reader.readDouble());
     trade.setDayTurnover(reader.readDouble());
-
     return trade;
   }
 }

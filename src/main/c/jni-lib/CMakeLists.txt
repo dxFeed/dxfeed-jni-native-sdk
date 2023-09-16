@@ -36,8 +36,19 @@ set(SOURCE_FILES
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp
     src/api/graal_isolate.cpp
+    src/events/CandleMapping.cpp
     src/events/EventReader.cpp
+    src/events/GreeksMapping.cpp
+    src/events/OptionSaleMapping.cpp
+    src/events/OrderMapping.cpp
     src/events/QuoteMapping.cpp
+    src/events/ProfileMapping.cpp
+    src/events/SeriesMapping.cpp
+    src/events/SummaryMapping.cpp
+    src/events/TheoPriceMapping.cpp
+    src/events/TimeAnsSaleMapping.cpp
+    src/events/TradeMapping.cpp
+    src/events/UnderlyingMapping.cpp
     src/listeners/DxEventListener.cpp
     src/listeners/DxStateChangeListener.cpp
     src/utils/JNIBridgeImpl.cpp
