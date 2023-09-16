@@ -24,7 +24,7 @@ namespace dxfeed {
     return quote;
   }
 
-  void QuoteMapping::fromQuote(dxfg_quote_t* quote, NativeEventWriter& writer) {
+  void QuoteMapping::fromQuote(dxfg_quote_t* quote, ByteWriter& writer) {
     writer.writeString(quote->market_event.event_symbol);
     writer.writeInt64_t(quote->market_event.event_time);
     writer.writeInt32_t(quote->time_millis_sequence);

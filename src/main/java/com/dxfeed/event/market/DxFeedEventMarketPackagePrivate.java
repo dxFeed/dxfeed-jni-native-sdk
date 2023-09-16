@@ -45,6 +45,10 @@ public class DxFeedEventMarketPackagePrivate {
     return event.getFlags();
   }
 
+  public static void setFlags(OptionSale event, int value) {
+    event.setFlags(value);
+  }
+
   public static OrderBase createOrderBase() {
     return new OrderBase();
   }

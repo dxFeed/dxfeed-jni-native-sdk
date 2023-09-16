@@ -3,7 +3,7 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/NativeEventsList.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
-#include "dxfeed/utils/NativeEventWriter.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
   NativeEventsList::NativeEventsList(JNIEnv* env):
@@ -102,7 +102,7 @@ namespace dxfeed::jni {
 
   jobject NativeEventsList::fromNativeEventsList(dxfg_event_type_list* pList) {
     auto size = pList->size;
-    NativeEventWriter writer;
+    ByteWriter writer;
     for (int i = 0; i < size; ++i) {
       writer.writeEvent(pList->elements[i]);
     }

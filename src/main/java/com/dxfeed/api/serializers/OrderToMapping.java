@@ -7,7 +7,7 @@ import com.dxfeed.api.buffers.NativeEventsReader;
 import com.dxfeed.event.market.*;
 
 public class OrderToMapping {
-  public static byte toNative(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static <T> byte toNative(T event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     if (event instanceof AnalyticOrder) {
       return convertAnalyticsOrder((AnalyticOrder) event, pBytes, pDoubles);
     } else if (event instanceof Order) {
@@ -15,7 +15,7 @@ public class OrderToMapping {
     } else if (event instanceof SpreadOrder) {
       return convertSpreadOrder((SpreadOrder) event, pBytes, pDoubles);
     } else {
-      return convertOrderBase(event, pBytes, pDoubles);
+      return writeOrderBase((OrderBase) event, pBytes, pDoubles);
     }
   }
 
@@ -49,7 +49,7 @@ public class OrderToMapping {
    * } dxfg_order_base_t;
    */
 
-  private static byte convertOrderBase(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  private static byte writeOrderBase(OrderBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                         // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                             // 8
@@ -112,7 +112,7 @@ public class OrderToMapping {
    */
 
   private static byte convertOrder(Order event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
-    convertOrderBase(event, pBytes, pDoubles);
+    writeOrderBase(event, pBytes, pDoubles);
     pBytes.writeString(event.getMarketMaker());                         // 2 + marketMakerLength
     return DxfgEventClazzT.DXFG_EVENT_ORDER;
   }
@@ -137,7 +137,7 @@ public class OrderToMapping {
 
   private static byte convertSpreadOrder(SpreadOrder event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     // BYTE DATA
-    convertOrderBase(event, pBytes, pDoubles);
+    writeOrderBase(event, pBytes, pDoubles);
     pBytes.writeString(event.getSpreadSymbol());                        // 2 + spreadSymbolLength
     return DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER;
   }
@@ -165,10 +165,8 @@ public class OrderToMapping {
 
   private static byte convertAnalyticsOrder(AnalyticOrder event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
     convertOrder(event, pBytes, pDoubles);
-
     // BYTE DATA
     pBytes.writeInt(DxFeedEventMarketPackagePrivate.getIcebergFlags(event));  // 4
-
     // DOUBLE DATA
     pDoubles.write(event.getIcebergPeakSize());
     pDoubles.write(event.getIcebergHiddenSize());
@@ -186,7 +184,6 @@ public class OrderToMapping {
     analyticOrder.setIcebergPeakSize(reader.readDouble());
     analyticOrder.setIcebergHiddenSize(reader.readDouble());
     analyticOrder.setIcebergExecutedSize(reader.readDouble());
-
     return analyticOrder;
   }
 }

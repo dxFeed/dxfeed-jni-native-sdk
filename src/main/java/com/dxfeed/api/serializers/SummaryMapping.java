@@ -53,7 +53,6 @@ public class SummaryMapping {
 
   public static Summary fromNative(NativeEventsReader reader) {
     Summary summary = new Summary();
-
     summary.setEventSymbol(reader.readString());
     summary.setEventTime(reader.readLong());
     summary.setDayId(reader.readInt());
@@ -68,7 +67,6 @@ public class SummaryMapping {
     summary.setDayClosePrice(reader.readDouble());
     summary.setPrevDayClosePrice(reader.readDouble());
     summary.setPrevDayVolume(reader.readDouble());
-
     return summary;
   }
 }

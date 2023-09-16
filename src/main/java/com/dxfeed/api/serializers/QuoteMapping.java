@@ -50,7 +50,6 @@ public class QuoteMapping {
 
   public static Quote fromNative(NativeEventsReader reader) {
     Quote quote = new Quote();
-
     quote.setEventSymbol(reader.readString());
     quote.setEventTime(reader.readLong());
     DxFeedEventMarketPackagePrivate.setTimeMillisSequence(quote, reader.readInt());
@@ -64,7 +63,6 @@ public class QuoteMapping {
     quote.setBidSizeAsDouble(reader.readDouble());
     quote.setAskPrice(reader.readDouble());
     quote.setAskSizeAsDouble(reader.readDouble());
-
     return quote;
   }
 }
