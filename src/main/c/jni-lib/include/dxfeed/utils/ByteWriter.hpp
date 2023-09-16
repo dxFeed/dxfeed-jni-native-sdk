@@ -8,9 +8,9 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
-  struct NativeEventWriter {
-    explicit NativeEventWriter();
-    ~NativeEventWriter();
+  struct ByteWriter {
+    explicit ByteWriter();
+    ~ByteWriter();
     void writeEvent(dxfg_event_type_t* eventType);
 
     jbyteArray eventTypes(JNIEnv* env);
@@ -24,19 +24,6 @@ namespace dxfeed::jni {
     void writeDouble(double value);
 
   private:
-    void fromProfile(dxfg_profile_t* eventType);
-    void fromSummary(dxfg_summary_t* eventType);
-    void fromGreeks(dxfg_greeks_t* eventType);
-    void fromCandle(dxfg_candle_t* eventType);
-    void fromUnderlying(dxfg_underlying_t* eventType);
-    void fromTheoPrice(dxfg_theo_price_t* theo);
-    void fromTrade(dxfg_trade_base_t* eventType);
-    void fromTimeAndSale(dxfg_time_and_sale_t* eventType);
-    void fromOrderBase(dxfg_order_base_t* eventType);
-    void fromOrder(dxfg_order_t* eventType);
-    void fromAnalyticOrder(dxfg_analytic_order_t* eventType);
-    void fromSpreadOrder(dxfg_spread_order_t* eventType);
-
     inline void writeBytes(const int8_t* bytes, int32_t len);
 
     std::vector<uint8_t> eventTypes_;

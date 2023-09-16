@@ -61,7 +61,6 @@ public class CandleMapping {
 
   public static Candle fromNative(NativeEventsReader reader) {
     Candle candle = new Candle();
-
     candle.setEventSymbol(CandleSymbol.valueOf(reader.readString()));
     candle.setEventFlags(reader.readInt());
     candle.setEventTime(reader.readLong());
@@ -78,7 +77,6 @@ public class CandleMapping {
     candle.setAskVolumeAsDouble(reader.readDouble());
     candle.setImpVolatility(reader.readDouble());
     candle.setOpenInterestAsDouble(reader.readDouble());
-
     return candle;
   }
 }

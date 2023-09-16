@@ -55,7 +55,6 @@ public class TimeAndSalesMapping {
 
   public static TimeAndSale fromNative(NativeEventsReader reader) {
     TimeAndSale tns = new TimeAndSale();
-
     tns.setEventSymbol(reader.readString());
     tns.setEventTime(reader.readLong());
     tns.setEventFlags(reader.readInt());
@@ -71,7 +70,6 @@ public class TimeAndSalesMapping {
     tns.setSizeAsDouble(reader.readDouble());
     tns.setBidPrice(reader.readDouble());
     tns.setAskPrice(reader.readDouble());
-
     return tns;
   }
 }

@@ -50,7 +50,6 @@ public class TheoPriceMapping {
 
   public static TheoPrice fromNative(NativeEventsReader reader) {
     TheoPrice theoPrice = new TheoPrice();
-
     theoPrice.setEventSymbol(reader.readString());
     theoPrice.setEventTime(reader.readLong());
     theoPrice.setEventFlags(reader.readInt());
@@ -62,7 +61,6 @@ public class TheoPriceMapping {
     theoPrice.setGamma(reader.readDouble());
     theoPrice.setDividend(reader.readDouble());
     theoPrice.setInterest(reader.readDouble());
-
     return theoPrice;
   }
 }

@@ -1,58 +1,69 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/utils/NativeEventWriter.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/events/CandleMapping.h"
+#include "dxfeed/events/GreeksMapping.h"
+#include "dxfeed/events/OptionSaleMapping.h"
+#include "dxfeed/events/OrderMapping.h"
+#include "dxfeed/events/ProfileMapping.h"
 #include "dxfeed/events/QuoteMapping.h"
+#include "dxfeed/events/SeriesMapping.h"
+#include "dxfeed/events/SummaryMapping.h"
+#include "dxfeed/events/TheoPriceMapping.h"
+#include "dxfeed/events/TimeAndSaleMapping.h"
+#include "dxfeed/events/TradeMapping.h"
+#include "dxfeed/events/UnderlyingMapping.h"
+#include "dxfeed/utils/ByteWriter.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
-  NativeEventWriter::NativeEventWriter() {
+  ByteWriter::ByteWriter() {
     eventTypes_.reserve(128);
     byteData_.reserve(128);
     doubleData_.reserve(128);
   }
 
-  NativeEventWriter::~NativeEventWriter() {
+  ByteWriter::~ByteWriter() {
     eventTypes_.clear();
     byteData_.clear();
     doubleData_.clear();
   }
 
-  void NativeEventWriter::writeBytes(const int8_t* bytes, int32_t len) {
+  void ByteWriter::writeBytes(const int8_t* bytes, int32_t len) {
     // http://thewayofc.blogspot.com/2014/05/copying-memory-from-c-to-c-using.html
     byteData_.insert(byteData_.end(), bytes, bytes + len);
   }
 
-  void NativeEventWriter::writeInt16_t(int16_t value) {
+  void ByteWriter::writeInt16_t(int16_t value) {
     byteData_.push_back(value & 0x00FF);
     byteData_.push_back((value & 0xFF00) >> 8);
   }
 
-  void NativeEventWriter::writeInt32_t(int32_t value) {
+  void ByteWriter::writeInt32_t(int32_t value) {
     for (size_t i = 0; i < sizeof(int32_t); ++i) {
       byteData_.push_back(value & 0xFF);
       value >>= 8;
     }
   }
 
-  void NativeEventWriter::writeInt64_t(int64_t value) {
+  void ByteWriter::writeInt64_t(int64_t value) {
     for (size_t i = 0; i < sizeof(int64_t); ++i) {
       byteData_.push_back(value & 0xFF);
       value >>= 8;
     }
   }
 
-  void NativeEventWriter::writeDouble(double value) {
+  void ByteWriter::writeDouble(double value) {
     doubleData_.push_back(value);
   }
 
-  void NativeEventWriter::writeString(const char* str) {
+  void ByteWriter::writeString(const char* str) {
     auto strSize = static_cast<int16_t>(strlen(str));
     writeInt16_t(strSize);
     static_assert(sizeof(int8_t) == sizeof(char));
     writeBytes(r_cast<const int8_t*>(str), strSize);
   }
 
-  void NativeEventWriter::writeEvent(dxfg_event_type_t* eventType) {
+  void ByteWriter::writeEvent(dxfg_event_type_t* eventType) {
     dxfg_event_clazz_t dxfgEventClazz = eventType->clazz;
     eventTypes_.push_back(dxfgEventClazz);
     switch (dxfgEventClazz) {
@@ -60,46 +71,52 @@ namespace dxfeed::jni {
         QuoteMapping::fromQuote(r_cast<dxfg_quote_t*>(eventType), *this);
       }
       case DXFG_EVENT_PROFILE: {
-        fromProfile(r_cast<dxfg_profile_t*>(eventType));
+        ProfileMapping::fromProfile(r_cast<dxfg_profile_t*>(eventType), *this);
       }
       case DXFG_EVENT_SUMMARY: {
-        fromSummary(r_cast<dxfg_summary_t*>(eventType));
+        SummaryMapping::fromSummary(r_cast<dxfg_summary_t*>(eventType), *this);
       }
       case DXFG_EVENT_GREEKS: {
-        fromGreeks(r_cast<dxfg_greeks_t*>(eventType));
+        GreeksMapping::fromGreeks(r_cast<dxfg_greeks_t*>(eventType), *this);
       }
       case DXFG_EVENT_CANDLE: {
-        fromCandle(r_cast<dxfg_candle_t*>(eventType));
+        CandleMapping::fromCandle(r_cast<dxfg_candle_t*>(eventType), *this);
       }
       case DXFG_EVENT_UNDERLYING: {
-        fromUnderlying(r_cast<dxfg_underlying_t*>(eventType));
+        UnderlyingMapping::fromUnderlying(r_cast<dxfg_underlying_t*>(eventType), *this);
       }
       case DXFG_EVENT_THEO_PRICE: {
-        fromTheoPrice(r_cast<dxfg_theo_price_t*>(eventType));
+        TheoPriceMapping::fromTheoPrice(r_cast<dxfg_theo_price_t*>(eventType), *this);
       }
       case DXFG_EVENT_TRADE:
       case DXFG_EVENT_TRADE_ETH: {
-        fromTrade(r_cast<dxfg_trade_base_t*>(eventType));
+        TradeMapping::fromTradeBase(r_cast<dxfg_trade_base_t*>(eventType), *this);
       }
       case DXFG_EVENT_TIME_AND_SALE: {
-        fromTimeAndSale(r_cast<dxfg_time_and_sale_t*>(eventType));
+        TimeAndSaleMapping::fromTimeAndSale(r_cast<dxfg_time_and_sale_t*>(eventType), *this);
       }
       case DXFG_EVENT_ORDER_BASE: {
-        fromOrderBase(r_cast<dxfg_order_base_t*>(eventType));
+        OrderMapping::fromOrderBase(r_cast<dxfg_order_base_t*>(eventType), *this);
       }
       case DXFG_EVENT_ORDER: {
-        fromOrder(r_cast<dxfg_order_t*>(eventType));
+        OrderMapping::fromOrder(r_cast<dxfg_order_t*>(eventType), *this);
       }
       case DXFG_EVENT_ANALYTIC_ORDER: {
-        fromAnalyticOrder(r_cast<dxfg_analytic_order_t*>(eventType));
+        OrderMapping::fromAnalyticOrder(r_cast<dxfg_analytic_order_t*>(eventType), *this);
       }
       case DXFG_EVENT_SPREAD_ORDER: {
-        fromSpreadOrder(r_cast<dxfg_spread_order_t*>(eventType));
+        OrderMapping::fromSpreadOrder(r_cast<dxfg_spread_order_t*>(eventType), *this);
+      }
+      case DXFG_EVENT_SERIES: {
+        SeriesMapping::fromSeries(r_cast<dxfg_series_t*>(eventType), *this);
+      }
+      case DXFG_EVENT_OPTION_SALE: {
+        OptionSaleMapping::fromOptionSale(r_cast<dxfg_option_sale_t*>(eventType), *this);
       }
     }
   }
 
-  jbyteArray NativeEventWriter::eventTypes(JNIEnv* env) {
+  jbyteArray ByteWriter::eventTypes(JNIEnv* env) {
     auto size = static_cast<int32_t>(eventTypes_.size());
     auto pArray = env->NewByteArray(size);
     auto data = r_cast<char*>(env->GetPrimitiveArrayCritical(pArray, 0));
@@ -108,7 +125,7 @@ namespace dxfeed::jni {
     return pArray;
   }
 
-  jbyteArray NativeEventWriter::byteData(JNIEnv* env) {
+  jbyteArray ByteWriter::byteData(JNIEnv* env) {
     auto size = static_cast<int32_t>(eventTypes_.size());
     auto pArray = env->NewByteArray(size);
     auto data = r_cast<char*>(env->GetPrimitiveArrayCritical(pArray, 0));
@@ -117,188 +134,12 @@ namespace dxfeed::jni {
     return pArray;
   }
 
-  jdoubleArray NativeEventWriter::doubleData(JNIEnv* env) {
+  jdoubleArray ByteWriter::doubleData(JNIEnv* env) {
     auto size = static_cast<int32_t>(eventTypes_.size());
     auto pArray = env->NewDoubleArray(size);
     auto data = r_cast<double*>(env->GetPrimitiveArrayCritical(pArray, 0));
     memcpy(data, doubleData_.data(), size);
     env->ReleasePrimitiveArrayCritical(pArray, data, 0);
     return pArray;
-  }
-
-  void NativeEventWriter::fromProfile(dxfg_profile_t* profile) {
-    writeString(profile->market_event.event_symbol);
-    writeInt64_t(profile->market_event.event_time);
-
-    writeInt64_t(profile->halt_start_time);
-    writeInt64_t(profile->halt_end_time);
-    writeInt32_t(profile->ex_dividend_day_id);
-    writeInt32_t(profile->flags);
-    writeString(profile->description);
-    writeString(profile->status_reason);
-
-    writeDouble(profile->high_limit_price);
-    writeDouble(profile->low_limit_price);
-    writeDouble(profile->high_52_week_price);
-    writeDouble(profile->low_52_week_price);
-    writeDouble(profile->beta);
-    writeDouble(profile->earnings_per_share);
-    writeDouble(profile->dividend_frequency);
-    writeDouble(profile->ex_dividend_amount);
-    writeDouble(profile->shares);
-    writeDouble(profile->free_float);
-  }
-
-  void NativeEventWriter::fromSummary(dxfg_summary_t* summary) {
-    writeString(summary->market_event.event_symbol);
-    writeInt64_t(summary->market_event.event_time);
-    writeInt32_t(summary->day_id);
-    writeInt32_t(summary->prev_day_id);
-    writeInt64_t(summary->open_interest);
-    writeInt32_t(summary->flags);
-
-    writeDouble(summary->day_open_price);
-    writeDouble(summary->day_high_price);
-    writeDouble(summary->day_low_price);
-    writeDouble(summary->day_close_price);
-    writeDouble(summary->prev_day_close_price);
-    writeDouble(summary->prev_day_volume);
-  }
-
-  void NativeEventWriter::fromGreeks(dxfg_greeks_t* greeks) {
-    writeString(greeks->market_event.event_symbol);
-    writeInt64_t(greeks->market_event.event_time);
-    writeInt32_t(greeks->event_flags);
-    writeInt64_t(greeks->index);
-
-    writeDouble(greeks->price);
-    writeDouble(greeks->volatility);
-    writeDouble(greeks->delta);
-    writeDouble(greeks->gamma);
-    writeDouble(greeks->theta);
-    writeDouble(greeks->rho);
-    writeDouble(greeks->vega);
-  }
-
-  void NativeEventWriter::fromCandle(dxfg_candle_t* candle) {
-    writeString(candle->event_symbol);
-    writeInt64_t(candle->event_time);
-    writeInt32_t(candle->event_flags);
-    writeInt64_t(candle->index);
-    writeInt64_t(candle->count);
-
-    writeDouble(candle->open);
-    writeDouble(candle->high);
-    writeDouble(candle->low);
-    writeDouble(candle->close);
-    writeDouble(candle->volume);
-    writeDouble(candle->vwap);
-    writeDouble(candle->bid_volume);
-    writeDouble(candle->ask_volume);
-    writeDouble(candle->imp_volatility);
-    writeDouble(candle->open_interest);
-  }
-
-  void NativeEventWriter::fromUnderlying(dxfg_underlying_t* underlying) {
-    writeString(underlying->market_event.event_symbol);
-    writeInt64_t(underlying->market_event.event_time);
-    writeInt32_t(underlying->event_flags);
-    writeInt64_t(underlying->index);
-
-    writeDouble(underlying->volatility);
-    writeDouble(underlying->front_volatility);
-    writeDouble(underlying->back_volatility);
-    writeDouble(underlying->call_volume);
-    writeDouble(underlying->put_volume);
-    writeDouble(underlying->put_call_ratio);
-  }
-
-  void NativeEventWriter::fromTheoPrice(dxfg_theo_price_t* theoPrice) {
-    writeString(theoPrice->market_event.event_symbol);
-    writeInt64_t(theoPrice->market_event.event_time);
-    writeInt32_t(theoPrice->event_flags);
-    writeInt64_t(theoPrice->index);
-
-    writeDouble(theoPrice->price);
-    writeDouble(theoPrice->underlying_price);
-    writeDouble(theoPrice->delta);
-    writeDouble(theoPrice->gamma);
-    writeDouble(theoPrice->dividend);
-    writeDouble(theoPrice->interest);
-  }
-
-  void NativeEventWriter::fromTrade(dxfg_trade_base_t* trade) {
-    writeString(trade->market_event.event_symbol);
-    writeInt64_t(trade->market_event.event_time);
-    writeInt64_t(trade->time_sequence);
-    writeInt32_t(trade->time_nano_part);
-    writeInt16_t(trade->exchange_code);
-    writeInt32_t(trade->day_id);
-    writeInt32_t(trade->flags);
-
-    writeDouble(trade->price);
-    writeDouble(trade->change);
-    writeDouble(trade->size);
-    writeDouble(trade->day_volume);
-    writeDouble(trade->day_turnover);
-  }
-
-  void NativeEventWriter::fromTimeAndSale(dxfg_time_and_sale_t* tns) {
-    writeString(tns->market_event.event_symbol);
-    writeInt64_t(tns->market_event.event_time);
-    writeInt32_t(tns->event_flags);
-    writeInt64_t(tns->index);
-    writeInt64_t(tns->time_nano_part);
-    writeInt16_t(tns->exchange_code);
-    writeInt32_t(tns->flags);
-
-    writeString(tns->exchange_sale_conditions);
-    writeString(tns->buyer);
-    writeString(tns->seller);
-
-    writeDouble(tns->price);
-    writeDouble(tns->size);
-    writeDouble(tns->bid_price);
-    writeDouble(tns->ask_price);
-  }
-
-  void NativeEventWriter::fromOrderBase(dxfg_order_base_t* orderBase) {
-    writeString(orderBase->market_event.event_symbol);
-    writeInt64_t(orderBase->market_event.event_time);
-    writeInt32_t(orderBase->event_flags);
-    writeInt64_t(orderBase->index);
-    writeInt64_t(orderBase->time_sequence);
-    writeInt32_t(orderBase->time_nano_part);
-    writeInt64_t(orderBase->action_time);
-    writeInt64_t(orderBase->order_id);
-    writeInt64_t(orderBase->aux_order_id);
-    writeInt64_t(orderBase->count);
-    writeInt32_t(orderBase->flags);
-    writeInt64_t(orderBase->trade_id);
-
-    writeDouble(orderBase->price);
-    writeDouble(orderBase->size);
-    writeDouble(orderBase->executed_size);
-    writeDouble(orderBase->trade_price);
-    writeDouble(orderBase->trade_size);
-  }
-
-  void NativeEventWriter::fromOrder(dxfg_order_t* order) {
-    fromOrderBase(&order->order_base);
-    writeString(order->market_maker);
-  }
-
-  void NativeEventWriter::fromSpreadOrder(dxfg_spread_order_t* order) {
-    fromOrderBase(&order->order_base);
-    writeString(order->spread_symbol);
-  }
-
-  void NativeEventWriter::fromAnalyticOrder(dxfg_analytic_order_t* analyticsOrder) {
-    fromOrder(&analyticsOrder->order);
-    writeInt32_t(analyticsOrder->iceberg_flags);
-
-    writeDouble(analyticsOrder->iceberg_peak_size);
-    writeDouble(analyticsOrder->iceberg_hidden_size);
-    writeDouble(analyticsOrder->iceberg_executed_size);
   }
 }
