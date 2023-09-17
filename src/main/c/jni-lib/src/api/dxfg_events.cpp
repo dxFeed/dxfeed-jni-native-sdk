@@ -3,37 +3,16 @@
 #include "api/dxfg_events.h"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxEventT.hpp"
+#include "dxfeed/DxSymbol.hpp"
 #include "dxfeed/DxIndexedEventSource.hpp"
 
 dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, dxfg_symbol_type_t symbolType) {
-  bool isTimeSeries = (symbolType == dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION);
-  bool isIndexedEvent = (symbolType == dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION);
-  if (isTimeSeries || isIndexedEvent) {
-    dxfeed::jni::javaLogger->error("Unknown symbol type: %", symbolType);
-    return nullptr;
-  }
-  if (symbolType == dxfg_symbol_type_t::STRING) {
-    auto result = new dxfg_string_symbol_t();
-    result->supper = dxfg_symbol_t { symbolType };
-    result->symbol = symbol; // todo: alloc & copy?
-    return dxfeed::r_cast<dxfg_symbol_t*>(result);
-  } else if (symbolType ==  dxfg_symbol_type_t::CANDLE) {
-    auto result = new dxfg_candle_symbol_t();
-    result->supper = dxfg_symbol_t { symbolType };
-    result->symbol = symbol; // todo: alloc & copy?
-    return dxfeed::r_cast<dxfg_symbol_t*>(result);
-  } else if (symbolType ==  dxfg_symbol_type_t::WILDCARD) {
-    auto result = new dxfg_wildcard_symbol_t();
-    result->supper = dxfg_symbol_t { symbolType };
-    return dxfeed::r_cast<dxfg_symbol_t*>(result);
-  } else {
-    dxfeed::jni::javaLogger->error("Unknown symbol type: ", symbolType);
-    return nullptr;
-  }
+  return dxfeed::DxSymbol::createNativeSymbol(symbol, symbolType);
 }
 
 int32_t dxfg_Symbol_release(graal_isolatethread_t* env, dxfg_symbol_t* symbol) {
-  delete symbol; // todo: dealloc symbol->symbol?
+  dxfeed::DxSymbol::release(symbol);
+  delete symbol;
   return JNI_OK;
 }
 
