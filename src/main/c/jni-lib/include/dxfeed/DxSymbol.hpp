@@ -11,11 +11,12 @@
 namespace dxfeed {
 
   struct DxSymbol {
+    static dxfg_symbol_t* createNativeSymbol(const char* symbol, dxfg_symbol_type_t symbolType);
     static jobject toJavaObject(JNIEnv* env, dxfg_symbol_t* pSymbolType);
     static dxfg_symbol_t* fromJavaObject(JNIEnv* env, jobject pSymbol);
 
-    // allocated new memory, for const char*, need to be deallocated manually
-    static const char* jStringToUTF8(JNIEnv* env, jstring jString);
+    static void release(dxfg_symbol_t* pSymbol);
+
   private:
     DxSymbol() = default;
     static jobject toWildcardSymbol(JNIEnv* env);
@@ -31,6 +32,9 @@ namespace dxfeed {
     static dxfg_indexed_event_subscription_symbol_t* fromIndexedEventSubscriptionSymbol(JNIEnv* env, jobject jSymbol,
                                                                                         jclass indexedEventSubClass);
 
+    // allocated new memory, for const char*, need to be deallocated manually
+    static const char* jStringToUTF8(JNIEnv* env, jstring jString);
+    static const char* copy(const char* str);
 
     constexpr static const char DX_SYMBOL_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxSymbolJni;";
     constexpr static const char STRING_SYMBOL_JNI_CLASS_NAME[] = "Ljava/lang/String;";
