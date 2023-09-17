@@ -12,10 +12,9 @@ namespace dxfeed {
 
   struct DxSymbol {
     static dxfg_symbol_t* createNativeSymbol(const char* symbol, dxfg_symbol_type_t symbolType);
+    static void release(JNIEnv* env, dxfg_symbol_t* pSymbol);
     static jobject toJavaObject(JNIEnv* env, dxfg_symbol_t* pSymbolType);
     static dxfg_symbol_t* fromJavaObject(JNIEnv* env, jobject pSymbol);
-
-    static void release(dxfg_symbol_t* pSymbol);
 
   private:
     DxSymbol() = default;

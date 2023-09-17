@@ -11,7 +11,7 @@ dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, d
 }
 
 int32_t dxfg_Symbol_release(graal_isolatethread_t* env, dxfg_symbol_t* symbol) {
-  dxfeed::DxSymbol::release(symbol);
+  dxfeed::DxSymbol::release(env, symbol);
   delete symbol;
   return JNI_OK;
 }
@@ -65,7 +65,7 @@ dxfg_indexed_event_source_t* dxfg_IndexedEventSource_new(graal_isolatethread_t* 
 
 int32_t dxfg_IndexedEventSource_release(graal_isolatethread_t* env, dxfg_indexed_event_source_t* source) {
   auto dxIndexedEventSource = dxfeed::r_cast<dxfeed::DxIndexedEventSource*>(source);
-  dxIndexedEventSource->release(env);
+  delete dxIndexedEventSource;
   return JNI_OK;
 }
 
