@@ -1,18 +1,11 @@
 package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
+import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.utils.XmlMapping;
 import com.dxfeed.event.misc.Message;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
 public class MessageMapping {
-  private static final Map<Long, Object> attachmentMap = new HashMap<>();
-  private static final AtomicLong attachmentId = new AtomicLong();
-
-  // todo: get attachment by ID using JNI
-
   /**
    * https://github.com/dxFeed/dxfeed-graal-native-sdk/blob/main/src/main/c/api/dxfg_events.h#L330
    *
@@ -25,11 +18,20 @@ public class MessageMapping {
    */
 
   public static void toNative(Message event, ByteBuffer pBytes) {
-    // BYTE DATA
     pBytes.writeString(event.getEventSymbol()); // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());     // 8
-    long id = attachmentId.incrementAndGet();
-    pBytes.writeLong(id);                       // 8
-    attachmentMap.putIfAbsent(id, event.getAttachment());
+    pBytes.writeString(XmlMapping.toString(event.getAttachment()));
+  }
+
+  public static Message fromNative(NativeEventsReader reader) {
+    Message message = new Message();
+    message.setEventSymbol(reader.readString());
+    message.setEventTime(reader.readLong());
+    // todo: attachment always is null ?
+    Object attachment = message.getAttachment();
+    if (attachment != null) {
+      message.setAttachment(XmlMapping.fromString(reader.readString(), attachment.getClass()));
+    }
+    return message;
   }
 }

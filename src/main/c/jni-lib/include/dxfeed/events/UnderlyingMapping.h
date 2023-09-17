@@ -6,8 +6,8 @@
 #include "api/dxfg_events.h"
 #include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct UnderlyingMapping {
     static dxfg_underlying_t* toUnderlying(const char** pByteData, const double** pDoubleData);

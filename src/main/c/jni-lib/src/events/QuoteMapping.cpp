@@ -1,26 +1,26 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/QuoteMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_quote_t* QuoteMapping::toQuote(const char** pByteData, const double** pDoubleData) {
     auto* quote = new dxfg_quote_t();
     quote->market_event.event_type.clazz = DXFG_EVENT_QUOTE;
-    quote->market_event.event_symbol = EventReader::readString(pByteData);
-    quote->market_event.event_time = EventReader::readLong(pByteData);
-    quote->time_millis_sequence = EventReader::readInt(pByteData);
-    quote->time_nano_part = EventReader::readInt(pByteData);
-    quote->bid_time = EventReader::readLong(pByteData);
-    quote->bid_exchange_code = EventReader::readInt16_t(pByteData);
-    quote->ask_time = EventReader::readLong(pByteData);
-    quote->ask_exchange_code = EventReader::readInt16_t(pByteData);
+    quote->market_event.event_symbol = ByteReader::readString(pByteData);
+    quote->market_event.event_time = ByteReader::readLong(pByteData);
+    quote->time_millis_sequence = ByteReader::readInt(pByteData);
+    quote->time_nano_part = ByteReader::readInt(pByteData);
+    quote->bid_time = ByteReader::readLong(pByteData);
+    quote->bid_exchange_code = ByteReader::readInt16_t(pByteData);
+    quote->ask_time = ByteReader::readLong(pByteData);
+    quote->ask_exchange_code = ByteReader::readInt16_t(pByteData);
 
-    quote->bid_price = EventReader::readDouble(pDoubleData);
-    quote->bid_size = EventReader::readDouble(pDoubleData);
-    quote->ask_price = EventReader::readDouble(pDoubleData);
-    quote->ask_size = EventReader::readDouble(pDoubleData);
+    quote->bid_price = ByteReader::readDouble(pDoubleData);
+    quote->bid_size = ByteReader::readDouble(pDoubleData);
+    quote->ask_price = ByteReader::readDouble(pDoubleData);
+    quote->ask_size = ByteReader::readDouble(pDoubleData);
     return quote;
   }
 

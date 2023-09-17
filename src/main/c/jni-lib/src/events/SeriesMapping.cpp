@@ -1,27 +1,27 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/SeriesMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_series_t* SeriesMapping::toSeries(const char** pByteData, const double** pDoubleData) {
     auto* series = new dxfg_series_t();
     series->market_event.event_type.clazz = DXFG_EVENT_SERIES;
-    series->market_event.event_symbol = EventReader::readString(pByteData);
-    series->market_event.event_time = EventReader::readLong(pByteData);
-    series->event_flags = EventReader::readInt(pByteData);
-    series->index = EventReader::readLong(pByteData);
-    series->time_sequence = EventReader::readLong(pByteData);
-    series->expiration = EventReader::readInt(pByteData);
+    series->market_event.event_symbol = ByteReader::readString(pByteData);
+    series->market_event.event_time = ByteReader::readLong(pByteData);
+    series->event_flags = ByteReader::readInt(pByteData);
+    series->index = ByteReader::readLong(pByteData);
+    series->time_sequence = ByteReader::readLong(pByteData);
+    series->expiration = ByteReader::readInt(pByteData);
 
-    series->volatility = EventReader::readDouble(pDoubleData);
-    series->call_volume = EventReader::readDouble(pDoubleData);
-    series->put_volume = EventReader::readDouble(pDoubleData);
-    series->put_call_ratio = EventReader::readDouble(pDoubleData);
-    series->forward_price = EventReader::readDouble(pDoubleData);
-    series->dividend = EventReader::readDouble(pDoubleData);
-    series->interest = EventReader::readDouble(pDoubleData);
+    series->volatility = ByteReader::readDouble(pDoubleData);
+    series->call_volume = ByteReader::readDouble(pDoubleData);
+    series->put_volume = ByteReader::readDouble(pDoubleData);
+    series->put_call_ratio = ByteReader::readDouble(pDoubleData);
+    series->forward_price = ByteReader::readDouble(pDoubleData);
+    series->dividend = ByteReader::readDouble(pDoubleData);
+    series->interest = ByteReader::readDouble(pDoubleData);
     return series;
   }
 

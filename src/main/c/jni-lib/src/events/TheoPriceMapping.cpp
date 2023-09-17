@@ -1,25 +1,24 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/TheoPriceMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_theo_price_t* TheoPriceMapping::toTheoPrice(const char** pByteData, const double** pDoubleData) {
     auto* theoPrice = new dxfg_theo_price_t();
     theoPrice->market_event.event_type.clazz = DXFG_EVENT_THEO_PRICE;
-    theoPrice->market_event.event_symbol = EventReader::readString(pByteData);
-    theoPrice->market_event.event_time = EventReader::readLong(pByteData);
-    theoPrice->event_flags = EventReader::readInt(pByteData);
-    theoPrice->index = EventReader::readLong(pByteData);
+    theoPrice->market_event.event_symbol = ByteReader::readString(pByteData);
+    theoPrice->market_event.event_time = ByteReader::readLong(pByteData);
+    theoPrice->event_flags = ByteReader::readInt(pByteData);
+    theoPrice->index = ByteReader::readLong(pByteData);
 
-    theoPrice->price = EventReader::readDouble(pDoubleData);
-    theoPrice->underlying_price = EventReader::readDouble(pDoubleData);
-    theoPrice->delta = EventReader::readDouble(pDoubleData);
-    theoPrice->gamma = EventReader::readDouble(pDoubleData);
-    theoPrice->dividend = EventReader::readDouble(pDoubleData);
-    theoPrice->interest = EventReader::readDouble(pDoubleData);
-
+    theoPrice->price = ByteReader::readDouble(pDoubleData);
+    theoPrice->underlying_price = ByteReader::readDouble(pDoubleData);
+    theoPrice->delta = ByteReader::readDouble(pDoubleData);
+    theoPrice->gamma = ByteReader::readDouble(pDoubleData);
+    theoPrice->dividend = ByteReader::readDouble(pDoubleData);
+    theoPrice->interest = ByteReader::readDouble(pDoubleData);
     return theoPrice;
   }
 

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#include "dxfeed/utils/ByteWriter.hpp"
 #include "dxfeed/events/CandleMapping.h"
+#include "dxfeed/events/ConfigurationMapping.h"
 #include "dxfeed/events/GreeksMapping.h"
+#include "dxfeed/events/MessageMapping.h"
 #include "dxfeed/events/OptionSaleMapping.h"
 #include "dxfeed/events/OrderMapping.h"
 #include "dxfeed/events/ProfileMapping.h"
@@ -12,7 +15,6 @@
 #include "dxfeed/events/TimeAndSaleMapping.h"
 #include "dxfeed/events/TradeMapping.h"
 #include "dxfeed/events/UnderlyingMapping.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
@@ -91,6 +93,12 @@ namespace dxfeed::jni {
       case DXFG_EVENT_TRADE:
       case DXFG_EVENT_TRADE_ETH: {
         TradeMapping::fromTradeBase(r_cast<dxfg_trade_base_t*>(eventType), *this);
+      }
+      case DXFG_EVENT_CONFIGURATION: {
+        ConfigurationMapping::fromConfiguration(r_cast<dxfg_configuration_t*>(eventType), *this);
+      }
+      case DXFG_EVENT_MESSAGE: {
+        MessageMapping::fromMessage(r_cast<dxfg_message_t*>(eventType), *this);
       }
       case DXFG_EVENT_TIME_AND_SALE: {
         TimeAndSaleMapping::fromTimeAndSale(r_cast<dxfg_time_and_sale_t*>(eventType), *this);

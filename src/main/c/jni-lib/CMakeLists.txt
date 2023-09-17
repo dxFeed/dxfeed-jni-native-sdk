@@ -37,8 +37,9 @@ set(SOURCE_FILES
     src/api/dxfg_system.cpp
     src/api/graal_isolate.cpp
     src/events/CandleMapping.cpp
-    src/events/EventReader.cpp
+    src/events/ConfigurationMapping.cpp
     src/events/GreeksMapping.cpp
+    src/events/MessageMapping.cpp
     src/events/OptionSaleMapping.cpp
     src/events/OrderMapping.cpp
     src/events/QuoteMapping.cpp
@@ -51,12 +52,13 @@ set(SOURCE_FILES
     src/events/UnderlyingMapping.cpp
     src/listeners/DxEventListener.cpp
     src/listeners/DxStateChangeListener.cpp
+    src/utils/ByteReader.cpp
+    src/utils/ByteWriter.cpp
     src/utils/JNIBridgeImpl.cpp
     src/utils/JNIUtils.cpp
     src/utils/LoadJvmLib.cpp
     src/utils/NativeEventsList.cpp
     src/utils/NativeEventReader.cpp
-    src/utils/NativeEventWriter.cpp
     src/utils/java/DxFeedJniClass.cpp
     src/utils/java/JavaLangClass.cpp
     src/utils/java/JavaLangSystem.cpp

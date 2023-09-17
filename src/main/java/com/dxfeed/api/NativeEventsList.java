@@ -120,6 +120,12 @@ public class NativeEventsList<T extends EventType<?>> {
       case DxfgEventClazzT.DXFG_EVENT_TRADE_ETH: {
         return TradeMapping.fromNative(reader);
       }
+      case DxfgEventClazzT.DXFG_EVENT_CONFIGURATION: {
+        return ConfigurationMapping.fromNative(reader);
+      }
+      case DxfgEventClazzT.DXFG_EVENT_MESSAGE: {
+        MessageMapping.fromNative(reader);
+      }
       case DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE: {
         return TimeAndSalesMapping.fromNative(reader);
       }

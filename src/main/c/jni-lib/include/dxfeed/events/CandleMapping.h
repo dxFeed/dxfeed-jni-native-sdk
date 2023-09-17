@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_CANDLEMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct CandleMapping {
     static dxfg_candle_t* toCandle(const char** pByteData, const double** pDoubleData);
