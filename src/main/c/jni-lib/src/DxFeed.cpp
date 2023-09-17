@@ -19,7 +19,6 @@ namespace dxfeed {
     internal::jniEnv->DeleteGlobalRef(dxFeed_);
   }
 
-  // todo: make singleton
   dxfg_feed_t* DxFeed::getInstance(JNIEnv* env) {
     auto jDxFeedJniClazz = safeFindClass(env, DX_FEED_CLASS_NAME);
     const char* methodName = "getInstance";
@@ -61,13 +60,11 @@ namespace dxfeed {
     return pEventType;
   }
 
-  // todo: check
   void DxFeed::getLastEvent(JNIEnv* env, dxfg_event_type_t* pEventType) {
     dxfg_event_type_list list { 1, &pEventType };
     getLastEvents(env, &list);
   }
 
-  // todo: check
   void DxFeed::getLastEvents(JNIEnv* env, dxfg_event_type_list* pList) {
     auto jDxFeedJniClazz = safeFindClass(env, DX_FEED_JNI_CLASS_NAME);
     const char* methodName = "getLastEvents";

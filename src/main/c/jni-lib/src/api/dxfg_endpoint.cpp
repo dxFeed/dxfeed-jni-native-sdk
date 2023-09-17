@@ -84,7 +84,7 @@ dxfg_endpoint_t* dxfg_DXEndpoint_create(graal_isolatethread_t* thread) {
 
 dxfg_endpoint_t* dxfg_DXEndpoint_create2(graal_isolatethread_t* thread, dxfg_endpoint_role_t role) {
   auto pBuilder = std::make_unique<dxfeed::DxEndpointBuilder>(thread);
-  pBuilder->withRole(thread, role); // todo: check
+  pBuilder->withRole(thread, role);
   dxfeed::DxEndpoint* pEndpoint = pBuilder->build(thread);
   return dxfeed::r_cast<dxfg_endpoint_t*>(pEndpoint);
 }
