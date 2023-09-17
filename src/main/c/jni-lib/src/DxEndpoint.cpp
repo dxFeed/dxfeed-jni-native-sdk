@@ -101,7 +101,6 @@ namespace dxfeed {
     return static_cast<dxfg_endpoint_state_t>(role);
   }
 
-  // todo: check
   dxfg_event_clazz_list_t* DxEndpoint::getEventTypes(JNIEnv* env) const {
     auto jDxEndpointJniClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "getEventTypes";
