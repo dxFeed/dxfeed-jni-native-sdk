@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/OrderMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_order_base_t* OrderMapping::toOrderBase(const char** pByteData, const double** pDoubleData) {
     auto* orderBase = new dxfg_order_base_t();
     readOrderBase(pByteData, pDoubleData, orderBase);
@@ -18,7 +18,7 @@ namespace dxfeed {
   dxfg_spread_order_t* OrderMapping::toSpreadOrder(const char** pByteData, const double** pDoubleData) {
     auto* order = new dxfg_spread_order_t();
     readOrderBase(pByteData, pDoubleData, &order->order_base);
-    order->spread_symbol = EventReader::readString(pByteData);
+    order->spread_symbol = ByteReader::readString(pByteData);
     return order;
   }
 
@@ -30,7 +30,7 @@ namespace dxfeed {
   dxfg_order_t* OrderMapping::toOrder(const char** pByteData, const double** pDoubleData) {
     auto* order = new dxfg_order_t();
     readOrderBase(pByteData, pDoubleData, &order->order_base);
-    order->market_maker = EventReader::readString(pByteData);
+    order->market_maker = ByteReader::readString(pByteData);
     return order;
   }
 
@@ -44,11 +44,11 @@ namespace dxfeed {
     dxfg_order_base_t& orderBase = analyticsOrder->order.order_base;
     readOrderBase(pByteData, pDoubleData, &orderBase);
 
-    analyticsOrder->order.market_maker = EventReader::readString(pByteData);
-    analyticsOrder->iceberg_flags = EventReader::readInt(pByteData);
-    analyticsOrder->iceberg_peak_size = EventReader::readDouble(pDoubleData);
-    analyticsOrder->iceberg_hidden_size = EventReader::readDouble(pDoubleData);
-    analyticsOrder->iceberg_executed_size = EventReader::readDouble(pDoubleData);
+    analyticsOrder->order.market_maker = ByteReader::readString(pByteData);
+    analyticsOrder->iceberg_flags = ByteReader::readInt(pByteData);
+    analyticsOrder->iceberg_peak_size = ByteReader::readDouble(pDoubleData);
+    analyticsOrder->iceberg_hidden_size = ByteReader::readDouble(pDoubleData);
+    analyticsOrder->iceberg_executed_size = ByteReader::readDouble(pDoubleData);
     return analyticsOrder;
   }
 
@@ -65,24 +65,24 @@ namespace dxfeed {
                                    dxfg_order_base_t* const orderBase)
   {
     orderBase->market_event.event_type.clazz = DXFG_EVENT_ORDER_BASE;
-    orderBase->market_event.event_symbol = EventReader::readString(pByteData);
-    orderBase->market_event.event_time = EventReader::readLong(pByteData);
-    orderBase->event_flags = EventReader::readInt(pByteData);
-    orderBase->index = EventReader::readLong(pByteData);
-    orderBase->time_sequence = EventReader::readLong(pByteData);
-    orderBase->time_nano_part = EventReader::readInt(pByteData);
-    orderBase->action_time = EventReader::readLong(pByteData);
-    orderBase->order_id = EventReader::readLong(pByteData);
-    orderBase->aux_order_id = EventReader::readLong(pByteData);
-    orderBase->count = EventReader::readLong(pByteData);
-    orderBase->flags = EventReader::readInt(pByteData);
-    orderBase->trade_id = EventReader::readLong(pByteData);
+    orderBase->market_event.event_symbol = ByteReader::readString(pByteData);
+    orderBase->market_event.event_time = ByteReader::readLong(pByteData);
+    orderBase->event_flags = ByteReader::readInt(pByteData);
+    orderBase->index = ByteReader::readLong(pByteData);
+    orderBase->time_sequence = ByteReader::readLong(pByteData);
+    orderBase->time_nano_part = ByteReader::readInt(pByteData);
+    orderBase->action_time = ByteReader::readLong(pByteData);
+    orderBase->order_id = ByteReader::readLong(pByteData);
+    orderBase->aux_order_id = ByteReader::readLong(pByteData);
+    orderBase->count = ByteReader::readLong(pByteData);
+    orderBase->flags = ByteReader::readInt(pByteData);
+    orderBase->trade_id = ByteReader::readLong(pByteData);
 
-    orderBase->price = EventReader::readDouble(pDoubleData);
-    orderBase->size = EventReader::readDouble(pDoubleData);
-    orderBase->executed_size = EventReader::readDouble(pDoubleData);
-    orderBase->trade_price = EventReader::readDouble(pDoubleData);
-    orderBase->trade_size = EventReader::readDouble(pDoubleData);
+    orderBase->price = ByteReader::readDouble(pDoubleData);
+    orderBase->size = ByteReader::readDouble(pDoubleData);
+    orderBase->executed_size = ByteReader::readDouble(pDoubleData);
+    orderBase->trade_price = ByteReader::readDouble(pDoubleData);
+    orderBase->trade_size = ByteReader::readDouble(pDoubleData);
   }
 
   void OrderMapping::writeOrderBase(dxfg_order_base_t* orderBase, ByteWriter& writer) {

@@ -1,25 +1,25 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/GreeksMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_greeks_t* GreeksMapping::toGreeks(const char** pByteData, const double** pDoubleData) {
     auto greeks = new dxfg_greeks_t();
     greeks->market_event.event_type.clazz = DXFG_EVENT_GREEKS;
-    greeks->market_event.event_symbol = EventReader::readString(pByteData);
-    greeks->market_event.event_time = EventReader::readLong(pByteData);
-    greeks->event_flags = EventReader::readInt(pByteData);
-    greeks->index = EventReader::readLong(pByteData);
+    greeks->market_event.event_symbol = ByteReader::readString(pByteData);
+    greeks->market_event.event_time = ByteReader::readLong(pByteData);
+    greeks->event_flags = ByteReader::readInt(pByteData);
+    greeks->index = ByteReader::readLong(pByteData);
 
-    greeks->price = EventReader::readDouble(pDoubleData);
-    greeks->volatility = EventReader::readDouble(pDoubleData);
-    greeks->delta = EventReader::readDouble(pDoubleData);
-    greeks->gamma = EventReader::readDouble(pDoubleData);
-    greeks->theta = EventReader::readDouble(pDoubleData);
-    greeks->rho = EventReader::readDouble(pDoubleData);
-    greeks->vega = EventReader::readDouble(pDoubleData);
+    greeks->price = ByteReader::readDouble(pDoubleData);
+    greeks->volatility = ByteReader::readDouble(pDoubleData);
+    greeks->delta = ByteReader::readDouble(pDoubleData);
+    greeks->gamma = ByteReader::readDouble(pDoubleData);
+    greeks->theta = ByteReader::readDouble(pDoubleData);
+    greeks->rho = ByteReader::readDouble(pDoubleData);
+    greeks->vega = ByteReader::readDouble(pDoubleData);
     return greeks;
   }
 

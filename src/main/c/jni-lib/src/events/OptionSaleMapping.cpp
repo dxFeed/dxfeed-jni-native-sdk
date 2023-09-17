@@ -1,31 +1,31 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/OptionSaleMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_option_sale_t* OptionSaleMapping::toOptionSale(const char** pByteData, const double** pDoubleData) {
     auto* optionSale = new dxfg_option_sale_t();
     optionSale->market_event.event_type.clazz = DXFG_EVENT_OPTION_SALE;
-    optionSale->market_event.event_symbol = EventReader::readString(pByteData);
-    optionSale->market_event.event_time = EventReader::readLong(pByteData);
-    optionSale->event_flags = EventReader::readInt(pByteData);
-    optionSale->index = EventReader::readLong(pByteData);
-    optionSale->time_sequence = EventReader::readLong(pByteData);
-    optionSale->time_nano_part = EventReader::readInt(pByteData);
-    optionSale->exchange_code = EventReader::readInt16_t(pByteData);
-    optionSale->flags = EventReader::readInt(pByteData);
-    optionSale->exchange_sale_conditions = EventReader::readString(pByteData);
-    optionSale->option_symbol = EventReader::readString(pByteData);
+    optionSale->market_event.event_symbol = ByteReader::readString(pByteData);
+    optionSale->market_event.event_time = ByteReader::readLong(pByteData);
+    optionSale->event_flags = ByteReader::readInt(pByteData);
+    optionSale->index = ByteReader::readLong(pByteData);
+    optionSale->time_sequence = ByteReader::readLong(pByteData);
+    optionSale->time_nano_part = ByteReader::readInt(pByteData);
+    optionSale->exchange_code = ByteReader::readInt16_t(pByteData);
+    optionSale->flags = ByteReader::readInt(pByteData);
+    optionSale->exchange_sale_conditions = ByteReader::readString(pByteData);
+    optionSale->option_symbol = ByteReader::readString(pByteData);
 
-    optionSale->price = EventReader::readDouble(pDoubleData);
-    optionSale->size = EventReader::readDouble(pDoubleData);
-    optionSale->bid_price = EventReader::readDouble(pDoubleData);
-    optionSale->ask_price = EventReader::readDouble(pDoubleData);
-    optionSale->underlying_price = EventReader::readDouble(pDoubleData);
-    optionSale->volatility = EventReader::readDouble(pDoubleData);
-    optionSale->delta = EventReader::readDouble(pDoubleData);
+    optionSale->price = ByteReader::readDouble(pDoubleData);
+    optionSale->size = ByteReader::readDouble(pDoubleData);
+    optionSale->bid_price = ByteReader::readDouble(pDoubleData);
+    optionSale->ask_price = ByteReader::readDouble(pDoubleData);
+    optionSale->underlying_price = ByteReader::readDouble(pDoubleData);
+    optionSale->volatility = ByteReader::readDouble(pDoubleData);
+    optionSale->delta = ByteReader::readDouble(pDoubleData);
     return optionSale;
   }
 

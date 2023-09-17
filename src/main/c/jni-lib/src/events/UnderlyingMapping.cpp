@@ -1,25 +1,24 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/UnderlyingMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_underlying_t* UnderlyingMapping::toUnderlying(const char** pByteData, const double** pDoubleData) {
     auto* underlying = new dxfg_underlying_t();
     underlying->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
-    underlying->market_event.event_symbol = EventReader::readString(pByteData);
-    underlying->market_event.event_time = EventReader::readLong(pByteData);
-    underlying->event_flags = EventReader::readInt(pByteData);
-    underlying->index = EventReader::readLong(pByteData);
+    underlying->market_event.event_symbol = ByteReader::readString(pByteData);
+    underlying->market_event.event_time = ByteReader::readLong(pByteData);
+    underlying->event_flags = ByteReader::readInt(pByteData);
+    underlying->index = ByteReader::readLong(pByteData);
 
-    underlying->volatility = EventReader::readDouble(pDoubleData);
-    underlying->front_volatility = EventReader::readDouble(pDoubleData);
-    underlying->back_volatility = EventReader::readDouble(pDoubleData);
-    underlying->call_volume = EventReader::readDouble(pDoubleData);
-    underlying->put_volume = EventReader::readDouble(pDoubleData);
-    underlying->put_call_ratio = EventReader::readDouble(pDoubleData);
-
+    underlying->volatility = ByteReader::readDouble(pDoubleData);
+    underlying->front_volatility = ByteReader::readDouble(pDoubleData);
+    underlying->back_volatility = ByteReader::readDouble(pDoubleData);
+    underlying->call_volume = ByteReader::readDouble(pDoubleData);
+    underlying->put_volume = ByteReader::readDouble(pDoubleData);
+    underlying->put_call_ratio = ByteReader::readDouble(pDoubleData);
     return underlying;
   }
 

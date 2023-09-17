@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_ORDERMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct OrderMapping {
     static dxfg_order_base_t* toOrderBase(const char** pByteData, const double** pDoubleData);

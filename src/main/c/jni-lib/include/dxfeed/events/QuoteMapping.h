@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_QUOTEMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct QuoteMapping {
     static dxfg_quote_t* toQuote(const char** pByteData, const double** pDoubleData);
