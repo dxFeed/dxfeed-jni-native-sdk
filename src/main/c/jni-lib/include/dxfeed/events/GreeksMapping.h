@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_GREEKSMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct GreeksMapping {
     static dxfg_greeks_t* toGreeks(const char** pByteData, const double** pDoubleData);

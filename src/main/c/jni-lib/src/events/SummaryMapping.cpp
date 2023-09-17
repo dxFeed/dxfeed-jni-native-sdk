@@ -1,27 +1,26 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/SummaryMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_summary_t* SummaryMapping::toSummary(const char** pByteData, const double** pDoubleData) {
     auto summary = new dxfg_summary_t();
     summary->market_event.event_type.clazz = DXFG_EVENT_SUMMARY;
-    summary->market_event.event_symbol = EventReader::readString(pByteData);
-    summary->market_event.event_time = EventReader::readLong(pByteData);
-    summary->day_id = EventReader::readInt(pByteData);
-    summary->prev_day_id = EventReader::readInt(pByteData);
-    summary->open_interest = EventReader::readLong(pByteData);
-    summary->flags = EventReader::readInt(pByteData);
+    summary->market_event.event_symbol = ByteReader::readString(pByteData);
+    summary->market_event.event_time = ByteReader::readLong(pByteData);
+    summary->day_id = ByteReader::readInt(pByteData);
+    summary->prev_day_id = ByteReader::readInt(pByteData);
+    summary->open_interest = ByteReader::readLong(pByteData);
+    summary->flags = ByteReader::readInt(pByteData);
 
-    summary->day_open_price = EventReader::readDouble(pDoubleData);
-    summary->day_high_price = EventReader::readDouble(pDoubleData);
-    summary->day_low_price = EventReader::readDouble(pDoubleData);
-    summary->day_close_price = EventReader::readDouble(pDoubleData);
-    summary->prev_day_close_price = EventReader::readDouble(pDoubleData);
-    summary->prev_day_volume = EventReader::readDouble(pDoubleData);
-
+    summary->day_open_price = ByteReader::readDouble(pDoubleData);
+    summary->day_high_price = ByteReader::readDouble(pDoubleData);
+    summary->day_low_price = ByteReader::readDouble(pDoubleData);
+    summary->day_close_price = ByteReader::readDouble(pDoubleData);
+    summary->prev_day_close_price = ByteReader::readDouble(pDoubleData);
+    summary->prev_day_volume = ByteReader::readDouble(pDoubleData);
     return summary;
   }
 

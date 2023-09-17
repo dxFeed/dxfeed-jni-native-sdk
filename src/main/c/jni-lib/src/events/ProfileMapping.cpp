@@ -1,32 +1,32 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/ProfileMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_profile_t* ProfileMapping::toProfile(const char** pByteData, const double** pDoubleData) {
     auto* profile = new dxfg_profile_t();
     profile->market_event.event_type.clazz = DXFG_EVENT_PROFILE;
-    profile->market_event.event_symbol = EventReader::readString(pByteData);
-    profile->market_event.event_time = EventReader::readLong(pByteData);
-    profile->halt_start_time = EventReader::readLong(pByteData);
-    profile->halt_end_time = EventReader::readLong(pByteData);
-    profile->ex_dividend_day_id = EventReader::readInt(pByteData);
-    profile->flags = EventReader::readInt(pByteData);
-    profile->description = EventReader::readString(pByteData);
-    profile->status_reason = EventReader::readString(pByteData);
+    profile->market_event.event_symbol = ByteReader::readString(pByteData);
+    profile->market_event.event_time = ByteReader::readLong(pByteData);
+    profile->halt_start_time = ByteReader::readLong(pByteData);
+    profile->halt_end_time = ByteReader::readLong(pByteData);
+    profile->ex_dividend_day_id = ByteReader::readInt(pByteData);
+    profile->flags = ByteReader::readInt(pByteData);
+    profile->description = ByteReader::readString(pByteData);
+    profile->status_reason = ByteReader::readString(pByteData);
 
-    profile->high_limit_price = EventReader::readDouble(pDoubleData);
-    profile->low_limit_price = EventReader::readDouble(pDoubleData);
-    profile->high_52_week_price = EventReader::readDouble(pDoubleData);
-    profile->low_52_week_price = EventReader::readDouble(pDoubleData);
-    profile->beta = EventReader::readDouble(pDoubleData);
-    profile->earnings_per_share = EventReader::readDouble(pDoubleData);
-    profile->dividend_frequency = EventReader::readDouble(pDoubleData);
-    profile->ex_dividend_amount = EventReader::readDouble(pDoubleData);
-    profile->shares = EventReader::readDouble(pDoubleData);
-    profile->free_float = EventReader::readDouble(pDoubleData);
+    profile->high_limit_price = ByteReader::readDouble(pDoubleData);
+    profile->low_limit_price = ByteReader::readDouble(pDoubleData);
+    profile->high_52_week_price = ByteReader::readDouble(pDoubleData);
+    profile->low_52_week_price = ByteReader::readDouble(pDoubleData);
+    profile->beta = ByteReader::readDouble(pDoubleData);
+    profile->earnings_per_share = ByteReader::readDouble(pDoubleData);
+    profile->dividend_frequency = ByteReader::readDouble(pDoubleData);
+    profile->ex_dividend_amount = ByteReader::readDouble(pDoubleData);
+    profile->shares = ByteReader::readDouble(pDoubleData);
+    profile->free_float = ByteReader::readDouble(pDoubleData);
     return profile;
   }
 

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/CandleMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/events/ConfigurationMapping.h"
+#include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/events/GreeksMapping.h"
 #include "dxfeed/events/OptionSaleMapping.h"
 #include "dxfeed/events/OrderMapping.h"
@@ -15,6 +16,7 @@
 #include "dxfeed/events/UnderlyingMapping.h"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/NativeEventReader.hpp"
+#include "dxfeed/events/MessageMapping.h"
 
 namespace dxfeed::jni {
   std::vector<dxfg_event_type_t*> NativeEventReader::toEvents(int size,
@@ -25,7 +27,7 @@ namespace dxfeed::jni {
     std::vector<dxfg_event_type_t*> events(size);
     for (int i = 0 ; i < size; ++i) {
 //      std::cout << "events[i] = " << i << ", pByteData = 0x" << (void*)pByteData << ", pDoubleData = 0x" << (void*)pDoubleData << std::endl;
-      auto eventType = static_cast<dxfg_event_clazz_t>(EventReader::readByte(&pEventTypes));
+      auto eventType = static_cast<dxfg_event_clazz_t>(ByteReader::readByte(&pEventTypes));
       events[i] = toEvent(&pByteData, &pDoubleData, eventType);
     }
     return events;
@@ -62,10 +64,10 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(TradeMapping::toTradeBase(pByteData, pDoubleData));
       }
       case DXFG_EVENT_CONFIGURATION: {
-        return r_cast<dxfg_event_type_t*>(toConfiguration(pByteData));
+        return r_cast<dxfg_event_type_t*>(ConfigurationMapping::toConfiguration(pByteData));
       }
       case DXFG_EVENT_MESSAGE: {
-        return r_cast<dxfg_event_type_t*>(toMessage(pByteData));
+        return r_cast<dxfg_event_type_t*>(MessageMapping::toMessage(pByteData));
       }
       case DXFG_EVENT_TIME_AND_SALE: {
         return r_cast<dxfg_event_type_t*>(TimeAndSaleMapping::toTimeAndSale(pByteData, pDoubleData));
@@ -93,26 +95,5 @@ namespace dxfeed::jni {
         return nullptr;
       }
     }
-  }
-
-  dxfg_configuration_t* NativeEventReader::toConfiguration(const char** pByteData) {
-    auto* configuration = new dxfg_configuration_t();// todo: make wrapper to get attachment fromJava
-    configuration->event_type.clazz = DXFG_EVENT_CONFIGURATION;
-    configuration->event_symbol = EventReader::readString(pByteData);
-    configuration->event_time = EventReader::readLong(pByteData);
-    configuration->version = EventReader::readInt(pByteData);
-    // todo: read next ID of type LONG, ID points to java.lang.Object attachment in Java
-    // configuration->attachment = readBlob();
-    return configuration;
-  }
-
-  dxfg_message_t* NativeEventReader::toMessage(const char** pByteData) {
-    auto* message = new dxfg_message_t(); // todo: make wrapper to get attachment from Java
-    message->event_type.clazz = DXFG_EVENT_MESSAGE;
-    message->event_symbol = EventReader::readString(pByteData);
-    message->event_time = EventReader::readLong(pByteData);
-    // todo: read next ID of type LONG, ID points to java.lang.Object attachment in Java
-    // message->attachment = readBlob(pByteData);
-    return message;
   }
 }

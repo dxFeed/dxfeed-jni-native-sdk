@@ -1,27 +1,26 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/TradeMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_trade_base_t* TradeMapping::toTradeBase(const char** pByteData, const double** pDoubleData) {
     auto* trade = new dxfg_trade_base_t();
     trade->market_event.event_type.clazz = DXFG_EVENT_TRADE;
-    trade->market_event.event_symbol = EventReader::readString(pByteData);
-    trade->market_event.event_time = EventReader::readLong(pByteData);
-    trade->time_sequence = EventReader::readLong(pByteData);
-    trade->time_nano_part = EventReader::readInt(pByteData);
-    trade->exchange_code = EventReader::readInt16_t(pByteData);
-    trade->day_id = EventReader::readInt(pByteData);
-    trade->flags = EventReader::readInt(pByteData);
+    trade->market_event.event_symbol = ByteReader::readString(pByteData);
+    trade->market_event.event_time = ByteReader::readLong(pByteData);
+    trade->time_sequence = ByteReader::readLong(pByteData);
+    trade->time_nano_part = ByteReader::readInt(pByteData);
+    trade->exchange_code = ByteReader::readInt16_t(pByteData);
+    trade->day_id = ByteReader::readInt(pByteData);
+    trade->flags = ByteReader::readInt(pByteData);
 
-    trade->price = EventReader::readDouble(pDoubleData);
-    trade->change = EventReader::readDouble(pDoubleData);
-    trade->size = EventReader::readDouble(pDoubleData);
-    trade->day_volume = EventReader::readDouble(pDoubleData);
-    trade->day_turnover = EventReader::readDouble(pDoubleData);
-
+    trade->price = ByteReader::readDouble(pDoubleData);
+    trade->change = ByteReader::readDouble(pDoubleData);
+    trade->size = ByteReader::readDouble(pDoubleData);
+    trade->day_volume = ByteReader::readDouble(pDoubleData);
+    trade->day_turnover = ByteReader::readDouble(pDoubleData);
     return trade;
   }
 

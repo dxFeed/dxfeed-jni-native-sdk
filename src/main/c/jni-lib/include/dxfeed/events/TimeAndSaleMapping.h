@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_TIMEANDSALEMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct TimeAndSaleMapping {
     static dxfg_time_and_sale_t* toTimeAndSale(const char** pByteData, const double** pDoubleData);

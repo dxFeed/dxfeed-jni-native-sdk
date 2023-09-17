@@ -317,7 +317,7 @@ typedef struct dxfg_configuration_t {
   const char *event_symbol;
   int64_t event_time;
   int32_t version;
-  void *attachment;
+  const void *attachment;
 } dxfg_configuration_t;
 
 /**
@@ -327,7 +327,7 @@ typedef struct dxfg_message_t {
   dxfg_event_type_t event_type;
   const char *event_symbol;
   int64_t event_time;
-  void *attachment;
+  const void *attachment;
 } dxfg_message_t;
 
 /**

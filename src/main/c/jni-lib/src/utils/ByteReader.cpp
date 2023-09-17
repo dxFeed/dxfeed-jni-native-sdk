@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
 
-namespace dxfeed {
+namespace dxfeed::jni {
   template <typename T>
   inline T readUByte(const char** pData) {
     T val = (**pData) & 0xFF;
@@ -19,29 +19,29 @@ namespace dxfeed {
     return value;
   }
 
-  int8_t EventReader::readByte(const char** pData) {
+  int8_t ByteReader::readByte(const char** pData) {
     return readUByte<int8_t>(pData);
   }
 
-  int16_t EventReader::readInt16_t(const char** pData) {
+  int16_t ByteReader::readInt16_t(const char** pData) {
     return readPrimitive<int16_t>(pData);
   }
 
-  int32_t EventReader::readInt(const char** pData) {
+  int32_t ByteReader::readInt(const char** pData) {
     return readPrimitive<int32_t>(pData);
   }
 
-  int64_t EventReader::readLong(const char** pData) {
+  int64_t ByteReader::readLong(const char** pData) {
     return readPrimitive<int64_t>(pData);
   }
 
-  double EventReader::readDouble(const double** pData) {
+  double ByteReader::readDouble(const double** pData) {
     double value = **pData;
     ++(*pData);
     return value;
   }
 
-  const char* EventReader::readString(const char** pData) {
+  const char* ByteReader::readString(const char** pData) {
     int16_t strSize = readInt16_t(pData);
     const auto result = strSize ? *pData : "";
     (*pData) += strSize;

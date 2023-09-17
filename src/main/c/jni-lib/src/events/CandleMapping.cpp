@@ -1,29 +1,29 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/CandleMapping.h"
-#include "dxfeed/events/EventReader.h"
+#include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-
+namespace dxfeed::jni {
   dxfg_candle_t* CandleMapping::toCandle(const char** pByteData, const double** pDoubleData) {
     auto* candle = new dxfg_candle_t();
     candle->event_type.clazz = DXFG_EVENT_CANDLE;
-    candle->event_symbol = EventReader::readString(pByteData);
-    candle->event_time = EventReader::readLong(pByteData);
-    candle->event_flags = EventReader::readInt(pByteData);
-    candle->index = EventReader::readLong(pByteData);
-    candle->count = EventReader::readLong(pByteData);
+    candle->event_symbol = ByteReader::readString(pByteData);
+    candle->event_time = ByteReader::readLong(pByteData);
+    candle->event_flags = ByteReader::readInt(pByteData);
+    candle->index = ByteReader::readLong(pByteData);
+    candle->count = ByteReader::readLong(pByteData);
 
-    candle->open = EventReader::readDouble(pDoubleData);
-    candle->high = EventReader::readDouble(pDoubleData);
-    candle->low = EventReader::readDouble(pDoubleData);
-    candle->close = EventReader::readDouble(pDoubleData);
-    candle->volume = EventReader::readDouble(pDoubleData);
-    candle->vwap = EventReader::readDouble(pDoubleData);
-    candle->bid_volume = EventReader::readDouble(pDoubleData);
-    candle->ask_volume = EventReader::readDouble(pDoubleData);
-    candle->imp_volatility = EventReader::readDouble(pDoubleData);
-    candle->open_interest = EventReader::readDouble(pDoubleData);
+    candle->open = ByteReader::readDouble(pDoubleData);
+    candle->high = ByteReader::readDouble(pDoubleData);
+    candle->low = ByteReader::readDouble(pDoubleData);
+    candle->close = ByteReader::readDouble(pDoubleData);
+    candle->volume = ByteReader::readDouble(pDoubleData);
+    candle->vwap = ByteReader::readDouble(pDoubleData);
+    candle->bid_volume = ByteReader::readDouble(pDoubleData);
+    candle->ask_volume = ByteReader::readDouble(pDoubleData);
+    candle->imp_volatility = ByteReader::readDouble(pDoubleData);
+    candle->open_interest = ByteReader::readDouble(pDoubleData);
     return candle;
   }
 

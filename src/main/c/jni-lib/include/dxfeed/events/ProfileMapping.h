@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_PROFILEMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct ProfileMapping {
     static dxfg_profile_t* toProfile(const char** pByteData, const double** pDoubleData);

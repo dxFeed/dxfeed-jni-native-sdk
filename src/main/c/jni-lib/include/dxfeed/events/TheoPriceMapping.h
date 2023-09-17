@@ -4,10 +4,9 @@
 #define NATIVE_JNI_SDK_THEOPRICEMAPPING_H
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/ByteWriter.hpp"
 
-namespace dxfeed {
-  using namespace jni;
+namespace dxfeed::jni {
+  struct ByteWriter;
 
   struct TheoPriceMapping {
     static dxfg_theo_price_t* toTheoPrice(const char** pByteData, const double** pDoubleData);
