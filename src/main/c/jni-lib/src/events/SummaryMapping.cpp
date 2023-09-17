@@ -5,22 +5,22 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_summary_t* SummaryMapping::toSummary(const char** pByteData, const double** pDoubleData) {
+  dxfg_summary_t* SummaryMapping::toSummary(ByteReader& reader) {
     auto summary = new dxfg_summary_t();
     summary->market_event.event_type.clazz = DXFG_EVENT_SUMMARY;
-    summary->market_event.event_symbol = ByteReader::readString(pByteData);
-    summary->market_event.event_time = ByteReader::readLong(pByteData);
-    summary->day_id = ByteReader::readInt(pByteData);
-    summary->prev_day_id = ByteReader::readInt(pByteData);
-    summary->open_interest = ByteReader::readLong(pByteData);
-    summary->flags = ByteReader::readInt(pByteData);
+    summary->market_event.event_symbol = reader.readString();
+    summary->market_event.event_time = reader.readLong();
+    summary->day_id = reader.readInt();
+    summary->prev_day_id = reader.readInt();
+    summary->open_interest = reader.readLong();
+    summary->flags = reader.readInt();
 
-    summary->day_open_price = ByteReader::readDouble(pDoubleData);
-    summary->day_high_price = ByteReader::readDouble(pDoubleData);
-    summary->day_low_price = ByteReader::readDouble(pDoubleData);
-    summary->day_close_price = ByteReader::readDouble(pDoubleData);
-    summary->prev_day_close_price = ByteReader::readDouble(pDoubleData);
-    summary->prev_day_volume = ByteReader::readDouble(pDoubleData);
+    summary->day_open_price = reader.readDouble();
+    summary->day_high_price = reader.readDouble();
+    summary->day_low_price = reader.readDouble();
+    summary->day_close_price = reader.readDouble();
+    summary->prev_day_close_price = reader.readDouble();
+    summary->prev_day_volume = reader.readDouble();
     return summary;
   }
 

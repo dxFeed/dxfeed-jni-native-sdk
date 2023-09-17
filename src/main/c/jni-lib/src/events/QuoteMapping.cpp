@@ -5,22 +5,22 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_quote_t* QuoteMapping::toQuote(const char** pByteData, const double** pDoubleData) {
+  dxfg_quote_t* QuoteMapping::toQuote(ByteReader& reader) {
     auto* quote = new dxfg_quote_t();
     quote->market_event.event_type.clazz = DXFG_EVENT_QUOTE;
-    quote->market_event.event_symbol = ByteReader::readString(pByteData);
-    quote->market_event.event_time = ByteReader::readLong(pByteData);
-    quote->time_millis_sequence = ByteReader::readInt(pByteData);
-    quote->time_nano_part = ByteReader::readInt(pByteData);
-    quote->bid_time = ByteReader::readLong(pByteData);
-    quote->bid_exchange_code = ByteReader::readInt16_t(pByteData);
-    quote->ask_time = ByteReader::readLong(pByteData);
-    quote->ask_exchange_code = ByteReader::readInt16_t(pByteData);
+    quote->market_event.event_symbol = reader.readString();
+    quote->market_event.event_time = reader.readLong();
+    quote->time_millis_sequence = reader.readInt();
+    quote->time_nano_part = reader.readInt();
+    quote->bid_time = reader.readLong();
+    quote->bid_exchange_code = reader.readInt16_t();
+    quote->ask_time = reader.readLong();
+    quote->ask_exchange_code = reader.readInt16_t();
 
-    quote->bid_price = ByteReader::readDouble(pDoubleData);
-    quote->bid_size = ByteReader::readDouble(pDoubleData);
-    quote->ask_price = ByteReader::readDouble(pDoubleData);
-    quote->ask_size = ByteReader::readDouble(pDoubleData);
+    quote->bid_price = reader.readDouble();
+    quote->bid_size = reader.readDouble();
+    quote->ask_price = reader.readDouble();
+    quote->ask_size = reader.readDouble();
     return quote;
   }
 

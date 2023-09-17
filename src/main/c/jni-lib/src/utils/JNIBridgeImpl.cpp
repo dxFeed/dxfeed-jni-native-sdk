@@ -6,7 +6,7 @@
 #include "javah/com_dxfeed_api_DxSubscriptionJni.h"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
-#include "dxfeed/utils/NativeEventReader.hpp"
+#include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 #ifdef __cplusplus
@@ -54,7 +54,8 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   auto pDoubleData = (const double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
   auto pEventTypes = (const char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
 
-  auto events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
+  dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
+  auto events = reader.toEvents();
 
   env->ReleasePrimitiveArrayCritical(jDoubles, const_cast<double*>(pDoubleData), 0);
   env->ReleasePrimitiveArrayCritical(jBytes, const_cast<char*>(pByteData), 0);
@@ -79,7 +80,8 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
   auto pDoubleData = (double*) jDoubles;
   auto pEventTypes = (char*) jEventTypes;
 
-  auto events = dxfeed::jni::NativeEventReader::toEvents(size, pByteData, pDoubleData, pEventTypes);
+  dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
+  auto events = reader.toEvents();
 
   auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
   auto userData = dxfeed::r_cast<void*>(jUserData);

@@ -2,8 +2,8 @@
 
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/NativeEventsList.hpp"
-#include "dxfeed/utils/NativeEventReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
+#include "dxfeed/utils/ByteReader.hpp"
 
 namespace dxfeed::jni {
   NativeEventsList::NativeEventsList(JNIEnv* env):
@@ -55,8 +55,9 @@ namespace dxfeed::jni {
     auto eventTypesData = r_cast<const char*>(env_->GetPrimitiveArrayCritical(eventTypeArray, 0));
 
     // return newEventType via arg-pointer
-    const auto& vector = NativeEventReader::toEvents(size, byteData, doubleData, eventTypesData);
-    dxfg_event_type_t* pType = vector[0];
+    dxfeed::jni::ByteReader reader(size, byteData, doubleData, eventTypesData);
+    auto events = reader.toEvents();
+    dxfg_event_type_t* pType = events[0];
     *ppEventType = pType;
 
     env_->ReleasePrimitiveArrayCritical(byteArray, const_cast<char*>(byteData), 0);
@@ -83,11 +84,12 @@ namespace dxfeed::jni {
     auto eventTypesData = r_cast<const char*>(env_->GetPrimitiveArrayCritical(eventTypeArray, 0));
 
     // return newEventTypes via arg-pointer
-    const auto& vector = NativeEventReader::toEvents(size, byteData, doubleData, eventTypesData);
+    dxfeed::jni::ByteReader reader(size, byteData, doubleData, eventTypesData);
+    auto events = reader.toEvents();
     dxfg_event_type_list* pEventTypeList = *ppEventTypeList;
     pEventTypeList->size = size;
     for (int i = 0; i < size; ++i) {
-      pEventTypeList->elements[i] = vector[i];
+      pEventTypeList->elements[i] = events[i];
     }
 
     env_->ReleasePrimitiveArrayCritical(byteArray, const_cast<char*>(byteData), 0);

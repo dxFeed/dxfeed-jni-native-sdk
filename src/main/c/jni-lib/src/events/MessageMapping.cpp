@@ -6,12 +6,12 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
-  dxfg_message_t* MessageMapping::toMessage(const char** pByteData) {
+  dxfg_message_t* MessageMapping::toMessage(ByteReader& reader) {
     auto* message = new dxfg_message_t();
     message->event_type.clazz = DXFG_EVENT_MESSAGE;
-    message->event_symbol = ByteReader::readString(pByteData);
-    message->event_time = ByteReader::readLong(pByteData);
-    message->attachment = r_cast<const void*>(ByteReader::readString(pByteData));
+    message->event_symbol = reader.readString();
+    message->event_time = reader.readLong();
+    message->attachment = r_cast<const void*>(reader.readString());
     return message;
   }
 

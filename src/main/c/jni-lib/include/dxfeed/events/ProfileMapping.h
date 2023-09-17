@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct ProfileMapping {
-    static dxfg_profile_t* toProfile(const char** pByteData, const double** pDoubleData);
+    static dxfg_profile_t* toProfile(ByteReader& reader);
     static void fromProfile(dxfg_profile_t* eventType, ByteWriter& writer);
   };
 }
