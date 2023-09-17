@@ -9,7 +9,7 @@
 namespace dxfeed {
   using namespace jni;
 
-  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const char* name) {
+  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const char* name) : env_(env) {
     auto jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_CLASS_NAME);
     const char* methodName = "newOrderSourceByName";
     const char* methodSignature = "(Ljava/lang/String;[J)Lcom/dxfeed/event/IndexedEventSource;";
@@ -28,7 +28,7 @@ namespace dxfeed {
     env->DeleteLocalRef(jDxClass);
   }
 
-  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const int32_t sourceId) {
+  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const int32_t sourceId) : env_(env) {
     auto jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_CLASS_NAME);
     const char* methodName = "newOrderSourceById";
     const char* methodSignature = "(I[J)Lcom/dxfeed/event/market/OrderSource;";
@@ -65,6 +65,7 @@ namespace dxfeed {
   }
 
   DxIndexedEventSource::~DxIndexedEventSource() {
+    env_->DeleteGlobalRef(indexedEventSource_);
     indexedEventSource_ = nullptr;
     id_ = 0;
     delete name_;
@@ -73,11 +74,6 @@ namespace dxfeed {
 
   jobject DxIndexedEventSource::javaObject() const {
     return indexedEventSource_;
-  }
-
-  void DxIndexedEventSource::release(JNIEnv* env) {
-    env->DeleteGlobalRef(indexedEventSource_);
-    delete this;
   }
 
   bool DxIndexedEventSource::isSpecialSourceId(JNIEnv* env, int32_t index) {

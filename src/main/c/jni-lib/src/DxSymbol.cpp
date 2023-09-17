@@ -7,7 +7,7 @@
 namespace dxfeed {
   using namespace jni;
 
-  void DxSymbol::release(dxfg_symbol_t* pSymbol) {
+  void DxSymbol::release(JNIEnv * env, dxfg_symbol_t* pSymbol) {
     if (!pSymbol) {
       return;
     }
@@ -28,11 +28,13 @@ namespace dxfeed {
       }
       case dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION: {
         auto timeSeriesSymbol = r_cast<dxfg_time_series_subscription_symbol_t*>(pSymbol);
-        release(timeSeriesSymbol->symbol);
+        release(env, timeSeriesSymbol->symbol);
       }
       case dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION: {
         auto indexedEventSymbol = r_cast<dxfg_indexed_event_subscription_symbol_t*>(pSymbol);
-        release(indexedEventSymbol->symbol);
+        auto pSource = r_cast<DxIndexedEventSource*>(indexedEventSymbol->source);
+        delete pSource;
+        release(env, indexedEventSymbol->symbol);
       }
       default: {
         javaLogger->error("Unknown symbol type: ", symbolType);
