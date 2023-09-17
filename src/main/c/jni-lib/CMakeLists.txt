@@ -58,7 +58,6 @@ set(SOURCE_FILES
     src/utils/JNIUtils.cpp
     src/utils/LoadJvmLib.cpp
     src/utils/NativeEventsList.cpp
-    src/utils/NativeEventReader.cpp
     src/utils/java/DxFeedJniClass.cpp
     src/utils/java/JavaLangClass.cpp
     src/utils/java/JavaLangSystem.cpp

@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct ConfigurationMapping {
-    static dxfg_configuration_t* toConfiguration(const char** pByteData);
+    static dxfg_configuration_t* toConfiguration(ByteReader& reader);
     static void fromConfiguration(dxfg_configuration_t* eventType, ByteWriter& writer);
   };
 }

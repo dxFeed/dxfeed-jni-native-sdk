@@ -5,23 +5,23 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_series_t* SeriesMapping::toSeries(const char** pByteData, const double** pDoubleData) {
+  dxfg_series_t* SeriesMapping::toSeries(ByteReader& reader) {
     auto* series = new dxfg_series_t();
     series->market_event.event_type.clazz = DXFG_EVENT_SERIES;
-    series->market_event.event_symbol = ByteReader::readString(pByteData);
-    series->market_event.event_time = ByteReader::readLong(pByteData);
-    series->event_flags = ByteReader::readInt(pByteData);
-    series->index = ByteReader::readLong(pByteData);
-    series->time_sequence = ByteReader::readLong(pByteData);
-    series->expiration = ByteReader::readInt(pByteData);
+    series->market_event.event_symbol = reader.readString();
+    series->market_event.event_time = reader.readLong();
+    series->event_flags = reader.readInt();
+    series->index = reader.readLong();
+    series->time_sequence = reader.readLong();
+    series->expiration = reader.readInt();
 
-    series->volatility = ByteReader::readDouble(pDoubleData);
-    series->call_volume = ByteReader::readDouble(pDoubleData);
-    series->put_volume = ByteReader::readDouble(pDoubleData);
-    series->put_call_ratio = ByteReader::readDouble(pDoubleData);
-    series->forward_price = ByteReader::readDouble(pDoubleData);
-    series->dividend = ByteReader::readDouble(pDoubleData);
-    series->interest = ByteReader::readDouble(pDoubleData);
+    series->volatility = reader.readDouble();
+    series->call_volume = reader.readDouble();
+    series->put_volume = reader.readDouble();
+    series->put_call_ratio = reader.readDouble();
+    series->forward_price = reader.readDouble();
+    series->dividend = reader.readDouble();
+    series->interest = reader.readDouble();
     return series;
   }
 

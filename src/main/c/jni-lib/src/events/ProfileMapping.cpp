@@ -5,28 +5,28 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_profile_t* ProfileMapping::toProfile(const char** pByteData, const double** pDoubleData) {
+  dxfg_profile_t* ProfileMapping::toProfile(ByteReader& reader) {
     auto* profile = new dxfg_profile_t();
     profile->market_event.event_type.clazz = DXFG_EVENT_PROFILE;
-    profile->market_event.event_symbol = ByteReader::readString(pByteData);
-    profile->market_event.event_time = ByteReader::readLong(pByteData);
-    profile->halt_start_time = ByteReader::readLong(pByteData);
-    profile->halt_end_time = ByteReader::readLong(pByteData);
-    profile->ex_dividend_day_id = ByteReader::readInt(pByteData);
-    profile->flags = ByteReader::readInt(pByteData);
-    profile->description = ByteReader::readString(pByteData);
-    profile->status_reason = ByteReader::readString(pByteData);
+    profile->market_event.event_symbol = reader.readString();
+    profile->market_event.event_time = reader.readLong();
+    profile->halt_start_time = reader.readLong();
+    profile->halt_end_time = reader.readLong();
+    profile->ex_dividend_day_id = reader.readInt();
+    profile->flags = reader.readInt();
+    profile->description = reader.readString();
+    profile->status_reason = reader.readString();
 
-    profile->high_limit_price = ByteReader::readDouble(pDoubleData);
-    profile->low_limit_price = ByteReader::readDouble(pDoubleData);
-    profile->high_52_week_price = ByteReader::readDouble(pDoubleData);
-    profile->low_52_week_price = ByteReader::readDouble(pDoubleData);
-    profile->beta = ByteReader::readDouble(pDoubleData);
-    profile->earnings_per_share = ByteReader::readDouble(pDoubleData);
-    profile->dividend_frequency = ByteReader::readDouble(pDoubleData);
-    profile->ex_dividend_amount = ByteReader::readDouble(pDoubleData);
-    profile->shares = ByteReader::readDouble(pDoubleData);
-    profile->free_float = ByteReader::readDouble(pDoubleData);
+    profile->high_limit_price = reader.readDouble();
+    profile->low_limit_price = reader.readDouble();
+    profile->high_52_week_price = reader.readDouble();
+    profile->low_52_week_price = reader.readDouble();
+    profile->beta = reader.readDouble();
+    profile->earnings_per_share = reader.readDouble();
+    profile->dividend_frequency = reader.readDouble();
+    profile->ex_dividend_amount = reader.readDouble();
+    profile->shares = reader.readDouble();
+    profile->free_float = reader.readDouble();
     return profile;
   }
 

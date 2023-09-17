@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct SummaryMapping {
-    static dxfg_summary_t* toSummary(const char** pByteData, const double** pDoubleData);
+    static dxfg_summary_t* toSummary(ByteReader& reader);
     static void fromSummary(dxfg_summary_t* eventType, ByteWriter& writer);
   };
 }

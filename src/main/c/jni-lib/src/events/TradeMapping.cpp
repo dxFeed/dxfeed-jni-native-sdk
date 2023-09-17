@@ -5,22 +5,22 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_trade_base_t* TradeMapping::toTradeBase(const char** pByteData, const double** pDoubleData) {
+  dxfg_trade_base_t* TradeMapping::toTradeBase(ByteReader& reader) {
     auto* trade = new dxfg_trade_base_t();
     trade->market_event.event_type.clazz = DXFG_EVENT_TRADE;
-    trade->market_event.event_symbol = ByteReader::readString(pByteData);
-    trade->market_event.event_time = ByteReader::readLong(pByteData);
-    trade->time_sequence = ByteReader::readLong(pByteData);
-    trade->time_nano_part = ByteReader::readInt(pByteData);
-    trade->exchange_code = ByteReader::readInt16_t(pByteData);
-    trade->day_id = ByteReader::readInt(pByteData);
-    trade->flags = ByteReader::readInt(pByteData);
+    trade->market_event.event_symbol = reader.readString();
+    trade->market_event.event_time = reader.readLong();
+    trade->time_sequence = reader.readLong();
+    trade->time_nano_part = reader.readInt();
+    trade->exchange_code = reader.readInt16_t();
+    trade->day_id = reader.readInt();
+    trade->flags = reader.readInt();
 
-    trade->price = ByteReader::readDouble(pDoubleData);
-    trade->change = ByteReader::readDouble(pDoubleData);
-    trade->size = ByteReader::readDouble(pDoubleData);
-    trade->day_volume = ByteReader::readDouble(pDoubleData);
-    trade->day_turnover = ByteReader::readDouble(pDoubleData);
+    trade->price = reader.readDouble();
+    trade->change = reader.readDouble();
+    trade->size = reader.readDouble();
+    trade->day_volume = reader.readDouble();
+    trade->day_turnover = reader.readDouble();
     return trade;
   }
 

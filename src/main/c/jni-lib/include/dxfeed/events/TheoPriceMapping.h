@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct TheoPriceMapping {
-    static dxfg_theo_price_t* toTheoPrice(const char** pByteData, const double** pDoubleData);
+    static dxfg_theo_price_t* toTheoPrice(ByteReader& reader);
     static void fromTheoPrice(dxfg_theo_price_t* eventType, ByteWriter& writer);
   };
 }

@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct QuoteMapping {
-    static dxfg_quote_t* toQuote(const char** pByteData, const double** pDoubleData);
+    static dxfg_quote_t* toQuote(ByteReader& reader);
     static void fromQuote(dxfg_quote_t* eventType, ByteWriter& writer);
   };
 }

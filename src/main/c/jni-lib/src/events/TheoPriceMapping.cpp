@@ -5,20 +5,20 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_theo_price_t* TheoPriceMapping::toTheoPrice(const char** pByteData, const double** pDoubleData) {
+  dxfg_theo_price_t* TheoPriceMapping::toTheoPrice(ByteReader& reader) {
     auto* theoPrice = new dxfg_theo_price_t();
     theoPrice->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
-    theoPrice->market_event.event_symbol = ByteReader::readString(pByteData);
-    theoPrice->market_event.event_time = ByteReader::readLong(pByteData);
-    theoPrice->event_flags = ByteReader::readInt(pByteData);
-    theoPrice->index = ByteReader::readLong(pByteData);
+    theoPrice->market_event.event_symbol = reader.readString();
+    theoPrice->market_event.event_time = reader.readLong();
+    theoPrice->event_flags = reader.readInt();
+    theoPrice->index = reader.readLong();
 
-    theoPrice->price = ByteReader::readDouble(pDoubleData);
-    theoPrice->underlying_price = ByteReader::readDouble(pDoubleData);
-    theoPrice->delta = ByteReader::readDouble(pDoubleData);
-    theoPrice->gamma = ByteReader::readDouble(pDoubleData);
-    theoPrice->dividend = ByteReader::readDouble(pDoubleData);
-    theoPrice->interest = ByteReader::readDouble(pDoubleData);
+    theoPrice->price = reader.readDouble();
+    theoPrice->underlying_price = reader.readDouble();
+    theoPrice->delta = reader.readDouble();
+    theoPrice->gamma = reader.readDouble();
+    theoPrice->dividend = reader.readDouble();
+    theoPrice->interest = reader.readDouble();
     return theoPrice;
   }
 

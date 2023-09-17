@@ -5,21 +5,21 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_greeks_t* GreeksMapping::toGreeks(const char** pByteData, const double** pDoubleData) {
+  dxfg_greeks_t* GreeksMapping::toGreeks(ByteReader& reader) {
     auto greeks = new dxfg_greeks_t();
     greeks->market_event.event_type.clazz = DXFG_EVENT_GREEKS;
-    greeks->market_event.event_symbol = ByteReader::readString(pByteData);
-    greeks->market_event.event_time = ByteReader::readLong(pByteData);
-    greeks->event_flags = ByteReader::readInt(pByteData);
-    greeks->index = ByteReader::readLong(pByteData);
+    greeks->market_event.event_symbol = reader.readString();
+    greeks->market_event.event_time = reader.readLong();
+    greeks->event_flags = reader.readInt();
+    greeks->index = reader.readLong();
 
-    greeks->price = ByteReader::readDouble(pDoubleData);
-    greeks->volatility = ByteReader::readDouble(pDoubleData);
-    greeks->delta = ByteReader::readDouble(pDoubleData);
-    greeks->gamma = ByteReader::readDouble(pDoubleData);
-    greeks->theta = ByteReader::readDouble(pDoubleData);
-    greeks->rho = ByteReader::readDouble(pDoubleData);
-    greeks->vega = ByteReader::readDouble(pDoubleData);
+    greeks->price = reader.readDouble();
+    greeks->volatility = reader.readDouble();
+    greeks->delta = reader.readDouble();
+    greeks->gamma = reader.readDouble();
+    greeks->theta = reader.readDouble();
+    greeks->rho = reader.readDouble();
+    greeks->vega = reader.readDouble();
     return greeks;
   }
 

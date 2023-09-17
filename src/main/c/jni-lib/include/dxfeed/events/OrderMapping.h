@@ -6,19 +6,20 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct OrderMapping {
-    static dxfg_order_base_t* toOrderBase(const char** pByteData, const double** pDoubleData);
-    static dxfg_order_t* toOrder(const char** pByteData, const double** pDoubleData);
-    static dxfg_analytic_order_t* toAnalyticsOrder(const char** pByteData, const double** pDoubleData);
-    static dxfg_spread_order_t* toSpreadOrder(const char** pByteData, const double** pDoubleData);
+    static dxfg_order_base_t* toOrderBase(ByteReader& reader);
+    static dxfg_order_t* toOrder(ByteReader& reader);
+    static dxfg_analytic_order_t* toAnalyticsOrder(ByteReader& reader);
+    static dxfg_spread_order_t* toSpreadOrder(ByteReader& reader);
     static void fromOrderBase(dxfg_order_base_t* eventType, ByteWriter& writer);
     static void fromSpreadOrder(dxfg_spread_order_t* eventType, ByteWriter& writer);
     static void fromOrder(dxfg_order_t* eventType, ByteWriter& writer);
     static void fromAnalyticOrder(dxfg_analytic_order_t* eventType, ByteWriter& writer);
   private:
-    static void readOrderBase(const char** pByteData, const double** pDoubleData, dxfg_order_base_t* orderBase);
+    static void readOrderBase(ByteReader& reader, dxfg_order_base_t* orderBase);
     static void writeOrderBase(dxfg_order_base_t* orderBase, ByteWriter& writer);
   };
 }
