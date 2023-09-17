@@ -7,6 +7,71 @@
 namespace dxfeed {
   using namespace jni;
 
+  void DxSymbol::release(dxfg_symbol_t* pSymbol) {
+    if (!pSymbol) {
+      return;
+    }
+    dxfg_symbol_type_t symbolType = pSymbol->type;
+    switch (symbolType) {
+      case dxfg_symbol_type_t::STRING: {
+        auto stringSymbol = r_cast<dxfg_string_symbol_t*>(pSymbol);
+        delete stringSymbol->symbol;
+        return;
+      }
+      case dxfg_symbol_type_t::CANDLE: {
+        auto candleSymbol = r_cast<dxfg_candle_symbol_t*>(pSymbol);
+        delete candleSymbol->symbol;
+        return;
+      }
+      case dxfg_symbol_type_t::WILDCARD: {
+        return;
+      }
+      case dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION: {
+        auto timeSeriesSymbol = r_cast<dxfg_time_series_subscription_symbol_t*>(pSymbol);
+        release(timeSeriesSymbol->symbol);
+      }
+      case dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION: {
+        auto indexedEventSymbol = r_cast<dxfg_indexed_event_subscription_symbol_t*>(pSymbol);
+        release(indexedEventSymbol->symbol);
+      }
+      default: {
+        javaLogger->error("Unknown symbol type: ", symbolType);
+      }
+    }
+  }
+
+  dxfg_symbol_t* DxSymbol::createNativeSymbol(const char* symbol, dxfg_symbol_type_t symbolType) {
+    bool isTimeSeries = (symbolType == dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION);
+    bool isIndexedEvent = (symbolType == dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION);
+    if (isTimeSeries || isIndexedEvent) {
+      javaLogger->error("Unknown symbol type: %", symbolType);
+      return nullptr;
+    }
+    switch (symbolType) {
+      case dxfg_symbol_type_t::STRING: {
+        auto result = new dxfg_string_symbol_t();
+        result->supper = dxfg_symbol_t { symbolType };
+        result->symbol = copy(symbol);
+        return dxfeed::r_cast<dxfg_symbol_t*>(result);
+      }
+      case dxfg_symbol_type_t::CANDLE: {
+        auto result = new dxfg_candle_symbol_t();
+        result->supper = dxfg_symbol_t { symbolType };
+        result->symbol = copy(symbol);
+        return dxfeed::r_cast<dxfg_symbol_t*>(result);
+      }
+      case dxfg_symbol_type_t::WILDCARD: {
+        auto result = new dxfg_wildcard_symbol_t();
+        result->supper = dxfg_symbol_t { symbolType };
+        return dxfeed::r_cast<dxfg_symbol_t*>(result);
+      }
+      default: {
+        javaLogger->error("Unknown symbol type: ", symbolType);
+        return nullptr;
+      }
+    }
+  }
+
   // return JNI local references which will be invalid after passing them to VM
   jobject DxSymbol::toJavaObject(JNIEnv* env, dxfg_symbol_t* pSymbolType) {
     switch (pSymbolType->type) {
@@ -81,7 +146,6 @@ namespace dxfeed {
   }
 
   dxfg_symbol_t* DxSymbol::fromJavaObject(JNIEnv* env, jobject pSymbol) {
-    // todo: cache and env->DeleteLocalRefs
     auto stringSymbolClass = safeFindClass(env, STRING_SYMBOL_JNI_CLASS_NAME);
     auto candleSymbolClass = safeFindClass(env, CANDLE_SYMBOL_JNI_CLASS_NAME);
     auto wildcardSymbolClass = safeFindClass(env, WILDCARD_SYMBOL_JNI_CLASS_NAME);
@@ -183,11 +247,16 @@ namespace dxfeed {
 
   const char* DxSymbol::jStringToUTF8(JNIEnv* env, jstring jString) {
     const char* jData = env->GetStringUTFChars(jString, 0);
-    auto len = static_cast<int32_t>(strlen(jData));
+    const char* copiedData = copy(jData);
+    env->ReleaseStringUTFChars(jString, jData);
+    return copiedData;
+  }
+
+  const char* DxSymbol::copy(const char* str) {
+    auto len = static_cast<int32_t>(strlen(str));
     char* copiedData = new char[len + 1];
     copiedData[len] = 0;
-    memcpy(copiedData, jData, len);
-    env->ReleaseStringUTFChars(jString, jData);
+    memcpy(copiedData, str, len);
     return copiedData;
   }
 }
