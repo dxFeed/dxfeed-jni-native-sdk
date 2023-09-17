@@ -5,20 +5,20 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_underlying_t* UnderlyingMapping::toUnderlying(const char** pByteData, const double** pDoubleData) {
+  dxfg_underlying_t* UnderlyingMapping::toUnderlying(ByteReader& reader) {
     auto* underlying = new dxfg_underlying_t();
     underlying->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
-    underlying->market_event.event_symbol = ByteReader::readString(pByteData);
-    underlying->market_event.event_time = ByteReader::readLong(pByteData);
-    underlying->event_flags = ByteReader::readInt(pByteData);
-    underlying->index = ByteReader::readLong(pByteData);
+    underlying->market_event.event_symbol = reader.readString();
+    underlying->market_event.event_time = reader.readLong();
+    underlying->event_flags = reader.readInt();
+    underlying->index = reader.readLong();
 
-    underlying->volatility = ByteReader::readDouble(pDoubleData);
-    underlying->front_volatility = ByteReader::readDouble(pDoubleData);
-    underlying->back_volatility = ByteReader::readDouble(pDoubleData);
-    underlying->call_volume = ByteReader::readDouble(pDoubleData);
-    underlying->put_volume = ByteReader::readDouble(pDoubleData);
-    underlying->put_call_ratio = ByteReader::readDouble(pDoubleData);
+    underlying->volatility = reader.readDouble();
+    underlying->front_volatility = reader.readDouble();
+    underlying->back_volatility = reader.readDouble();
+    underlying->call_volume = reader.readDouble();
+    underlying->put_volume = reader.readDouble();
+    underlying->put_call_ratio = reader.readDouble();
     return underlying;
   }
 

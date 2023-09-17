@@ -5,27 +5,27 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_option_sale_t* OptionSaleMapping::toOptionSale(const char** pByteData, const double** pDoubleData) {
+  dxfg_option_sale_t* OptionSaleMapping::toOptionSale(ByteReader& reader) {
     auto* optionSale = new dxfg_option_sale_t();
     optionSale->market_event.event_type.clazz = DXFG_EVENT_OPTION_SALE;
-    optionSale->market_event.event_symbol = ByteReader::readString(pByteData);
-    optionSale->market_event.event_time = ByteReader::readLong(pByteData);
-    optionSale->event_flags = ByteReader::readInt(pByteData);
-    optionSale->index = ByteReader::readLong(pByteData);
-    optionSale->time_sequence = ByteReader::readLong(pByteData);
-    optionSale->time_nano_part = ByteReader::readInt(pByteData);
-    optionSale->exchange_code = ByteReader::readInt16_t(pByteData);
-    optionSale->flags = ByteReader::readInt(pByteData);
-    optionSale->exchange_sale_conditions = ByteReader::readString(pByteData);
-    optionSale->option_symbol = ByteReader::readString(pByteData);
+    optionSale->market_event.event_symbol = reader.readString();
+    optionSale->market_event.event_time = reader.readLong();
+    optionSale->event_flags = reader.readInt();
+    optionSale->index = reader.readLong();
+    optionSale->time_sequence = reader.readLong();
+    optionSale->time_nano_part = reader.readInt();
+    optionSale->exchange_code = reader.readInt16_t();
+    optionSale->flags = reader.readInt();
+    optionSale->exchange_sale_conditions = reader.readString();
+    optionSale->option_symbol = reader.readString();
 
-    optionSale->price = ByteReader::readDouble(pDoubleData);
-    optionSale->size = ByteReader::readDouble(pDoubleData);
-    optionSale->bid_price = ByteReader::readDouble(pDoubleData);
-    optionSale->ask_price = ByteReader::readDouble(pDoubleData);
-    optionSale->underlying_price = ByteReader::readDouble(pDoubleData);
-    optionSale->volatility = ByteReader::readDouble(pDoubleData);
-    optionSale->delta = ByteReader::readDouble(pDoubleData);
+    optionSale->price = reader.readDouble();
+    optionSale->size = reader.readDouble();
+    optionSale->bid_price = reader.readDouble();
+    optionSale->ask_price = reader.readDouble();
+    optionSale->underlying_price = reader.readDouble();
+    optionSale->volatility = reader.readDouble();
+    optionSale->delta = reader.readDouble();
     return optionSale;
   }
 

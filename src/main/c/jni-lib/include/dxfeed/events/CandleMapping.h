@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct CandleMapping {
-    static dxfg_candle_t* toCandle(const char** pByteData, const double** pDoubleData);
+    static dxfg_candle_t* toCandle(ByteReader& reader);
     static void fromCandle(dxfg_candle_t* eventType, ByteWriter& writer);
   };
 }

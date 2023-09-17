@@ -6,11 +6,12 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
 
   struct SeriesMapping {
-    static dxfg_series_t* toSeries(const char** pByteData, const double** pDoubleData);
+    static dxfg_series_t* toSeries(ByteReader& reader);
     static void fromSeries(dxfg_series_t* eventType, ByteWriter& writer);
   };
 }

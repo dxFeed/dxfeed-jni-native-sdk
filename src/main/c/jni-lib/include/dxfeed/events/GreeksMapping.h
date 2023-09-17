@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct GreeksMapping {
-    static dxfg_greeks_t* toGreeks(const char** pByteData, const double** pDoubleData);
+    static dxfg_greeks_t* toGreeks(ByteReader& reader);
     static void fromGreeks(dxfg_greeks_t* eventType, ByteWriter& writer);
   };
 }

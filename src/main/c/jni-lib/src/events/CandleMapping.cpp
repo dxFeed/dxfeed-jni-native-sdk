@@ -5,25 +5,25 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_candle_t* CandleMapping::toCandle(const char** pByteData, const double** pDoubleData) {
+  dxfg_candle_t* CandleMapping::toCandle(ByteReader& reader) {
     auto* candle = new dxfg_candle_t();
     candle->event_type.clazz = DXFG_EVENT_CANDLE;
-    candle->event_symbol = ByteReader::readString(pByteData);
-    candle->event_time = ByteReader::readLong(pByteData);
-    candle->event_flags = ByteReader::readInt(pByteData);
-    candle->index = ByteReader::readLong(pByteData);
-    candle->count = ByteReader::readLong(pByteData);
+    candle->event_symbol = reader.readString();
+    candle->event_time = reader.readLong();
+    candle->event_flags = reader.readInt();
+    candle->index = reader.readLong();
+    candle->count = reader.readLong();
 
-    candle->open = ByteReader::readDouble(pDoubleData);
-    candle->high = ByteReader::readDouble(pDoubleData);
-    candle->low = ByteReader::readDouble(pDoubleData);
-    candle->close = ByteReader::readDouble(pDoubleData);
-    candle->volume = ByteReader::readDouble(pDoubleData);
-    candle->vwap = ByteReader::readDouble(pDoubleData);
-    candle->bid_volume = ByteReader::readDouble(pDoubleData);
-    candle->ask_volume = ByteReader::readDouble(pDoubleData);
-    candle->imp_volatility = ByteReader::readDouble(pDoubleData);
-    candle->open_interest = ByteReader::readDouble(pDoubleData);
+    candle->open = reader.readDouble();
+    candle->high = reader.readDouble();
+    candle->low = reader.readDouble();
+    candle->close = reader.readDouble();
+    candle->volume = reader.readDouble();
+    candle->vwap = reader.readDouble();
+    candle->bid_volume = reader.readDouble();
+    candle->ask_volume = reader.readDouble();
+    candle->imp_volatility = reader.readDouble();
+    candle->open_interest = reader.readDouble();
     return candle;
   }
 

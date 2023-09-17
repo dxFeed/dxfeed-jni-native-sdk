@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct TradeMapping {
-    static dxfg_trade_base_t* toTradeBase(const char** pByteData, const double** pDoubleData);
+    static dxfg_trade_base_t* toTradeBase(ByteReader& reader);
     static void fromTradeBase(dxfg_trade_base_t* eventType, ByteWriter& writer);
   };
 }

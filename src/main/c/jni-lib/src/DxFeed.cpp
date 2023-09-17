@@ -5,7 +5,6 @@
 #include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxEventT.hpp"
-#include "dxfeed/utils/NativeEventReader.hpp"
 #include "dxfeed/utils/NativeEventsList.hpp"
 #include "dxfeed/DxSymbol.hpp"
 

@@ -6,24 +6,24 @@
 
 namespace dxfeed::jni {
 
-  dxfg_time_and_sale_t* TimeAndSaleMapping::toTimeAndSale(const char** pByteData, const double** pDoubleData) {
+  dxfg_time_and_sale_t* TimeAndSaleMapping::toTimeAndSale(ByteReader& reader) {
     auto* tns = new dxfg_time_and_sale_t();
     tns->market_event.event_type.clazz = DXFG_EVENT_TIME_AND_SALE;
-    tns->market_event.event_symbol = ByteReader::readString(pByteData);
-    tns->market_event.event_time = ByteReader::readLong(pByteData);
-    tns->event_flags = ByteReader::readInt(pByteData);
-    tns->index = ByteReader::readLong(pByteData);
-    tns->time_nano_part = ByteReader::readInt(pByteData);
-    tns->exchange_code = ByteReader::readInt16_t(pByteData);
-    tns->flags = ByteReader::readInt(pByteData);
-    tns->exchange_sale_conditions = ByteReader::readString(pByteData);
-    tns->buyer = ByteReader::readString(pByteData);
-    tns->seller = ByteReader::readString(pByteData);
+    tns->market_event.event_symbol = reader.readString();
+    tns->market_event.event_time = reader.readLong();
+    tns->event_flags = reader.readInt();
+    tns->index = reader.readLong();
+    tns->time_nano_part = reader.readInt();
+    tns->exchange_code = reader.readInt16_t();
+    tns->flags = reader.readInt();
+    tns->exchange_sale_conditions = reader.readString();
+    tns->buyer = reader.readString();
+    tns->seller = reader.readString();
 
-    tns->price = ByteReader::readDouble(pDoubleData);
-    tns->size = ByteReader::readDouble(pDoubleData);
-    tns->bid_price = ByteReader::readDouble(pDoubleData);
-    tns->ask_price = ByteReader::readDouble(pDoubleData);
+    tns->price = reader.readDouble();
+    tns->size = reader.readDouble();
+    tns->bid_price = reader.readDouble();
+    tns->ask_price = reader.readDouble();
     return tns;
   }
 

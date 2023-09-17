@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct TimeAndSaleMapping {
-    static dxfg_time_and_sale_t* toTimeAndSale(const char** pByteData, const double** pDoubleData);
+    static dxfg_time_and_sale_t* toTimeAndSale(ByteReader& reader);
     static void fromTimeAndSale(dxfg_time_and_sale_t* eventType, ByteWriter& writer);
   };
 }

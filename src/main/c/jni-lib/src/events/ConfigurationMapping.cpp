@@ -6,13 +6,13 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
-  dxfg_configuration_t* ConfigurationMapping::toConfiguration(const char** pByteData) {
+  dxfg_configuration_t* ConfigurationMapping::toConfiguration(ByteReader& reader) {
     auto* configuration = new dxfg_configuration_t();
     configuration->event_type.clazz = DXFG_EVENT_CONFIGURATION;
-    configuration->event_symbol = ByteReader::readString(pByteData);
-    configuration->event_time = ByteReader::readLong(pByteData);
-    configuration->version = ByteReader::readInt(pByteData);
-    configuration->attachment = r_cast<const void*>(ByteReader::readString(pByteData));
+    configuration->event_symbol = reader.readString();
+    configuration->event_time = reader.readLong();
+    configuration->version = reader.readInt();
+    configuration->attachment = r_cast<const void*>(reader.readString());
     return configuration;
   }
 

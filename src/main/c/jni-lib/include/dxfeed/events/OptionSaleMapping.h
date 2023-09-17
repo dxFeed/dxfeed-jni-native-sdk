@@ -6,10 +6,11 @@
 #include "api/dxfg_events.h"
 
 namespace dxfeed::jni {
+  struct ByteReader;
   struct ByteWriter;
 
   struct OptionSaleMapping {
-    static dxfg_option_sale_t* toOptionSale(const char** pByteData, const double** pDoubleData);
+    static dxfg_option_sale_t* toOptionSale(ByteReader& reader);
     static void fromOptionSale(dxfg_option_sale_t* optionSale, ByteWriter& writer);
   };
 }
