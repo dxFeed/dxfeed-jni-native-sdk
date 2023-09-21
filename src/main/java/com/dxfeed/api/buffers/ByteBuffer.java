@@ -29,7 +29,7 @@ public class ByteBuffer {
   }
 
   public void writeByte(byte value) {
-    if (pos + Byte.SIZE >= totalSize) {
+    if (pos + Byte.BYTES >= totalSize) {
       resize();
     }
     data[pos++] = value;
@@ -40,19 +40,19 @@ public class ByteBuffer {
       resize();
     }
     data[pos++] = (byte) (value & 0x00FF);
-    data[pos++] = (byte) ((value & 0xFF00) >> Byte.SIZE);
+    data[pos++] = (byte) ((value >> Byte.SIZE) & 0xFF);
   }
 
   public void writeChar(char value) {
-    if (pos + Character.SIZE >= totalSize) {
+    if (pos + Character.BYTES >= totalSize) {
       resize();
     }
-    data[pos++] = (byte) (value & 0x00FF);
-    data[pos++] = (byte) ((value & 0xFF00) >> Byte.SIZE);
+    data[pos++] = (byte) (value & 0xFF);
+    data[pos++] = (byte) ((value >> Byte.SIZE) & 0xFF);
   }
 
   public void writeInt(int value) {
-    if (pos + Integer.SIZE >= totalSize) {
+    if (pos + Integer.BYTES >= totalSize) {
       resize();
     }
     for (int i = 0; i < Integer.BYTES; i++) {
@@ -62,7 +62,7 @@ public class ByteBuffer {
   }
 
   public void writeLong(long value) {
-    if (pos + Long.SIZE >= totalSize) {
+    if (pos + Long.BYTES >= totalSize) {
       resize();
     }
     for (int i = 0; i < Long.BYTES; i++) {
