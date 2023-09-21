@@ -42,8 +42,7 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   printf("C: finalize\n");
 }
 
-// todo: implement sample with API
- void dxEndpointSubscription(graal_isolatethread_t *thread) {
+void dxEndpointSubscription(graal_isolatethread_t *thread) {
   printf("C: dxEndpointSubscription BEGIN\n");
   dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
   dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
@@ -65,11 +64,12 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
 //  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
 //  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
-  std::chrono::seconds minutes(100); // time to sleep 24 hours
+  std::chrono::seconds minutes(10); // time to sleep 24 hours
   std::this_thread::sleep_for(minutes);
 
   auto event = dxfg_EventType_new(thread, "", DXFG_EVENT_QUOTE);
   int32_t result = dxfg_DXFeed_getLastEvent(thread, feed, event);
+  printf("C: result: %d\n", result);
   dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE, &symbolAAPL.supper);
 
   dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
@@ -82,6 +82,53 @@ void finalize(graal_isolatethread_t *thread, void *userData) {
   printf("C: dxEndpointSubscription END\n");
 }
 
+void publishEvents(graal_isolatethread_t* thread, dxfg_event_type_list *events, void *user_data) {
+  auto* outputEndpoint = reinterpret_cast<dxfg_endpoint_t*>(user_data);
+  auto* pPublisher = dxfg_DXEndpoint_getPublisher(thread, outputEndpoint);
+  std::cout << "pPublisher: " << std::hex << pPublisher << std::endl;
+  dxfg_DXPublisher_publishEvents(thread, pPublisher, events);
+}
+
+void tapeFile(graal_isolatethread_t *thread) {
+  // Determine input and output tapes and specify appropriate configuration parameters
+  std::string inputAddress = "file:ConvertTapeFile.in[readAs=stream_data,speed=max]";
+  std::string outputAddress = "tape:ConvertTapeFile.out[saveAs=stream_data,format=text]";
+
+  // Create input endpoint configured for tape reading
+  auto* inputEndpointBuilder = dxfg_DXEndpoint_newBuilder(thread);
+  dxfg_DXEndpoint_Builder_withRole(thread, inputEndpointBuilder, DXFG_ENDPOINT_ROLE_STREAM_FEED);
+  dxfg_DXEndpoint_Builder_withProperty(thread, inputEndpointBuilder, "dxfeed.wildcard.enable", "true");
+  dxfg_DXEndpoint_Builder_withProperty(thread, inputEndpointBuilder, "dxendpoint.eventTime", "true");
+  auto inputEndpoint = dxfg_DXEndpoint_Builder_build(thread, inputEndpointBuilder);
+
+  // Create output endpoint configured for tape writing
+  auto* outputEndpointBuilder = dxfg_DXEndpoint_newBuilder(thread);
+  dxfg_DXEndpoint_Builder_withRole(thread, outputEndpointBuilder, DXFG_ENDPOINT_ROLE_STREAM_PUBLISHER);
+  dxfg_DXEndpoint_Builder_withProperty(thread, outputEndpointBuilder, "dxfeed.wildcard.enable", "true");
+  dxfg_DXEndpoint_Builder_withProperty(thread, outputEndpointBuilder, "dxendpoint.eventTime", "true");
+  dxfg_endpoint_t* outputEndpoint = dxfg_DXEndpoint_Builder_build(thread, outputEndpointBuilder);
+
+  auto* pList = dxfg_DXEndpoint_getEventTypes(thread, inputEndpoint);
+  auto* pFeed = dxfg_DXEndpoint_getFeed(thread, inputEndpoint);
+  auto* pSubscription = dxfg_DXFeed_createSubscription2(thread, pFeed, pList);
+
+  auto* listener = dxfg_DXFeedEventListener_new(thread, &publishEvents, outputEndpoint);
+  dxfg_DXFeedSubscription_addEventListener(thread, pSubscription, listener);
+
+  dxfg_wildcard_symbol_t symbolWildcard;
+  symbolWildcard.supper.type = WILDCARD;
+  dxfg_DXFeedSubscription_addSymbol(thread, pSubscription, reinterpret_cast<dxfg_symbol_t*>(&symbolWildcard));
+
+  dxfg_DXEndpoint_connect(thread, outputEndpoint, outputAddress.c_str());
+  dxfg_DXEndpoint_connect(thread, inputEndpoint, inputAddress.c_str());
+
+  dxfg_DXEndpoint_awaitNotConnected(thread, inputEndpoint);
+  dxfg_DXEndpoint_closeAndAwaitTermination(thread, inputEndpoint);
+
+  dxfg_DXEndpoint_awaitProcessed(thread, outputEndpoint);
+  dxfg_DXEndpoint_closeAndAwaitTermination(thread, outputEndpoint);
+}
+
 int main(int argc, char** argv) {
   // load cmd args
   const int defaultArgSize = 4;
@@ -90,8 +137,8 @@ int main(int argc, char** argv) {
     return -1;
   }
   const auto javaHomePath = argv[1];
-  const int vmOptionsSize = 1;
-  const char* jvmArgs[vmOptionsSize] = { "-Xmx12G" };
+  const int vmOptionsSize = 2;
+  const char* jvmArgs[vmOptionsSize] = { "-Xmx12G", "-Dcom.devexperts.qd.impl.matrix.Agent.MaxBufferSize=50000000" };
   const auto address = argv[2];
   const auto symbol = argv[3];
 
@@ -102,6 +149,7 @@ int main(int argc, char** argv) {
   graal_isolatethread_t* thread;
   int hr = graal_create_isolate(&vmOptions, &isolate, &thread);
   if (hr == JNI_OK) {
-    dxEndpointSubscription(thread);
+//    dxEndpointSubscription(thread);
+    tapeFile(thread);
   }
 }
