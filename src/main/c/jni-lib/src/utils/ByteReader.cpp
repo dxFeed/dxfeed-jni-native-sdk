@@ -57,7 +57,7 @@ namespace dxfeed::jni {
 
   const char* ByteReader::readString() {
     int16_t strSize = readInt16_t();
-    const auto result = strSize ? pByteData_ : "";
+    const auto result = strSize ? pByteData_ : nullptr;
     pByteData_ += strSize;
     return result;
   }
