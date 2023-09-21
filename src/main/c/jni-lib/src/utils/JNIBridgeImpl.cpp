@@ -64,7 +64,7 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
   auto userData = dxfeed::r_cast<void*>(jUserData);
   dxfg_event_type_list list = { size, events.data() };
-  pListener(nullptr, &list, userData); // todo: discuss thread == nullptr?
+  pListener(env, &list, userData);
   for (const auto& event : events) {
     delete event;
   }
@@ -86,7 +86,12 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
   auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
   auto userData = dxfeed::r_cast<void*>(jUserData);
   dxfg_event_type_list list = { size, events.data() };
-  pListener(nullptr, &list, userData); // todo: discuss thread == nullptr?
+  
+  JNIEnv* env = nullptr;
+  dxfeed::jni::internal::javaVM->attachCurrentThread(&env);
+  if (!env) {
+    pListener(env, &list, userData);
+  }
 
   for (const auto& event : events) {
     delete[] event;
