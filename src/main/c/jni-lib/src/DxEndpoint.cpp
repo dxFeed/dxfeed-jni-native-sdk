@@ -107,7 +107,7 @@ namespace dxfeed {
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;)[B";
     auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
 
-    auto jByteArray = r_cast <jbyteArray>(env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxEndpoint_));
+    auto jByteArray = r_cast<jbyteArray>(env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxEndpoint_));
     jint size = env->GetArrayLength(jByteArray);
     auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(jByteArray, 0));
 
@@ -134,9 +134,6 @@ namespace dxfeed {
     auto jUserName = env->NewStringUTF(userName);
     auto jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jUserName);
     env->DeleteLocalRef(jUserName);
-    // todo: CallObjectMethod returns this, so do we have to replace jobject?
-    env->DeleteGlobalRef(dxEndpoint_);
-    dxEndpoint_ = env->NewGlobalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpointClass);
     return JNI_OK;
@@ -150,9 +147,6 @@ namespace dxfeed {
     auto jPassword = env->NewStringUTF(password);
     auto jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jPassword);
     env->DeleteLocalRef(jPassword);
-    // todo: CallObjectMethod returns this, so do we have to replace jobject?
-    env->DeleteGlobalRef(dxEndpoint_);
-    dxEndpoint_ = env->NewGlobalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpointClass);
     return JNI_OK;
@@ -166,9 +160,6 @@ namespace dxfeed {
     auto jAddress = env->NewStringUTF(address);
     auto jDxEndpoint = env->CallObjectMethod(dxEndpoint_, methodId, jAddress);
     env->DeleteLocalRef(jAddress);
-    // todo: CallObjectMethod returns this, so do we have to replace jobject?
-    env->DeleteGlobalRef(dxEndpoint_);
-    dxEndpoint_ = env->NewGlobalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpointClass);
     return JNI_OK;
