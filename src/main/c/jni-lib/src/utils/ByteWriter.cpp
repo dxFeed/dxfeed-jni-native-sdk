@@ -59,10 +59,12 @@ namespace dxfeed::jni {
   }
 
   void ByteWriter::writeString(const char* str) {
-    auto strSize = static_cast<int16_t>(strlen(str));
+    auto strSize = static_cast<int16_t>(str ? strlen(str) : 0);
     writeInt16_t(strSize);
-    static_assert(sizeof(int8_t) == sizeof(char));
-    writeBytes(r_cast<const int8_t*>(str), strSize);
+    if (strSize) {
+      static_assert(sizeof(int8_t) == sizeof(char));
+      writeBytes(r_cast<const int8_t*>(str), strSize);
+    }
   }
 
   void ByteWriter::writeEvent(dxfg_event_type_t* eventType) {
