@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include <iostream>
-
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
@@ -38,9 +36,9 @@ namespace dxfeed {
     const char* methodName = "buildWithRole";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Builder;I)Lcom/dxfeed/api/DXEndpoint$Builder;";
     auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
-    auto jNewBuilder = env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxEndpointBuilder_, role);
-    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
-    env->DeleteLocalRef(jNewBuilder);
+    env->CallStaticVoidMethod(jDxEndpointJniClass, methodId, dxEndpointBuilder_, role);
+//    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
+//    env->DeleteLocalRef(jNewBuilder);
     env->DeleteLocalRef(jDxEndpointJniClass);
   }
 
@@ -50,10 +48,10 @@ namespace dxfeed {
     const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;";
     auto methodId = safeGetMethodID(env, jDxEndpointBuilderClass, methodName, methodSignature);
     auto jName = env->NewStringUTF(name);
-    auto jNewBuilder = env->CallObjectMethod(dxEndpointBuilder_, methodId, jName);
+    env->CallVoidMethod(dxEndpointBuilder_, methodId, jName);
     env->DeleteLocalRef(jName);
-    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
-    env->DeleteLocalRef(jNewBuilder);
+//    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
+//    env->DeleteLocalRef(jNewBuilder);
     env->DeleteLocalRef(jDxEndpointBuilderClass);
   }
 
@@ -64,11 +62,11 @@ namespace dxfeed {
     auto methodId = safeGetMethodID(env, jDxEndpointBuilderClass, methodName, methodSignature);
     auto jKey = env->NewStringUTF(key);
     auto jValue = env->NewStringUTF(value);
-    auto jNewBuilder = env->CallObjectMethod(dxEndpointBuilder_, methodId, jKey, jValue);
+    env->CallVoidMethod(dxEndpointBuilder_, methodId, jKey, jValue);
     env->DeleteLocalRef(jKey);
     env->DeleteLocalRef(jValue);
-    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
-    env->DeleteLocalRef(jNewBuilder);
+//    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
+//    env->DeleteLocalRef(jNewBuilder);
     env->DeleteLocalRef(jDxEndpointBuilderClass);
   }
 
