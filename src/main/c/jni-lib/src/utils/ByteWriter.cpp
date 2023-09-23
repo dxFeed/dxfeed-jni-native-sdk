@@ -153,7 +153,7 @@ namespace dxfeed::jni {
   }
 
   jbyteArray ByteWriter::byteData(JNIEnv* env) {
-    auto size = static_cast<int32_t>(eventTypes_.size());
+    auto size = static_cast<int32_t>(byteData_.size());
     auto pArray = env->NewByteArray(size);
     auto data = r_cast<char*>(env->GetPrimitiveArrayCritical(pArray, 0));
     memcpy(data, byteData_.data(), size);
@@ -162,7 +162,7 @@ namespace dxfeed::jni {
   }
 
   jdoubleArray ByteWriter::doubleData(JNIEnv* env) {
-    auto size = static_cast<int32_t>(eventTypes_.size());
+    auto size = static_cast<int32_t>(doubleData_.size());
     auto pArray = env->NewDoubleArray(size);
     auto data = r_cast<double*>(env->GetPrimitiveArrayCritical(pArray, 0));
     memcpy(data, doubleData_.data(), size);
