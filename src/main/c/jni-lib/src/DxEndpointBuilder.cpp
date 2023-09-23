@@ -34,7 +34,7 @@ namespace dxfeed {
   void DxEndpointBuilder::withRole(JNIEnv* env, dxfg_endpoint_role_t role) {
     auto jDxEndpointJniClass = safeFindClass(env, DxEndpoint::DX_JNI_ENDPOINT_CLASS_NAME);
     const char* methodName = "buildWithRole";
-    const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Builder;I)V";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Builder;I)Lcom/dxfeed/api/DXEndpoint$Builder;";
     auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
     env->CallStaticVoidMethod(jDxEndpointJniClass, methodId, dxEndpointBuilder_, role);
 //    dxEndpointBuilder_ = rebuild(env, dxEndpointBuilder_, jNewBuilder);
