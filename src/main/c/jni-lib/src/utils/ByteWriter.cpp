@@ -73,55 +73,72 @@ namespace dxfeed::jni {
     switch (dxfgEventClazz) {
       case DXFG_EVENT_QUOTE: {
         QuoteMapping::fromQuote(r_cast<dxfg_quote_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_PROFILE: {
         ProfileMapping::fromProfile(r_cast<dxfg_profile_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_SUMMARY: {
         SummaryMapping::fromSummary(r_cast<dxfg_summary_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_GREEKS: {
         GreeksMapping::fromGreeks(r_cast<dxfg_greeks_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_CANDLE: {
         CandleMapping::fromCandle(r_cast<dxfg_candle_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_UNDERLYING: {
         UnderlyingMapping::fromUnderlying(r_cast<dxfg_underlying_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_THEO_PRICE: {
         TheoPriceMapping::fromTheoPrice(r_cast<dxfg_theo_price_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_TRADE:
       case DXFG_EVENT_TRADE_ETH: {
         TradeMapping::fromTradeBase(r_cast<dxfg_trade_base_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_CONFIGURATION: {
         ConfigurationMapping::fromConfiguration(r_cast<dxfg_configuration_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_MESSAGE: {
         MessageMapping::fromMessage(r_cast<dxfg_message_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_TIME_AND_SALE: {
         TimeAndSaleMapping::fromTimeAndSale(r_cast<dxfg_time_and_sale_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_ORDER_BASE: {
         OrderMapping::fromOrderBase(r_cast<dxfg_order_base_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_ORDER: {
         OrderMapping::fromOrder(r_cast<dxfg_order_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_ANALYTIC_ORDER: {
         OrderMapping::fromAnalyticOrder(r_cast<dxfg_analytic_order_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_SPREAD_ORDER: {
         OrderMapping::fromSpreadOrder(r_cast<dxfg_spread_order_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_SERIES: {
         SeriesMapping::fromSeries(r_cast<dxfg_series_t*>(eventType), *this);
+        return;
       }
       case DXFG_EVENT_OPTION_SALE: {
         OptionSaleMapping::fromOptionSale(r_cast<dxfg_option_sale_t*>(eventType), *this);
+        return;
       }
     }
   }
