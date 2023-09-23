@@ -66,7 +66,7 @@ public class NativeEventsList<T extends EventType<?>> {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_OPTION_SALE;
         OptionSaleMapping.toNative((OptionSale) event, pBytes, pDoubles);
       } else if (event instanceof OrderBase) {
-        pEventTypes[i] = OrderToMapping.toNative((OrderBase) event, pBytes, pDoubles);
+        pEventTypes[i] = OrderToMapping.toNative(event, pBytes, pDoubles);
       } else if (event instanceof Series) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_SERIES;
         SeriesMapping.toNative((Series) event, pBytes, pDoubles);

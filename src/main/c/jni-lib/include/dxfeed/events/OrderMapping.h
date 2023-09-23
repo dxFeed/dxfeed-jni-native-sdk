@@ -19,7 +19,7 @@ namespace dxfeed::jni {
     static void fromOrder(dxfg_order_t* eventType, ByteWriter& writer);
     static void fromAnalyticOrder(dxfg_analytic_order_t* eventType, ByteWriter& writer);
   private:
-    static void readOrderBase(ByteReader& reader, dxfg_order_base_t* orderBase);
+    static void readOrderBase(ByteReader& reader, dxfg_order_base_t* orderBase, dxfg_event_clazz_t eventType);
     static void writeOrderBase(dxfg_order_base_t* orderBase, ByteWriter& writer);
   };
 }

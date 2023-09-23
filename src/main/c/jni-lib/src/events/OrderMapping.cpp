@@ -7,7 +7,7 @@
 namespace dxfeed::jni {
   dxfg_order_base_t* OrderMapping::toOrderBase(ByteReader& reader) {
     auto* orderBase = new dxfg_order_base_t();
-    readOrderBase(reader, orderBase);
+    readOrderBase(reader, orderBase, DXFG_EVENT_ORDER_BASE);
     return orderBase;
   }
 
@@ -17,7 +17,7 @@ namespace dxfeed::jni {
 
   dxfg_spread_order_t* OrderMapping::toSpreadOrder(ByteReader& reader) {
     auto* order = new dxfg_spread_order_t();
-    readOrderBase(reader, &order->order_base);
+    readOrderBase(reader, &order->order_base, DXFG_EVENT_SPREAD_ORDER);
     order->spread_symbol = reader.readString();
     return order;
   }
@@ -29,7 +29,7 @@ namespace dxfeed::jni {
 
   dxfg_order_t* OrderMapping::toOrder(ByteReader& reader) {
     auto* order = new dxfg_order_t();
-    readOrderBase(reader, &order->order_base);
+    readOrderBase(reader, &order->order_base, DXFG_EVENT_ORDER);
     order->market_maker = reader.readString();
     return order;
   }
@@ -42,7 +42,7 @@ namespace dxfeed::jni {
   dxfg_analytic_order_t* OrderMapping::toAnalyticsOrder(ByteReader& reader) {
     auto* analyticsOrder = new dxfg_analytic_order_t();
     dxfg_order_base_t& orderBase = analyticsOrder->order.order_base;
-    readOrderBase(reader, &orderBase);
+    readOrderBase(reader, &orderBase, DXFG_EVENT_ANALYTIC_ORDER);
 
     analyticsOrder->order.market_maker = reader.readString();
     analyticsOrder->iceberg_flags = reader.readInt();
@@ -60,8 +60,8 @@ namespace dxfeed::jni {
     writer.writeDouble(analyticsOrder->iceberg_executed_size);
   }
 
-  void OrderMapping::readOrderBase(ByteReader& reader, dxfg_order_base_t* const orderBase) {
-    orderBase->market_event.event_type.clazz = DXFG_EVENT_ORDER_BASE;
+  void OrderMapping::readOrderBase(ByteReader& reader, dxfg_order_base_t* const orderBase, dxfg_event_clazz_t eventType) {
+    orderBase->market_event.event_type.clazz = eventType;
     orderBase->market_event.event_symbol = reader.readString();
     orderBase->market_event.event_time = reader.readLong();
     orderBase->event_flags = reader.readInt();
