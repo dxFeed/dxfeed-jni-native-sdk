@@ -43,9 +43,9 @@ public class QuoteMapping {
 
     // DOUBLE DATA
     pDoubles.write(event.getBidPrice());
-    pDoubles.write(event.getBidSize());
+    pDoubles.write(event.getBidSizeAsDouble());
     pDoubles.write(event.getAskPrice());
-    pDoubles.write(event.getAskSize());
+    pDoubles.write(event.getAskSizeAsDouble());
   }
 
   public static Quote fromNative(NativeEventsReader reader) {
