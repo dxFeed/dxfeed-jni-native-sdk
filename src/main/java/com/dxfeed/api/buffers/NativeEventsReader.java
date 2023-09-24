@@ -28,7 +28,8 @@ public class NativeEventsReader {
   public short readShort() {
     short value = 0;
     for (int i = 0; i < Short.BYTES; ++i) {
-      value |= readByte() << (i * 8);
+      value <<= 8;
+      value |= readByte() & 0xFF;
     }
     return value;
   }
@@ -36,7 +37,8 @@ public class NativeEventsReader {
   public char readChar() {
     char value = 0;
     for (int i = 0; i < Character.BYTES; ++i) {
-      value |= readByte() << (i * 8);
+      value <<= 8;
+      value |= readByte() & 0xFF;
     }
     return value;
   }
@@ -44,7 +46,8 @@ public class NativeEventsReader {
   public int readInt() {
     int value = 0;
     for (int i = 0; i < Integer.BYTES; ++i) {
-      value |= readByte() << (i * 8);
+      value <<= 8;
+      value |= readByte() & 0xFF;
     }
     return value;
   }
@@ -52,7 +55,8 @@ public class NativeEventsReader {
   public long readLong() {
     long value = 0;
     for (int i = 0; i < Long.BYTES; ++i) {
-      value |= (long)(readByte()) << (i * 8);
+      value <<= 8;
+      value |= readByte() & 0xFF;
     }
     return value;
   }

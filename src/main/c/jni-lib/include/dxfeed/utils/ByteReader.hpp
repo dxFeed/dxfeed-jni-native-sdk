@@ -28,7 +28,8 @@ namespace dxfeed::jni {
     PrimitiveT readPrimitive() {
       PrimitiveT value = 0;
       for (size_t n = 0; n < sizeof(PrimitiveT); ++n) {
-        value |= (readUByte() << (n * 8));
+        value <<= 8;
+        value |= readUByte();
       }
       return value;
     }

@@ -18,10 +18,11 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
-  ByteWriter::ByteWriter() {
-    eventTypes_.reserve(128);
-    byteData_.reserve(128);
-    doubleData_.reserve(128);
+  ByteWriter::ByteWriter(int eventCount) {
+    auto totalSize_ = eventCount * EVENT_SIZE_IN_BYTES;
+    eventTypes_.reserve(totalSize_);
+    byteData_.reserve(totalSize_);
+    doubleData_.reserve(totalSize_);
   }
 
   ByteWriter::~ByteWriter() {
@@ -31,27 +32,34 @@ namespace dxfeed::jni {
   }
 
   void ByteWriter::writeBytes(const int8_t* bytes, int32_t len) {
+    if (byteData_.size() + len >= byteData_.capacity()) {
+      byteData_.resize(byteData_.capacity() * 2);
+    }
     // http://thewayofc.blogspot.com/2014/05/copying-memory-from-c-to-c-using.html
     byteData_.insert(byteData_.end(), bytes, bytes + len);
   }
 
   void ByteWriter::writeInt16_t(int16_t value) {
-    byteData_.push_back(value & 0x00FF);
-    byteData_.push_back((value & 0xFF00) >> 8);
+    byteData_.push_back((value >> 8) & 0xFF);
+    byteData_.push_back(value        & 0xFF);
   }
 
   void ByteWriter::writeInt32_t(int32_t value) {
-    for (size_t i = 0; i < sizeof(int32_t); ++i) {
-      byteData_.push_back(value & 0xFF);
-      value >>= 8;
-    }
+    byteData_.push_back((value >> 24) & 0xFF);
+    byteData_.push_back((value >> 16) & 0xFF);
+    byteData_.push_back((value >> 8) & 0xFF);
+    byteData_.push_back(value        & 0xFF);
   }
 
   void ByteWriter::writeInt64_t(int64_t value) {
-    for (size_t i = 0; i < sizeof(int64_t); ++i) {
-      byteData_.push_back(value & 0xFF);
-      value >>= 8;
-    }
+    byteData_.push_back((value >> 56) & 0xFF);
+    byteData_.push_back((value >> 48) & 0xFF);
+    byteData_.push_back((value >> 40) & 0xFF);
+    byteData_.push_back((value >> 32) & 0xFF);
+    byteData_.push_back((value >> 24) & 0xFF);
+    byteData_.push_back((value >> 16) & 0xFF);
+    byteData_.push_back((value >> 8) & 0xFF);
+    byteData_.push_back(value        & 0xFF);
   }
 
   void ByteWriter::writeDouble(double value) {
@@ -165,7 +173,7 @@ namespace dxfeed::jni {
     auto size = static_cast<int32_t>(doubleData_.size());
     auto pArray = env->NewDoubleArray(size);
     auto data = r_cast<double*>(env->GetPrimitiveArrayCritical(pArray, 0));
-    memcpy(data, doubleData_.data(), size);
+    memcpy(data, doubleData_.data(), size * sizeof(double));
     env->ReleasePrimitiveArrayCritical(pArray, data, 0);
     return pArray;
   }
