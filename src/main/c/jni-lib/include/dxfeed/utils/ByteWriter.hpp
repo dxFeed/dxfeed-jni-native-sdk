@@ -9,7 +9,7 @@
 
 namespace dxfeed::jni {
   struct ByteWriter {
-    explicit ByteWriter();
+    explicit ByteWriter(int eventCount);
     ~ByteWriter();
     void writeEvent(dxfg_event_type_t* eventType);
 
@@ -29,6 +29,7 @@ namespace dxfeed::jni {
     std::vector<uint8_t> eventTypes_;
     std::vector<uint8_t> byteData_;
     std::vector<double> doubleData_;
+    static const int EVENT_SIZE_IN_BYTES = 128;
   };
 }
 
