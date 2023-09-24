@@ -104,7 +104,7 @@ namespace dxfeed::jni {
 
   jobject NativeEventsList::fromNativeEventsList(dxfg_event_type_list* pList) {
     auto size = pList->size;
-    ByteWriter writer;
+    ByteWriter writer(size);
     for (int i = 0; i < size; ++i) {
       writer.writeEvent(pList->elements[i]);
     }

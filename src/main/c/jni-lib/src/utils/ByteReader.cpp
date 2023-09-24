@@ -32,7 +32,7 @@ namespace dxfeed::jni {
   }
 
   uint8_t ByteReader::readUByte() {
-    uint8_t val = (*pByteData_) & 0xFF;
+    uint8_t val = *pByteData_;
     ++(pByteData_);
     return val;
   }
