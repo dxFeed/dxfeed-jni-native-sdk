@@ -48,7 +48,7 @@ public class TimeAndSalesMapping {
 
     // DOUBLE DATA
     pDoubles.write(event.getPrice());
-    pDoubles.write(event.getSize());
+    pDoubles.write(event.getSizeAsDouble());
     pDoubles.write(event.getBidPrice());
     pDoubles.write(event.getAskPrice());
   }
