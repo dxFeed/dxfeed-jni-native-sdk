@@ -51,12 +51,12 @@ public class CandleMapping {
     pDoubles.write(event.getHigh());
     pDoubles.write(event.getLow());
     pDoubles.write(event.getClose());
-    pDoubles.write(event.getVolume());
+    pDoubles.write(event.getVolumeAsDouble());
     pDoubles.write(event.getVWAP());
-    pDoubles.write(event.getBidVolume());
-    pDoubles.write(event.getAskVolume());
+    pDoubles.write(event.getBidVolumeAsDouble());
+    pDoubles.write(event.getAskVolumeAsDouble());
     pDoubles.write(event.getImpVolatility());
-    pDoubles.write(event.getOpenInterest());
+    pDoubles.write(event.getOpenInterestAsDouble());
   }
 
   public static Candle fromNative(NativeEventsReader reader) {
