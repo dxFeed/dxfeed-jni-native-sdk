@@ -3,7 +3,7 @@ package com.dxfeed.api.serializers;
 import com.dxfeed.api.DxfgEventClazzT;
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.market.*;
 
 public class OrderToMapping {
@@ -73,7 +73,7 @@ public class OrderToMapping {
     return DxfgEventClazzT.DXFG_EVENT_ORDER_BASE;
   }
 
-  private static void orderBaseFromNative(OrderBase orderBase, NativeEventsReader reader) {
+  private static void orderBaseFromNative(OrderBase orderBase, ByteReader reader) {
     orderBase.setEventSymbol(reader.readString());
     orderBase.setEventTime(reader.readLong());
     orderBase.setEventFlags(reader.readInt());
@@ -94,7 +94,7 @@ public class OrderToMapping {
     orderBase.setTradeSize(reader.readDouble());
   }
 
-  public static OrderBase orderBaseFromNative(NativeEventsReader reader) {
+  public static OrderBase orderBaseFromNative(ByteReader reader) {
     OrderBase orderBase = DxFeedEventMarketPackagePrivate.createOrderBase();
     orderBaseFromNative(orderBase, reader);
     return orderBase;
@@ -117,7 +117,7 @@ public class OrderToMapping {
     return DxfgEventClazzT.DXFG_EVENT_ORDER;
   }
 
-  public static Order orderFromNative(NativeEventsReader reader) {
+  public static Order orderFromNative(ByteReader reader) {
     Order order = new Order();
     orderBaseFromNative(order, reader);
     order.setMarketMaker(reader.readString());
@@ -142,7 +142,7 @@ public class OrderToMapping {
     return DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER;
   }
 
-  public static SpreadOrder spreadOrderFromNative(NativeEventsReader reader) {
+  public static SpreadOrder spreadOrderFromNative(ByteReader reader) {
     SpreadOrder spreadOrder = new SpreadOrder();
     orderBaseFromNative(spreadOrder, reader);
     spreadOrder.setSpreadSymbol(reader.readString());
@@ -175,7 +175,7 @@ public class OrderToMapping {
     return DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER;
   }
 
-  public static AnalyticOrder analyticOrderFromNative(NativeEventsReader reader) {
+  public static AnalyticOrder analyticOrderFromNative(ByteReader reader) {
     AnalyticOrder analyticOrder = new AnalyticOrder();
     orderBaseFromNative(analyticOrder, reader);
     // BYTE DATA

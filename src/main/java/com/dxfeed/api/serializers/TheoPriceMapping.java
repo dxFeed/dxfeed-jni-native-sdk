@@ -3,7 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.option.TheoPrice;
 
 public class TheoPriceMapping {
@@ -48,7 +48,7 @@ public class TheoPriceMapping {
     pDoubles.write(event.getInterest());
   }
 
-  public static TheoPrice fromNative(NativeEventsReader reader) {
+  public static TheoPrice fromNative(ByteReader reader) {
     TheoPrice theoPrice = new TheoPrice();
     theoPrice.setEventSymbol(reader.readString());
     theoPrice.setEventTime(reader.readLong());

@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.OptionSale;
 
@@ -60,7 +60,7 @@ public class OptionSaleMapping {
     pDoubles.write(event.getDelta());
   }
 
-  public static OptionSale fromNative(NativeEventsReader reader) {
+  public static OptionSale fromNative(ByteReader reader) {
     OptionSale optionSale = new OptionSale();
     optionSale.setEventSymbol(reader.readString());
     optionSale.setEventTime(reader.readLong());

@@ -3,7 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.option.Underlying;
 
 public class UnderlyingMapping {
@@ -47,7 +47,7 @@ public class UnderlyingMapping {
     pDoubles.write(event.getPutCallRatio());
   }
 
-  public static Underlying fromNative(NativeEventsReader reader) {
+  public static Underlying fromNative(ByteReader reader) {
     Underlying underlying = new Underlying();
     underlying.setEventSymbol(reader.readString());
     underlying.setEventTime(reader.readLong());
