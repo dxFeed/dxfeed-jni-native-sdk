@@ -76,17 +76,11 @@ namespace internal {
 
   std::string buildClassPath(const fs::path& runtimePath) {
     fs::path jarPath = runtimePath / MY_JAR;
-//    if (!exists(jarPath)) {
-//      throw std::runtime_error("Can't find java libs in " + jarPath.string());
-//    }
+    if (!exists(jarPath)) {
+      throw std::runtime_error("Can't find java libs in " + jarPath.string());
+    }
     std::cout << "DxFeed JAR path: " << jarPath << std::endl;
-    return "-Djava.class.path=/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/auther-api-455.jar:"
-           "/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/dxfeed-api-3.316.jar:"
-           "/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/dxlib-3.316.jar:"
-           "/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/qds-3.316.jar:"
-           "/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/qds-file-3.316.jar:"
-           "/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/qds-tools-3.316.jar:"
-           "/Users/Andrey.Mikhalev/Documents/work/devex/dxfeed-jni-sdk/src/main/c/build/original-dxfeed-jni-native-sdk-0.1.0.jar";
+    return "-Djava.class.path=" + jarPath.string();
   }
 
   void dumpJavaCmd(const JavaVMOption* javaVmOptions, int vmOptionsCount) {
