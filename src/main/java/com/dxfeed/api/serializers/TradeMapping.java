@@ -45,8 +45,8 @@ public class TradeMapping {
     // DOUBLE DATA
     pDoubles.write(event.getPrice());
     pDoubles.write(event.getChange());
-    pDoubles.write(event.getSize());
-    pDoubles.write(event.getDayVolume());
+    pDoubles.write(event.getSizeAsDouble());
+    pDoubles.write(event.getDayVolumeAsDouble());
     pDoubles.write(event.getDayTurnover());
   }
 
