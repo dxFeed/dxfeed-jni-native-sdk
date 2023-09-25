@@ -277,11 +277,11 @@ Find useful information in our self-service dxFeed Knowledge Base:
   is a local hub
   without the ability to establish network connections. Events published via publisher are delivered
   to local feed only.
-- [ ] [PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#PUBLISHER)
+- [x] [PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#PUBLISHER)
   connects to the
   remote publisher hub (also known as multiplexor) or creates a publisher on the local
   host ([Java API sample](https://github.com/devexperts/QD/blob/master/dxfeed-samples/src/main/java/com/dxfeed/sample/_simple_/WriteTapeFile.java))
-- [ ] [STREAM_PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_PUBLISHER)
+- [x] [STREAM_PUBLISHER](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#STREAM_PUBLISHER)
   is
   similar to PUBLISHER and also connects to the remote publisher hub, but is designed for bulk data
   publishing
