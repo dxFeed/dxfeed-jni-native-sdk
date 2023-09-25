@@ -3,7 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.option.Greeks;
 
 public class GreeksMapping {
@@ -49,7 +49,7 @@ public class GreeksMapping {
     pDoubles.write(event.getVega());
   }
 
-  public static Greeks fromNative(NativeEventsReader reader) {
+  public static Greeks fromNative(ByteReader reader) {
     Greeks greeks = new Greeks();
     greeks.setEventSymbol(reader.readString());
     greeks.setEventTime(reader.readLong());

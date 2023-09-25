@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Quote;
 
@@ -48,7 +48,7 @@ public class QuoteMapping {
     pDoubles.write(event.getAskSizeAsDouble());
   }
 
-  public static Quote fromNative(NativeEventsReader reader) {
+  public static Quote fromNative(ByteReader reader) {
     Quote quote = new Quote();
     quote.setEventSymbol(reader.readString());
     quote.setEventTime(reader.readLong());
