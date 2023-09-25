@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Trade;
 import com.dxfeed.event.market.TradeBase;
@@ -50,7 +50,7 @@ public class TradeMapping {
     pDoubles.write(event.getDayTurnover());
   }
 
-  public static Trade fromNative(NativeEventsReader reader) {
+  public static Trade fromNative(ByteReader reader) {
     Trade trade = new Trade();
     trade.setEventSymbol(reader.readString());
     trade.setEventTime(reader.readLong());

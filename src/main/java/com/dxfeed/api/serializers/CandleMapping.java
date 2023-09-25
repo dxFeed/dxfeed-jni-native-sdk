@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.candle.Candle;
 import com.dxfeed.event.candle.CandleSymbol;
 
@@ -59,7 +59,7 @@ public class CandleMapping {
     pDoubles.write(event.getOpenInterestAsDouble());
   }
 
-  public static Candle fromNative(NativeEventsReader reader) {
+  public static Candle fromNative(ByteReader reader) {
     Candle candle = new Candle();
     candle.setEventSymbol(CandleSymbol.valueOf(reader.readString()));
     candle.setEventTime(reader.readLong());

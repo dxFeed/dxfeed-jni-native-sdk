@@ -2,7 +2,7 @@ package com.dxfeed.api;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.api.serializers.*;
 import com.dxfeed.event.EventType;
 import com.dxfeed.event.candle.Candle;
@@ -85,72 +85,10 @@ public class NativeEventsList<T extends EventType<?>> {
   }
 
   public static List<EventType<?>> toList(byte[] byteData, double[] doubleData, byte[] eventTypes) {
-    List<EventType<?>> eventList = new ArrayList<>();
-    NativeEventsReader reader = new NativeEventsReader(byteData, doubleData);
-    for (byte pEventType : eventTypes) {
-      eventList.add(readEvent(reader, pEventType));
-    }
-    return eventList;
+    ByteReader reader = new ByteReader(byteData, doubleData, eventTypes);
+    return reader.toEvents();
   }
 
-  private static EventType<?> readEvent(NativeEventsReader reader, byte pEventType) {
-    switch (pEventType) {
-      case DxfgEventClazzT.DXFG_EVENT_QUOTE: {
-        return QuoteMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_PROFILE: {
-        return ProfileMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_SUMMARY: {
-        return SummaryMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_GREEKS: {
-        return GreeksMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_CANDLE: {
-        return CandleMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_UNDERLYING: {
-        return UnderlyingMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_THEO_PRICE: {
-        return TheoPriceMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_TRADE:
-      case DxfgEventClazzT.DXFG_EVENT_TRADE_ETH: {
-        return TradeMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_CONFIGURATION: {
-        return ConfigurationMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_MESSAGE: {
-        MessageMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_TIME_AND_SALE: {
-        return TimeAndSalesMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_ORDER_BASE: {
-        return OrderToMapping.orderBaseFromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_ORDER: {
-        return OrderToMapping.orderFromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_ANALYTIC_ORDER: {
-        return OrderToMapping.analyticOrderFromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_SPREAD_ORDER: {
-        return OrderToMapping.spreadOrderFromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_OPTION_SALE: {
-        return OptionSaleMapping.fromNative(reader);
-      }
-      case DxfgEventClazzT.DXFG_EVENT_SERIES: {
-        return SeriesMapping.fromNative(reader);
-      }
-      default:
-        throw new IllegalStateException("Event mapping for event type " + pEventType + " is not implemented");
-    }
-  }
 
   public byte[] byteData() {
     return pBytes.toByteData();
