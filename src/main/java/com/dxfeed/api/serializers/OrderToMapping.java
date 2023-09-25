@@ -66,7 +66,7 @@ public class OrderToMapping {
 
     // DOUBLE DATA
     pDoubles.write(event.getPrice());
-    pDoubles.write(event.getSize());
+    pDoubles.write(event.getSizeAsDouble());
     pDoubles.write(event.getExecutedSize());
     pDoubles.write(event.getTradePrice());
     pDoubles.write(event.getTradeSize());
