@@ -29,8 +29,6 @@ namespace dxfeed {
     void withProperties(JNIEnv* env, const char* file_path);
     bool supportsProperty(JNIEnv* env, const char* key);
   private:
-    static jobject rebuild(JNIEnv* env, jobject oldBuilder, jobject newBuilder);
-
     jobject dxEndpointBuilder_ = nullptr;
   };
 }
