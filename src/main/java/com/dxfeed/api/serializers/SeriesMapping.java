@@ -2,7 +2,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.option.Series;
 
 public class SeriesMapping {
@@ -51,7 +51,7 @@ public class SeriesMapping {
     pDoubles.write(event.getInterest());
   }
 
-  public static Series fromNative(NativeEventsReader reader) {
+  public static Series fromNative(ByteReader reader) {
     Series series = new Series();
     series.setEventSymbol(reader.readString());
     series.setEventTime(reader.readLong());

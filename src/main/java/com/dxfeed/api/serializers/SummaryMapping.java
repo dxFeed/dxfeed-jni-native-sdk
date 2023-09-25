@@ -3,7 +3,7 @@ package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Summary;
 
@@ -51,7 +51,7 @@ public class SummaryMapping {
     pDoubles.write(event.getPrevDayVolume());
   }
 
-  public static Summary fromNative(NativeEventsReader reader) {
+  public static Summary fromNative(ByteReader reader) {
     Summary summary = new Summary();
     summary.setEventSymbol(reader.readString());
     summary.setEventTime(reader.readLong());
