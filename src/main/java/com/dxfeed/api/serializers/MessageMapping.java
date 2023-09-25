@@ -1,7 +1,7 @@
 package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.api.utils.XmlMapping;
 import com.dxfeed.event.misc.Message;
 
@@ -23,7 +23,7 @@ public class MessageMapping {
     pBytes.writeString(XmlMapping.toString(event.getAttachment()));
   }
 
-  public static Message fromNative(NativeEventsReader reader) {
+  public static Message fromNative(ByteReader reader) {
     Message message = new Message();
     message.setEventSymbol(reader.readString());
     message.setEventTime(reader.readLong());

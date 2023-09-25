@@ -1,7 +1,7 @@
 package com.dxfeed.api.serializers;
 
 import com.dxfeed.api.buffers.ByteBuffer;
-import com.dxfeed.api.buffers.NativeEventsReader;
+import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.api.utils.XmlMapping;
 import com.dxfeed.event.misc.Configuration;
 
@@ -27,7 +27,7 @@ public class ConfigurationMapping {
     pBytes.writeString(XmlMapping.toString(event.getAttachment()));
   }
 
-  public static Configuration fromNative(NativeEventsReader reader) {
+  public static Configuration fromNative(ByteReader reader) {
     Configuration configuration = new Configuration();
     configuration.setEventSymbol(reader.readString());
     configuration.setEventTime(reader.readLong());
