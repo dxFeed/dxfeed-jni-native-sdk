@@ -4,6 +4,7 @@
 #define DXFEED_JNI_NATIVE_SDK_DXFEED_H_
 
 #include <jni.h>
+#include <thread>
 
 #include "api/dxfg_events.h"
 #include "api/dxfg_feed.h"
@@ -43,6 +44,7 @@ namespace dxfeed {
 
   private:
     jobject dxFeed_ = nullptr;
+    std::thread consumer_thread;
 
     constexpr static const char DX_FEED_CLASS_NAME[] = "Lcom/dxfeed/api/DXFeed;";
     constexpr static const char DX_FEED_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxFeedJni;";
