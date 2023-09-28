@@ -62,10 +62,9 @@ void dxEndpointSubscription(graal_isolatethread_t *thread) {
   symbolAAPL.symbol = "AAPL";
 
   dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
-//  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
-//  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
-  std::chrono::seconds minutes(10); // time to sleep 24 hours
-  std::this_thread::sleep_for(minutes);
+
+  dxfg_DXEndpoint_awaitNotConnected(thread, endpoint);
+  dxfg_DXEndpoint_closeAndAwaitTermination(thread, endpoint);
 
   auto event = dxfg_EventType_new(thread, "", DXFG_EVENT_QUOTE);
   int32_t result = dxfg_DXFeed_getLastEvent(thread, feed, event);
