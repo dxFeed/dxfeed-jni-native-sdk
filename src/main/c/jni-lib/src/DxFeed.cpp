@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MPL-2.0
 
+#include "api/dxfg_api.h"
+#include "dxfeed/DxEventT.hpp"
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/DxSubscription.hpp"
+#include "dxfeed/DxSymbol.hpp"
+#include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/DxEventT.hpp"
 #include "dxfeed/utils/NativeEventsList.hpp"
-#include "dxfeed/DxSymbol.hpp"
 
 namespace dxfeed {
   using namespace jni;

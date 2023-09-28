@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "api/dxfg_events.h"
+#include "JNIUtils.hpp"
 
 namespace dxfeed::jni {
   struct ByteReader {
@@ -40,6 +41,7 @@ namespace dxfeed::jni {
     const char* pByteData_;
     const double* pDoubleData_;
     const char* pEventTypes_;
+    std::vector<std::unique_ptr<const char*>> resources;
   };
 }
 

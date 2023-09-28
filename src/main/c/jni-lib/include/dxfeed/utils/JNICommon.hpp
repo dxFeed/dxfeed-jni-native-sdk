@@ -4,6 +4,8 @@
 #define DXFEED_JNI_NATIVE_SDK_BASE_H_
 
 #include <jni.h>
+#include <cstring>
+#include <memory>
 
 #include "dxfeed/utils/vm/JavaVmInstance.hpp"
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
