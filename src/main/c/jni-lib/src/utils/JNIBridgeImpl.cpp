@@ -54,6 +54,10 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   auto pDoubleData = (const double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
   auto pEventTypes = (const char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
 
+  /** Inside a critical region, native code must not call other JNI functions, or
+    * any system call that may cause the current thread to block and wait for another Java thread.
+    */
+
   dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
   auto events = reader.toEvents();
 
@@ -70,33 +74,48 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   }
 }
 
-JNIEXPORT
-void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint size, jint byteLen, jbyte* jBytes,
-                                                                            jint doubleLen, jdouble* jDoubles,
-                                                                            jint eventTypesLen, jbyte* jEventTypes,
-                                                                            jlong jUserCallback, jlong jUserData)
-{
-  auto pByteData = (char*) jBytes;
-  auto pDoubleData = (double*) jDoubles;
-  auto pEventTypes = (char*) jEventTypes;
-
-  dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
-  auto events = reader.toEvents();
-
-  auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
-  auto userData = dxfeed::r_cast<void*>(jUserData);
-  dxfg_event_type_list list = { size, events.data() };
-  
-  JNIEnv* env = nullptr;
-  dxfeed::jni::internal::javaVM->attachCurrentThread(&env);
-  if (!env) {
-    pListener(env, &list, userData);
-  }
-
-  for (const auto& event : events) {
-    delete[] event;
-  }
-}
+/**
+ * Don't use JavaCritical because we'd like to call JNI functions from user callback.
+ * It's impossible for JavaCritical sections:
+ *      https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html
+ *
+ *  Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+ *  V  [libjvm.dylib+0x75accd]  VMError::report_and_die(int, char const*, char const*, __va_list_tag*, Thread*, unsigned char*, void*, void*, char const*, int, unsigned long)+0x60d
+ *  V  [libjvm.dylib+0x2672cf]  report_fatal(VMErrorType, char const*, int, char const*, ...)+0xc1
+ *  V  [libjvm.dylib+0x686309]  SafepointSynchronize::block(JavaThread*)+0x1db
+ *  V  [libjvm.dylib+0x688515]  SafepointMechanism::block_if_requested_slow(JavaThread*)+0x1d
+ *  V  [libjvm.dylib+0x718283]  JavaThread::check_safepoint_and_suspend_for_native_trans(JavaThread*)+0x9f
+ *  V  [libjvm.dylib+0x1d711d]  ThreadInVMfromNative::ThreadInVMfromNative(JavaThread*)+0x6d
+ *  V  [libjvm.dylib+0x3d6e65]  jni_FindClass+0x45
+ *  C  [native_jni.dylib+0x1b501]  JNIEnv_::FindClass(char const*)+0x21
+ *  C  [native_jni.dylib+0x1b37a]  JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener+0x26a
+ *
+ *  */
+//JNIEXPORT
+//void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint size, jint byteLen, jbyte* jBytes,
+//                                                                            jint doubleLen, jdouble* jDoubles,
+//                                                                            jint eventTypesLen, jbyte* jEventTypes,
+//                                                                            jlong jUserCallback, jlong jUserData)
+//{
+//  /** Inside a critical region, native code must not call other JNI functions, or
+//    * any system call that may cause the current thread to block and wait for another Java thread.
+//    */
+//
+//  auto pByteData = (char*) jBytes;
+//  auto pDoubleData = (double*) jDoubles;
+//  auto pEventTypes = (char*) jEventTypes;
+//
+//  dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
+//  auto events = reader.toEvents();
+//
+//  auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
+//  auto userData = dxfeed::r_cast<void*>(jUserData);
+//  dxfg_event_type_list list = { size, events.data() };
+//  pListener(nullptr, &list, userData);
+//  for (const auto& event : events) {
+//    delete[] event;
+//  }
+//}
 
 #ifdef __cplusplus
 }
