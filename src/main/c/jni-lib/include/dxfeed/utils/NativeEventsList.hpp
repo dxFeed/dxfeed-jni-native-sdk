@@ -28,7 +28,7 @@ namespace dxfeed::jni {
     jfieldID pEventTypes_;
     jmethodID toList_;
 
-    constexpr static const char NATIVE_EVENTS_LIST_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/NativeEventsList;";
+    constexpr static const char NATIVE_EVENTS_LIST_JNI_CLASS_NAME[] = "com/dxfeed/api/NativeEventsList";
   };
 }
 

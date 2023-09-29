@@ -7,15 +7,15 @@
 
 namespace dxfeed::jni {
   void initDxJni(JNIEnv* env) {
-    javaLogger->info("com.dxfeed.api.DxFeedJniClass: %", safeFindClass(env, "Lcom/dxfeed/api/DxFeedJni;"));
-    javaLogger->info("com.dxfeed.api.DxSymbolJniClass: %", safeFindClass(env, "Lcom/dxfeed/api/DxSymbolJni;"));
+    javaLogger->info("com.dxfeed.api.DxFeedJniClass: %", safeFindClass(env, "com/dxfeed/api/DxFeedJni"));
+    javaLogger->info("com.dxfeed.api.DxSymbolJniClass: %", safeFindClass(env, "com/dxfeed/api/DxSymbolJni"));
 
-    auto dxEndpointJniClass = safeFindClass(env, "Lcom/dxfeed/api/DxEndpointJni;");
+    auto dxEndpointJniClass = safeFindClass(env, "com/dxfeed/api/DxEndpointJni");
     javaLogger->info("com.dxfeed.api.DxEndpointJniClass: %", dxEndpointJniClass);
     jint nEndpointLoaded = env->RegisterNatives(dxEndpointJniClass, nDxEndpoint, 1);
     env->DeleteLocalRef(dxEndpointJniClass);
 
-    auto dxSubscriptionJniClass = safeFindClass(env, "Lcom/dxfeed/api/DxSubscriptionJni;");
+    auto dxSubscriptionJniClass = safeFindClass(env, "com/dxfeed/api/DxSubscriptionJni");
     javaLogger->info("com.dxfeed.api.DxSubscriptionJniClass: %", dxSubscriptionJniClass);
     jint nSubscriptionLoaded = env->RegisterNatives(dxSubscriptionJniClass, nDxSubscription, 1);
     env->DeleteLocalRef(dxSubscriptionJniClass);
