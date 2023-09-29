@@ -5,7 +5,7 @@
 
 namespace dxfeed::jni {
   JavaLangSystem::JavaLangSystem(JNIEnv* env) {
-    auto javaLangSystemClazz = safeFindClass(env, "Ljava/lang/System;");
+    auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     javaLogger->info("java.lang.System: %", javaLangSystemClazz);
     loadMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "load", "(Ljava/lang/String;)V");
     javaLogger->info("void System::load(String path): %", loadMethodId);
@@ -19,7 +19,7 @@ namespace dxfeed::jni {
   }
 
   const char* JavaLangSystem::getProperty(JNIEnv* env, const char* key) const {
-    auto javaLangSystemClazz = safeFindClass(env, "Ljava/lang/System;");
+    auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     auto jKey = env->NewStringUTF(key);
     auto jValue = r_cast<jstring>(env->CallStaticObjectMethod(javaLangSystemClazz, getPropMethodId, jKey));
     char* result = new char[1] { 0 };
@@ -38,7 +38,7 @@ namespace dxfeed::jni {
   }
 
   void JavaLangSystem::setProperty(JNIEnv* env, const char* key, const char* value) {
-    auto javaLangSystemClazz = safeFindClass(env, "Ljava/lang/System;");
+    auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     auto jKey = env->NewStringUTF(key);
     auto jValue = env->NewStringUTF(value);
     env->CallStaticObjectMethod(javaLangSystemClazz, setPropMethodId, jKey, jValue);

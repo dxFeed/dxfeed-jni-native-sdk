@@ -77,7 +77,7 @@ namespace dxfeed {
   }
 
   bool DxIndexedEventSource::isSpecialSourceId(JNIEnv* env, int32_t index) {
-    auto jDxClass = safeFindClass(env, "Lcom/dxfeed/event/market/OrderSource;");
+    auto jDxClass = safeFindClass(env, "com/dxfeed/event/market/OrderSource");
     const char* methodName = "isSpecialSourceId";
     const char* methodSignature = "(I)Z";
     auto methodId = safeGetStaticMethodID(env, jDxClass, methodName, methodSignature);

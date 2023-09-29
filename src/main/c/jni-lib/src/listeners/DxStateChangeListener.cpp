@@ -9,7 +9,7 @@ namespace dxfeed {
   DxStateChangeListener* DxStateChangeListener::create(JNIEnv* env, dxfg_endpoint_state_change_listener_func callback,
                                                        void* userData)
   {
-    auto dxEndpointClass = jni::safeFindClass(env, "Lcom/dxfeed/api/DxEndpointJni;");
+    auto dxEndpointClass = jni::safeFindClass(env, "com/dxfeed/api/DxEndpointJni");
     auto newStateChangeListenerId =
       jni::safeGetStaticMethodID(env, dxEndpointClass, "newStateChangeEventListener", "(JJ)J");
     auto result = env->CallStaticLongMethod(dxEndpointClass, newStateChangeListenerId, callback, userData);

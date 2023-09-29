@@ -14,7 +14,7 @@ namespace dxfeed {
   struct DxStateChangeListener;
 
   struct DxEndpoint final {
-    constexpr static const char DX_JNI_ENDPOINT_CLASS_NAME[] = "Lcom/dxfeed/api/DxEndpointJni;";
+    constexpr static const char DX_JNI_ENDPOINT_CLASS_NAME[] = "com/dxfeed/api/DxEndpointJni";
     constexpr static const char JAVA_CLASS_NAME[] = "com.dxfeed.api.impl.DXEndpointImpl";
 
     explicit DxEndpoint(JNIEnv* env, jobject dxEndpoint);
@@ -50,7 +50,7 @@ namespace dxfeed {
   private:
     jobject dxEndpoint_ = nullptr;
 
-    constexpr static const char DX_ENDPOINT_CLASS_NAME[] = "Lcom/dxfeed/api/DXEndpoint;";
+    constexpr static const char DX_ENDPOINT_CLASS_NAME[] = "com/dxfeed/api/DXEndpoint";
   };
 }
 

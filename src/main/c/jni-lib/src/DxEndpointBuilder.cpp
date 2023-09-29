@@ -65,7 +65,7 @@ namespace dxfeed {
   }
 
   void DxEndpointBuilder::withProperties(JNIEnv* env, const char* filePath) {
-    auto jPropertiesClass = safeFindClass(env, "Ljava/util/Properties;");
+    auto jPropertiesClass = safeFindClass(env, "java/util/Properties");
     javaLogger->info("jPropertiesClass: %", jPropertiesClass);
     const char* methodName = "load";
     const char* methodSignature = "(Ljava/io/InputStream;)V";
