@@ -36,7 +36,7 @@ namespace dxfeed {
 
   DxSubscription::DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses) {
     int32_t size = eventClasses->size;
-    auto jClazzArrayClass = safeFindClass(env, "Ljava/lang/Class;");
+    auto jClazzArrayClass = safeFindClass(env, "java/lang/Class");
     auto jArray = env->NewObjectArray(size, jClazzArrayClass, nullptr);
     for (int i = 0; i < size; ++i) {
       dxfg_event_clazz_t* pClazz = eventClasses->elements[i];
@@ -74,7 +74,7 @@ namespace dxfeed {
 
   DxSubscription::DxSubscription(JNIEnv* env, jobject dxFeed, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries) {
     int32_t size = eventClasses->size;
-    auto jClazzArrayClass = safeFindClass(env, "Ljava/lang/Class;");
+    auto jClazzArrayClass = safeFindClass(env, "java/lang/Class");
     auto jArray = env->NewObjectArray(size, jClazzArrayClass, nullptr);
     for (int i = 0; i < size; ++i) {
       dxfg_event_clazz_t* pClazz = eventClasses->elements[i];
@@ -149,7 +149,7 @@ namespace dxfeed {
 
   int32_t DxSubscription::addSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
     int32_t size = symbols->size;
-    auto jObjectArrayClass = safeFindClass(env, "Ljava/lang/Object;");
+    auto jObjectArrayClass = safeFindClass(env, "java/lang/Object");
     auto jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
     for (int i = 0; i < size; ++i) {
       dxfg_symbol_t* symbol = symbols->elements[i];
@@ -184,7 +184,7 @@ namespace dxfeed {
 
   int32_t DxSubscription::setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
     int32_t size = symbols->size;
-    auto jObjectArrayClass = safeFindClass(env, "Ljava/lang/Object;");
+    auto jObjectArrayClass = safeFindClass(env, "java/lang/Object");
     auto jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
     for (int i = 0; i < size; ++i) {
       dxfg_symbol_t* symbol = symbols->elements[i];
@@ -237,7 +237,7 @@ namespace dxfeed {
 
   int32_t DxSubscription::removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
     int32_t size = symbols->size;
-    auto jObjectArrayClass = safeFindClass(env, "Ljava/lang/Object;");
+    auto jObjectArrayClass = safeFindClass(env, "java/lang/Object");
     auto jSymbolsArray = env->NewObjectArray(size, jObjectArrayClass, nullptr);
     for (int i = 0; i < size; ++i) {
       dxfg_symbol_t* symbol = symbols->elements[i];

@@ -35,14 +35,14 @@ namespace dxfeed {
     static const char* jStringToUTF8(JNIEnv* env, jstring jString);
     static const char* copy(const char* str);
 
-    constexpr static const char DX_SYMBOL_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxSymbolJni;";
-    constexpr static const char STRING_SYMBOL_JNI_CLASS_NAME[] = "Ljava/lang/String;";
-    constexpr static const char WILDCARD_SYMBOL_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/osub/WildcardSymbol;";
-    constexpr static const char CANDLE_SYMBOL_JNI_CLASS_NAME[] = "Lcom/dxfeed/event/candle/CandleSymbol;";
+    constexpr static const char DX_SYMBOL_JNI_CLASS_NAME[] = "com/dxfeed/api/DxSymbolJni";
+    constexpr static const char STRING_SYMBOL_JNI_CLASS_NAME[] = "java/lang/String";
+    constexpr static const char WILDCARD_SYMBOL_JNI_CLASS_NAME[] = "com/dxfeed/api/osub/WildcardSymbol";
+    constexpr static const char CANDLE_SYMBOL_JNI_CLASS_NAME[] = "com/dxfeed/event/candle/CandleSymbol";
     constexpr static const char TIME_SERIES_SYMBOL_JNI_CLASS_NAME[] =
-      "Lcom/dxfeed/api/osub/TimeSeriesSubscriptionSymbol;";
+      "com/dxfeed/api/osub/TimeSeriesSubscriptionSymbol";
     constexpr static const char INDEXED_EVENT_SYMBOL_JNI_CLASS_NAME[] =
-      "Lcom/dxfeed/api/osub/IndexedEventSubscriptionSymbol;";
+      "com/dxfeed/api/osub/IndexedEventSubscriptionSymbol";
   };
 }
 
