@@ -24,8 +24,8 @@ namespace dxfeed {
   private:
     jobject dxPublisher_ = nullptr;
 
-    constexpr static const char DX_PUBLISHER_CLASS_NAME[] = "Lcom/dxfeed/api/DXPublisher;";
-//    constexpr static const char DX_PUBLISHER_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxFeedJni;";
+    constexpr static const char DX_PUBLISHER_CLASS_NAME[] = "com/dxfeed/api/DXPublisher";
+//    constexpr static const char DX_PUBLISHER_JNI_CLASS_NAME[] = "com/dxfeed/api/DxFeedJni";
   };
 }
 

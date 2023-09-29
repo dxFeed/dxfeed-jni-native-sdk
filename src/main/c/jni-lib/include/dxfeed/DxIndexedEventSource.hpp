@@ -33,7 +33,7 @@ namespace dxfeed {
     jobject indexedEventSource_;
     JNIEnv* env_;
 
-    constexpr static const char DX_INDEXED_EVENT_SOURCE_CLASS_NAME[] = "Lcom/dxfeed/api/DxIndexedEventSource;";
+    constexpr static const char DX_INDEXED_EVENT_SOURCE_CLASS_NAME[] = "com/dxfeed/api/DxIndexedEventSource";
   };
 } // namespace dxfeed
 

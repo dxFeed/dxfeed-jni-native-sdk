@@ -54,8 +54,8 @@ namespace dxfeed {
     DxSubscription(JNIEnv* env, jobject observableSubscription);
 
     static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
-    constexpr static const char DX_FEED_SUBSCRIPTION_CLASS_NAME[] = "Lcom/dxfeed/api/DXFeedSubscription;";
-    constexpr static const char DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME[] = "Lcom/dxfeed/api/DxSubscriptionJni;";
+    constexpr static const char DX_FEED_SUBSCRIPTION_CLASS_NAME[] = "com/dxfeed/api/DXFeedSubscription";
+    constexpr static const char DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME[] = "com/dxfeed/api/DxSubscriptionJni";
   };
 } // namespace dxfeed
 

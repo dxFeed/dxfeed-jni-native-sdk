@@ -19,7 +19,7 @@ namespace dxfeed::jni {
   JavaLogger::JavaLogger(JNIEnv* env) :
     env_(env)
   {
-    auto jDevexLoggingClazz = safeFindClass(env, "Lcom/devexperts/logging/Logging;");
+    auto jDevexLoggingClazz = safeFindClass(env, "com/devexperts/logging/Logging");
     auto id = jni::safeGetStaticMethodID(env, jDevexLoggingClazz, "getLogging", "(Ljava/lang/String;)"
                                                                     "Lcom/devexperts/logging/Logging;");
     auto pJstring = env->NewStringUTF("NativeLogger");
