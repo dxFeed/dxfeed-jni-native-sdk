@@ -26,9 +26,9 @@ dxfg_feed_event_listener_t* dxfg_DXFeedEventListener_new(graal_isolatethread_t* 
 }
 
 int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler* object) {
-  std::stringstream ss;
-  ss << "dxfg_JavaObjectHandler_release: ";
   if (object) {
+    std::stringstream ss;
+    ss << "dxfg_JavaObjectHandler_release: ";
     auto pObject = object->dxfg_java_object_handle;
     ss << "\t dxfg_java_object_handle: " << pObject;
     const auto& name = pObject ? dxfeed::jni::internal::javaLangClass->getName(thread, pObject) : "";
@@ -44,15 +44,14 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
       ) {
         dxfg_DXSubscription_release(thread, dxfeed::r_cast<dxfg_subscription_t*> (object));
       } else {
-        ss << ", LEAKED: " << pObject;
+        ss << ", LEAKED: " << std::hex << pObject;
       }
     } else {
-      ss << ", already released: " << pObject << "\n";
+      ss << ", already released: " << std::hex << pObject;
       delete object;
     }
-    thread->DeleteLocalRef(pObject);
+    dxfeed::jni::javaLogger->info(ss.str());
   }
-  dxfeed::jni::javaLogger->info(ss.str());
   return JNI_OK;
 }
 
