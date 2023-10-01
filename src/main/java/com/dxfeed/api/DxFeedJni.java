@@ -23,7 +23,7 @@ public class DxFeedJni {
   }
 
   private static void loadLibrary(String libPath) {
-    System.load(libPath);
+    System.loadLibrary(libPath);
   }
 
   private static <E extends LastingEvent<?>> NativeEventsList<E> getLastEventIfSubscribed(DXFeed feed,
