@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/events/MessageMapping.h"
+#include "dxfeed/events/MessageMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"

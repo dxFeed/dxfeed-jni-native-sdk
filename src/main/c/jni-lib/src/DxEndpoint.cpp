@@ -3,8 +3,8 @@
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/DxPublisher.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
   using namespace jni;
