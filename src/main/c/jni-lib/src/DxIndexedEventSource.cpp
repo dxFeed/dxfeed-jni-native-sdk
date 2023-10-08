@@ -9,15 +9,32 @@
 namespace dxfeed {
   using namespace jni;
 
-  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const char* name) : env_(env) {
+  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, dxfg_indexed_event_source_t* eventSource) : env_(env) {
+    type_ = eventSource->type;
+    name_ = eventSource->name;
+    id_ = eventSource->id;
     auto jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_CLASS_NAME);
+    const char* methodName = "<init>";
+    const char* methodSignature = "(ILjava/lang/String;)V";
+    auto methodId = safeGetMethodID(env, jDxClass, methodName, methodSignature);
+    jstring jName = env->NewStringUTF(name_);
+    auto jIndexedEventSource = env->NewObject(jDxClass, methodId, id_, jName);
+    indexedEventSource_ = env_->NewGlobalRef(jIndexedEventSource);
+    env->DeleteLocalRef(jName);
+    env->DeleteLocalRef(jIndexedEventSource);
+    env->DeleteLocalRef(jDxClass);
+  }
+
+  DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const char* name) : env_(env) {
+    auto jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_JNI_CLASS_NAME);
     const char* methodName = "newOrderSourceByName";
     const char* methodSignature = "(Ljava/lang/String;[J)Lcom/dxfeed/event/IndexedEventSource;";
     auto methodId = safeGetStaticMethodID(env, jDxClass, methodName, methodSignature);
     name_ = name;
     auto jName = env->NewStringUTF(name);
     auto data = env->NewLongArray(2);
-    indexedEventSource_ = env->CallStaticObjectMethod(jDxClass, methodId, jName, data);
+    auto jIndexedEventSource = env->CallStaticObjectMethod(jDxClass, methodId, jName, data);
+    indexedEventSource_ = env->NewGlobalRef(jIndexedEventSource);
     env->DeleteLocalRef(jName);
 
     auto pData = r_cast<jlong*>(env->GetPrimitiveArrayCritical(data, 0));
@@ -29,7 +46,7 @@ namespace dxfeed {
   }
 
   DxIndexedEventSource::DxIndexedEventSource(JNIEnv* env, const int32_t sourceId) : env_(env) {
-    auto jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_CLASS_NAME);
+    auto jDxClass = safeFindClass(env, DX_INDEXED_EVENT_SOURCE_JNI_CLASS_NAME);
     const char* methodName = "newOrderSourceById";
     const char* methodSignature = "(I[J)Lcom/dxfeed/event/market/OrderSource;";
     auto methodId = safeGetStaticMethodID(env, jDxClass, methodName, methodSignature);
