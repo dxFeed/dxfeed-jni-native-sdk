@@ -11,6 +11,7 @@
 namespace dxfeed {
 
   struct DxIndexedEventSource final {
+    DxIndexedEventSource(JNIEnv* env, dxfg_indexed_event_source_t* eventSource);
     DxIndexedEventSource(JNIEnv* env, const char* name);
     ~DxIndexedEventSource();
 
@@ -33,7 +34,8 @@ namespace dxfeed {
     jobject indexedEventSource_;
     JNIEnv* env_;
 
-    constexpr static const char DX_INDEXED_EVENT_SOURCE_CLASS_NAME[] = "com/dxfeed/api/DxIndexedEventSource";
+    constexpr static const char DX_INDEXED_EVENT_SOURCE_CLASS_NAME[] = "com/dxfeed/event/IndexedEventSource";
+    constexpr static const char DX_INDEXED_EVENT_SOURCE_JNI_CLASS_NAME[] = "com/dxfeed/api/DxIndexedEventSource";
   };
 } // namespace dxfeed
 
