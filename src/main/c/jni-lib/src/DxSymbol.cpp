@@ -96,8 +96,8 @@ namespace dxfeed {
       case INDEXED_EVENT_SUBSCRIPTION: {
         auto pIesSymbol = r_cast<dxfg_indexed_event_subscription_symbol_t*>(pSymbolType);
         auto symbol = toJavaObject(env, pIesSymbol->symbol);
-        auto indexedEventSource = r_cast<DxIndexedEventSource*>(pIesSymbol->source)->javaObject();
-        return toIndexedEventSubscriptionSymbol(env, symbol, indexedEventSource);
+        std::unique_ptr<DxIndexedEventSource> indexedEventSource { new DxIndexedEventSource(env, pIesSymbol->source) };
+        return toIndexedEventSubscriptionSymbol(env, symbol, indexedEventSource->javaObject());
       }
       default:
         return nullptr;
