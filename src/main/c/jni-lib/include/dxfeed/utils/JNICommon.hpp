@@ -5,11 +5,11 @@
 
 #include <jni.h>
 
-#include "dxfeed/utils/vm/JavaVmInstance.hpp"
-#include "dxfeed/utils/java/JavaLangSystem.hpp"
-#include "dxfeed/utils/java/JavaLangClass.hpp"
 #include "dxfeed/utils/java/DxJni.hpp"
+#include "dxfeed/utils/java/JavaLangClass.hpp"
+#include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/java/JavaLogger.hpp"
+#include "dxfeed/utils/vm/JavaVmInstance.hpp"
 
 namespace dxfeed::jni {
   typedef internal::vm::JavaVmInstance JVMInstance;

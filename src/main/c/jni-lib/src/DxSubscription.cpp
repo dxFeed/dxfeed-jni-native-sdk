@@ -2,11 +2,11 @@
 
 #include <jni.h>
 
+#include "dxfeed/DxFeed.hpp"
 #include "dxfeed/DxSubscription.hpp"
+#include "dxfeed/DxSymbol.hpp"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/DxFeed.hpp"
-#include "dxfeed/DxSymbol.hpp"
 
 namespace dxfeed {
   using namespace jni;

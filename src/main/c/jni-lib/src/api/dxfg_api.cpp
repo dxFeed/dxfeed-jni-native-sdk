@@ -2,12 +2,12 @@
 
 #include <sstream>
 
-#include "dxfeed/listeners/DxEventListener.hpp"
-#include "dxfeed/listeners/DxStateChangeListener.hpp"
-#include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
 #include "dxfeed/DxSubscription.hpp"
+#include "dxfeed/listeners/DxEventListener.hpp"
+#include "dxfeed/listeners/DxStateChangeListener.hpp"
+#include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,

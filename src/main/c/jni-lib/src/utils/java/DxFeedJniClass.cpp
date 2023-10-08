@@ -2,7 +2,6 @@
 
 #include "dxfeed/utils/java/DxJni.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/utils/java/JavaLogger.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
 
 namespace dxfeed::jni {

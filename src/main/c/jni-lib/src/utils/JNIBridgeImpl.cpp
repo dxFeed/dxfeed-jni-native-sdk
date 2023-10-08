@@ -4,7 +4,6 @@
 
 #include "javah/com_dxfeed_api_DxEndpointJni.h"
 #include "javah/com_dxfeed_api_DxSubscriptionJni.h"
-#include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
