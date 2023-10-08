@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/events/ProfileMapping.h"
+#include "dxfeed/events/ProfileMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 

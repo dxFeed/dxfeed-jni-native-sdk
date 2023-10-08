@@ -3,8 +3,8 @@
 #include <jni.h>
 
 #include "dxfeed/DxIndexedEventSource.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxFeed.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
   using namespace jni;

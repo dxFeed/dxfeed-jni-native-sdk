@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/utils/NativeEventsList.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/NativeEventsList.hpp"
 
 namespace dxfeed::jni {
   NativeEventsList::NativeEventsList(JNIEnv* env):
