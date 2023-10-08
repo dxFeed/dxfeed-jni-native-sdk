@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "api/dxfg_events.h"
-#include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/DxEventT.hpp"
-#include "dxfeed/DxSymbol.hpp"
 #include "dxfeed/DxIndexedEventSource.hpp"
+#include "dxfeed/DxSymbol.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, dxfg_symbol_type_t symbolType) {
   return dxfeed::DxSymbol::createNativeSymbol(symbol, symbolType);

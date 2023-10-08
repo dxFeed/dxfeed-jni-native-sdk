@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/events/CandleMapping.h"
+#include "dxfeed/events/CandleMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 

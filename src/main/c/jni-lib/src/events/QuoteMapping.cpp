@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "dxfeed/events/QuoteMapping.h"
+#include "dxfeed/events/QuoteMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 

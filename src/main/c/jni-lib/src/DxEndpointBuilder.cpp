@@ -2,8 +2,8 @@
 
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/JNICommon.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
   using namespace jni;

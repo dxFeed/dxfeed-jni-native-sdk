@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#ifndef NATIVE_JNI_SDK_OPTIONSALEMAPPING_H
-#define NATIVE_JNI_SDK_OPTIONSALEMAPPING_H
+#ifndef NATIVE_JNI_SDK_OPTIONSALEMAPPING_HPP
+#define NATIVE_JNI_SDK_OPTIONSALEMAPPING_HPP
 
 #include "api/dxfg_events.h"
 
@@ -15,4 +15,4 @@ namespace dxfeed::jni {
   };
 }
 
-#endif //NATIVE_JNI_SDK_OPTIONSALEMAPPING_H
+#endif //NATIVE_JNI_SDK_OPTIONSALEMAPPING_HPP
