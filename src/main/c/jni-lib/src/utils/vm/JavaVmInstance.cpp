@@ -30,13 +30,13 @@ namespace dxfeed::jni::internal::vm {
       if (hr == JNI_EDETACHED) {
         hr = attachCurrentThread(&env);
         if (hr != JNI_OK) {
-          javaLogger->error("Can't attachCurrentThread. Exiting...");
+          fprintf(stderr, "Can't attachCurrentThread. Exiting...\n");
         }
       } else {
-        javaLogger->error("Can't getCurrenThread, error = %", hrToMsg(hr));
+        fprintf(stderr, "Can't getCurrenThread, error = %s\n", hrToMsg(hr));
       }
     }
-    javaLogger->info("getCurrenThread, env = %", env);
+    printf("getCurrenThread, env = %p\n", env);
     criticalSection_.leave();
     return env;
   }
@@ -45,7 +45,7 @@ namespace dxfeed::jni::internal::vm {
     criticalSection_.enter();
     jint hr = vm_->AttachCurrentThread((void**) env, nullptr);
     if (hr == JNI_OK) {
-      javaLogger->info("New thread is attached. tid: " /** PID */); // todo: getPid cross-platform
+      printf("New thread is attached. Env = %p, tid: \n", *env); // todo: getPid cross-platform
     } else {
       logHRESULT(*env, hr);
     }
@@ -60,7 +60,7 @@ namespace dxfeed::jni::internal::vm {
   }
 
   void JavaVmInstance::logErrMsg(JNIEnv* env, jint hr, const char* errMsg) {
-    javaLogger->error("ENV = %, hr = %, err = %", env, hrToMsg(hr), errMsg);
+    fprintf(stderr, "ENV = %p, hr = %s, err = %s", env, hrToMsg(hr), errMsg);
   }
 
   void JavaVmInstance::logHRESULT(JNIEnv* env, jint hr) {
@@ -118,10 +118,10 @@ namespace dxfeed::jni::internal::vm {
   JavaVmInstance::DetachJniThreadOnExit::DetachJniThreadOnExit(JavaVM* vmPtr) : vmCached_(vmPtr) {}
 
   JavaVmInstance::DetachJniThreadOnExit::~DetachJniThreadOnExit() {
-    javaLogger->info("Detaching thread tid: " /** PID */); // todo: getPid cross-platform
+    printf("Detaching thread tid: \n" /** PID */); // todo: getPid cross-platform
     jint hr = vmCached_->DetachCurrentThread();
     if (hr != JNI_OK) {
-      javaLogger->error("hr = %", hrToMsg(hr));
+      fprintf(stderr, "hr = %s", hrToMsg(hr));
     }
   }
 }
