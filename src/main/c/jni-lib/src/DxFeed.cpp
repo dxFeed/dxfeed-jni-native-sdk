@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-#include "api/dxfg_api.h"
 #include "dxfeed/DxEventT.hpp"
 #include "dxfeed/DxFeed.hpp"
 #include "dxfeed/DxSubscription.hpp"
@@ -10,6 +9,7 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/NativeEventsList.hpp"
 #include "dxfeed/utils/UserDataSync.hpp"
+#include "api/dxfg_api.h"
 
 namespace dxfeed {
   using namespace jni;
@@ -29,8 +29,7 @@ namespace dxfeed {
   void consumer() {
     using namespace user_data_sync;
 
-    JNIEnv* env = dxfeed::jni::internal::jniEnv;
-    dxfeed::jni::internal::javaVM->attachCurrentThread(&env);
+    JNIEnv* env = internal::javaVM->getCurrenThread();
 
     while (true) {
       std::unique_lock<std::mutex> locker(LOCK);
