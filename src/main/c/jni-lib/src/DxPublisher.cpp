@@ -47,7 +47,7 @@ namespace dxfeed {
     const char* methodSignature = "(Ljava/lang/Class;)Lcom/dxfeed/api/osub/ObservableSubscription;";
     auto methodId = safeGetMethodID(env, jDxPublisherClazz, methodName, methodSignature);
     auto jDxSubscription = env->CallObjectMethod(dxPublisher_, methodId, jEventTypeClass);
-    auto subscription = dxfeed::DxSubscription::createDxObservableSubscription(env, jDxSubscription);
+    auto subscription = dxfeed::DxSubscription::createObservable(env, jDxSubscription);
     env->DeleteLocalRef(jDxSubscription);
     env->DeleteLocalRef(jEventTypeClass);
     env->DeleteLocalRef(jDxPublisherClazz);
