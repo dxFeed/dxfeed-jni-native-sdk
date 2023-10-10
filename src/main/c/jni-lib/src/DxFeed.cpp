@@ -170,19 +170,19 @@ namespace dxfeed {
   }
 
   DxSubscription* DxFeed::createSubscription(JNIEnv* env, dxfg_event_clazz_t eventType) {
-    return new dxfeed::DxSubscription(env, dxFeed_, eventType, false);
+    return dxfeed::DxSubscription::create(env, dxFeed_, eventType);
   }
 
   DxSubscription* DxFeed::createSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses) {
-    return new dxfeed::DxSubscription(env, dxFeed_, eventClasses, false);
+    return dxfeed::DxSubscription::create(env, dxFeed_, eventClasses);
   }
 
   DxTimeSeriesSubscription* DxFeed::createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_t eventClasses) {
-    return new dxfeed::DxSubscription(env, dxFeed_, eventClasses, true);
+    return dxfeed::DxSubscription::createTimeSeries(env, dxFeed_, eventClasses);
   }
 
   DxTimeSeriesSubscription* DxFeed::createTimeSeriesSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventType) {
-    return new dxfeed::DxSubscription(env, dxFeed_, eventType, true);
+    return dxfeed::DxSubscription::createTimeSeries(env, dxFeed_, eventType);
   }
 
   void DxFeed::attachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription) {

@@ -16,11 +16,13 @@ namespace dxfeed {
     constexpr static const char JAVA_SUBSCRIPTION_CLASS_NAME[] = "com.dxfeed.api.DXFeedSubscription";
     constexpr static const char JAVA_TIME_SERIES_SUBSCRIPTION_NAME[] = "com.dxfeed.api.DXFeedTimeSeriesSubscription";
 
-    static DxObservableSubscription* createDxObservableSubscription(JNIEnv* env, jobject observableSubxcription);
-    DxSubscription(JNIEnv* env, dxfg_event_clazz_t eventType);
-    DxSubscription(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries = false);
-    DxSubscription(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries = false);
+    static DxObservableSubscription* createObservable(JNIEnv* env, jobject observableSubscription);
+    static DxSubscription* create(JNIEnv* env, dxfg_event_clazz_t eventType);
+    static DxSubscription* create(JNIEnv* env, dxfg_event_clazz_list_t* eventClasses);
+    static DxSubscription* create(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType);
+    static DxSubscription* create(JNIEnv* env, jobject connection, dxfg_event_clazz_list_t* eventClasses);
+    static DxSubscription* createTimeSeries(JNIEnv* env, jobject conn, dxfg_event_clazz_t eventType);
+    static DxSubscription* createTimeSeries(JNIEnv* env, jobject conn, dxfg_event_clazz_list_t* eventClasses);
     ~DxSubscription();
 
     DxSubscription(const DxSubscription& other) = delete;
@@ -51,9 +53,13 @@ namespace dxfeed {
   private:
     jobject subscription_;
 
-    DxSubscription(JNIEnv* env, jobject observableSubscription);
+    DxSubscription(JNIEnv* env, jobject dxSubscription);
 
     static jmethodID getMethodId(JNIEnv* env, jclass clazz, bool isTimeSeries, bool argIsArray);
+    static jobjectArray buildJavaObjectArray(JNIEnv* env, const dxfg_event_clazz_list_t* eventClasses);
+    static DxSubscription* create(JNIEnv* env, jobject connection, dxfg_event_clazz_t eventType, bool isTimeSeries);
+    static DxSubscription* create(JNIEnv* env, jobject conn, dxfg_event_clazz_list_t* eventClasses, bool isTimeSeries);
+
     constexpr static const char DX_FEED_SUBSCRIPTION_CLASS_NAME[] = "com/dxfeed/api/DXFeedSubscription";
     constexpr static const char DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME[] = "com/dxfeed/api/DxSubscriptionJni";
   };
