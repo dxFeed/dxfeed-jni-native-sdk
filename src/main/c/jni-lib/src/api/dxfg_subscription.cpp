@@ -5,13 +5,13 @@
 #include "dxfeed/utils/JNIUtils.hpp"
 
 dxfg_subscription_t* dxfg_DXFeedSubscription_new(graal_isolatethread_t* thread, dxfg_event_clazz_t eventClass) {
-  return dxfeed::r_cast<dxfg_subscription_t*>(new dxfeed::DxSubscription(thread, eventClass));
+  return dxfeed::r_cast<dxfg_subscription_t*>(dxfeed::DxSubscription::create(thread, eventClass));
 }
 
 dxfg_subscription_t* dxfg_DXFeedSubscription_new2(graal_isolatethread_t* thread,
                                                   dxfg_event_clazz_list_t* eventClasses)
 {
-  return dxfeed::r_cast<dxfg_subscription_t*>(new dxfeed::DxSubscription(thread, eventClasses));
+  return dxfeed::r_cast<dxfg_subscription_t*>(dxfeed::DxSubscription::create(thread, eventClasses));
 }
 
 int32_t dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t* subscription) {
