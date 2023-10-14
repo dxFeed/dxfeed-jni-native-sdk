@@ -127,7 +127,7 @@ namespace dxfeed {
       }
       default: {
         const char* className = getEventClassType(pEventType->clazz);
-        javaLogger->error("ClassCastException(\"%\" is not Class<? extends IndexedEvent>, unknown symbol type: ",
+        fprintf(stderr, "ClassCastException(\"%s\" is not Class<? extends IndexedEvent>, unknown symbol type: ",
                           className);
         return nullptr;
       }

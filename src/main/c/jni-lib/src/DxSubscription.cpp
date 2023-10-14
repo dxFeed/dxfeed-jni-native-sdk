@@ -25,7 +25,7 @@ namespace dxfeed {
     auto jEventTypeClass = safeFindClass(env, className);
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, "<init>", "(Ljava/lang/Class;)V");
     auto jDxSubscription = env->NewObject(jDxSubscriptionClass, methodId, jEventTypeClass);
-    javaLogger->info("create(JNIEnv*, dxfg_event_clazz_t), jDxSubscription: %", jDxSubscription);
+    javaLogger->info(env, "create(JNIEnv*, dxfg_event_clazz_t), jDxSubscription: %", jDxSubscription);
 
     auto result = new DxSubscription(env, jDxSubscription);
 
@@ -43,7 +43,7 @@ namespace dxfeed {
     auto jEventTypeClass = safeFindClass(env, className);
     auto methodId = getMethodId(env, jDxFeedClass, isTimeSeries, false);
     auto jDxSubscription = env->CallObjectMethod(connection, methodId, jEventTypeClass);
-    javaLogger->info("create(jobject, dxfg_event_clazz_t, bool), jDxSubscription: %", jDxSubscription);
+    javaLogger->info(env, "create(jobject, dxfg_event_clazz_t, bool), jDxSubscription: %", jDxSubscription);
 
     auto result = new DxSubscription(env, jDxSubscription);
 
@@ -58,7 +58,7 @@ namespace dxfeed {
     auto jDxSubscriptionClass = safeFindClass(env, DX_FEED_SUBSCRIPTION_CLASS_NAME);
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, "<init>", "([Ljava/lang/Class;)V");
     auto jDxSubscription = env->NewObject(jDxSubscriptionClass, methodId, jArray);
-    javaLogger->info("create(dxfg_event_clazz_list_t*), jDxSubscription: %", jDxSubscription);
+    javaLogger->info(env, "create(dxfg_event_clazz_list_t*), jDxSubscription: %", jDxSubscription);
 
     auto result = new DxSubscription(env, jDxSubscription);
 
@@ -75,7 +75,7 @@ namespace dxfeed {
     auto jDxFeedClass = env->GetObjectClass(conn);
     auto methodId = getMethodId(env, jDxFeedClass, isTimeSeries, true);
     auto jDxSubscription = env->CallObjectMethod(conn, methodId, jArray);
-    javaLogger->info("create(jobject, dxfg_event_clazz_list_t*, bool), jDxSubscription: %",
+    javaLogger->info(env, "create(jobject, dxfg_event_clazz_list_t*, bool), jDxSubscription: %",
                      jDxSubscription);
 
     auto result = new DxSubscription(env, jDxSubscription);

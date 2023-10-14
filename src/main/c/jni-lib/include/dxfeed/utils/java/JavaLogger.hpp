@@ -29,31 +29,30 @@ namespace dxfeed::jni {
     explicit JavaLogger(JNIEnv* env);
 
     template <class T, class ...Targs>
-    void info(const char* format, const T& value, const Targs&... Fargs) const {
+    void info(JNIEnv* env, const char* format, const T& value, const Targs&... Fargs) const {
       std::stringstream ss;
       logInfoFormatted(ss, format, value, Fargs...);
-      info(ss.str());
+      info(env, ss.str());
     }
 
     template <class T, class ...Targs>
-    void error(const char* format, const T& value, const Targs&... Fargs) const {
+    void error(JNIEnv* env, const char* format, const T& value, const Targs&... Fargs) const {
       std::stringstream ss;
       logInfoFormatted(ss, format, value, Fargs...);
-      error(ss.str());
+      error(env, ss.str());
     }
 
-    JavaLogger const& info(const std::string&) const;
-    JavaLogger const& info(const char*) const;
-    JavaLogger const& info(void const*) const;
-    JavaLogger const& error(const std::string&) const;
-    JavaLogger const& error(const char*) const;
-    JavaLogger const& error(void const*) const;
+    JavaLogger const& info(JNIEnv* env, const std::string&) const;
+    JavaLogger const& info(JNIEnv* env, const char*) const;
+    JavaLogger const& info(JNIEnv* env, void const*) const;
+    JavaLogger const& error(JNIEnv* env, const std::string&) const;
+    JavaLogger const& error(JNIEnv* env, const char*) const;
+    JavaLogger const& error(JNIEnv* env, void const*) const;
 
   private:
-    JavaLogger const& logInfo(const char* data) const;
-    JavaLogger const& logError(const char* data) const;
+    JavaLogger const& logInfo(JNIEnv* env, const char* data) const;
+    JavaLogger const& logError(JNIEnv* env, const char* data) const;
 
-    JNIEnv* env_;
     jobject logger_;
     jmethodID logInfo_;
     jmethodID logErr_;

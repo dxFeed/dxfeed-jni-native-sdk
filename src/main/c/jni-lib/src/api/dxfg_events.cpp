@@ -11,7 +11,7 @@ dxfg_symbol_t* dxfg_Symbol_new(graal_isolatethread_t* env, const char* symbol, d
 }
 
 int32_t dxfg_Symbol_release(graal_isolatethread_t* env, dxfg_symbol_t* symbol) {
-  dxfeed::DxSymbol::release(env, symbol);
+  dxfeed::DxSymbol::release(symbol);
   delete symbol;
   return JNI_OK;
 }

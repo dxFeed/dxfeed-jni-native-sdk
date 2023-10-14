@@ -6,9 +6,9 @@
 namespace dxfeed::jni {
   DxThreadException::DxThreadException(JNIEnv* env) {
     dxThreadExceptionClass_ = safeFindClass(env, "com/dxfeed/api/DxThreadException");
-    javaLogger->info("com.dxfeed.api.DxThreadException: %", dxThreadExceptionClass_);
+    fprintf(stdout, "com.dxfeed.api.DxThreadException: 0x%p\n", dxThreadExceptionClass_);
     getExceptionInfo_ = safeGetStaticMethodID(env, dxThreadExceptionClass_, "getExceptionInfo", "(Ljava/lang/Throwable;)[B");
-    javaLogger->info("byte[] DxThreadException::getExceptionInfo(Throwable t): %", getExceptionInfo_);
+    fprintf(stdout, "byte[] DxThreadException::getExceptionInfo(Throwable t): 0x%p\n", getExceptionInfo_);
   }
 
   DxThreadException::~DxThreadException() {
@@ -29,8 +29,7 @@ namespace dxfeed::jni {
     if (wasException) {
       jthrowable jThrowable = env->ExceptionOccurred();
       if (jThrowable) {
-        auto jArray = r_cast<jarray>(
-          env->CallStaticObjectMethod(dxThreadExceptionClass_, getExceptionInfo_, jThrowable));
+        auto jArray = r_cast<jarray>(env->CallStaticObjectMethod(dxThreadExceptionClass_, getExceptionInfo_, jThrowable));
 //        jsize arrayLength = env->GetArrayLength(jArray);
         auto pData = r_cast<char*>(env->GetPrimitiveArrayCritical(jArray, 0));
 
