@@ -7,7 +7,7 @@
 namespace dxfeed {
   using namespace jni;
 
-  void DxSymbol::release(JNIEnv * env, dxfg_symbol_t* pSymbol) {
+  void DxSymbol::release(dxfg_symbol_t* pSymbol) {
     if (!pSymbol) {
       return;
     }
@@ -28,16 +28,16 @@ namespace dxfeed {
       }
       case dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION: {
         auto timeSeriesSymbol = r_cast<dxfg_time_series_subscription_symbol_t*>(pSymbol);
-        release(env, timeSeriesSymbol->symbol);
+        release(timeSeriesSymbol->symbol);
       }
       case dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION: {
         auto indexedEventSymbol = r_cast<dxfg_indexed_event_subscription_symbol_t*>(pSymbol);
         auto pSource = r_cast<DxIndexedEventSource*>(indexedEventSymbol->source);
         delete pSource;
-        release(env, indexedEventSymbol->symbol);
+        release(indexedEventSymbol->symbol);
       }
       default: {
-        javaLogger->error("Unknown symbol type: ", symbolType);
+        fprintf(stderr, "Unknown symbol type: %d", symbolType);
       }
     }
   }
@@ -46,7 +46,7 @@ namespace dxfeed {
     bool isTimeSeries = (symbolType == dxfg_symbol_type_t::TIME_SERIES_SUBSCRIPTION);
     bool isIndexedEvent = (symbolType == dxfg_symbol_type_t::INDEXED_EVENT_SUBSCRIPTION);
     if (isTimeSeries || isIndexedEvent) {
-      javaLogger->error("Unknown symbol type: %", symbolType);
+      fprintf(stderr, "Unknown symbol type: %d", symbolType);
       return nullptr;
     }
     switch (symbolType) {
@@ -68,7 +68,7 @@ namespace dxfeed {
         return dxfeed::r_cast<dxfg_symbol_t*>(result);
       }
       default: {
-        javaLogger->error("Unknown symbol type: ", symbolType);
+        fprintf(stderr, "Unknown symbol type: %d ", symbolType);
         return nullptr;
       }
     }
@@ -155,7 +155,7 @@ namespace dxfeed {
     auto indexedEventSymbolClass = safeFindClass(env, INDEXED_EVENT_SYMBOL_JNI_CLASS_NAME);
 
     const std::string& pSymbolName = dxfeed::jni::internal::javaLangClass->getName(env, pSymbol);
-    javaLogger->error("Processing symbol type: %", pSymbolName);
+    javaLogger->info(env, "Processing symbol type: %", pSymbolName);
 
     dxfg_symbol_t* result = nullptr;
     if (env->IsInstanceOf(pSymbol, stringSymbolClass)) {
@@ -169,7 +169,7 @@ namespace dxfeed {
     } else if (env->IsInstanceOf(pSymbol, indexedEventSymbolClass)) {
       result = r_cast <dxfg_symbol_t*>(fromIndexedEventSubscriptionSymbol(env, pSymbol, indexedEventSymbolClass));
     } else {
-      javaLogger->error("Unknown symbol type: %", pSymbolName);
+      fprintf(stderr,  "Unknown symbol type: %s", pSymbolName.c_str());
     }
     env->DeleteLocalRef(stringSymbolClass);
     env->DeleteLocalRef(candleSymbolClass);
