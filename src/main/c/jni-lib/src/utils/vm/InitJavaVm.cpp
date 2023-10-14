@@ -58,7 +58,7 @@ namespace internal {
     const auto jDxFeedJniClazz = safeFindClass(env, "com/dxfeed/api/DxFeedJni");
     auto loadMethodId = safeGetStaticMethodID(env, jDxFeedJniClazz, "loadLibrary", "(Ljava/lang/String;)V");
     auto pStr = env->NewStringUTF(libPath);
-    env->CallStaticVoidMethod(jDxFeedJniClazz, loadMethodId, pStr);
+    checkedCallStaticVoidMethod(env, jDxFeedJniClazz, loadMethodId, pStr);
     env->DeleteLocalRef(pStr);
     env->DeleteLocalRef(jDxFeedJniClazz);
   }

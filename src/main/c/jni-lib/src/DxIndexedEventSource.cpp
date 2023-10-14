@@ -33,7 +33,7 @@ namespace dxfeed {
     name_ = name;
     auto jName = env->NewStringUTF(name);
     auto data = env->NewLongArray(2);
-    auto jIndexedEventSource = env->CallStaticObjectMethod(jDxClass, methodId, jName, data);
+    auto jIndexedEventSource = checkedCallStaticObjectMethod(env, jDxClass, methodId, jName, data);
     indexedEventSource_ = env->NewGlobalRef(jIndexedEventSource);
     env->DeleteLocalRef(jName);
 
@@ -51,7 +51,7 @@ namespace dxfeed {
     const char* methodSignature = "(I[J)Lcom/dxfeed/event/market/OrderSource;";
     auto methodId = safeGetStaticMethodID(env, jDxClass, methodName, methodSignature);
     auto data = env->NewLongArray(2);
-    auto jIndexedEventSource = env->CallStaticObjectMethod(jDxClass, methodId, sourceId, data);
+    auto jIndexedEventSource = checkedCallStaticObjectMethod(env, jDxClass, methodId, sourceId, data);
     indexedEventSource_ = env->NewGlobalRef(jIndexedEventSource);
     name_ = getName(env);
     auto jLongData = r_cast<jlong*>(env->GetPrimitiveArrayCritical(data, 0));

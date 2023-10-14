@@ -31,6 +31,12 @@ namespace dxfeed::jni {
       jthrowable jThrowable = env->ExceptionOccurred();
       if (jThrowable) {
         auto jArray = r_cast<jarray>(env->CallStaticObjectMethod(dxThreadExceptionClass_, getExceptionInfo_, jThrowable));
+        jthrowable pJthrowable = env->ExceptionOccurred();
+        if (pJthrowable) {
+          fprintf(stderr, "THROWABLE in getAndClearThreadException\n");
+          env->ExceptionDescribe();
+          env->ExceptionClear();
+        }
 //        jsize arrayLength = env->GetArrayLength(jArray);
         auto pData = r_cast<char*>(env->GetPrimitiveArrayCritical(jArray, 0));
 

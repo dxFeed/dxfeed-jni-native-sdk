@@ -21,7 +21,7 @@ namespace dxfeed::jni {
     auto id = jni::safeGetStaticMethodID(env, jDevexLoggingClazz, "getLogging", "(Ljava/lang/String;)"
                                                                     "Lcom/devexperts/logging/Logging;");
     auto pJstring = env->NewStringUTF("NativeLogger");
-    logger_ = env->NewGlobalRef(env->CallStaticObjectMethod(jDevexLoggingClazz, id, pJstring));
+    logger_ = env->NewGlobalRef(checkedCallStaticObjectMethod(env, jDevexLoggingClazz, id, pJstring));
     env->DeleteLocalRef(pJstring);
     env->DeleteLocalRef(jDevexLoggingClazz);
 
@@ -59,14 +59,14 @@ namespace dxfeed::jni {
 
   JavaLogger const& JavaLogger::logInfo(JNIEnv* env, const char* data) const {
     auto jString = env->NewStringUTF(data);
-    env->CallVoidMethod(logger_, logInfo_, jString);
+    checkedCallVoidMethod(env, logger_, logInfo_, jString);
     env->DeleteLocalRef(jString);
     return *this;
   }
 
   JavaLogger const& JavaLogger::logError(JNIEnv* env, const char* data) const {
     auto jString = env->NewStringUTF(data);
-    env->CallVoidMethod(logger_, logErr_, jString);
+    checkedCallVoidMethod(env, logger_, logErr_, jString);
     env->DeleteLocalRef(jString);
     return *this;
   }

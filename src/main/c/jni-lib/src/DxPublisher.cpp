@@ -22,7 +22,7 @@ namespace dxfeed {
     const char* methodName = "getInstance";
     const char* methodSignature = "()Lcom/dxfeed/api/DXPublisher;";
     auto methodId = safeGetStaticMethodID(env, jDxPublisherClazz, methodName, methodSignature);
-    auto jDxFeedObject = env->CallStaticObjectMethod(jDxPublisherClazz, methodId);
+    auto jDxFeedObject = checkedCallStaticObjectMethod(env, jDxPublisherClazz, methodId);
     env->DeleteLocalRef(jDxPublisherClazz);
     return dxfeed::r_cast<dxfg_publisher_t*>(new DxPublisher(env, jDxFeedObject));
   }
@@ -34,7 +34,7 @@ namespace dxfeed {
     auto methodId = safeGetMethodID(env, jDxPublisherClazz, methodName, methodSignature);
     NativeEventsList list {env};
     auto nativeEventsList = list.fromNativeEventsList(events);;
-    env->CallVoidMethod(dxPublisher_, methodId, nativeEventsList);
+    checkedCallVoidMethod(env, dxPublisher_, methodId, nativeEventsList);
     env->DeleteLocalRef(jDxPublisherClazz);
     return JNI_OK;
   }
@@ -46,7 +46,7 @@ namespace dxfeed {
     const char* methodName = "getSubscription";
     const char* methodSignature = "(Ljava/lang/Class;)Lcom/dxfeed/api/osub/ObservableSubscription;";
     auto methodId = safeGetMethodID(env, jDxPublisherClazz, methodName, methodSignature);
-    auto jDxSubscription = env->CallObjectMethod(dxPublisher_, methodId, jEventTypeClass);
+    auto jDxSubscription = checkedCallObjectMethod(env, dxPublisher_, methodId, jEventTypeClass);
     auto subscription = dxfeed::DxSubscription::createObservable(env, jDxSubscription);
     env->DeleteLocalRef(jDxSubscription);
     env->DeleteLocalRef(jEventTypeClass);
