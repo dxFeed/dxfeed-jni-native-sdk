@@ -48,10 +48,10 @@ namespace internal {
     auto vmVersion = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.version"));
     auto vmInfo = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.info"));
 
-    javaLogger->info("JAVA_HOME info:");
-    javaLogger->info("\t % version \"%\" %", *vendor, *version, *versionDate);
-    javaLogger->info("\t %, (build %)", *runtimeName, *runtimeVersion);
-    javaLogger->info("\t % %, (build %, %)", *vmName, *vmVendor, *vmVersion, *vmInfo);
+    javaLogger->info(env, "JAVA_HOME info:");
+    javaLogger->info(env, "\t % version \"%\" %", *vendor, *version, *versionDate);
+    javaLogger->info(env, "\t %, (build %)", *runtimeName, *runtimeVersion);
+    javaLogger->info(env, "\t % %, (build %, %)", *vmName, *vmVendor, *vmVersion, *vmInfo);
   }
 
   void loadLibrary(JNIEnv* env, const char* libPath) {
@@ -64,16 +64,16 @@ namespace internal {
   }
 
   void loadJNILibrary(JNIEnv* env) {
+    dxThreadException = new DxThreadException(env);
     javaLangClass = new JavaLangClass(env);
     javaLangSystem = new JavaLangSystem(env);
     loadLibrary(env, dllFilePath);
-    javaLogger->info("Loaded DxFeed lib: %", dllFilePath);
+    javaLogger->info(env, "Loaded DxFeed lib: %", dllFilePath);
     auto property = std::make_unique<const char*>(
       javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));
-    javaLogger->info(" com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
+    javaLogger->info(env, " com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
     dumpJavaInfo(env);
     initDxJni(env);
-    dxThreadException = new DxThreadException(env);
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {

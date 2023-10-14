@@ -131,7 +131,7 @@ namespace dxfeed::jni {
         return r_cast<dxfg_event_type_t*>(OptionSaleMapping::toOptionSale(*this));
       }
       default: {
-        javaLogger->info("NativeEventReader::toEvent = ", nullptr);
+        fprintf(stderr, "NativeEventReader::toEvent = nullptr");
         return nullptr;
       }
     }

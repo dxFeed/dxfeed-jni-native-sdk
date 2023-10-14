@@ -22,16 +22,16 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
   JNIEnv* env;
   jint flag = vm->GetEnv((void**) &env, JNI_VERSION_1_8);
   if (flag == JNI_ERR) {
-    dxfeed::jni::javaLogger->error("Error getting JNIEnv. Exiting...");
+    fprintf(stderr,  "Error getting JNIEnv. Exiting...");
     return flag;
   }
-  dxfeed::jni::javaLogger->info("JNI_OnLoad, env = %, res = %", env, flag);
+  fprintf(stdout, "JNI_OnLoad, env = %, res = %\n", env, flag);
   return JNI_VERSION_1_8;
 }
 
 JNIEXPORT
 void JNI_OnUnload(JavaVM* vm, void* reserved) {
-  dxfeed::jni::javaLogger->info("JNI_OnUnload");
+  fprintf(stdout, "JNI_OnUnload\n");
 }
 
 JNIEXPORT

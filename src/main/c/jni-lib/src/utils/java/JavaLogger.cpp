@@ -16,60 +16,58 @@ namespace dxfeed::jni {
     return hex;
   }
 
-  JavaLogger::JavaLogger(JNIEnv* env) :
-    env_(env)
-  {
+  JavaLogger::JavaLogger(JNIEnv* env) {
     auto jDevexLoggingClazz = safeFindClass(env, "com/devexperts/logging/Logging");
     auto id = jni::safeGetStaticMethodID(env, jDevexLoggingClazz, "getLogging", "(Ljava/lang/String;)"
                                                                     "Lcom/devexperts/logging/Logging;");
     auto pJstring = env->NewStringUTF("NativeLogger");
-    logger_ = env->CallStaticObjectMethod(jDevexLoggingClazz, id, pJstring);
+    logger_ = env->NewGlobalRef(env->CallStaticObjectMethod(jDevexLoggingClazz, id, pJstring));
     env->DeleteLocalRef(pJstring);
     env->DeleteLocalRef(jDevexLoggingClazz);
 
     auto serrClazz = env->GetObjectClass(logger_);
-    logInfo_ = jni::safeGetMethodID(env_, serrClazz, "info", "(Ljava/lang/String;)V");
-    logErr_ = jni::safeGetMethodID(env_, serrClazz, "error", "(Ljava/lang/String;)V");
+    logInfo_ = jni::safeGetMethodID(env, serrClazz, "info", "(Ljava/lang/String;)V");
+    logErr_ = jni::safeGetMethodID(env, serrClazz, "error", "(Ljava/lang/String;)V");
     env->DeleteLocalRef(serrClazz);
   }
 
-  JavaLogger const& JavaLogger::info(const std::string& str) const {
-    return logInfo(str.c_str());
+  JavaLogger const& JavaLogger::info(JNIEnv* env, const std::string& str) const {
+    return logInfo(env, str.c_str());
   }
 
-  JavaLogger const& JavaLogger::info(const char* str) const {
-    return logInfo(str);
+  JavaLogger const& JavaLogger::info(JNIEnv* env, const char* str) const {
+    return logInfo(env, str);
   }
 
-  JavaLogger const& JavaLogger::info(void const* ptr) const {
+  JavaLogger const& JavaLogger::info(JNIEnv* env, void const* ptr) const {
     auto hexStr = toHex64(r_cast<uint64_t>(ptr));
-    return logInfo(hexStr.c_str());
+    return logInfo(env, hexStr.c_str());
   }
 
-  JavaLogger const& JavaLogger::error(const std::string& str) const {
-    return logError(str.c_str());
+  JavaLogger const& JavaLogger::error(JNIEnv* env, const std::string& str) const {
+    return logError(env, str.c_str());
   }
 
-  JavaLogger const& JavaLogger::error(const char* str) const {
-    return logError(str);
+  JavaLogger const& JavaLogger::error(JNIEnv* env, const char* str) const {
+    return logError(env, str);
   }
 
-  JavaLogger const& JavaLogger::error(void const* ptr) const {
+  JavaLogger const& JavaLogger::error(JNIEnv* env, void const* ptr) const {
     auto hexStr = toHex64(r_cast<uint64_t>(ptr));
-    return logError(hexStr.c_str());
+    return logError(env, hexStr.c_str());
   }
 
-  JavaLogger const& JavaLogger::logInfo(const char* data) const {
-    auto jString = env_->NewStringUTF(data);
-    env_->CallVoidMethod(logger_, logInfo_, jString);
-    env_->DeleteLocalRef(jString);
+  JavaLogger const& JavaLogger::logInfo(JNIEnv* env, const char* data) const {
+    auto jString = env->NewStringUTF(data);
+    env->CallVoidMethod(logger_, logInfo_, jString);
+    env->DeleteLocalRef(jString);
     return *this;
   }
 
-  JavaLogger const& JavaLogger::logError(const char* data) const {
-    auto jString = env_->NewStringUTF(data);
-    env_->CallVoidMethod(logger_, logErr_, jString);
-    env_->DeleteLocalRef(jString);
+  JavaLogger const& JavaLogger::logError(JNIEnv* env, const char* data) const {
+    auto jString = env->NewStringUTF(data);
+    env->CallVoidMethod(logger_, logErr_, jString);
+    env->DeleteLocalRef(jString);
     return *this;
   }
 }
