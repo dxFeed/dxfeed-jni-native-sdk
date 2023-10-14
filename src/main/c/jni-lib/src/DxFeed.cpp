@@ -26,7 +26,7 @@ namespace dxfeed {
     const char* methodName = "getInstance";
     const char* methodSignature = "()Lcom/dxfeed/api/DXFeed;";
     auto methodId = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
-    auto jDxFeedObject = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId);
+    auto jDxFeedObject = checkedCallStaticObjectMethod(env, jDxFeedJniClazz, methodId);
     env->DeleteLocalRef(jDxFeedJniClazz);
     return dxfeed::r_cast<dxfg_feed_t*>(new DxFeed(env, jDxFeedObject));
   }
@@ -47,7 +47,8 @@ namespace dxfeed {
     const char* className = getEventClassType(eventTypeClass);
     auto jEventTypeClazz = safeFindClass(env, className);
     auto jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
-    auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClazz, jSymbol);
+    auto jNativeEventsList = checkedCallStaticObjectMethod(env, jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClazz,
+                                                           jSymbol);
     dxfg_event_type_t* pEventType = nullptr;
     if (jNativeEventsList) {
       NativeEventsList list {env};
@@ -96,7 +97,8 @@ namespace dxfeed {
       env->DeleteLocalRef(jSymbolName);
     }
 
-    auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jClassArray, jStringArray);
+    auto jNativeEventsList = checkedCallStaticObjectMethod(env, jDxFeedJniClazz, methodId, dxFeed_, jClassArray,
+                                                           jStringArray);
     if (jNativeEventsList) {
       NativeEventsList data{env};
       data.toNativeEventsList(jNativeEventsList, &pList);
@@ -123,7 +125,7 @@ namespace dxfeed {
     auto jEventTypeClass = safeFindClass(env, className);
     auto jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
     auto jSource = env->NewStringUTF(source);
-    auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
+    auto jNativeEventsList = checkedCallStaticObjectMethod(env, jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
                                                            jSymbol, jSource);
 
     auto* resultEventList = new dxfg_event_type_list();
@@ -153,7 +155,7 @@ namespace dxfeed {
     const char* className = getEventClassType(clazz);
     auto jEventTypeClass = safeFindClass(env, className);
     auto jSymbol = DxSymbol::toJavaObject(env, pSymbolType);
-    auto jNativeEventsList = env->CallStaticObjectMethod(jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
+    auto jNativeEventsList = checkedCallStaticObjectMethod(env, jDxFeedJniClazz, methodId, dxFeed_, jEventTypeClass,
                                                            jSymbol, fromTime, toTime);
 
     auto* resultEventList = new dxfg_event_type_list();
@@ -190,7 +192,7 @@ namespace dxfeed {
     const char* methodName = "attachSubscription";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
     auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
-    env->CallVoidMethod(dxFeed_, methodId, pSubscription);
+    checkedCallVoidMethod(env, dxFeed_, methodId, pSubscription);
     env->DeleteLocalRef(jDxFeedClass);
   }
 
@@ -199,7 +201,7 @@ namespace dxfeed {
     const char* methodName = "detachSubscription";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
     auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
-    env->CallVoidMethod(dxFeed_, methodId, pSubscription);
+    checkedCallVoidMethod(env, dxFeed_, methodId, pSubscription);
     env->DeleteLocalRef(jDxFeedClass);
   }
 
@@ -208,7 +210,7 @@ namespace dxfeed {
     const char* methodName = "detachSubscriptionAndClear";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
     auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
-    env->CallVoidMethod(dxFeed_, methodId, pSubscription);
+    checkedCallVoidMethod(env, dxFeed_, methodId, pSubscription);
     env->DeleteLocalRef(jDxFeedClass);
   }
 
