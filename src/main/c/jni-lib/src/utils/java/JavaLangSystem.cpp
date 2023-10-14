@@ -6,15 +6,15 @@
 namespace dxfeed::jni {
   JavaLangSystem::JavaLangSystem(JNIEnv* env) {
     auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
-    javaLogger->info("java.lang.System: %", javaLangSystemClazz);
+    javaLogger->info(env, "java.lang.System: %", javaLangSystemClazz);
     loadMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "load", "(Ljava/lang/String;)V");
-    javaLogger->info("void System::load(String path): %", loadMethodId);
+    javaLogger->info(env, "void System::load(String path): %", loadMethodId);
     getPropMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "getProperty",
                                                            "(Ljava/lang/String;)Ljava/lang/String;");
-    javaLogger->info("void System::getProperty(String key): %", getPropMethodId);
+    javaLogger->info(env, "void System::getProperty(String key): %", getPropMethodId);
     setPropMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "setProperty",
                                                  "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
-    javaLogger->info("String System::setProperty(String key, String value): %", setPropMethodId);
+    javaLogger->info(env, "String System::setProperty(String key, String value): %", setPropMethodId);
     env->DeleteLocalRef(javaLangSystemClazz);
   }
 
