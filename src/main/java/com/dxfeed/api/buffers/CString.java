@@ -28,7 +28,7 @@ public class CString {
     return cStringSize;
   }
 
-  private static byte[] toCString(String value) {
+  public static byte[] toCString(String value) {
     byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
     byte[] result = new byte[bytes.length + 1];
     result[bytes.length] = 0;

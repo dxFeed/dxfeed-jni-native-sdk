@@ -28,7 +28,9 @@ set(SOURCE_FILES
     src/DxPublisher.cpp
     src/DxSubscription.cpp
     src/DxSymbol.cpp
+    src/utils/DxThreadException.cpp
     src/api/dxfg_api.cpp
+    src/api/dxfg_catch_exception.cpp
     src/api/dxfg_dxfeed.cpp
     src/api/dxfg_endpoint.cpp
     src/api/dxfg_events.cpp
