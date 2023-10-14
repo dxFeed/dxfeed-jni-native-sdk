@@ -42,7 +42,7 @@ namespace dxfeed {
     const char* className = getEventClassType(eventType);
     auto jEventTypeClass = safeFindClass(env, className);
     auto methodId = getMethodId(env, jDxFeedClass, isTimeSeries, false);
-    auto jDxSubscription = env->CallObjectMethod(connection, methodId, jEventTypeClass);
+    auto jDxSubscription = checkedCallObjectMethod(env, connection, methodId, jEventTypeClass);
     javaLogger->info(env, "create(jobject, dxfg_event_clazz_t, bool), jDxSubscription: %", jDxSubscription);
 
     auto result = new DxSubscription(env, jDxSubscription);
@@ -74,7 +74,7 @@ namespace dxfeed {
     auto jArray = buildJavaObjectArray(env, eventClasses);
     auto jDxFeedClass = env->GetObjectClass(conn);
     auto methodId = getMethodId(env, jDxFeedClass, isTimeSeries, true);
-    auto jDxSubscription = env->CallObjectMethod(conn, methodId, jArray);
+    auto jDxSubscription = checkedCallObjectMethod(env, conn, methodId, jArray);
     javaLogger->info(env, "create(jobject, dxfg_event_clazz_list_t*, bool), jDxSubscription: %",
                      jDxSubscription);
 
@@ -112,7 +112,7 @@ namespace dxfeed {
     const char* methodName = "addEventListener";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;J)V";
     auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
-    env->CallStaticVoidMethod(jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);
+    checkedCallStaticVoidMethod(env, jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);
     env->DeleteLocalRef(jDxSubscriptionJniClass);
   }
 
@@ -121,7 +121,7 @@ namespace dxfeed {
     const char* methodName = "removeEventListener";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;J)V";
     auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
-    env->CallStaticVoidMethod(jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);
+    checkedCallStaticVoidMethod(env, jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);
     env->DeleteLocalRef(jDxSubscriptionJniClass);
   }
 
@@ -132,7 +132,7 @@ namespace dxfeed {
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
     auto jSymbol = DxSymbol::toJavaObject(env, pSymbol);
     if (jSymbol) {
-      env->CallVoidMethod(subscription_, methodId, jSymbol);
+      checkedCallVoidMethod(env, subscription_, methodId, jSymbol);
     }
     env->DeleteLocalRef(jSymbol);
     env->DeleteLocalRef(jDxSubscriptionClass);
@@ -153,7 +153,7 @@ namespace dxfeed {
     const char* methodName = "addSymbols";
     const char* methodSignature = "([Ljava/lang/Object;)V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName,methodSignature);
-    env->CallVoidMethod(subscription_, methodId, jSymbolsArray);
+    checkedCallVoidMethod(env, subscription_, methodId, jSymbolsArray);
     env->DeleteLocalRef(jObjectArrayClass);
     env->DeleteLocalRef(jSymbolsArray);
     env->DeleteLocalRef(jDxSubscriptionClass);
@@ -161,17 +161,8 @@ namespace dxfeed {
   }
 
   int32_t DxSubscription::setSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) {
-    auto jDxSubscriptionClass = env->GetObjectClass(subscription_);
-    const char* methodName = "setSymbols";
-    const char* methodSignature = "([Ljava/lang/Object;)V";
-    auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    auto jSymbol = DxSymbol::toJavaObject(env, pSymbol);
-    if (jSymbol) {
-      env->CallVoidMethod(subscription_, methodId, jSymbol);
-    }
-    env->DeleteLocalRef(jSymbol);
-    env->DeleteLocalRef(jDxSubscriptionClass);
-    return jSymbol ? JNI_OK : JNI_ERR;
+    dxfg_symbol_list l {1, &pSymbol};
+    return setSymbols(env, &l);
   }
 
   int32_t DxSubscription::setSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
@@ -188,7 +179,7 @@ namespace dxfeed {
     const char* methodName = "setSymbols";
     const char* methodSignature = "([Ljava/lang/Object;)V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId, jSymbolsArray);
+    checkedCallVoidMethod(env, subscription_, methodId, jSymbolsArray);
     env->DeleteLocalRef(jObjectArrayClass);
     env->DeleteLocalRef(jSymbolsArray);
     env->DeleteLocalRef(jDxSubscriptionClass);
@@ -200,7 +191,7 @@ namespace dxfeed {
     const char* methodName = "close";
     const char* methodSignature = "()V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId);
+    checkedCallVoidMethod(env, subscription_, methodId);
     env->DeleteLocalRef(jDxSubscriptionClass);
   }
 
@@ -209,22 +200,14 @@ namespace dxfeed {
     const char* methodName = "setTime";
     const char* methodSignature = "(J)V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId, time);
+    checkedCallVoidMethod(env, subscription_, methodId, time);
     env->DeleteLocalRef(jDxSubscriptionClass);
     return JNI_OK;
   }
 
   int32_t DxSubscription::removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol) {
-    auto jDxSubscriptionClass = env->GetObjectClass(subscription_);
-    const char* methodName = "removeSymbols";
-    const char* methodSignature = "([Ljava/lang/Object;)V";
-    auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    auto jSymbol = DxSymbol::toJavaObject(env, pSymbol);
-    if (jSymbol) {
-      env->CallVoidMethod(subscription_, methodId, jSymbol);
-    }
-    env->DeleteLocalRef(jSymbol);
-    return jSymbol ? JNI_OK : JNI_ERR;
+    dxfg_symbol_list l {1, &pSymbol};
+    return removeSymbols(env, &l);
   }
 
   int32_t DxSubscription::removeSymbols(JNIEnv* env, dxfg_symbol_list* symbols) {
@@ -241,7 +224,7 @@ namespace dxfeed {
     const char* methodName = "removeSymbols";
     const char* methodSignature = "([Ljava/lang/Object;)V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId, jSymbolsArray);
+    checkedCallVoidMethod(env, subscription_, methodId, jSymbolsArray);
     env->DeleteLocalRef(jObjectArrayClass);
     env->DeleteLocalRef(jSymbolsArray);
     env->DeleteLocalRef(jDxSubscriptionClass);
@@ -253,7 +236,7 @@ namespace dxfeed {
     const char* methodName = "clear";
     const char* methodSignature = "()V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId);
+    checkedCallVoidMethod(env, subscription_, methodId);
     env->DeleteLocalRef(jDxSubscriptionClass);
     return JNI_OK;
   }
@@ -263,7 +246,7 @@ namespace dxfeed {
     const char* methodName = "attach";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeed;)V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId, pFeed->getJavaObject());
+    checkedCallVoidMethod(env, subscription_, methodId, pFeed->getJavaObject());
     env->DeleteLocalRef(jDxSubscriptionClass);
     return JNI_OK;
   }
@@ -273,7 +256,7 @@ namespace dxfeed {
     const char* methodName = "detach";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeed;)V";
     auto methodId = safeGetMethodID(env, jDxSubscriptionClass, methodName, methodSignature);
-    env->CallVoidMethod(subscription_, methodId, pFeed->getJavaObject());
+    checkedCallVoidMethod(env, subscription_, methodId, pFeed->getJavaObject());
     env->DeleteLocalRef(jDxSubscriptionClass);
     return JNI_OK;
   }
@@ -294,7 +277,8 @@ namespace dxfeed {
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)[Z";
     auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
 
-    auto jByteArray = r_cast<jbyteArray>(env->CallStaticObjectMethod(jDxSubscriptionJniClass, methodId, subscription_));
+    auto jByteArray = r_cast<jbyteArray>(
+      checkedCallStaticObjectMethod(env, jDxSubscriptionJniClass, methodId, subscription_));
     jint size = env->GetArrayLength(jByteArray);
     auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(jByteArray, 0));
 

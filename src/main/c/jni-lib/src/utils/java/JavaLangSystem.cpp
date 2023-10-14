@@ -21,7 +21,7 @@ namespace dxfeed::jni {
   const char* JavaLangSystem::getProperty(JNIEnv* env, const char* key) const {
     auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     auto jKey = env->NewStringUTF(key);
-    auto jValue = r_cast<jstring>(env->CallStaticObjectMethod(javaLangSystemClazz, getPropMethodId, jKey));
+    auto jValue = r_cast<jstring>(checkedCallStaticObjectMethod(env, javaLangSystemClazz, getPropMethodId, jKey));
     char* result = new char[1] { 0 };
     if (jValue) {
       auto tmp = env->GetStringUTFChars(jValue, nullptr);
@@ -41,7 +41,7 @@ namespace dxfeed::jni {
     auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     auto jKey = env->NewStringUTF(key);
     auto jValue = env->NewStringUTF(value);
-    env->CallStaticObjectMethod(javaLangSystemClazz, setPropMethodId, jKey, jValue);
+    checkedCallStaticObjectMethod(env, javaLangSystemClazz, setPropMethodId, jKey, jValue);
     env->DeleteLocalRef(jValue);
     env->DeleteLocalRef(jKey);
     env->DeleteLocalRef(javaLangSystemClazz);
