@@ -21,6 +21,7 @@ namespace internal {
   JNIEnv* jniEnv = nullptr;
   JVMInstance* javaVM = nullptr;
   JavaLangSystem* javaLangSystem = nullptr;
+  DxThreadException* dxThreadException = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
 
   void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
@@ -72,6 +73,7 @@ namespace internal {
     javaLogger->info(" com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
     dumpJavaInfo(env);
     initDxJni(env);
+    dxThreadException = new DxThreadException(env);
   }
 
   std::string buildClassPath(const fs::path& runtimePath) {

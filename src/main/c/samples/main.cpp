@@ -5,7 +5,9 @@
 #include <thread>
 
 #include "api/dxfg_api.h"
+#include "api/dxfg_catch_exception.h"
 #include "dxfeed/utils/JNICommon.hpp"
+#include "dxfeed/utils/JNIUtils.hpp"
 
 void printEvent(const dxfg_event_type_t* pEvent) {
   if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
@@ -31,6 +33,25 @@ void c_print(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *
   for (int i = 0; i < events->size; ++i) {
     printEvent(events->elements[i]);
   }
+}
+
+void exceptionSample(graal_isolatethread_t *thread) {
+  const char* className = "java/lang/NoClassDefFoundError";
+  auto exClass = thread->FindClass(className);
+  jint hr = thread->ThrowNew(exClass, "MyException");
+
+  dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
+  dxfg_print_exception(thread, exception);
+  dxfg_Exception_release(thread, exception);
+
+  auto* pThreadException = dxfeed::jni::internal::dxThreadException;
+  jclass pJclass = pThreadException->getJniClass();
+  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(thread, pJclass, "exceptionSample", "()V");
+  thread->CallStaticObjectMethod(pJclass, methodId);
+
+  exception = dxfg_get_and_clear_thread_exception_t(thread);
+  dxfg_print_exception(thread, exception);
+  dxfg_Exception_release(thread, exception);
 }
 
 void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
@@ -150,6 +171,7 @@ int main(int argc, char** argv) {
   int hr = graal_create_isolate(&vmOptions, &isolate, &thread);
   if (hr == JNI_OK) {
 //    dxEndpointSubscription(thread);
-    tapeFile(thread);
+//    tapeFile(thread);
+    exceptionSample(thread);
   }
 }

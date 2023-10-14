@@ -7,6 +7,7 @@
 #include <cstring>
 #include <memory>
 
+#include "dxfeed/utils/DxThreadException.hpp"
 #include "dxfeed/utils/java/DxJni.hpp"
 #include "dxfeed/utils/java/JavaLangClass.hpp"
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
@@ -30,6 +31,7 @@ namespace dxfeed::jni {
     extern JNIEnv* jniEnv;
     extern JVMInstance* javaVM;
     extern JavaLangSystem* javaLangSystem;
+    extern DxThreadException* dxThreadException;
     extern const JavaLangClass* javaLangClass;
 
     typedef jint(JNICALL* CreateJavaVM_t)(JavaVM** pvm, void** env, void* args);
