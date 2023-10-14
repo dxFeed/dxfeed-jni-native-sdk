@@ -18,6 +18,62 @@ namespace dxfeed {
     jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
     jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
     jfieldID safeGetFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature);
+
+    template <class ... Args>
+    inline void checkedCallStaticVoidMethod(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
+      env->CallStaticVoidMethod(clazz, methodId, args...);
+      auto pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+      }
+    }
+
+    template <class ... Args>
+    inline jobject checkedCallStaticObjectMethod(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
+      auto result = env->CallStaticObjectMethod(clazz, methodId, args...);
+      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return nullptr;
+      }
+      return result;
+    }
+
+    template <class ... Args>
+    inline void checkedCallVoidMethod(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
+      env->CallVoidMethod(jObject, methodId, args...);
+      dxfg_exception_t* pException =dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+      }
+    }
+
+    template <class ... Args>
+    inline jobject checkedCallObjectMethod(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
+      auto result = env->CallObjectMethod(jObject, methodId, args...);
+      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return nullptr;
+      }
+      return result;
+    }
+
+    template <class ... Args>
+    inline jlong checkedCallStaticLongMethod(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
+      auto result = env->CallStaticLongMethod(clazz, methodId, args...);
+      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return 0;
+      }
+      return result;
+    }
   }
 } // namespace dxfeed::jni
 

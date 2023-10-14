@@ -23,7 +23,7 @@ namespace dxfeed {
     const char* methodName = "build";
     const char* methodSignature = "()Lcom/dxfeed/api/DXEndpoint;";
     auto methodId = safeGetMethodID(env, jDxEndpointBuilderClass, methodName, methodSignature);
-    auto jDxEndpoint = env->CallObjectMethod(dxEndpointBuilder_, methodId);
+    auto jDxEndpoint = checkedCallObjectMethod(env, dxEndpointBuilder_, methodId);
     javaLogger->info(env, "DxEndpoint OBJECT: %", jDxEndpoint);
     auto* pEndpoint = new DxEndpoint(env, jDxEndpoint);
     env->DeleteLocalRef(jDxEndpoint);
@@ -36,7 +36,7 @@ namespace dxfeed {
     const char* methodName = "buildWithRole";
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint$Builder;I)Lcom/dxfeed/api/DXEndpoint$Builder;";
     auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
-    env->CallStaticObjectMethod(jDxEndpointJniClass, methodId, dxEndpointBuilder_, role);
+    checkedCallStaticObjectMethod(env, jDxEndpointJniClass, methodId, dxEndpointBuilder_, role);
     env->DeleteLocalRef(jDxEndpointJniClass);
   }
 
@@ -46,7 +46,7 @@ namespace dxfeed {
     const char* methodSignature = "(Ljava/lang/String;)Lcom/dxfeed/api/DXEndpoint$Builder;";
     auto methodId = safeGetMethodID(env, jDxEndpointBuilderClass, methodName, methodSignature);
     auto jName = env->NewStringUTF(name);
-    env->CallObjectMethod(dxEndpointBuilder_, methodId, jName);
+    checkedCallObjectMethod(env, dxEndpointBuilder_, methodId, jName);
     env->DeleteLocalRef(jName);
     env->DeleteLocalRef(jDxEndpointBuilderClass);
   }
@@ -58,7 +58,7 @@ namespace dxfeed {
     auto methodId = safeGetMethodID(env, jDxEndpointBuilderClass, methodName, methodSignature);
     auto jKey = env->NewStringUTF(key);
     auto jValue = env->NewStringUTF(value);
-    env->CallObjectMethod(dxEndpointBuilder_, methodId, jKey, jValue);
+    checkedCallObjectMethod(env, dxEndpointBuilder_, methodId, jKey, jValue);
     env->DeleteLocalRef(jKey);
     env->DeleteLocalRef(jValue);
     env->DeleteLocalRef(jDxEndpointBuilderClass);
