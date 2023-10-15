@@ -4,16 +4,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CString {
-  private final static ConcurrentHashMap<String, byte[]> cacheStringToBytes = new ConcurrentHashMap<>();
+  private static final CString DUMMY = new CString(null);
+  private final static ConcurrentHashMap<String, CString> cacheStringToBytes = new ConcurrentHashMap<>();
 
   private final short cStringSize;
   public final short totalAllocatedBytes;
   public final byte[] strBytes;
 
-  CString(String string) {
+  public static CString build(String string) {
+    return (string != null) ? cacheStringToBytes.computeIfAbsent(string, k -> new CString(string)) : DUMMY;
+  }
+  private CString(String string) {
     cStringSize = calculateCStringSize(string);
     totalAllocatedBytes = (short) (cStringSize + 2); // 2 bytes for cStringSize value
-    strBytes = (string != null) ? cacheStringToBytes.computeIfAbsent(string, k -> toCString(string)) : null;
+    strBytes = (string != null) ? toCString(string) : null;
   }
 
   private static short calculateCStringSize(String s) {
