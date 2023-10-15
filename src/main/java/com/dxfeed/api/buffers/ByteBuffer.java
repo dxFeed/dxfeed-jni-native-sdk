@@ -21,7 +21,7 @@ public class ByteBuffer {
   }
 
   public void writeString(String str) {
-    CString cString = new CString(str);
+    CString cString = CString.build(str);
     writeShort(cString.cStringLength());
     if (cString.isNotNull()) {
       writeBytes(cString.strBytes);
