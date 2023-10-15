@@ -196,7 +196,7 @@ namespace dxfeed {
     const char* methodName = "toString";
     const char* methodSignature = "()Ljava/lang/String;";
     auto methodId = safeGetMethodID(env, candleSymbolClass, methodName, methodSignature);
-    auto jString = r_cast<jstring>(checkedCallStaticObjectMethod(env, candleSymbolClass, methodId, jSymbol));
+    auto jString = checkedCallStaticObjectMethodAndCastTo<jstring>(env, candleSymbolClass, methodId, jSymbol);
     resultSymbol->symbol = jStringToUTF8(env, jString);
     env->DeleteLocalRef(jString);
     return resultSymbol;
@@ -237,7 +237,7 @@ namespace dxfeed {
     const char* methodName = "name";
     const char* methodSignature = "()Ljava/lang/String;";
     auto methodId = safeGetMethodID(env, indexedEventSubClass, methodName, methodSignature);
-    auto sourceName = r_cast<jstring>(checkedCallObjectMethod(env, jSymbol, methodId));
+    auto sourceName = checkedCallObjectMethodAndCastTo<jstring>(env, jSymbol, methodId);
     const char* utfChars = env->GetStringUTFChars(sourceName, 0);
     resultSymbol->source = dxfg_IndexedEventSource_new(env, utfChars);
     env->ReleaseStringUTFChars(sourceName, utfChars);
