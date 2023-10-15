@@ -277,8 +277,8 @@ namespace dxfeed {
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)[Z";
     auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
 
-    auto jByteArray = r_cast<jbyteArray>(
-      checkedCallStaticObjectMethod(env, jDxSubscriptionJniClass, methodId, subscription_));
+    auto jByteArray = checkedCallStaticObjectMethodAndCastTo<jbyteArray>(env, jDxSubscriptionJniClass, methodId,
+                                                                         subscription_);
     jint size = env->GetArrayLength(jByteArray);
     auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(jByteArray, 0));
 

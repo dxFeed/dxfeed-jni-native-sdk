@@ -107,7 +107,8 @@ namespace dxfeed {
     const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;)[B";
     auto methodId = safeGetStaticMethodID(env, jDxEndpointJniClass, methodName, methodSignature);
 
-    auto jByteArray = r_cast<jbyteArray>(checkedCallStaticObjectMethod(env, jDxEndpointJniClass, methodId, dxEndpoint_));
+    auto jByteArray = checkedCallStaticObjectMethodAndCastTo<jbyteArray>(env, jDxEndpointJniClass, methodId,
+                                                                         dxEndpoint_);
     jint size = env->GetArrayLength(jByteArray);
     auto* pEventTypeData = r_cast<char*>(env->GetPrimitiveArrayCritical(jByteArray, 0));
 
