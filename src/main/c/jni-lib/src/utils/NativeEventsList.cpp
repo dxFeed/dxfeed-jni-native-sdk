@@ -45,8 +45,8 @@ namespace dxfeed::jni {
     auto byteBuffer = env_->GetObjectField(nativeEventsList, byteBuffer_);
     auto doubleBuffer = env_->GetObjectField(nativeEventsList, doubleBuffer_);
 
-    auto byteArray = r_cast<jbyteArray>(env_->CallObjectMethod(byteBuffer, toByteData_));
-    auto doubleArray = r_cast<jbyteArray>(env_->CallObjectMethod(doubleBuffer, toDoubleData_));
+    auto byteArray = checkedCallObjectMethodAndCastTo<jbyteArray>(env_, byteBuffer, toByteData_);
+    auto doubleArray = checkedCallObjectMethodAndCastTo<jbyteArray>(env_, doubleBuffer, toDoubleData_);
     auto eventTypeArray = r_cast<jdoubleArray>(env_->GetObjectField(nativeEventsList, pEventTypes_));
     jint size = env_->GetArrayLength(eventTypeArray);
 
@@ -74,8 +74,8 @@ namespace dxfeed::jni {
     auto byteBuffer = env_->GetObjectField(nativeEventsList, byteBuffer_);
     auto doubleBuffer = env_->GetObjectField(nativeEventsList, doubleBuffer_);
 
-    auto byteArray = r_cast<jbyteArray>(env_->CallObjectMethod(byteBuffer, toByteData_));
-    auto doubleArray = r_cast<jbyteArray>(env_->CallObjectMethod(doubleBuffer, toDoubleData_));
+    auto byteArray = checkedCallObjectMethodAndCastTo<jbyteArray>(env_, byteBuffer, toByteData_);
+    auto doubleArray = checkedCallObjectMethodAndCastTo<jbyteArray>(env_, doubleBuffer, toDoubleData_);
     auto eventTypeArray = r_cast<jdoubleArray>(env_->GetObjectField(nativeEventsList, pEventTypes_));
     jint size = env_->GetArrayLength(eventTypeArray);
 
@@ -114,7 +114,7 @@ namespace dxfeed::jni {
     auto jDoubleData = writer.doubleData(env_);
     auto jEventTypes = writer.eventTypes(env_);
 
-    auto result = env_->CallStaticObjectMethod(jDxFeedJniClazz, toList_, jByteData, jDoubleData, jEventTypes);
+    auto result = checkedCallStaticObjectMethod(env_, jDxFeedJniClazz, toList_, jByteData, jDoubleData, jEventTypes);
 
     env_->DeleteLocalRef(jEventTypes);
     env_->DeleteLocalRef(jDoubleData);

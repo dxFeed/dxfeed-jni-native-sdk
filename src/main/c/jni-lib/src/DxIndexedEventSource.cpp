@@ -68,7 +68,7 @@ namespace dxfeed {
     const char* methodName = "name";
     const char* methodSignature = "()Ljava/lang/String;";
     auto methodId = safeGetMethodID(env, jEventSourceClass, methodName, methodSignature);
-    auto jName = r_cast<jstring>(env->CallObjectMethod(indexedEventSource_, methodId));
+    auto jName = checkedCallObjectMethodAndCastTo<jstring>(env_, indexedEventSource_, methodId);
 
     jsize stringUtfLength = env->GetStringUTFLength(jName);
     auto name = new char[stringUtfLength + 1];

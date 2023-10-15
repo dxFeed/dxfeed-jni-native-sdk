@@ -29,9 +29,49 @@ namespace dxfeed {
       }
     }
 
-    template <class ... Args>
+    template <class ReturnType, class ... Args> // used when we'd like to cast jobject to ReturnType
+    inline typename std::enable_if_t<std::is_base_of_v<_jobject, std::remove_pointer_t<ReturnType>> or
+                                     std::is_base_of_v<_jarray, std::remove_pointer_t<ReturnType>>, ReturnType>
+    checkedCallStaticObjectMethodAndCastTo(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
+      jobject result = env->CallStaticObjectMethod(clazz, methodId, args...);
+      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return nullptr;
+      }
+      return r_cast<ReturnType>(result);
+    }
+
+    template <class ReturnType, class ... Args> // used when we'd like to cast jobject to ReturnType
+    inline typename std::enable_if_t<std::is_base_of_v<_jobject, std::remove_pointer_t<ReturnType>> or
+                                     std::is_base_of_v<_jarray, std::remove_pointer_t<ReturnType>>, ReturnType>
+    checkedCallObjectMethodAndCastTo(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
+      jobject result = env->CallObjectMethod(jObject, methodId, args...);
+      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return nullptr;
+      }
+      return r_cast<ReturnType>(result);
+    }
+
+    template <class ... Args>  // used when we'd like to get jobject as is
     inline jobject checkedCallStaticObjectMethod(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
-      auto result = env->CallStaticObjectMethod(clazz, methodId, args...);
+      jobject result = env->CallStaticObjectMethod(clazz, methodId, args...);
+      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return nullptr;
+      }
+      return result;
+    }
+
+    template <class ... Args> // used when we'd like to get jobject as is
+    inline jobject checkedCallObjectMethod(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
+      jobject result = env->CallObjectMethod(jObject, methodId, args...);
       dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
       if (pException) {
         dxfg_print_exception(env, pException);
@@ -52,20 +92,8 @@ namespace dxfeed {
     }
 
     template <class ... Args>
-    inline jobject checkedCallObjectMethod(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
-      auto result = env->CallObjectMethod(jObject, methodId, args...);
-      dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
-      if (pException) {
-        dxfg_print_exception(env, pException);
-        dxfg_Exception_release(env, pException);
-        return nullptr;
-      }
-      return result;
-    }
-
-    template <class ... Args>
     inline jlong checkedCallStaticLongMethod(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
-      auto result = env->CallStaticLongMethod(clazz, methodId, args...);
+      jlong result = env->CallStaticLongMethod(clazz, methodId, args...);
       dxfg_exception_t* pException = dxfg_get_and_clear_thread_exception_t(env);
       if (pException) {
         dxfg_print_exception(env, pException);
