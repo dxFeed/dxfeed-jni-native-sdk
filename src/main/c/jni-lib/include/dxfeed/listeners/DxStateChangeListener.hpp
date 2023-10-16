@@ -9,8 +9,8 @@
 
 namespace dxfeed {
   struct DxStateChangeListener {
-    static DxStateChangeListener* create(JNIEnv* env, dxfg_endpoint_state_change_listener_func callback, void*
-    userData);
+    static DxStateChangeListener* create(JNIEnv* env, dxfg_endpoint_state_change_listener_func callback,
+                                         void* userData);
   private:
     explicit DxStateChangeListener(jlong listenerId);
     jobject dummy_ = nullptr;

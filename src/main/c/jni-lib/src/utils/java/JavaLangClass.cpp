@@ -6,9 +6,9 @@
 namespace dxfeed::jni {
   JavaLangClass::JavaLangClass(JNIEnv* env) {
     auto javaLangClassClazz = safeFindClass(env, "java/lang/Class");
-    javaLogger->info(env, "java.lang.Class: %", javaLangClassClazz);
+    javaLogger->trace(env, "java.lang.Class: %", javaLangClassClazz);
     getNameMethodId = safeGetMethodID(env, javaLangClassClazz, "getName", "()Ljava/lang/String;");
-    javaLogger->info(env, "String Class::getName(): %", getNameMethodId);
+    javaLogger->trace(env, "String Class::getName(): %", getNameMethodId);
     env->DeleteLocalRef(javaLangClassClazz);
   }
 

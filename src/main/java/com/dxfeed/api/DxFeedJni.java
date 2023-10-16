@@ -31,7 +31,6 @@ public class DxFeedJni {
                                                                                           Object symbol)
   {
     E lastEvent = feed.getLastEventIfSubscribed(eventTypeClass, symbol);
-    System.out.println("DxFeedJni::getLastEventIfSubscribed = " + lastEvent);
     return (lastEvent != null) ? new NativeEventsList<>(Collections.singletonList(lastEvent)) : null;
   }
 
@@ -55,10 +54,7 @@ public class DxFeedJni {
   private static <E extends LastingEvent<?>> E createEventByClass(Class<E> eventTypeClass, String eventName) {
     try {
       Constructor<E> constructor = eventTypeClass.getConstructor(String.class);
-      System.out.println("constructor = " + constructor);
-      E event = constructor.newInstance(eventName);
-      System.out.println("event = " + event);
-      return event;
+      return constructor.newInstance(eventName);
     } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
@@ -68,7 +64,6 @@ public class DxFeedJni {
                                                                   Object symbol, String source)
   {
     List<IndexedEvent<?>> list = feed.getIndexedEventsIfSubscribed(eventTypeClass, symbol, OrderSource.valueOf(source));
-    System.out.println("DxFeedJni::getIndexedEventsIfSubscribed, events count = " + list.toString());
     return new NativeEventsList<>(list);
   }
 
@@ -76,7 +71,6 @@ public class DxFeedJni {
                                                                Object symbol, long fromTime, long toTime)
   {
     List<TimeSeriesEvent<?>> list = feed.getTimeSeriesIfSubscribed(eventTypeClass, symbol, fromTime, toTime);
-    System.out.println("DxFeedJni::getTimeSeriesIfSubscribed, events count = " + list.toString());
     return new NativeEventsList<>(list);
   }
 }
