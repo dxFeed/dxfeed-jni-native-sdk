@@ -155,7 +155,7 @@ namespace dxfeed {
     auto indexedEventSymbolClass = safeFindClass(env, INDEXED_EVENT_SYMBOL_JNI_CLASS_NAME);
 
     const std::string& pSymbolName = dxfeed::jni::internal::javaLangClass->getName(env, pSymbol);
-    javaLogger->info(env, "Processing symbol type: %", pSymbolName);
+    javaLogger->trace(env, "Processing symbol type: %", pSymbolName);
 
     dxfg_symbol_t* result = nullptr;
     if (env->IsInstanceOf(pSymbol, stringSymbolClass)) {

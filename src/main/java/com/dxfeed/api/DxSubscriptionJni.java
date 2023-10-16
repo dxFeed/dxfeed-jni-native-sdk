@@ -9,7 +9,6 @@ public class DxSubscriptionJni {
   // callbacks from native
   private static long newEventListener(long userCallback, long userData) {
     long id = DxFeedJni.nextHandleId();
-    System.out.println("DxSubscriptionJni::newEventListener, nativeHandle = " + id);
     DXFeedEventListener<EventType<?>> listener = eventList -> {
       NativeEventsList<EventType<?>> nativeTS = new NativeEventsList<>(eventList);
       nOnEventListener(eventList.size(), nativeTS.byteData(), nativeTS.doubleData(), nativeTS.pEventTypes,
@@ -24,7 +23,6 @@ public class DxSubscriptionJni {
     DXFeedEventListener<EventType<?>> eventListener =
         (DXFeedEventListener<EventType<?>>) DxFeedJni.nativeObjectsMap.get(nativeHandleId);
     if (eventListener != null) {
-      System.out.println("DxSubscriptionJni::addEventListener, nativeHandle = " + nativeHandleId);
       sub.addEventListener(eventListener);
     }
   }
@@ -33,7 +31,6 @@ public class DxSubscriptionJni {
     DXFeedEventListener<EventType<?>> eventListener =
         (DXFeedEventListener<EventType<?>>) DxFeedJni.nativeObjectsMap.remove(nativeHandleId);
     if (eventListener != null) {
-      System.out.println("DxSubscriptionJni::removeEventListener, nativeHandle = " + nativeHandleId);
       sub.removeEventListener(eventListener);
     }
   }
@@ -49,7 +46,6 @@ public class DxSubscriptionJni {
     return pEventTypes;
   }
 
-  // todo: do it in JNI?
   private static Object[] getSymbols(DXFeedSubscription<EventType<?>> sub) {
     return sub.getSymbols().toArray();
   }

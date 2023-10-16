@@ -36,6 +36,13 @@ namespace dxfeed::jni {
     }
 
     template <class T, class ...Targs>
+    void trace(JNIEnv* env, const char* format, const T& value, const Targs&... Fargs) const {
+      std::stringstream ss;
+      logInfoFormatted(ss, format, value, Fargs...);
+      trace(env, ss.str());
+    }
+
+    template <class T, class ...Targs>
     void error(JNIEnv* env, const char* format, const T& value, const Targs&... Fargs) const {
       std::stringstream ss;
       logInfoFormatted(ss, format, value, Fargs...);
@@ -45,16 +52,21 @@ namespace dxfeed::jni {
     JavaLogger const& info(JNIEnv* env, const std::string&) const;
     JavaLogger const& info(JNIEnv* env, const char*) const;
     JavaLogger const& info(JNIEnv* env, void const*) const;
+    JavaLogger const& trace(JNIEnv* env, const std::string&) const;
+    JavaLogger const& trace(JNIEnv* env, const char*) const;
+    JavaLogger const& trace(JNIEnv* env, void const*) const;
     JavaLogger const& error(JNIEnv* env, const std::string&) const;
     JavaLogger const& error(JNIEnv* env, const char*) const;
     JavaLogger const& error(JNIEnv* env, void const*) const;
 
   private:
     JavaLogger const& logInfo(JNIEnv* env, const char* data) const;
+    JavaLogger const& logTrace(JNIEnv* env, const char* data) const;
     JavaLogger const& logError(JNIEnv* env, const char* data) const;
 
     jobject logger_;
     jmethodID logInfo_;
+    jmethodID logTrace_;
     jmethodID logErr_;
   };
 }

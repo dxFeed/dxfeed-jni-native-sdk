@@ -10,11 +10,15 @@
 namespace dxfeed::jni {
   void initDxJni(JNIEnv* env);
 
-  static JNINativeMethod nDxEndpoint[] = {
-    {"nOnStateChangeListener", "(IIJJ)V", (void*) &Java_com_dxfeed_api_DxEndpointJni_nOnStateChangeListener},};
+  constexpr JNINativeMethod build(const char* name, const char* signature, void* fnPtr) {
+    return JNINativeMethod {const_cast<char*>(name), const_cast<char*>(signature), fnPtr};
+  }
 
-  static JNINativeMethod nDxSubscription[] = {
-    {"nOnEventListener", "(I[B[D[BJJ)V", (void*) &Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener}};
+  static JNINativeMethod nDxEndpoint = build("nOnStateChangeListener", "(IIJJ)V",
+                                      (void*) &Java_com_dxfeed_api_DxEndpointJni_nOnStateChangeListener);
+
+  static JNINativeMethod nDxSubscription = build( "nOnEventListener", "(I[B[D[BJJ)V",
+                                           (void*) &Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener);
 }
 
 #endif //NATIVE_JNI_SDK_DXFEEDJNICLASS_H
