@@ -50,7 +50,7 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
       ss << ", already released: " << std::hex << pObject;
       delete object;
     }
-    dxfeed::jni::javaLogger->info(thread, ss.str());
+    dxfeed::jni::javaLogger->trace(thread, ss.str());
   }
   return JNI_OK;
 }

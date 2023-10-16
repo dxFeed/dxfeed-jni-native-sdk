@@ -5,7 +5,7 @@
 namespace dxfeed::jni::internal {
   CriticalSection::CriticalSection() {
     pthread_mutexattr_settype(&mAttr, PTHREAD_MUTEX_RECURSIVE);
-    int hr = pthread_mutex_init(&criticalSection, &mAttr);
+    pthread_mutex_init(&criticalSection, &mAttr);
   }
 
   CriticalSection::~CriticalSection() {

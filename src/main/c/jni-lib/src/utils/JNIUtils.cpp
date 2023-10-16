@@ -25,7 +25,7 @@ namespace dxfeed::jni {
   }
 
   jmethodID safeGetMethod(JNIEnv* env, JMethodIdProvider provider, jclass clazz, const char* methodName,
-                               const char* signature)
+                          const char* signature)
   {
     auto method = (env->*provider)(clazz, methodName, signature);
     if (!method) {

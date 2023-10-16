@@ -148,6 +148,9 @@ namespace dxfeed::jni {
         OptionSaleMapping::fromOptionSale(r_cast<dxfg_option_sale_t*>(eventType), *this);
         return;
       }
+      case DXFG_EVENT_DAILY_CANDLE:
+        fprintf(stderr, "DXFG_EVENT_DAILY_CANDLE is ignored. DailyCandle is deprecated.\n");
+        return;
     }
   }
 

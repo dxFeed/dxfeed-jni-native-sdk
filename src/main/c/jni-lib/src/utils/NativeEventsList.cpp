@@ -12,7 +12,7 @@ namespace dxfeed::jni {
     dxByteBuffer_(safeFindClass(env, "com/dxfeed/api/buffers/ByteBuffer")),
     dxDoubleBuffer_(safeFindClass(env, "com/dxfeed/api/buffers/DoubleBuffer"))
   {
-    javaLogger->info(env, "com.dxfeed.api.NativeEventsList: %", dxNativeEventsListClass_);
+    javaLogger->trace(env, "com.dxfeed.api.NativeEventsList: %", dxNativeEventsListClass_);
     byteBuffer_ = safeGetFieldID(env, dxNativeEventsListClass_, "pBytes", "Lcom/dxfeed/api/buffers/ByteBuffer;");
     doubleBuffer_ = safeGetFieldID(env, dxNativeEventsListClass_, "pDoubles", "Lcom/dxfeed/api/buffers/DoubleBuffer;");
     pEventTypes_ = safeGetFieldID(env, dxNativeEventsListClass_, "pEventTypes", "[B");
