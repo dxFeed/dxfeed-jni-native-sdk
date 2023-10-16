@@ -37,7 +37,6 @@ public class CString {
     byte[] result = new byte[bytes.length + 1];
     result[bytes.length] = 0;
     System.arraycopy(bytes, 0, result, 0, bytes.length);
-//        System.out.println("string = " + value + ", result = " + Arrays.toString(result));
     return result;
   }
 }

@@ -6,9 +6,9 @@
 namespace dxfeed::jni {
   DxThreadException::DxThreadException(JNIEnv* env) {
     dxThreadExceptionClass_ = (jclass) env->NewGlobalRef(safeFindClass(env, "com/dxfeed/api/DxThreadException"));
-    fprintf(stdout, "com.dxfeed.api.DxThreadException: 0x%p\n", dxThreadExceptionClass_);
+//    fprintf(stdout, "com.dxfeed.api.DxThreadException: 0x%p\n", dxThreadExceptionClass_);
     getExceptionInfo_ = safeGetStaticMethodID(env, dxThreadExceptionClass_, "getExceptionInfo", "(Ljava/lang/Throwable;)[B");
-    fprintf(stdout, "byte[] DxThreadException::getExceptionInfo(Throwable t): 0x%p\n", getExceptionInfo_);
+//    fprintf(stdout, "byte[] DxThreadException::getExceptionInfo(Throwable t): 0x%p\n", getExceptionInfo_);
   }
 
   DxThreadException::~DxThreadException() {

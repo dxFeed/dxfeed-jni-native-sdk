@@ -28,7 +28,6 @@ public class DxEndpointJni {
 
   private static long newStateChangeEventListener(long userCallback, long userData) {
     long id = DxFeedJni.nextHandleId();
-    System.out.println("DxEndpointJni::newStateChangeEventListener, nativeHandle = " + id);
     PropertyChangeListener listener = event -> nOnStateChangeListener(
         ((DXEndpoint.State) event.getOldValue()).ordinal(),
         ((DXEndpoint.State) event.getNewValue()).ordinal(),
@@ -41,7 +40,6 @@ public class DxEndpointJni {
     PropertyChangeListener propertyChangeListener =
         (PropertyChangeListener) DxFeedJni.nativeObjectsMap.get(nativeHandleId);
     if (propertyChangeListener != null) {
-      System.out.println("DxEndpointJni::addStateChangeEventListener, nativeHandle = " + nativeHandleId);
       endpoint.addStateChangeListener(propertyChangeListener);
     }
   }
@@ -50,7 +48,6 @@ public class DxEndpointJni {
     PropertyChangeListener stateChangeListener =
         (PropertyChangeListener) DxFeedJni.nativeObjectsMap.remove(nativeHandleId);
     if (stateChangeListener != null) {
-      System.out.println("DxEndpointJni::removeStateChangeEventListener, nativeHandle = " + nativeHandleId);
       endpoint.removeStateChangeListener(stateChangeListener);
     }
   }

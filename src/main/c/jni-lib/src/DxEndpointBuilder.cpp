@@ -24,7 +24,7 @@ namespace dxfeed {
     const char* methodSignature = "()Lcom/dxfeed/api/DXEndpoint;";
     auto methodId = safeGetMethodID(env, jDxEndpointBuilderClass, methodName, methodSignature);
     auto jDxEndpoint = checkedCallObjectMethod(env, dxEndpointBuilder_, methodId);
-    javaLogger->info(env, "DxEndpoint OBJECT: %", jDxEndpoint);
+    javaLogger->trace(env, "DxEndpoint OBJECT: %", jDxEndpoint);
     auto* pEndpoint = new DxEndpoint(env, jDxEndpoint);
     env->DeleteLocalRef(jDxEndpoint);
     env->DeleteLocalRef(jDxEndpointBuilderClass);
@@ -66,7 +66,7 @@ namespace dxfeed {
 
   void DxEndpointBuilder::withProperties(JNIEnv* env, const char* filePath) {
     auto jPropertiesClass = safeFindClass(env, "java/util/Properties");
-    javaLogger->info(env, "jPropertiesClass: %", jPropertiesClass);
+    javaLogger->trace(env, "jPropertiesClass: %", jPropertiesClass);
     const char* methodName = "load";
     const char* methodSignature = "(Ljava/io/InputStream;)V";
     auto loadId = safeGetMethodID(env, jPropertiesClass, methodName, methodSignature);

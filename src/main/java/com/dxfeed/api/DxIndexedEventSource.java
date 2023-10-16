@@ -10,7 +10,6 @@ public class DxIndexedEventSource {
         ? DxfgIndexedEventSourceType.ORDER_SOURCE.ordinal()
         : DxfgIndexedEventSourceType.INDEXED_EVENT_SOURCE.ordinal();
     data[1] = source.id();
-    System.out.println("DxIndexedEventSource::newOrderSourceByName, source = " + source);
     return source;
   }
 
@@ -18,7 +17,6 @@ public class DxIndexedEventSource {
     OrderSource orderSource = OrderSource.valueOf(sourceId);
     data[0] = DxfgIndexedEventSourceType.ORDER_SOURCE.ordinal();
     data[1] = orderSource.id();
-    System.out.println("DxIndexedEventSource::newOrderSourceById, source = " + orderSource);
     return orderSource;
   }
 }

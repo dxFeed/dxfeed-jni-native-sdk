@@ -25,7 +25,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     fprintf(stderr,  "Error getting JNIEnv. Exiting...");
     return flag;
   }
-  fprintf(stdout, "JNI_OnLoad, env = %, res = %\n", env, flag);
+  fprintf(stdout, "JNI_OnLoad, env = 0x%p, res = %d\n", env, flag );
   return JNI_VERSION_1_8;
 }
 
