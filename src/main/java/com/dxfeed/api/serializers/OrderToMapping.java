@@ -178,6 +178,8 @@ public class OrderToMapping {
   public static AnalyticOrder analyticOrderFromNative(ByteReader reader) {
     AnalyticOrder analyticOrder = new AnalyticOrder();
     orderBaseFromNative(analyticOrder, reader);
+    analyticOrder.setMarketMaker(reader.readString());                         // 2 + marketMakerLength
+
     // BYTE DATA
     DxFeedEventMarketPackagePrivate.setIcebergFlags(analyticOrder, reader.readInt());
     // DOUBLE DATA
