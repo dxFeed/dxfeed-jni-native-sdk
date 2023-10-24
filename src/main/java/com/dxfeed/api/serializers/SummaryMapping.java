@@ -58,7 +58,6 @@ public class SummaryMapping {
     summary.setDayId(reader.readInt());
     summary.setPrevDayId(reader.readInt());
     summary.setOpenInterest(reader.readLong());
-    summary.setOpenInterest(reader.readLong());
     DxFeedEventMarketPackagePrivate.setFlags(summary, reader.readInt());
 
     summary.setDayOpenPrice(reader.readDouble());
