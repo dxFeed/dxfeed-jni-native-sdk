@@ -10,6 +10,7 @@
 namespace dxfeed::user_data_sync {
     extern std::mutex LOCK;
     extern std::condition_variable CONDITION_VAR;
+    extern std::atomic_bool PRODUCER_PREPARED_DATA;
     extern std::atomic_bool CONSUMER_PROCESSED_DATA;
     extern jlong GLOBAL_JAVA_USER_CALLBACK_ADDRESS;
     extern jlong GLOBAL_JAVA_USER_DATA_ADDRESS;

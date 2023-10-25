@@ -82,6 +82,7 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
 
   locker.unlock(); // Unlock after consumption.
 
+  user_data_sync::PRODUCER_PREPARED_DATA.store(true);
   user_data_sync::CONDITION_VAR.notify_one(); // Notifies one waiting thread for the data
 //  std::cout << "Producer : Blocked for the consumer." << std::endl;
   while (!user_data_sync::CONSUMER_PROCESSED_DATA.load()) {}
@@ -130,6 +131,7 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
 
   locker.unlock(); // Unlock after consumption.
 
+  user_data_sync::PRODUCER_PREPARED_DATA.store(true);
   user_data_sync::CONDITION_VAR.notify_one(); // Notifies one waiting thread for the data
 //  std::cout << "Producer : Blocked for the consumer." << std::endl;
   while (!user_data_sync::CONSUMER_PROCESSED_DATA.load()) {}
