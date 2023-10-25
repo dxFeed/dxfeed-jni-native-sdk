@@ -95,7 +95,7 @@ namespace dxfeed::jni {
       }
       case DXFG_EVENT_TRADE_ETH:
       case DXFG_EVENT_TRADE: {
-        return r_cast<dxfg_event_type_t*>(TradeMapping::toTradeBase(*this));
+        return r_cast<dxfg_event_type_t*>(TradeMapping::toTradeBase(*this, eventType));
       }
       case DXFG_EVENT_CONFIGURATION: {
         return r_cast<dxfg_event_type_t*>(ConfigurationMapping::toConfiguration(*this));

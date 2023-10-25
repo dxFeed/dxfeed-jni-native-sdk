@@ -1,11 +1,13 @@
 package com.dxfeed.api.serializers;
 
+import com.dxfeed.api.DxfgEventClazzT;
 import com.dxfeed.api.buffers.ByteBuffer;
 import com.dxfeed.api.buffers.DoubleBuffer;
 import com.dxfeed.api.buffers.ByteReader;
 import com.dxfeed.event.market.DxFeedEventMarketPackagePrivate;
 import com.dxfeed.event.market.Trade;
 import com.dxfeed.event.market.TradeBase;
+import com.dxfeed.event.market.TradeETH;
 
 public class TradeMapping {
   /**
@@ -32,7 +34,8 @@ public class TradeMapping {
    *    int32_t flags;
    * } dxfg_trade_base_t;
    */
-  public static void toNative(TradeBase event, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+  public static <T> byte toNative(T eventT, ByteBuffer pBytes, DoubleBuffer pDoubles) {
+    TradeBase event = (TradeBase) eventT;
     // BYTE DATA
     pBytes.writeString(event.getEventSymbol());                       // 2 + eventSymbolLength
     pBytes.writeLong(event.getEventTime());                           // 8
@@ -48,6 +51,9 @@ public class TradeMapping {
     pDoubles.write(event.getSizeAsDouble());
     pDoubles.write(event.getDayVolumeAsDouble());
     pDoubles.write(event.getDayTurnover());
+
+    boolean isETH = eventT instanceof TradeETH;
+    return isETH ? DxfgEventClazzT.DXFG_EVENT_TRADE_ETH : DxfgEventClazzT.DXFG_EVENT_TRADE;
   }
 
   public static Trade fromNative(ByteReader reader) {

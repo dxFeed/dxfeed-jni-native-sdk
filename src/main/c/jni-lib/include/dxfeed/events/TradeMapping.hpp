@@ -10,7 +10,7 @@ namespace dxfeed::jni {
   struct ByteWriter;
 
   struct TradeMapping {
-    static dxfg_trade_base_t* toTradeBase(ByteReader& reader);
+    static dxfg_trade_base_t* toTradeBase(ByteReader& reader, dxfg_event_clazz_t dxfgEventClazz);
     static void fromTradeBase(dxfg_trade_base_t* eventType, ByteWriter& writer);
   };
 }
