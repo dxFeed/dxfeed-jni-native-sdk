@@ -14,7 +14,6 @@ import com.dxfeed.event.option.Series;
 import com.dxfeed.event.option.TheoPrice;
 import com.dxfeed.event.option.Underlying;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NativeEventsList<T extends EventType<?>> {
@@ -39,8 +38,7 @@ public class NativeEventsList<T extends EventType<?>> {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_CANDLE;
         CandleMapping.toNative((Candle) event, pBytes, pDoubles);
       } else if (event instanceof TradeBase) {
-        pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_TRADE;
-        TradeMapping.toNative((TradeBase) event, pBytes, pDoubles);
+        pEventTypes[i] = TradeMapping.toNative(event, pBytes, pDoubles);
       } else if (event instanceof Profile) {
         pEventTypes[i] = DxfgEventClazzT.DXFG_EVENT_PROFILE;
         ProfileMapping.toNative((Profile) event, pBytes, pDoubles);

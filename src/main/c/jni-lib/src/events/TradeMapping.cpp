@@ -5,9 +5,10 @@
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_trade_base_t* TradeMapping::toTradeBase(ByteReader& reader) {
+  dxfg_trade_base_t* TradeMapping::toTradeBase(ByteReader& reader, dxfg_event_clazz_t dxfgEventClazz)
+  {
     auto* trade = new dxfg_trade_base_t();
-    trade->market_event.event_type.clazz = DXFG_EVENT_TRADE;
+    trade->market_event.event_type.clazz = dxfgEventClazz;
     trade->market_event.event_symbol = reader.readString();
     trade->market_event.event_time = reader.readLong();
     trade->time_sequence = reader.readLong();
