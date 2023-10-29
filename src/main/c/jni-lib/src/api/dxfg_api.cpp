@@ -55,5 +55,39 @@ int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_obje
   return JNI_OK;
 }
 
+int32_t dxfg_Object_finalize(graal_isolatethread_t* thread, dxfg_java_object_handler* handler,
+                             dxfg_finalize_function finalize, void* user_data)
+{
+  printf("dxfg_Object_finalize to nothing\n"); // todo: discuss
+  return JNI_OK;
+}
+
+int dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler_list* list) {
+  int success = JNI_OK;
+  if (list && list->size > 0 && list->elements) {
+    for (int i = 0; i < list->size; ++i) {
+      dxfg_java_object_handler* pHandler = list->elements[i];
+      if (pHandler) {
+        success &= dxfg_JavaObjectHandler_release(thread, pHandler);
+      }
+    }
+  }
+  return success;
+}
+
+int32_t dxfg_String_release(graal_isolatethread_t *thread, const char* string) {
+  delete string;
+  return JNI_OK;
+}
+
+int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list* list) {
+  if (list && list->size > 0 && list->elements) {
+    for (int i = 0; i < list->size; ++i) {
+      delete list->elements[i];
+    }
+  }
+  return JNI_OK;
+}
+
 
 
