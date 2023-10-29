@@ -344,6 +344,39 @@ namespace dxfeed {
     return list;
   }
 
+  dxfg_symbol_list* DxSubscription::getDecoratedSymbols(JNIEnv* env) {
+    auto jDxSubscriptionJniClass = safeFindClass(env, DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME);
+    const char* methodName = "getDecoratedSymbols";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)[java/lang/Object;";
+    auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
+    auto jArray = r_cast<jobjectArray>(env->CallStaticObjectMethod(jDxSubscriptionJniClass, methodId, subscription_));
+    jint size = env->GetArrayLength(jArray);
+
+    auto list = new dxfg_symbol_list();
+    list->size = size;
+    list->elements = new dxfg_symbol_t*[size];
+    for (int i = 0; i < size; ++i) {
+      /*  https://developer.ibm.com/articles/j-jni/
+       *  Each time GetObjectArrayElement() is called, a local reference is created for the element and isn't freed
+       *  until the native completes. The larger the array, the more local references will be created.
+       *
+       *  These local references are freed automatically when the native method terminates.
+       *  The JNI specification requires that each native be able to create at least 16 local references.
+       *  Although this is adequate for many methods, some methods need to access more during their lifetime.
+       *  In this case, you should either delete references that are no longer needed, by using the
+       *  JNI DeleteLocalRef() call, or inform the JVM that you'll be using a larger number of local references.
+       * */
+      auto jObject = env->GetObjectArrayElement(jArray, i);
+      list->elements[i] = DxSymbol::fromJavaObject(env, jObject);
+      env->DeleteLocalRef(jObject);
+    }
+
+    env->DeleteLocalRef(jArray);
+    env->DeleteLocalRef(jDxSubscriptionJniClass);
+
+    return list;
+  }
+
   jobjectArray DxSubscription::buildJavaObjectArray(JNIEnv* env, const dxfg_event_clazz_list_t* eventClasses) {
     int32_t size = eventClasses->size;
     auto jClazzArrayClass = safeFindClass(env, "java/lang/Class");

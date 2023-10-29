@@ -46,6 +46,7 @@ namespace dxfeed {
     dxfg_symbol_list* getSymbols(JNIEnv* env);
     int32_t setSymbol(JNIEnv* env, dxfg_symbol_t* symbol);
     int32_t setSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
+    dxfg_symbol_list* getDecoratedSymbols(JNIEnv* env);
 
     // DxFeedTimeSeriesSubscription methods
     int32_t setTime(JNIEnv* pEnv, int64_t time);

@@ -112,6 +112,10 @@ dxfg_symbol_list* dxfg_DXFeedSubscription_getSymbols(graal_isolatethread_t* thre
   return pDxSubscription->getSymbols(thread);
 }
 
+dxfg_symbol_list* dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
+  return pDxSubscription->getDecoratedSymbols(thread);
+}
 
 int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
                                           dxfg_symbol_t* pSymbol)
