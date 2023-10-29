@@ -50,6 +50,10 @@ public class DxSubscriptionJni {
     return sub.getSymbols().toArray();
   }
 
+  private static Object[] getDecoratedSymbols(DXFeedSubscription<EventType<?>> sub) {
+    return sub.getDecoratedSymbols().toArray();
+  }
+
   private static native void nOnEventListener(int size, byte[] byteData, double[] doubleData,
                                               byte[] pEventTypes, long userCallback, long userData);
 }
