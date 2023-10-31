@@ -57,16 +57,18 @@ namespace dxfeed {
     return result;
   }
 
-  DxFeed* DxEndpoint::getFeed(JNIEnv* env) const {
-    auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
-    const char* methodName = "getFeed";
-    const char* methodSignature = "()Lcom/dxfeed/api/DXFeed;";
-    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    auto jDxFeed = checkedCallObjectMethod(env, dxEndpoint_, methodId);
-    auto* pFeed = new DxFeed(env, jDxFeed);
-    env->DeleteLocalRef(jDxFeed);
-    env->DeleteLocalRef(jDxEndpointClass);
-    return pFeed;
+  DxFeed* DxEndpoint::getFeed(JNIEnv* env) {
+    if (dxFeed_ == nullptr) {
+      auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
+      const char* methodName = "getFeed";
+      const char* methodSignature = "()Lcom/dxfeed/api/DXFeed;";
+      auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+      auto jDxFeed = checkedCallObjectMethod(env, dxEndpoint_, methodId);
+      dxFeed_ = new DxFeed(env, jDxFeed);
+      env->DeleteLocalRef(jDxFeed);
+      env->DeleteLocalRef(jDxEndpointClass);
+    }
+    return dxFeed_;
   }
 
   DxPublisher* DxEndpoint::getPublisher(JNIEnv* env) const {
