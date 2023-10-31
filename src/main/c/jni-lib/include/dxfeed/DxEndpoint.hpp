@@ -29,7 +29,7 @@ namespace dxfeed {
     static DxEndpoint* getInstance(JNIEnv* env);
     static DxEndpoint* getInstance(JNIEnv* env, dxfg_endpoint_role_t dxfgEndpointRole);
 
-    DxFeed* getFeed(JNIEnv* env) const;
+    DxFeed* getFeed(JNIEnv* env);
     DxPublisher* getPublisher(JNIEnv* env) const;
     dxfg_endpoint_role_t getRole(JNIEnv* pEnv) const;
     dxfg_endpoint_state_t getState(JNIEnv* pEnv) const;
@@ -49,6 +49,7 @@ namespace dxfeed {
     void removeStateChangeListener(JNIEnv* env, DxStateChangeListener* listener);
   private:
     jobject dxEndpoint_ = nullptr;
+    DxFeed* dxFeed_ = nullptr;
 
     constexpr static const char DX_ENDPOINT_CLASS_NAME[] = "com/dxfeed/api/DXEndpoint";
   };
