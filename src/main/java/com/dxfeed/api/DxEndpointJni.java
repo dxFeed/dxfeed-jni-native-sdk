@@ -64,14 +64,7 @@ public class DxEndpointJni {
     return pEventTypes;
   }
 
-  // todo: stopUserCallbackProcessorThread when Subscription event listener is removed
-  private static void awaitProcessed(DXEndpoint endpoint) throws InterruptedException {
-    endpoint.awaitProcessed();
-    nStopUserCallbackProcessorThread();
-  }
-
   private static native void nOnStateChangeListener(int oldState, int newState, long userCallback, long userData);
-  private static native void nStopUserCallbackProcessorThread();
 
   public static void main(String[] args) throws InterruptedException {
     tapeFile();

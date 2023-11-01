@@ -138,12 +138,6 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
 //  std::cout << "Producer : Released by the consumer." << std::endl;
 }
 
-JNIEXPORT
-void JNICALL Java_com_dxfeed_api_DxEndpointJni_nStopUserCallbackProcessorThread(JNIEnv *, jclass) {
-  user_data_sync::NEED_TO_EXIT.store(true);
-  user_data_sync::CONDITION_VAR.notify_one();
-}
-
 #ifdef __cplusplus
 }
 #endif

@@ -214,11 +214,11 @@ namespace dxfeed {
   }
 
   void DxEndpoint::awaitProcessed(JNIEnv* env) {
-    auto jDxEndpointClass = safeFindClass(env, DX_JNI_ENDPOINT_CLASS_NAME);
+    auto jDxEndpointClass = env->GetObjectClass(dxEndpoint_);
     const char* methodName = "awaitProcessed";
-    const char* methodSignature = "(Lcom/dxfeed/api/DXEndpoint;)V";
-    auto methodId = safeGetStaticMethodID(env, jDxEndpointClass, methodName, methodSignature);
-    checkedCallStaticVoidMethod(env, jDxEndpointClass, methodId, dxEndpoint_);
+    const char* methodSignature = "()V";
+    auto methodId = safeGetMethodID(env, jDxEndpointClass, methodName, methodSignature);
+    checkedCallVoidMethod(env, dxEndpoint_, methodId);
     env->DeleteLocalRef(jDxEndpointClass);
   }
 

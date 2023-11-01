@@ -8,6 +8,7 @@
 #include "api/dxfg_catch_exception.h"
 #include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/UserDataSync.hpp"
 
 void printEvent(const dxfg_event_type_t* pEvent) {
   if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
@@ -106,8 +107,20 @@ void dxEndpointSubscription(graal_isolatethread_t *thread) {
 void publishEvents(graal_isolatethread_t* thread, dxfg_event_type_list *events, void *user_data) {
   auto* outputEndpoint = reinterpret_cast<dxfg_endpoint_t*>(user_data);
   auto* pPublisher = dxfg_DXEndpoint_getPublisher(thread, outputEndpoint);
-  std::cout << "pPublisher: " << std::hex << pPublisher << std::endl;
+  std::cout << "C: pPublisher: " << std::hex << pPublisher << std::endl;
   dxfg_DXPublisher_publishEvents(thread, pPublisher, events);
+}
+
+
+void onSubscriptionClose(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
+                                    dxfg_endpoint_state_t new_state, void *user_data)
+{
+  printf("C: state %d -> %d\n", old_state, new_state);
+  if (new_state == DXFG_ENDPOINT_STATE_CLOSED) {
+    printf("C: onClosed\n");
+    dxfeed::user_data_sync::NEED_TO_EXIT.store(true);
+    dxfeed::user_data_sync::CONDITION_VAR.notify_one();
+  }
 }
 
 void tapeFile(graal_isolatethread_t *thread) {
@@ -128,6 +141,9 @@ void tapeFile(graal_isolatethread_t *thread) {
   dxfg_DXEndpoint_Builder_withProperty(thread, outputEndpointBuilder, "dxfeed.wildcard.enable", "true");
   dxfg_DXEndpoint_Builder_withProperty(thread, outputEndpointBuilder, "dxendpoint.eventTime", "true");
   dxfg_endpoint_t* outputEndpoint = dxfg_DXEndpoint_Builder_build(thread, outputEndpointBuilder);
+
+  auto stateListener = dxfg_PropertyChangeListener_new(thread, onSubscriptionClose, nullptr);
+  dxfg_DXEndpoint_addStateChangeListener(thread, outputEndpoint, stateListener);
 
   auto* pList = dxfg_DXEndpoint_getEventTypes(thread, inputEndpoint);
   auto* pFeed = dxfg_DXEndpoint_getFeed(thread, inputEndpoint);
