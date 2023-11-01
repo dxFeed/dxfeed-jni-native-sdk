@@ -8,72 +8,17 @@
 #include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 #include "dxfeed/utils/NativeEventsList.hpp"
-#include "dxfeed/utils/UserDataSync.hpp"
 #include "api/dxfg_api.h"
 
 namespace dxfeed {
   using namespace jni;
 
-  // from "dxfeed/utils/UserDataSync.hpp"
-  namespace user_data_sync {
-    std::mutex LOCK;
-    std::condition_variable CONDITION_VAR;
-    std::atomic_bool PRODUCER_PREPARED_DATA { false };
-    std::atomic_bool CONSUMER_PROCESSED_DATA { false };
-    jlong GLOBAL_JAVA_USER_CALLBACK_ADDRESS = 0;
-    jlong GLOBAL_JAVA_USER_DATA_ADDRESS = 0;
-    std::vector<char> GLOBAL_BYTE_ARRAY;
-    std::vector<double> GLOBAL_DOUBLE_ARRAY;
-    std::vector<char> GLOBAL_EVENT_TYPE_ARRAY;
-  }
-
-  void consumer() {
-    using namespace user_data_sync;
-
-    JNIEnv* env = internal::javaVM->getCurrenThread();
-
-    while (true) {
-      std::unique_lock<std::mutex> locker(LOCK);
-
-//      std::cout << "Consumer : Sleeping now\n" << std::endl;
-      CONDITION_VAR.wait(locker);
-      if (!user_data_sync::PRODUCER_PREPARED_DATA.load()) {
-        return;
-      }
-//      std::cout << "Consumer : Got notified. Now waking up.\n" << std::endl;
-      int32_t size = GLOBAL_EVENT_TYPE_ARRAY.size();
-      dxfeed::jni::ByteReader reader(size, GLOBAL_BYTE_ARRAY.data(), GLOBAL_DOUBLE_ARRAY.data(), GLOBAL_EVENT_TYPE_ARRAY.data());
-      auto events = reader.toEvents();
-      GLOBAL_BYTE_ARRAY.clear();
-      GLOBAL_DOUBLE_ARRAY.clear();
-      GLOBAL_EVENT_TYPE_ARRAY.clear();
-
-      auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(GLOBAL_JAVA_USER_CALLBACK_ADDRESS);
-      void* userData = dxfeed::r_cast<void*>(GLOBAL_JAVA_USER_DATA_ADDRESS);
-      dxfg_event_type_list list = {size, events.data()};
-      pListener(env, &list, userData);
-      for (const auto& event: events) {
-        delete event;
-      }
-
-      locker.unlock(); // Unlock after consumption and user callback invocation.
-      CONSUMER_PROCESSED_DATA.store(true);
-      user_data_sync::PRODUCER_PREPARED_DATA.store(false);
-    }
-  }
-
-
   DxFeed::DxFeed(JNIEnv* env, jobject dxFeed) :
       dxFeed_(env->NewGlobalRef(dxFeed))
-  {
-    consumer_thread = std::thread(consumer);
-  }
+  {}
 
   DxFeed::~DxFeed() {
     internal::jniEnv->DeleteGlobalRef(dxFeed_);
-    user_data_sync::PRODUCER_PREPARED_DATA.store(false);
-    user_data_sync::CONDITION_VAR.notify_one();
-    consumer_thread.join();
   }
 
   dxfg_feed_t* DxFeed::getInstance(JNIEnv* env) {
