@@ -44,7 +44,6 @@ namespace dxfeed {
 
   private:
     jobject dxFeed_ = nullptr;
-    std::thread consumer_thread;
 
     constexpr static const char DX_FEED_CLASS_NAME[] = "com/dxfeed/api/DXFeed";
     constexpr static const char DX_FEED_JNI_CLASS_NAME[] = "com/dxfeed/api/DxFeedJni";

@@ -80,9 +80,9 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   env->ReleasePrimitiveArrayCritical(jBytes, const_cast<char*>(pByteData), 0);
   env->ReleasePrimitiveArrayCritical(jEventTypes, const_cast<char*>(pEventTypes), 0);
 
+  user_data_sync::DATA_IS_READY.store(true);
   locker.unlock(); // Unlock after consumption.
 
-  user_data_sync::PRODUCER_PREPARED_DATA.store(true);
   user_data_sync::CONDITION_VAR.notify_one(); // Notifies one waiting thread for the data
 //  std::cout << "Producer : Blocked for the consumer." << std::endl;
   while (!user_data_sync::CONSUMER_PROCESSED_DATA.load()) {}
@@ -129,9 +129,9 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
   user_data_sync::GLOBAL_JAVA_USER_CALLBACK_ADDRESS = jUserCallback;
   user_data_sync::GLOBAL_JAVA_USER_DATA_ADDRESS = jUserData;
 
+  user_data_sync::DATA_IS_READY.store(true);
   locker.unlock(); // Unlock after consumption.
 
-  user_data_sync::PRODUCER_PREPARED_DATA.store(true);
   user_data_sync::CONDITION_VAR.notify_one(); // Notifies one waiting thread for the data
 //  std::cout << "Producer : Blocked for the consumer." << std::endl;
   while (!user_data_sync::CONSUMER_PROCESSED_DATA.load()) {}
