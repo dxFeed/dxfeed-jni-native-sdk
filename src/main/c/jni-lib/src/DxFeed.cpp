@@ -18,8 +18,9 @@ namespace dxfeed {
   namespace user_data_sync {
     std::mutex LOCK;
     std::condition_variable CONDITION_VAR;
-    std::atomic_bool PRODUCER_PREPARED_DATA { false };
-    std::atomic_bool CONSUMER_PROCESSED_DATA { false };
+    std::atomic_bool CONSUMER_PROCESSED_DATA {false };
+    std::atomic_bool DATA_IS_READY { false };
+    std::atomic_bool NEED_TO_EXIT { false };
     jlong GLOBAL_JAVA_USER_CALLBACK_ADDRESS = 0;
     jlong GLOBAL_JAVA_USER_DATA_ADDRESS = 0;
     std::vector<char> GLOBAL_BYTE_ARRAY;
@@ -37,7 +38,7 @@ namespace dxfeed {
 
 //      std::cout << "Consumer : Sleeping now\n" << std::endl;
       CONDITION_VAR.wait(locker);
-      if (!user_data_sync::PRODUCER_PREPARED_DATA.load()) {
+      if (user_data_sync::NEED_TO_EXIT.load()) {
         return;
       }
 //      std::cout << "Consumer : Got notified. Now waking up.\n" << std::endl;
@@ -58,7 +59,6 @@ namespace dxfeed {
 
       locker.unlock(); // Unlock after consumption and user callback invocation.
       CONSUMER_PROCESSED_DATA.store(true);
-      user_data_sync::PRODUCER_PREPARED_DATA.store(false);
     }
   }
 
@@ -71,8 +71,6 @@ namespace dxfeed {
 
   DxFeed::~DxFeed() {
     internal::jniEnv->DeleteGlobalRef(dxFeed_);
-    user_data_sync::PRODUCER_PREPARED_DATA.store(false);
-    user_data_sync::CONDITION_VAR.notify_one();
     consumer_thread.join();
   }
 
