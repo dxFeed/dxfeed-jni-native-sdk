@@ -6,16 +6,74 @@
 #include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/DxSymbol.hpp"
 #include "dxfeed/listeners/DxEventListener.hpp"
+#include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/UserDataSync.hpp"
 
 namespace dxfeed {
   using namespace jni;
 
+  // todo: make user_data_sync non-global, one per subscription
+  // from "dxfeed/utils/UserDataSync.hpp"
+  namespace user_data_sync {
+    std::mutex LOCK;
+    std::condition_variable CONDITION_VAR;
+    std::atomic_bool CONSUMER_PROCESSED_DATA {false };
+    std::atomic_bool DATA_IS_READY { false };
+    std::atomic_bool NEED_TO_EXIT { false };
+    jlong GLOBAL_JAVA_USER_CALLBACK_ADDRESS = 0;
+    jlong GLOBAL_JAVA_USER_DATA_ADDRESS = 0;
+    std::vector<char> GLOBAL_BYTE_ARRAY;
+    std::vector<double> GLOBAL_DOUBLE_ARRAY;
+    std::vector<char> GLOBAL_EVENT_TYPE_ARRAY;
+  }
+
+  void consumer() {
+    using namespace user_data_sync;
+
+    JNIEnv* env = internal::javaVM->getCurrenThread();
+
+    while (true) {
+      std::unique_lock<std::mutex> locker(LOCK);
+
+//      std::cout << "Consumer : Sleeping now\n" << std::endl;
+      CONDITION_VAR.wait(locker);
+      if (user_data_sync::NEED_TO_EXIT.load()) {
+        return;
+      }
+//      std::cout << "Consumer : Got notified. Now waking up.\n" << std::endl;
+      int32_t size = GLOBAL_EVENT_TYPE_ARRAY.size();
+      dxfeed::jni::ByteReader reader(size, GLOBAL_BYTE_ARRAY.data(), GLOBAL_DOUBLE_ARRAY.data(), GLOBAL_EVENT_TYPE_ARRAY.data());
+      auto events = reader.toEvents();
+      GLOBAL_BYTE_ARRAY.clear();
+      GLOBAL_DOUBLE_ARRAY.clear();
+      GLOBAL_EVENT_TYPE_ARRAY.clear();
+
+      auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(GLOBAL_JAVA_USER_CALLBACK_ADDRESS);
+      void* userData = dxfeed::r_cast<void*>(GLOBAL_JAVA_USER_DATA_ADDRESS);
+      dxfg_event_type_list list = {size, events.data()};
+      pListener(env, &list, userData);
+      for (const auto& event: events) {
+        delete event;
+      }
+
+      locker.unlock(); // Unlock after consumption and user callback invocation.
+      CONSUMER_PROCESSED_DATA.store(true);
+    }
+  }
+
   DxSubscription::DxSubscription(JNIEnv* env, jobject dxSubscription):
     subscription_(env->NewGlobalRef(dxSubscription))
-  {}
+  {
+    consumer_thread = std::thread(consumer);
+  }
 
   DxSubscription::~DxSubscription() {
+//    std::cout << "~DxSubscription" << std::endl;
+    user_data_sync::NEED_TO_EXIT.store(true);
+    user_data_sync::CONDITION_VAR.notify_one();
+    consumer_thread.join();
+//    std::cout << "~consumer_thread joined!" << std::endl;
     internal::jniEnv->DeleteGlobalRef(subscription_);
   }
 
