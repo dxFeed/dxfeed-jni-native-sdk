@@ -273,7 +273,7 @@ Find useful information in our self-service dxFeed Knowledge Base:
   is similar to
   FEED and also connects to the remote data feed provider but is designed for bulk data parsing from
   files
-- [ ] [LOCAL_HUB](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#LOCAL_HUB)
+- [x] [LOCAL_HUB](https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXEndpoint.Role.html#LOCAL_HUB)
   is a local hub
   without the ability to establish network connections. Events published via publisher are delivered
   to local feed only.
