@@ -53,7 +53,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
   # current solution https://stackoverflow.com/questions/50121387/cmake-use-rpath-for-linked-libraries-instead-of-the-full-path
   set_target_properties(${PROJECT_NAME} PROPERTIES
       LINKER_LANGUAGE CXX
-      LINK_FLAGS "-Wl,-rpath,./"
+      LINK_FLAGS "-Wl,-rpath,@executable_path/"
       MACOSX_RPATH TRUE
       SKIP_BUILD_RPATH FALSE
       BUILD_WITH_INSTALL_RPATH TRUE
