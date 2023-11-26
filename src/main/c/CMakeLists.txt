@@ -32,5 +32,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_PATH})
 add_subdirectory(jni-lib)
 add_subdirectory(samples)
 
-add_custom_target(${PROJECT_NAME})
-add_dependencies(${PROJECT_NAME} native_jni time_and_sale)
+add_custom_target(
+    native_jni_lib
+    DEPENDS native_jni)
+add_custom_target(
+    samples_build
+    DEPENDS time_and_sale)
+add_custom_target(
+    ${PROJECT_NAME}
+    DEPENDS native_jni_lib samples_build)
