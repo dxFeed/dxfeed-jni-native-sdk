@@ -30,7 +30,7 @@ namespace dxfeed {
     }
 
     template <class ReturnType, class ... Args> // used when we'd like to cast jobject to ReturnType
-    inline typename std::enable_if_t<std::is_base_of_v<_jobject, std::remove_pointer_t<ReturnType>> or
+    inline typename std::enable_if_t<std::is_base_of_v<_jobject, std::remove_pointer_t<ReturnType>> ||
                                      std::is_base_of_v<_jarray, std::remove_pointer_t<ReturnType>>, ReturnType>
     checkedCallStaticObjectMethodAndCastTo(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
       jobject result = env->CallStaticObjectMethod(clazz, methodId, args...);
@@ -44,7 +44,7 @@ namespace dxfeed {
     }
 
     template <class ReturnType, class ... Args> // used when we'd like to cast jobject to ReturnType
-    inline typename std::enable_if_t<std::is_base_of_v<_jobject, std::remove_pointer_t<ReturnType>> or
+    inline typename std::enable_if_t<std::is_base_of_v<_jobject, std::remove_pointer_t<ReturnType>> ||
                                      std::is_base_of_v<_jarray, std::remove_pointer_t<ReturnType>>, ReturnType>
     checkedCallObjectMethodAndCastTo(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
       jobject result = env->CallObjectMethod(jObject, methodId, args...);

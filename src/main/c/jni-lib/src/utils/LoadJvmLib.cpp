@@ -28,7 +28,6 @@ namespace dxfeed::jni::internal {
       std::string errMsg("Can't load lib from: ");
       throw std::runtime_error(errMsg + path.string());
     }
-    std::cout << "Loaded library: " << path << "\n";
     return libraryHandle;
   }
 
@@ -62,11 +61,3 @@ namespace dxfeed::jni::internal {
     }
   }
 }
-
-// todo: at least need
-//      server/jvm.dll
-//      java.dll
-//      jimage.dll
-//      jsvml.dll
-//      verify.dll
-//      lib/modules

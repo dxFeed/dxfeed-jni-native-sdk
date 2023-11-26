@@ -7,18 +7,17 @@
 #include "api/dxfg_api.h"
 #include "api/dxfg_catch_exception.h"
 #include "dxfeed/utils/JNICommon.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
 
 void printEvent(const dxfg_event_type_t* pEvent) {
-  if (pEvent->clazz == DXFG_EVENT_TIME_AND_SALE) {
-    const auto* time_and_sale = (const dxfg_time_and_sale_t*) pEvent;
+  if (pEvent->clazz == DXFG_EVENT_QUOTE) {
+    const auto* quote = (const dxfg_quote_t*) pEvent;
     printf(
-      "C: TIME_AND_SALE{event_symbol=%s, bid_price=%f, exchange_sale_conditions=%s, buyer=%s, seller=%s}\n",
-      time_and_sale->market_event.event_symbol,
-      time_and_sale->bid_price,
-      time_and_sale->exchange_sale_conditions,
-      time_and_sale->buyer,
-      time_and_sale->seller
+      "C: QUOTE{event_symbol=%s, bid_price=%f, bid_time=%lld, ask_price=%f, ask_time=%lld}\n",
+      quote->market_event.event_symbol,
+      quote->bid_price,
+      quote->bid_time,
+      quote->ask_price,
+      quote->ask_time
     );
   } else {
     printf(
@@ -35,70 +34,44 @@ void c_print(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *
   }
 }
 
-void exceptionSample(graal_isolatethread_t *thread) {
-  const char* className = "java/lang/NoClassDefFoundError";
-  auto exClass = thread->FindClass(className);
-  jint hr = thread->ThrowNew(exClass, "MyException");
-
-  dxfg_exception_t* exception = dxfg_get_and_clear_thread_exception_t(thread);
-  dxfg_print_exception(thread, exception);
-  dxfg_Exception_release(thread, exception);
-
-  auto* pThreadException = dxfeed::jni::internal::dxThreadException;
-  jclass pJclass = pThreadException->getJniClass();
-  jmethodID methodId = dxfeed::jni::safeGetStaticMethodID(thread, pJclass, "exceptionSample", "()V");
-  thread->CallStaticObjectMethod(pJclass, methodId);
-
-  exception = dxfg_get_and_clear_thread_exception_t(thread);
-  dxfg_print_exception(thread, exception);
-  dxfg_Exception_release(thread, exception);
-}
-
 void endpoint_state_change_listener(graal_isolatethread_t *thread, dxfg_endpoint_state_t old_state,
                                     dxfg_endpoint_state_t new_state, void *user_data) {
   printf("C: state %d -> %d\n", old_state, new_state);
 }
 
-void finalize(graal_isolatethread_t *thread, void *userData) {
-  printf("C: finalize\n");
-}
-
-void dxEndpointSubscription(graal_isolatethread_t *thread) {
+void dxEndpointSubscription(graal_isolatethread_t *thread, const char* address, const char* symbol) {
   printf("C: dxEndpointSubscription BEGIN\n");
   dxfg_endpoint_t* endpoint = dxfg_DXEndpoint_create(thread);
-  dxfg_DXEndpoint_connect(thread, endpoint, "demo.dxfeed.com:7300");
+  dxfg_DXEndpoint_connect(thread, endpoint, address);
   dxfg_feed_t* feed = dxfg_DXEndpoint_getFeed(thread, endpoint);
 
-  dxfg_subscription_t* subscriptionTimeAndSale = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_TIME_AND_SALE);
+  dxfg_subscription_t* subscription = dxfg_DXFeed_createSubscription(thread, feed, DXFG_EVENT_QUOTE);
   dxfg_feed_event_listener_t* listener = dxfg_DXFeedEventListener_new(thread, &c_print, nullptr);
-//  dxfg_Object_finalize(thread, (dxfg_java_object_handler*)listener, finalize, nullptr);
-  dxfg_DXFeedSubscription_addEventListener(thread, subscriptionTimeAndSale, listener);
+  dxfg_DXFeedSubscription_addEventListener(thread, subscription, listener);
 
-  dxfg_endpoint_state_change_listener_t* stateListener = dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
-//  dxfg_Object_finalize(thread, stateListener, finalize, nullptr);
+  dxfg_endpoint_state_change_listener_t* stateListener =
+    dxfg_PropertyChangeListener_new(thread, endpoint_state_change_listener, nullptr);
   dxfg_DXEndpoint_addStateChangeListener(thread, endpoint, stateListener);
 
   dxfg_string_symbol_t symbolAAPL;
   symbolAAPL.supper.type = STRING;
-  symbolAAPL.symbol = "AAPL";
+  symbolAAPL.symbol = symbol;
 
-  dxfg_DXFeedSubscription_setSymbol(thread, subscriptionTimeAndSale, &symbolAAPL.supper);
-//  int containQuote = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_TIME_AND_SALE);
-//  int containCandle = dxfg_DXFeedSubscription_containsEventType(thread, subscriptionTimeAndSale, DXFG_EVENT_QUOTE);
-  std::chrono::seconds minutes(10); // time to sleep 24 hours
-  std::this_thread::sleep_for(minutes);
+  dxfg_DXFeedSubscription_setSymbol(thread, subscription, &symbolAAPL.supper);
+  std::chrono::seconds seconds(10);
+  std::this_thread::sleep_for(seconds);
 
   auto event = dxfg_EventType_new(thread, "", DXFG_EVENT_QUOTE);
   int32_t result = dxfg_DXFeed_getLastEvent(thread, feed, event);
   printf("C: result: %d\n", result);
   dxfg_DXFeed_getLastEventIfSubscribed(thread, feed, DXFG_EVENT_QUOTE, &symbolAAPL.supper);
 
-  dxfg_DXFeedSubscription_close(thread, subscriptionTimeAndSale);
+  dxfg_DXFeedSubscription_close(thread, subscription);
   dxfg_DXEndpoint_removeStateChangeListener(thread, endpoint, stateListener);
   dxfg_DXEndpoint_close(thread, endpoint);
   dxfg_JavaObjectHandler_release(thread, &stateListener->handler);
   dxfg_JavaObjectHandler_release(thread, &listener->handler);
-  dxfg_JavaObjectHandler_release(thread, &subscriptionTimeAndSale->handler);
+  dxfg_JavaObjectHandler_release(thread, &subscription->handler);
   dxfg_JavaObjectHandler_release(thread, &endpoint->handler);
   printf("C: dxEndpointSubscription END\n");
 }
@@ -158,20 +131,17 @@ int main(int argc, char** argv) {
     return -1;
   }
   const auto javaHomePath = argv[1];
-  const int vmOptionsSize = 2;
-  const char* jvmArgs[vmOptionsSize] = { "-Xmx12G", "-Dcom.devexperts.qd.impl.matrix.Agent.MaxBufferSize=50000000" };
+  const int vmOptionsSize = 1;
   const auto address = argv[2];
   const auto symbol = argv[3];
+  // const char* jvmArgs = argv[4]; // jvmArgs[0]
+  const char* jvmArgs[vmOptionsSize] = { "-Xmx12G" };
 
-  // init context, connection, subscription
-  std::cout << "Connection to address:" << address << std::endl;
   dxfeed::jni::VMOptions vmOptions { javaHomePath, jvmArgs, vmOptionsSize };
   graal_isolate_t* isolate;
   graal_isolatethread_t* thread;
   int hr = graal_create_isolate(&vmOptions, &isolate, &thread);
   if (hr == JNI_OK) {
-//    dxEndpointSubscription(thread);
-//    tapeFile(thread);
-    exceptionSample(thread);
+    dxEndpointSubscription(thread, address, symbol);
   }
 }

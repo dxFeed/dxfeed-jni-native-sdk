@@ -1,18 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
-#set(CMAKE_OSX_ARCHITECTURES arm64)
-project(native_jni)
-
+project(DxFeedJniNativeSdk)
+enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-message("JNI_INCLUDE: ${JNI_INCLUDE}")
-include_directories(${PROJECT_NAME} INTERFACE ${JNI_INCLUDE})
+message("--- Loading DxFeedJniNativeSdk --- ")
 
 set(API_INCLUDE include)
 include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE})
 
-message("-- Linking native_lib")
-
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if (WIN32)
+  # Set the DLLEXPORT variable to export symbols
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
   set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionWindows.cpp)
 else ()
   set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionMacOS.cpp)
@@ -72,13 +70,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
-set(JAVA_LIB_PATH "${JAVA_HOME}/lib/server")
-message("JAVA_LIB_PATH: ${JAVA_LIB_PATH}")
-
 link_directories(${JAVA_LIB_PATH})
-
-# Include cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
   target_compile_options(${PROJECT_NAME} PRIVATE
@@ -99,6 +91,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
       /W3
       /bigobj
       /EHsc
+      "$<$<CONFIG:Release>:/GL>"
       "$<$<CONFIG:Release>:/Ox>"
       "$<$<CONFIG:Release>:/Ob2>"
       "$<$<CONFIG:Release>:/Ot>"
@@ -114,3 +107,5 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
       -O3
   )
 endif ()
+
+message("--- FinishedLoading DxFeedJniNativeSdk --- ")
