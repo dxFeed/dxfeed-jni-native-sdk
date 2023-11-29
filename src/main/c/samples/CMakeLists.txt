@@ -1,40 +1,30 @@
 cmake_minimum_required(VERSION 3.15)
-
+project(DxFeedSample)
+enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
-project(time_and_sale)
 
-message("sample CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
+message("--- DxFeed samples --- ")
 
 include_directories(${PROJECT_NAME} INTERFACE ../jni-lib/include)
 include_directories(${PROJECT_NAME} INTERFACE include)
 
-message("JNI_INCLUDE: ${JNI_INCLUDE}")
-include_directories(${PROJECT_NAME} INTERFACE ${JNI_INCLUDE})
-
-message("OUTPUT_PATH:" ${OUTPUT_PATH})
-
 link_directories(${OUTPUT_PATH})
 
-add_library(NATIVE_JNI_LIB SHARED IMPORTED)
+add_library(DX_FEED_JNI_NATIVE_SDK SHARED IMPORTED)
 if (WIN32)
-  message("WIN")
-  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.dll)
-  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_IMPLIB ${OUTPUT_PATH}/native_jni.lib)
+  set_property(TARGET DX_FEED_JNI_NATIVE_SDK PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/DxFeedJniNativeSdk.dll)
+  set_property(TARGET DX_FEED_JNI_NATIVE_SDK PROPERTY IMPORTED_IMPLIB ${OUTPUT_PATH}/DxFeedJniNativeSdk.lib)
 elseif (APPLE)
-  message("APPLE")
-  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.dylib)
+  set_property(TARGET DX_FEED_JNI_NATIVE_SDK PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/DxFeedJniNativeSdk.dylib)
 elseif (UNIX)
-  message("UNIX")
-  set_property(TARGET NATIVE_JNI_LIB PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/native_jni.so)
+  set_property(TARGET DX_FEED_JNI_NATIVE_SDK PROPERTY IMPORTED_LOCATION ${OUTPUT_PATH}/DxFeedJniNativeSdk.so)
 endif ()
 
 add_executable(${PROJECT_NAME}
     main.cpp
-    src/utils/StringUtils.cpp
-    src/utils/TimeAndSaleFormatter.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} NATIVE_JNI_LIB)
+target_link_libraries(${PROJECT_NAME} DX_FEED_JNI_NATIVE_SDK)
 
 # ------------ LIB date ------------
 include(FetchContent)
@@ -48,9 +38,6 @@ target_link_libraries(${PROJECT_NAME} date)
 
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-  # todo read: https://dev.my-gate.net/2021/08/04/understanding-rpath-with-cmake/
-
-  # current solution https://stackoverflow.com/questions/50121387/cmake-use-rpath-for-linked-libraries-instead-of-the-full-path
   set_target_properties(${PROJECT_NAME} PROPERTIES
       LINKER_LANGUAGE CXX
       LINK_FLAGS "-Wl,-rpath,@executable_path/"
@@ -94,3 +81,5 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
       -O3
       )
 endif ()
+
+message("--- Finished loading DxFeed samples  --- ")

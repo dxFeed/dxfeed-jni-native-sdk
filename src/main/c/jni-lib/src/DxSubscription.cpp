@@ -42,7 +42,7 @@ namespace dxfeed {
         return;
       }
 //      std::cout << "Consumer : Got notified. Now waking up.\n" << std::endl;
-      int32_t size = GLOBAL_EVENT_TYPE_ARRAY.size();
+      auto size = static_cast<int32_t>(GLOBAL_EVENT_TYPE_ARRAY.size());
       dxfeed::jni::ByteReader reader(size, GLOBAL_BYTE_ARRAY.data(), GLOBAL_DOUBLE_ARRAY.data(), GLOBAL_EVENT_TYPE_ARRAY.data());
       auto events = reader.toEvents();
       GLOBAL_BYTE_ARRAY.clear();

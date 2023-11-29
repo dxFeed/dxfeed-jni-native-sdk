@@ -3,6 +3,7 @@
 #ifndef NATIVE_JNI_SDK_USERDATASYNC_HPP
 #define NATIVE_JNI_SDK_USERDATASYNC_HPP
 
+#include <atomic>
 #include <mutex>
 #include <vector>
 #include <condition_variable>
