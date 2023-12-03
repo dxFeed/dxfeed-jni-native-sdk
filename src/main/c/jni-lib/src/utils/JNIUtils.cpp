@@ -4,6 +4,12 @@
 
 #include "dxfeed/utils/JNIUtils.hpp"
 
+#if _MSC_VER && !__INTEL_COMPILER
+   // for std::getenv
+#pragma warning(disable: 4996)
+
+#endif
+
 namespace dxfeed::jni {
   const char* getJavaHomeFromEnv() {
     const char* javaHome = std::getenv(JAVA_HOME);
