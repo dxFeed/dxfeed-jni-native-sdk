@@ -7,6 +7,9 @@
     <groupId>com.devexperts.qd</groupId>
     <version>0.1.0</version>
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <dxfeed.version>3.316</dxfeed.version>
+    </properties>
 
     <repositories>
         <repository>
@@ -19,13 +22,18 @@
     <dependencies>
         <dependency>
             <groupId>com.devexperts.qd</groupId>
+            <artifactId>qds-monitoring</artifactId>
+            <version>${dxfeed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.devexperts.qd</groupId>
             <artifactId>qds</artifactId>
-            <version>3.316</version>
+            <version>${dxfeed.version}</version>
         </dependency>
         <dependency>
             <groupId>com.devexperts.qd</groupId>
             <artifactId>qds-file</artifactId>
-            <version>3.316</version>
+            <version>${dxfeed.version}</version>
         </dependency>
         <dependency>
             <groupId>com.devexperts.mdd</groupId>
@@ -43,12 +51,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.14.2</version>
         </dependency>
-        <!--        <dependency>-->
-<!--            <groupId>org.apache.maven.plugins</groupId>-->
-<!--            <artifactId>maven-compiler-plugin</artifactId>-->
-<!--            <version>3.11.0</version>-->
-<!--            <type>maven-plugin</type>-->
-<!--        </dependency>-->
     </dependencies>
 
     <properties>
@@ -117,15 +119,6 @@
                     </execution>
                 </executions>
             </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <source>8</source>
-              <target>8</target>
-            </configuration>
-          </plugin>
-
         </plugins>
     </build>
 </project>
