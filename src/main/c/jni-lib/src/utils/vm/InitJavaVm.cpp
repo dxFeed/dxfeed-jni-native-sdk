@@ -94,7 +94,8 @@ namespace internal {
   }
 
   void initJavaVM(VMOptions* params) {
-    loadJVMLibrary(params->javaHome);
+    const char* javaHome = params->javaHome ? params->javaHome : dxfeed::jni::getJavaHomeFromEnv();
+    loadJVMLibrary(javaHome);
 
     auto runtimePath = fs::current_path();
     std::cout << "APP_RUNTIME_PATH: " << runtimePath << std::endl;
