@@ -79,7 +79,9 @@ namespace internal {
   std::string buildClassPath(const fs::path& runtimePath) {
     fs::path jarPath = runtimePath / MY_JAR;
     if (!exists(jarPath)) {
-      throw std::runtime_error("Can't find java libs in " + jarPath.string());
+      auto errMsg = "Can't find java libs in " + jarPath.string();
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
     std::cout << "DxFeed JAR path: " << jarPath << std::endl;
     return "-Djava.class.path=" + jarPath.string();
@@ -119,7 +121,9 @@ namespace internal {
     JavaVM* javaVmPtr;
     jint flag = fCreateJavaVM(&javaVmPtr, (void**) &jniEnv, &vmArgs);
     if (flag == JNI_ERR) {
-      throw std::runtime_error("Error creating VM. Exiting...n");
+      auto errMsg = "Error creating VM. Exiting...n";
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
     javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
     javaLogger = new JavaLogger(jniEnv);

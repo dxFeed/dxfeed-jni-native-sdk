@@ -14,7 +14,9 @@ namespace dxfeed::jni {
   const char* getJavaHomeFromEnv() {
     const char* javaHome = std::getenv(JAVA_HOME);
     if (!javaHome) {
-      throw std::runtime_error("Can't find JAVA_HOME in ENV or in VmOptions!");
+      auto errMsg = "Can't find JAVA_HOME in ENV or in VmOptions!";
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
     std::cout << "Use JAVA_HOME from ENV: " << javaHome << std::endl;
     return javaHome;
