@@ -4,11 +4,20 @@
 
 #include "dxfeed/DxEndpoint.hpp"
 #include "dxfeed/DxEndpointBuilder.hpp"
-#include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
-#include "dxfeed/utils/JNICommon.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+
+graal_isolatethread_t* create_thread() {
+  return create_thread_with_VMOptions(nullptr);
+}
+
+graal_isolatethread_t* create_thread_with_VMOptions(dxfeed::jni::VMOptions* javaVmOptions) {
+  graal_isolate_t* isolate;
+  graal_isolatethread_t* thread;
+  int hr = graal_create_isolate(javaVmOptions, &isolate, &thread);
+  return (hr == JNI_OK) ? thread : nullptr;
+}
 
 dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_isolatethread_t* thread,
                                                                        dxfg_endpoint_state_change_listener_func userFunc,
