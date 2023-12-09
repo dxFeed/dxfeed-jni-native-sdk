@@ -11,7 +11,6 @@ extern "C" {
 #endif
 
 #include "graal_isolate.h"
-#include "dxfeed/utils/JNICommon.hpp"
 
 /** @defgroup Javac
  *  @{
@@ -47,7 +46,7 @@ typedef struct dxfg_string_list {
 */
 
 graal_isolatethread_t* create_thread();
-graal_isolatethread_t* create_thread_with_VMOptions(dxfeed::jni::VMOptions* javaVmOptions);
+graal_isolatethread_t* create_thread_with_VMOptions(graal_create_isolate_params_t* javaVmOptions);
 
 typedef void (* dxfg_finalize_function)(graal_isolatethread_t* thread, void* user_data);
 
