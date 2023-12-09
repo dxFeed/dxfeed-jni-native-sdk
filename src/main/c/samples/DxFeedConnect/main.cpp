@@ -28,7 +28,7 @@ void printUsage() {
     "  DxFeedConnect /Users/userName/Documents/java8/Home demo.dxfeed.com:7300 TimeAndSale MSFT" << std::endl;
 }
 
-void cPrint(graal_isolatethread_t *thread, dxfg_event_type_list *events, void *user_data) {
+void cPrint(graal_isolatethread_t* thread, dxfg_event_type_list* events, void* user_data) {
   for (int i = 0; i < events->size; ++i) {
     dxfg_event_type_t* pEvent = events->elements[i];
     if (pEvent && pEvent->clazz == DXFG_EVENT_QUOTE) {

@@ -104,7 +104,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/src/main/c/build</outputDirectory>
+                            <outputDirectory>${basedir}/src/main/c/demo/build</outputDirectory>
                             <encoding>UTF-8</encoding>
                             <resources>
                                 <resource>

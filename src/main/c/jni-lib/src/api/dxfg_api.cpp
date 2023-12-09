@@ -12,7 +12,7 @@ graal_isolatethread_t* create_thread() {
   return create_thread_with_VMOptions(nullptr);
 }
 
-graal_isolatethread_t* create_thread_with_VMOptions(dxfeed::jni::VMOptions* javaVmOptions) {
+graal_isolatethread_t* create_thread_with_VMOptions(graal_create_isolate_params_t* javaVmOptions) {
   graal_isolate_t* isolate;
   graal_isolatethread_t* thread;
   int hr = graal_create_isolate(javaVmOptions, &isolate, &thread);
