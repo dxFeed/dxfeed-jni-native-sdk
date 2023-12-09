@@ -1,4 +1,4 @@
-message("--- Platform info --- ")
+message("--- Platform info ---")
 message("  Platform = ${CMAKE_SYSTEM_NAME} v${CMAKE_SYSTEM_VERSION}")
 message("  Compiler = ${CMAKE_CXX_COMPILER}")
 message("    ${CMAKE_CXX_COMPILER_ID} v.${CMAKE_CXX_COMPILER_VERSION}")

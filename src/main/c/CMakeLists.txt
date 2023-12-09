@@ -1,51 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project(DxFeedJniNativeSdk)
-enable_language(CXX)
-set(CMAKE_CXX_STANDARD 17)
-
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "valid configurations" FORCE)
-
-if (NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Debug)
-endif ()
-
-include("PlatformInfo.cmake")
-set(CMAKE_USE_RELATIVE_PATHS ON)
-
-message("--- Setting up: found JNI and JRE --- ")
-
-set(JAVA_HOME $ENV{JAVA_HOME})
-message("  JAVA_HOME = " ${JAVA_HOME})
-
-set(JNI_COMMON_INCLUDE ${JAVA_HOME}/include)
-message("  JNI_COMMON_INCLUDE = " ${JNI_COMMON_INCLUDE})
-
-if (WIN32)
-  set(JNI_INCLUDE ${JNI_COMMON_INCLUDE} ${JNI_COMMON_INCLUDE}/win32)
-elseif (APPLE)
-  set(JNI_INCLUDE ${JNI_COMMON_INCLUDE} ${JNI_COMMON_INCLUDE}/darwin)
-elseif (UNIX)
-  set(JNI_INCLUDE ${JNI_COMMON_INCLUDE} ${JNI_COMMON_INCLUDE}/linux)
-endif ()
-
-message("  JNI_INCLUDE: ${JNI_INCLUDE}")
-include_directories(${PROJECT_NAME} INTERFACE ${JNI_INCLUDE})
-
-set(JAVA_LIB_PATH "${JAVA_HOME}/lib/server")
-message("  JAVA_LIB_PATH: ${JAVA_LIB_PATH}")
 
 set(OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build)
-message("  CMAKE_BUILD_RPATH = " ${OUTPUT_PATH})
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_PATH})
-foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
-    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${OUTPUT_PATH})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${OUTPUT_PATH})
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${OUTPUT_PATH})
-endforeach()
+include(cmake/SetupOutputDirectory.cmake)
 
 add_subdirectory(jni-lib)
 add_subdirectory(samples)

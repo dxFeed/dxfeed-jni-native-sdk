@@ -5,12 +5,29 @@ set(CMAKE_CXX_STANDARD 17)
 
 message("--- Loading DxFeedJniNativeSdk --- ")
 
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "valid configurations" FORCE)
+
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif ()
+
 set(API_INCLUDE include)
 include_directories(${PROJECT_NAME} INTERFACE ${API_INCLUDE})
 
+include(../cmake/PlatformInfo.cmake)
+include(../cmake/FindJava.cmake)
+
+if ("${OUTPUT_PATH}" STREQUAL "")
+  # Specify a directory where to build
+  set(OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build)
+  include(../cmake/SetupOutputDirectory.cmake)
+endif ()
+
 if (WIN32)
   # Set the DLLEXPORT variable to export symbols
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  # endif()
   set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionWindows.cpp)
 else ()
   set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionMacOS.cpp)
@@ -91,7 +108,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
       /W3
       /bigobj
       /EHsc
-      "$<$<CONFIG:Release>:/GL>"
+      # "$<$<CONFIG:Release>:/GL>"
       "$<$<CONFIG:Release>:/Ox>"
       "$<$<CONFIG:Release>:/Ob2>"
       "$<$<CONFIG:Release>:/Ot>"
