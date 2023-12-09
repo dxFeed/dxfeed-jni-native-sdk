@@ -19,14 +19,17 @@ namespace dxfeed::jni::internal {
         return dirOrFile.path();
       }
     }
-    throw std::runtime_error("NO_PATH");
+    auto errMsg = "NO_PATH";
+    std::cerr << errMsg << std::endl;
+    throw std::runtime_error(errMsg);
   }
 
   auto loadLibrary(const fs::path& path) {
     auto libraryHandle = loadLibraryPlatform(path.c_str());
     if (!libraryHandle) {
-      std::string errMsg("Can't load lib from: ");
-      throw std::runtime_error(errMsg + path.string());
+      auto errMsg = "Can't load lib from: " + path.string();
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
     return libraryHandle;
   }
@@ -35,8 +38,9 @@ namespace dxfeed::jni::internal {
   SymbolType loadSymbol(HandleT libraryHandle, const char* symbolName) {
     auto symbol = loadSymbolPlatform<SymbolType>(libraryHandle, symbolName);
     if (!symbol) {
-      std::string errMsg("Can't load symbol: ");
-      throw std::runtime_error(errMsg + symbolName);
+      auto errMsg = std::string("Can't load symbol: ") + symbolName;
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
     return symbol;
   }
@@ -47,7 +51,9 @@ namespace dxfeed::jni::internal {
     bool file_exists = fs::exists(javaDllPath);
     auto size = file_exists && fs::is_regular_file(javaDllPath) ? static_cast<int64_t>(fs::file_size(javaDllPath)) : 0;
     if (!size) {
-      throw std::runtime_error(javaDllPath.string() + "doesn't exits");
+      auto errMsg = javaDllPath.string() + "doesn't exits";
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
 
     auto jvmDllPath = recursivelyLookUpLibraryByName(javaHome, JVM_DLL_NAME);
@@ -57,7 +63,9 @@ namespace dxfeed::jni::internal {
     if (fCreateJavaVM == nullptr || findBootClass == nullptr) {
       std::stringstream ss{};
       ss << "GetProcAddress failed: " << r_cast<void*>(fCreateJavaVM) << ", " << r_cast<void*>(findBootClass);
-      throw std::runtime_error(ss.str());
+      auto errMsg = ss.str();
+      std::cerr << errMsg << std::endl;
+      throw std::runtime_error(errMsg);
     }
   }
 }
