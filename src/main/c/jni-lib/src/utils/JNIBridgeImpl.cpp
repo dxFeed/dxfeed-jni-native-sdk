@@ -6,10 +6,10 @@
 
 #include "javah/com_dxfeed_api_DxEndpointJni.h"
 #include "javah/com_dxfeed_api_DxSubscriptionJni.h"
+#include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
-#include "dxfeed/utils/UserDataSync.hpp"
 
 using namespace dxfeed;
 
@@ -54,40 +54,26 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
                                                                     jlong jUserCallback, jlong jUserData)
 {
 
-/** Inside a critical region, native code must not call other JNI functions, or
- * any system call that may cause the current thread to block and wait for another Java thread.
- */
-  user_data_sync::CONSUMER_PROCESSED_DATA.store(false);
-  std::unique_lock<std::mutex> locker(user_data_sync::LOCK);
-
-  jsize byteSize = env->GetArrayLength(jBytes);
-  jsize doubleSize = env->GetArrayLength(jDoubles);
-  jsize eventTypeSize = env->GetArrayLength(jEventTypes);
-
   auto pByteData = (const char*) env->GetPrimitiveArrayCritical(jBytes, nullptr);
   auto pDoubleData = (const double*) env->GetPrimitiveArrayCritical(jDoubles, nullptr);
   auto pEventTypes = (const char*) env->GetPrimitiveArrayCritical(jEventTypes, nullptr);
 
-  user_data_sync::GLOBAL_BYTE_ARRAY.resize(byteSize);
-  user_data_sync::GLOBAL_DOUBLE_ARRAY.resize(doubleSize);
-  user_data_sync::GLOBAL_EVENT_TYPE_ARRAY.resize(eventTypeSize);
-  std::copy(pByteData, pByteData + byteSize, user_data_sync::GLOBAL_BYTE_ARRAY.begin());
-  std::copy(pDoubleData, pDoubleData + doubleSize, user_data_sync::GLOBAL_DOUBLE_ARRAY.begin());
-  std::copy(pEventTypes, pEventTypes + eventTypeSize, user_data_sync::GLOBAL_EVENT_TYPE_ARRAY.begin());
-  user_data_sync::GLOBAL_JAVA_USER_CALLBACK_ADDRESS = jUserCallback;
-  user_data_sync::GLOBAL_JAVA_USER_DATA_ADDRESS = jUserData;
+  dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
+  auto events = reader.toEvents();
 
   env->ReleasePrimitiveArrayCritical(jDoubles, const_cast<double*>(pDoubleData), 0);
   env->ReleasePrimitiveArrayCritical(jBytes, const_cast<char*>(pByteData), 0);
   env->ReleasePrimitiveArrayCritical(jEventTypes, const_cast<char*>(pEventTypes), 0);
 
-  user_data_sync::DATA_IS_READY.store(true);
-  locker.unlock(); // Unlock after consumption.
+  auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
+  auto userData = dxfeed::r_cast<void*>(jUserData);
+  dxfg_event_type_list list = { size, events.data() };
 
-  user_data_sync::CONDITION_VAR.notify_one(); // Notifies one waiting thread for the data
-//  std::cout << "Producer : Blocked for the consumer." << std::endl;
-  while (!user_data_sync::CONSUMER_PROCESSED_DATA.load()) {}
-//  std::cout << "Producer : Released by the consumer." << std::endl;
+  pListener(env, &list, userData);
+
+  for (const auto& event : events) {
+    delete event;
+  }
 }
 
 /**
@@ -118,25 +104,23 @@ void JNICALL JavaCritical_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(jint
     * any system call that may cause the current thread to block and wait for another Java thread.
     */
 
-  user_data_sync::CONSUMER_PROCESSED_DATA.store(false);
-  std::unique_lock<std::mutex> locker(user_data_sync::LOCK);
+  auto pByteData = (const char*) jBytes;
+  auto pDoubleData = (const double*) jDoubles;
+  auto pEventTypes = (const char*) jEventTypes;
 
-  user_data_sync::GLOBAL_BYTE_ARRAY.resize(byteSize);
-  user_data_sync::GLOBAL_DOUBLE_ARRAY.resize(doubleSize);
-  user_data_sync::GLOBAL_EVENT_TYPE_ARRAY.resize(eventTypeSize);
-  std::copy(jBytes, jBytes + byteSize, user_data_sync::GLOBAL_BYTE_ARRAY.begin());
-  std::copy(jDoubles, jDoubles + doubleSize, user_data_sync::GLOBAL_DOUBLE_ARRAY.begin());
-  std::copy(jEventTypes, jEventTypes + eventTypeSize, user_data_sync::GLOBAL_EVENT_TYPE_ARRAY.begin());
-  user_data_sync::GLOBAL_JAVA_USER_CALLBACK_ADDRESS = jUserCallback;
-  user_data_sync::GLOBAL_JAVA_USER_DATA_ADDRESS = jUserData;
+  dxfeed::jni::ByteReader reader(size, pByteData, pDoubleData, pEventTypes);
+  auto events = reader.toEvents();
+  
+  auto pListener = dxfeed::r_cast<dxfg_feed_event_listener_function>(jUserCallback);
+  auto userData = dxfeed::r_cast<void*>(jUserData);
+  dxfg_event_type_list list = { size, events.data() };
 
-  user_data_sync::DATA_IS_READY.store(true);
-  locker.unlock(); // Unlock after consumption.
-
-  user_data_sync::CONDITION_VAR.notify_one(); // Notifies one waiting thread for the data
-//  std::cout << "Producer : Blocked for the consumer." << std::endl;
-  while (!user_data_sync::CONSUMER_PROCESSED_DATA.load()) {}
-//  std::cout << "Producer : Released by the consumer." << std::endl;
+  JNIEnv* thread = dxfeed::jni::internal::javaVM->getCurrenThread();
+  pListener(thread, &list, userData);
+  for (const auto& event : events) {
+    delete event;
+  }
+  dxfeed::jni::internal::javaVM->detachCurrentThread();
 }
 
 #ifdef __cplusplus

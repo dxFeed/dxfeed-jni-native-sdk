@@ -55,7 +55,6 @@ namespace dxfeed {
 
   private:
     jobject subscription_;
-    std::thread consumer_thread;
 
     DxSubscription(JNIEnv* env, jobject dxSubscription);
 

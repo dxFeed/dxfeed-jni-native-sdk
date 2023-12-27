@@ -17,7 +17,6 @@
 #include "dxfeed/events/TradeMapping.hpp"
 #include "dxfeed/events/UnderlyingMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
-#include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
   ByteReader::ByteReader(int size, const char* pByteData, const double* pDoubleData, const char* pEventTypes):
@@ -59,7 +58,13 @@ namespace dxfeed::jni {
 
   const char* ByteReader::readString() {
     int16_t strSize = readInt16_t();
-    const auto result = strSize ? pByteData_ : nullptr;
+    char* result = nullptr;
+    if (strSize) {
+      result = new char[strSize + 1];
+      result[strSize] = 0;
+      memcpy(result, pByteData_, strSize);
+      resources.emplace_back(std::make_unique<const char*>(result));
+    }
     pByteData_ += strSize;
     return result;
   }
