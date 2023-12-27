@@ -21,12 +21,6 @@ namespace dxfeed::jni {
 
     toByteData_ = safeGetMethodID(env_, dxByteBuffer_, "toByteData", "()[B");
     toDoubleData_ = safeGetMethodID(env_, dxDoubleBuffer_, "toDoubleData", "()[D");
-
-    auto jDxFeedJniClazz = safeFindClass(env, NATIVE_EVENTS_LIST_JNI_CLASS_NAME);
-    const char* methodName = "toList";
-    const char* methodSignature = "([B[D[B)Ljava/util/List;";
-    toList_ = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
-    env_->DeleteLocalRef(jDxFeedJniClazz);
   }
 
   NativeEventsList::~NativeEventsList() {
@@ -41,6 +35,13 @@ namespace dxfeed::jni {
     byteBuffer_ = nullptr;
     pEventTypes_ = nullptr;
     env_ = nullptr;
+  }
+
+  void NativeEventsList::initToListMethod(JNIEnv* env) {
+    auto jDxFeedJniClazz = safeFindClass(env, NATIVE_EVENTS_LIST_JNI_CLASS_NAME);
+    const char* methodName = "toList";
+    const char* methodSignature = "([B[D[B)Ljava/util/List;";
+    toList_ = safeGetStaticMethodID(env, jDxFeedJniClazz, methodName, methodSignature);
   }
 
   void NativeEventsList::toNativeEvent(jobject nativeEventsList, dxfg_event_type_t** ppEventType) {
@@ -104,24 +105,24 @@ namespace dxfeed::jni {
     env_->DeleteLocalRef(byteBuffer);
   }
 
-  jobject NativeEventsList::fromNativeEventsList(dxfg_event_type_list* pList) {
+  jobject NativeEventsList::fromNativeEventsList(JNIEnv* env, dxfg_event_type_list* pList) {
     auto size = pList->size;
     ByteWriter writer(size);
     for (int i = 0; i < size; ++i) {
       writer.writeEvent(pList->elements[i]);
     }
 
-    auto jDxFeedJniClazz = safeFindClass(env_, NATIVE_EVENTS_LIST_JNI_CLASS_NAME);
-    auto jByteData = writer.byteData(env_);
-    auto jDoubleData = writer.doubleData(env_);
-    auto jEventTypes = writer.eventTypes(env_);
+    auto jDxFeedJniClazz = safeFindClass(env, NATIVE_EVENTS_LIST_JNI_CLASS_NAME);
+    auto jByteData = writer.byteData(env);
+    auto jDoubleData = writer.doubleData(env);
+    auto jEventTypes = writer.eventTypes(env);
 
-    auto result = checkedCallStaticObjectMethod(env_, jDxFeedJniClazz, toList_, jByteData, jDoubleData, jEventTypes);
+    auto result = checkedCallStaticObjectMethod(env, jDxFeedJniClazz, toList_, jByteData, jDoubleData, jEventTypes);
 
-    env_->DeleteLocalRef(jEventTypes);
-    env_->DeleteLocalRef(jDoubleData);
-    env_->DeleteLocalRef(jByteData);
-    env_->DeleteLocalRef(jDxFeedJniClazz);
+    env->DeleteLocalRef(jEventTypes);
+    env->DeleteLocalRef(jDoubleData);
+    env->DeleteLocalRef(jByteData);
+    env->DeleteLocalRef(jDxFeedJniClazz);
 
     return result;
   }

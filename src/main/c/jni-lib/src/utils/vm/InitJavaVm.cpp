@@ -10,6 +10,7 @@
 namespace fs = std::filesystem;
 
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/utils/NativeEventsList.hpp"
 
 namespace dxfeed::jni {
   const JavaLogger* javaLogger = nullptr;
@@ -129,6 +130,7 @@ namespace internal {
     }
     javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
     javaLogger = new JavaLogger(jniEnv);
+    NativeEventsList::initToListMethod(jniEnv);
 
     loadJNILibrary(jniEnv);
   }
