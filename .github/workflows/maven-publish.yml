@@ -1,22 +1,21 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
-
-name: Maven Package
+name: Package DxFeedJniNativeSdk artifacts
 
 on:
   push:
     branches:
       - 'main'
+    tags:
+      - "v*.*.*"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+  build_jar:
+    name: Build dxfeed-jni-native-sdk JAR
+    runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
@@ -29,10 +28,61 @@ jobs:
     - run: mkdir staging && cp target/dxfeed-jni-native-sdk-*.jar staging
     - uses: actions/upload-artifact@v4
       with:
-        name: Package
+        name: dxfeed-jni-native-sdk-jar
         path: staging
-    
-    - name: Publish package
-      run: mvn -B deploy
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        overwrite: true
+
+  build_native:
+    name: Build dxfeed-jni-native-sdk shared native library on ${{ matrix.OS_NAME }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            OS_NAME: win-x64
+            script_name: cmd.exe /c build_release.cmd
+            working_directory: src\main\c\jni-lib
+          - os: ubuntu-latest
+            OS_NAME: linux-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/jni-lib
+          - os: macos-latest
+            OS_NAME: osx-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/jni-lib
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Build DxFeedJniNativeSdk
+      run: ${{ matrix.script_name }}
+      working-directory: ${{ matrix.working_directory }}
+
+    - run: mkdir staging && cp ${{ matrix.working_directory }}/build/DxFeedJniNativeSdk.* staging
+    - uses: actions/upload-artifact@v4
+      with:
+        name: DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+        path: staging
+        overwrite: true
+
+  release:
+    needs: [build_jar, build_native]
+    if: (startsWith(github.event.ref, 'refs/tags/'))
+    name: Release
+    runs-on: macos-latest
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Upload Tools
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        generate_release_notes: true
+        files: |
+          ${{ github.workspace }}/dxfeed-jni-native-sdk-jar/*
+          ${{ github.workspace }}/DxFeedJniNativeSdk-win-x64/*.dll
+          ${{ github.workspace }}/DxFeedJniNativeSdk-linux-x64/*.so
+          ${{ github.workspace }}/DxFeedJniNativeSdk-osx-x64/*.dylib
