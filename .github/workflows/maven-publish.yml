@@ -1,0 +1,153 @@
+name: Package DxFeedJniNativeSdk artifacts
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build_jar:
+    name: Build dxfeed-jni-native-sdk JAR
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'corretto'
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - run: mkdir release && cp target/dxfeed-jni-native-sdk-*.jar ./release
+    - uses: actions/upload-artifact@v4
+      with:
+        name: dxfeed-jni-native-sdk-jar
+        path: release
+        overwrite: true
+
+  build_native_sdk:
+    name: Build dxfeed-jni-native-sdk shared native library on ${{ matrix.OS_NAME }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            OS_NAME: win-x64
+            script_name: cmd.exe /c build_release.cmd
+            working_directory: src\main\c\jni-lib
+          - os: ubuntu-latest
+            OS_NAME: linux-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/jni-lib
+          - os: macos-latest
+            OS_NAME: osx-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/jni-lib
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Build DxFeedJniNativeSdk
+        run: ${{ matrix.script_name }}
+        working-directory: ${{ matrix.working_directory }}
+
+      - run: mkdir release && cp ${{ matrix.working_directory }}/build/DxFeedJniNativeSdk.* ./release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+          path: release
+          overwrite: true
+
+  build_sample:
+    needs: [build_jar, build_native_sdk]
+    name: Build DxFeedConnect sample on ${{ matrix.OS_NAME }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.working_directory }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            OS_NAME: win-x64
+            script_name: cmd.exe /c build_release.cmd
+            working_directory: src\main\c\samples\DxFeedConnect
+            exec_name: DxFeedConnect.exe
+          - os: ubuntu-latest
+            OS_NAME: linux-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/samples/DxFeedConnect
+            exec_name: DxFeedConnect
+          - os: macos-latest
+            OS_NAME: osx-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/samples/DxFeedConnect
+            exec_name: DxFeedConnect
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+
+    - run: ls ${{ github.workspace }}/dxfeed-jni-native-sdk-jar
+    - run: mkdir build && cp ${{ github.workspace }}/dxfeed-jni-native-sdk-jar/dxfeed-jni-native-sdk-0.1.0.jar ./build
+    - run: ls ./build
+
+    - run: ls ${{ github.workspace }}/DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+    - run: cp ${{ github.workspace }}/DxFeedJniNativeSdk-${{ matrix.OS_NAME }}/DxFeedJniNativeSdk.* ./build
+    - run: ls ./build
+
+    - name: Build DxFeedConnect
+      run: ${{ matrix.script_name }}
+      working-directory: ${{ matrix.working_directory }}
+
+    - run: ls ./build
+
+    - run: mkdir ${{ github.workspace }}/release
+    - run: cp ./build/${{ matrix.exec_name }} ${{ github.workspace }}/release
+    - run: cp ./build/DxFeedJniNativeSdk.* ${{ github.workspace }}/release
+    - run: cp ./build/dxfeed-jni-native-sdk-0.1.0.jar ${{ github.workspace }}/release
+    - run: ls ${{ github.workspace }}/release
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+        path: release
+        overwrite: true
+
+  release:
+    needs: build_sample
+    if: (startsWith(github.event.ref, 'refs/tags/'))
+    name: Release
+    runs-on: macos-latest
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Zip win-x64 artifact for deployment
+      run: zip DxFeedConnect-win-x64.zip DxFeedJniNativeSdk-win-x64/* -r
+
+    - name: Zip lin-x64 artifact for deployment
+      run: zip DxFeedConnect-linux-x64.zip DxFeedJniNativeSdk-linux-x64/* -r
+
+    - name: Zip win-x64 artifact for deployment
+      run: zip DxFeedConnect-osx-x64.zip DxFeedJniNativeSdk-osx-x64/* -r
+
+    - name: Upload Tools
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        generate_release_notes: true
+        files: |
+          *.zip
