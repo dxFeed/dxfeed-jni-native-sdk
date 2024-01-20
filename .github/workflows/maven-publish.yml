@@ -26,8 +26,13 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - run: mkdir staging && cp target/*.jar staging
+    - run: mkdir staging && cp target/dxfeed-jni-native-sdk-*.jar staging
     - uses: actions/upload-artifact@v4
       with:
         name: Package
         path: staging
+    
+    - name: Publish package
+      run: mvn -B deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
