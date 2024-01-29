@@ -25,14 +25,14 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - run: mkdir staging && cp target/dxfeed-jni-native-sdk-*.jar staging
+    - run: mkdir release && cp target/dxfeed-jni-native-sdk-*.jar ./release
     - uses: actions/upload-artifact@v4
       with:
         name: dxfeed-jni-native-sdk-jar
-        path: staging
+        path: release
         overwrite: true
 
-  build_native:
+  build_native_sdk:
     name: Build dxfeed-jni-native-sdk shared native library on ${{ matrix.OS_NAME }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -52,37 +52,96 @@ jobs:
             working_directory: src/main/c/jni-lib
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Build DxFeedJniNativeSdk
+        run: ${{ matrix.script_name }}
+        working-directory: ${{ matrix.working_directory }}
+
+      - run: mkdir release && cp ${{ matrix.working_directory }}/build/DxFeedJniNativeSdk.* ./release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+          path: release
+          overwrite: true
+
+  build_sample:
+    needs: [build_jar, build_native_sdk]
+    name: Build DxFeedConnect sample on ${{ matrix.OS_NAME }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.working_directory }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            OS_NAME: win-x64
+            script_name: cmd.exe /c build_release.cmd
+            working_directory: src\main\c\samples\DxFeedConnect
+            exec_name: DxFeedConnect.exe
+          - os: ubuntu-latest
+            OS_NAME: linux-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/samples/DxFeedConnect
+            exec_name: DxFeedConnect
+          - os: macos-latest
+            OS_NAME: osx-x64
+            script_name: sh build_release.sh
+            working_directory: src/main/c/samples/DxFeedConnect
+            exec_name: DxFeedConnect
+
+    steps:
     - name: Checkout
       uses: actions/checkout@master
 
-    - name: Build DxFeedJniNativeSdk
-      run: ${{ matrix.script_name }}
-      working-directory: ${{ matrix.working_directory }}
-
-    - run: mkdir staging && cp ${{ matrix.working_directory }}/build/DxFeedJniNativeSdk.* staging
-    - uses: actions/upload-artifact@v4
-      with:
-        name: DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
-        path: staging
-        overwrite: true
-
-  release:
-    needs: [build_jar, build_native]
-    if: (startsWith(github.event.ref, 'refs/tags/'))
-    name: Release
-    runs-on: macos-latest
-
-    steps:
     - name: Download artifacts
       uses: actions/download-artifact@v4
 
-    - name: Upload Tools
-      uses: softprops/action-gh-release@v1
+    - run: ls ${{ github.workspace }}/dxfeed-jni-native-sdk-jar
+    - run: mkdir build && cp ${{ github.workspace }}/dxfeed-jni-native-sdk-jar/dxfeed-jni-native-sdk-0.1.0.jar ./build
+    - run: ls ./build
+
+    - run: ls ${{ github.workspace }}/DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+    - run: cp ${{ github.workspace }}/DxFeedJniNativeSdk-${{ matrix.OS_NAME }}/DxFeedJniNativeSdk.* ./build
+    - run: ls ./build
+
+    - name: Build DxFeedConnect
+      run: ${{ matrix.script_name }}
+      working-directory: ${{ matrix.working_directory }}
+
+    - run: ls ./build
+
+    - run: mkdir ${{ github.workspace }}/release
+    - run: cp ./build/${{ matrix.exec_name }} ${{ github.workspace }}/release
+    - run: cp ./build/DxFeedJniNativeSdk.* ${{ github.workspace }}/release
+    - run: cp ./build/dxfeed-jni-native-sdk-0.1.0.jar ${{ github.workspace }}/release
+    - run: ls ${{ github.workspace }}/release
+
+    - uses: actions/upload-artifact@v4
       with:
-        prerelease: true
-        generate_release_notes: true
-        files: |
-          ${{ github.workspace }}/dxfeed-jni-native-sdk-jar/*
-          ${{ github.workspace }}/DxFeedJniNativeSdk-win-x64/*.dll
-          ${{ github.workspace }}/DxFeedJniNativeSdk-linux-x64/*.so
-          ${{ github.workspace }}/DxFeedJniNativeSdk-osx-x64/*.dylib
+        name: DxFeedJniNativeSdk-${{ matrix.OS_NAME }}
+        path: release
+        overwrite: true
+
+#  release:
+#    needs: build_native
+#    if: (startsWith(github.event.ref, 'refs/tags/'))
+#    name: Release
+#    runs-on: macos-latest
+#
+#    steps:
+#    - name: Download artifacts
+#      uses: actions/download-artifact@v4
+#
+#    - name: Upload Tools
+#      uses: softprops/action-gh-release@v1
+#      with:
+#        prerelease: true
+#        generate_release_notes: true
+#        files: |
+#          ${{ github.workspace }}/dxfeed-jni-native-sdk-jar/*
+#          ${{ github.workspace }}/DxFeedJniNativeSdk-win-x64/*.dll
+#          ${{ github.workspace }}/DxFeedJniNativeSdk-linux-x64/*.so
+#          ${{ github.workspace }}/DxFeedJniNativeSdk-osx-x64/*.dylib
