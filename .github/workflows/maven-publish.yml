@@ -125,23 +125,29 @@ jobs:
         path: release
         overwrite: true
 
-#  release:
-#    needs: build_native
-#    if: (startsWith(github.event.ref, 'refs/tags/'))
-#    name: Release
-#    runs-on: macos-latest
-#
-#    steps:
-#    - name: Download artifacts
-#      uses: actions/download-artifact@v4
-#
-#    - name: Upload Tools
-#      uses: softprops/action-gh-release@v1
-#      with:
-#        prerelease: true
-#        generate_release_notes: true
-#        files: |
-#          ${{ github.workspace }}/dxfeed-jni-native-sdk-jar/*
-#          ${{ github.workspace }}/DxFeedJniNativeSdk-win-x64/*.dll
-#          ${{ github.workspace }}/DxFeedJniNativeSdk-linux-x64/*.so
-#          ${{ github.workspace }}/DxFeedJniNativeSdk-osx-x64/*.dylib
+  release:
+    needs: build_sample
+    if: (startsWith(github.event.ref, 'refs/tags/'))
+    name: Release
+    runs-on: macos-latest
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Zip win-x64 artifact for deployment
+      run: zip DxFeedConnect-win-x64.zip DxFeedJniNativeSdk-win-x64/* -r
+
+    - name: Zip lin-x64 artifact for deployment
+      run: zip DxFeedConnect-linux-x64.zip DxFeedJniNativeSdk-linux-x64/* -r
+
+    - name: Zip win-x64 artifact for deployment
+      run: zip DxFeedConnect-osx-x64.zip DxFeedJniNativeSdk-osx-x64/* -r
+
+    - name: Upload Tools
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        generate_release_notes: true
+        files: |
+          *.zip
