@@ -17,6 +17,7 @@ using namespace dxfeed;
 extern "C" {
 #endif
 
+#if !defined(_WIN32)
 // https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/invocation.html#JNJI_OnLoad
 // -> register native method in created JNEEnv of VM when JNI lib is loaded
 JNIEXPORT
@@ -34,6 +35,7 @@ JNIEXPORT
 void JNI_OnUnload(JavaVM* vm, void* reserved) {
   fprintf(stdout, "JNI_OnUnload\n");
 }
+#endif
 
 JNIEXPORT
 void JNICALL Java_com_dxfeed_api_DxEndpointJni_nOnStateChangeListener(JNIEnv* env, jclass,
