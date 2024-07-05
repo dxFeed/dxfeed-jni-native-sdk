@@ -33,10 +33,6 @@ namespace dxfeed {
     static dxfg_indexed_event_subscription_symbol_t* fromIndexedEventSubscriptionSymbol(JNIEnv* env, jobject jSymbol,
                                                                                         jclass indexedEventSubClass);
 
-    // allocated new memory, for const char*, need to be deallocated manually
-    static const char* jStringToUTF8(JNIEnv* env, jstring jString);
-    static const char* copy(const char* str);
-
     constexpr static const char DX_SYMBOL_JNI_CLASS_NAME[] = "com/dxfeed/api/DxSymbolJni";
     constexpr static const char STRING_SYMBOL_JNI_CLASS_NAME[] = "java/lang/String";
     constexpr static const char WILDCARD_SYMBOL_JNI_CLASS_NAME[] = "com/dxfeed/api/osub/WildcardSymbol";

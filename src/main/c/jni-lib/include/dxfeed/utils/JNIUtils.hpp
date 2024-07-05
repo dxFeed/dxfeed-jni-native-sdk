@@ -16,10 +16,14 @@ namespace dxfeed {
   namespace jni {
     jclass safeFindClass(JNIEnv* env, const char* clazzName);
 
-    typedef jmethodID (JNIEnv::*JMethodIdProvider)(jclass, const char*, const char*);
     jmethodID safeGetStaticMethodID(JNIEnv*, jclass, const char* methodName, const char* signature);
     jmethodID safeGetMethodID(JNIEnv* env, jclass, const char* methodName, const char* signature);
+    jfieldID safeGetStaticFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature);
     jfieldID safeGetFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature);
+
+    // allocated new memory, for const char*, need to be deallocated manually
+    const char* jStringToUTF8(JNIEnv* env, jstring jString);
+    const char* copy(const char* str);
 
     template <class ... Args>
     inline void checkedCallStaticVoidMethod(JNIEnv* env, jclass clazz, jmethodID methodId, Args ... args) {
@@ -91,6 +95,18 @@ namespace dxfeed {
         dxfg_print_exception(env, pException);
         dxfg_Exception_release(env, pException);
       }
+    }
+
+    template <class ... Args>
+    inline jlong checkedCallLongMethod(JNIEnv* env, jobject jObject, jmethodID methodId, Args ... args) {
+      auto result = env->CallLongMethod(jObject, methodId, args...);
+      dxfg_exception_t* pException =dxfg_get_and_clear_thread_exception_t(env);
+      if (pException) {
+        dxfg_print_exception(env, pException);
+        dxfg_Exception_release(env, pException);
+        return 0;
+      }
+      return result;
     }
 
     template <class ... Args>

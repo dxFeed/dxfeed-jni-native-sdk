@@ -14,6 +14,7 @@
 #include "dxfeed/utils/java/JavaLangClass.hpp"
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/java/JavaLogger.hpp"
+#include "dxfeed/utils/java/DxTimeFormat.hpp"
 #include "dxfeed/utils/vm/JavaVmInstance.hpp"
 
 namespace dxfeed::jni {

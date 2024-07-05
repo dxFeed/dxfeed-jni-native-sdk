@@ -47,6 +47,10 @@ typedef struct dxfg_string_list {
   } dxfg_input_stream_t;
 */
 
+typedef struct dxfg_time_format_t {
+  dxfg_java_object_handler handler;
+} dxfg_time_format_t;
+
 graal_isolatethread_t* create_thread();
 graal_isolatethread_t* create_thread_with_VMOptions(graal_create_isolate_params_t* javaVmOptions);
 

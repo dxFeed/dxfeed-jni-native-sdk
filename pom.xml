@@ -29,6 +29,11 @@
     <dependencies>
         <dependency>
             <groupId>com.devexperts.qd</groupId>
+            <artifactId>dxlib</artifactId>
+            <version>3.333</version>
+        </dependency>
+        <dependency>
+            <groupId>com.devexperts.qd</groupId>
             <artifactId>qds-monitoring</artifactId>
             <version>${dxfeed.version}</version>
         </dependency>

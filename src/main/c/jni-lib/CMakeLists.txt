@@ -52,6 +52,7 @@ set(SOURCE_FILES
     src/api/dxfg_publisher.cpp
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp
+    src/api/dxfg_time_format.cpp
     src/api/graal_isolate.cpp
     src/events/CandleMapping.cpp
     src/events/ConfigurationMapping.cpp
@@ -80,6 +81,7 @@ set(SOURCE_FILES
     src/utils/java/JavaLangClass.cpp
     src/utils/java/JavaLangSystem.cpp
     src/utils/java/JavaLogger.cpp
+    src/utils/java/DxTimeFormat.cpp
     src/utils/vm/InitJavaVm.cpp
     src/utils/vm/JavaVmInstance.cpp
     ${CRITICAL_SECTION_IMPL}
