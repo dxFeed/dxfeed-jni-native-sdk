@@ -24,6 +24,7 @@ namespace internal {
   JNIEnv* jniEnv = nullptr;
   JVMInstance* javaVM = nullptr;
   JavaLangSystem* javaLangSystem = nullptr;
+  JavaTimeFormat* javaTimeFormat = nullptr;
   DxThreadException* dxThreadException = nullptr;
   const JavaLangClass* javaLangClass = nullptr;
 
@@ -70,6 +71,7 @@ namespace internal {
     dxThreadException = new DxThreadException(env);
     javaLangClass = new JavaLangClass(env);
     javaLangSystem = new JavaLangSystem(env);
+    javaTimeFormat = new JavaTimeFormat(env);
     loadLibrary(env, dllFilePath);
     javaLogger->trace(env, "Loaded DxFeed lib: %", dllFilePath);
     auto property = std::make_unique<const char*>(
