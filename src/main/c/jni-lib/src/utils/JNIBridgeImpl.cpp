@@ -8,10 +8,32 @@
 #include "javah/com_dxfeed_api_DxSubscriptionJni.h"
 #include "dxfeed/listeners/DxEventListener.hpp"
 #include "dxfeed/listeners/DxStateChangeListener.hpp"
+#include "dxfeed/listeners/DxSubscriptionChangeListener.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
+#include "dxfeed/DxSymbol.hpp"
 
 using namespace dxfeed;
+
+template <class T>
+void onSymbolActionCallback(JNIEnv* env, int size, jobjectArray jArray, T onSymbolsCallback, jlong jUserData) {
+  auto list = new dxfg_symbol_list();
+  list->size = size;
+  list->elements = new dxfg_symbol_t*[size];
+  for (int i = 0; i < size; ++i) {
+    auto jObject = env->GetObjectArrayElement(jArray, i);
+    list->elements[i] = DxSymbol::fromJavaObject(env, jObject);
+    env->DeleteLocalRef(jObject);
+  }
+
+  auto userData = dxfeed::r_cast<void*>(jUserData);
+  onSymbolsCallback(env, list, userData);
+
+  for (int i = 0; i < size; ++i) {
+    delete list->elements[i];
+  }
+  delete[] list->elements;
+}
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,6 +98,34 @@ void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnEventListener(JNIEnv* env,
   for (const auto& event : events) {
     delete event;
   }
+}
+
+JNIEXPORT
+void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnSymbolsAdded(JNIEnv* env, jclass, jint size, jobjectArray jArray,
+                                                                   jlong jSymbolAddedCallback, jlong jUserData
+) {
+  auto onSymbolAdded =
+      dxfeed::r_cast<dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved>(jSymbolAddedCallback);
+  onSymbolActionCallback(env, size, jArray, onSymbolAdded, jUserData);
+}
+
+JNIEXPORT
+void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnSymbolsRemoved(JNIEnv* env, jclass, jint size, jobjectArray jArray,
+                                                                   jlong jSymbolRemovedCallback, jlong jUserData)
+{
+  auto onSymbolRemoved =
+      dxfeed::r_cast<dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved>(jSymbolRemovedCallback);
+  onSymbolActionCallback(env, size, jArray, onSymbolRemoved, jUserData);
+}
+
+JNIEXPORT
+void JNICALL Java_com_dxfeed_api_DxSubscriptionJni_nOnSubscriptionClosed(JNIEnv* env, jclass,
+                                                                         jlong jSubscriptionRemovedCallback, jlong jUserData
+) {
+  auto onSubscriptionClosed =
+    dxfeed::r_cast<dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed>(jSubscriptionRemovedCallback);
+  auto userData = dxfeed::r_cast<void*>(jUserData);
+  onSubscriptionClosed(env, userData);
 }
 
 /**

@@ -4,6 +4,7 @@
 
 package com.dxfeed.api;
 
+import com.dxfeed.api.osub.ObservableSubscriptionChangeListener;
 import com.dxfeed.event.EventType;
 
 import java.util.Iterator;
@@ -39,6 +40,49 @@ public class DxSubscriptionJni {
     }
   }
 
+  private static long newChangeListener(
+      long symbolAddedCallback,
+      long symbolRemovedCallback,
+      long subscriptionRemovedCallback,
+      long userData
+  ) {
+    long id = DxFeedJni.nextHandleId();
+    ObservableSubscriptionChangeListener listener = new ObservableSubscriptionChangeListener() {
+      @Override
+      public void symbolsAdded(Set<?> symbols) {
+        nOnSymbolsAdded(symbols.size(), symbols.toArray(), symbolAddedCallback, userData);
+      }
+
+      @Override
+      public void symbolsRemoved(Set<?> symbols) {
+        nOnSymbolsRemoved(symbols.size(), symbols.toArray(), symbolRemovedCallback, userData);
+      }
+
+      @Override
+      public void subscriptionClosed() {
+        nOnSubscriptionClosed(subscriptionRemovedCallback, userData);
+      }
+    };
+    DxFeedJni.nativeObjectsMap.put(id, listener);
+    return id;
+  }
+
+  private static void addChangeListener(DXFeedSubscription<EventType<?>> sub, long nativeHandleId) {
+    ObservableSubscriptionChangeListener stateChangeListener =
+        (ObservableSubscriptionChangeListener) DxFeedJni.nativeObjectsMap.get(nativeHandleId);
+    if (stateChangeListener != null) {
+      sub.addChangeListener(stateChangeListener);
+    }
+  }
+
+  private static void removeChangeListener(DXFeedSubscription<EventType<?>> sub, long nativeHandleId) {
+    ObservableSubscriptionChangeListener stateChangeListener =
+        (ObservableSubscriptionChangeListener) DxFeedJni.nativeObjectsMap.remove(nativeHandleId);
+    if (stateChangeListener != null) {
+      sub.removeChangeListener(stateChangeListener);
+    }
+  }
+
   private static byte[] getEventTypes(DXFeedSubscription<EventType<?>> sub) {
     Set<Class<? extends EventType<?>>> eventTypes = sub.getEventTypes();
     Iterator<Class<? extends EventType<?>>> iterator = eventTypes.iterator();
@@ -60,4 +104,7 @@ public class DxSubscriptionJni {
 
   private static native void nOnEventListener(int size, byte[] byteData, double[] doubleData,
                                               byte[] pEventTypes, long userCallback, long userData);
+  private static native void nOnSymbolsAdded(int size, Object[] symbols, long symbolAddedCallback, long userData);
+  private static native void nOnSymbolsRemoved(int size, Object[] symbols, long symbolRemovedCallback, long userData);
+  private static native void nOnSubscriptionClosed(long subscriptionRemovedCallback, long userData);
 }

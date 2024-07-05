@@ -4,6 +4,7 @@
 
 #include "api/dxfg_subscription.h"
 #include "dxfeed/DxSubscription.hpp"
+#include "dxfeed/listeners/DxSubscriptionChangeListener.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 dxfg_subscription_t* dxfg_DXFeedSubscription_new(graal_isolatethread_t* thread, dxfg_event_clazz_t eventClass) {
@@ -137,4 +138,34 @@ int32_t dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thr
                                                       dxfg_time_series_subscription_t* sub, int64_t fromTime) {
   auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
   return pDxSubscription->setTime(thread, fromTime);
+}
+
+dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChangeListener_new(
+    graal_isolatethread_t *thread,
+    dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded fSymbolsAdded,
+    dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved fSymbolsRemoved,
+    dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed fSubscriptionClosed,
+    void* userData
+) {
+  auto* pDxStateChangeListener = dxfeed::DxSubscriptionChangeListener::create(
+      thread, fSymbolsAdded, fSymbolsRemoved, fSubscriptionClosed, userData);
+  return dxfeed::r_cast<dxfg_observable_subscription_change_listener_t*>(pDxStateChangeListener);
+}
+
+int32_t dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t* thread,
+                                                  dxfg_subscription_t* sub,
+                                                  dxfg_observable_subscription_change_listener_t* listener) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
+  auto* subChangeListener = dxfeed::r_cast<dxfeed::DxSubscriptionChangeListener*>(listener);
+  pDxSubscription->addChangeListener(thread, subChangeListener);
+  return JNI_OK;
+}
+
+int32_t dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t* thread,
+                                                     dxfg_subscription_t* sub,
+                                                     dxfg_observable_subscription_change_listener_t* listener) {
+  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
+  auto* subChangeListener = dxfeed::r_cast<dxfeed::DxSubscriptionChangeListener*>(listener);
+  pDxSubscription->removeChangeListener(thread, subChangeListener);
+  return JNI_OK;
 }
