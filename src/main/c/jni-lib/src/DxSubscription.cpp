@@ -8,6 +8,7 @@
 #include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/DxSymbol.hpp"
 #include "dxfeed/listeners/DxEventListener.hpp"
+#include "dxfeed/listeners/DxSubscriptionChangeListener.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed {
@@ -121,6 +122,24 @@ namespace dxfeed {
   void DxSubscription::removeListener(JNIEnv* env, DxEventListener* listener) {
     auto jDxSubscriptionJniClass = safeFindClass(env, DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME);
     const char* methodName = "removeEventListener";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;J)V";
+    auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
+    checkedCallStaticVoidMethod(env, jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);
+    env->DeleteLocalRef(jDxSubscriptionJniClass);
+  }
+
+  void DxSubscription::addChangeListener(JNIEnv* env, DxSubscriptionChangeListener* listener) {
+    auto jDxSubscriptionJniClass = safeFindClass(env, DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME);
+    const char* methodName = "addChangeListener";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;J)V";
+    auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
+    checkedCallStaticVoidMethod(env, jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);
+    env->DeleteLocalRef(jDxSubscriptionJniClass);
+  }
+
+  void DxSubscription::removeChangeListener(JNIEnv* env, DxSubscriptionChangeListener* listener) {
+    auto jDxSubscriptionJniClass = safeFindClass(env, DX_FEED_SUBSCRIPTION_JNI_CLASS_NAME);
+    const char* methodName = "removeChangeEventListener";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;J)V";
     auto methodId = safeGetStaticMethodID(env, jDxSubscriptionJniClass, methodName, methodSignature);
     checkedCallStaticVoidMethod(env, jDxSubscriptionJniClass, methodId, subscription_, listener->javaListenerId_);

@@ -464,24 +464,6 @@ dxfg_indexed_event_source_t*  dxfg_IndexedEvent_getSource(graal_isolatethread_t*
 dxfg_indexed_event_source_t*  dxfg_IndexedEventSource_new(graal_isolatethread_t* thread, const char* source); // if source == nullptr, then return IndexedEventSource.DEFAULT else OrderSource
 int32_t                       dxfg_IndexedEventSource_release(graal_isolatethread_t* thread, dxfg_indexed_event_source_t* source);
 
-/* todo: implement later
-typedef struct dxfg_observable_subscription_change_listener_t {
-    dxfg_java_object_handler handler;
-} dxfg_observable_subscription_change_listener_t;
-
-typedef void (*dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded)(graal_isolatethread_t *thread, dxfg_symbol_list *symbols, void *user_data);
-typedef void (*dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved)(graal_isolatethread_t *thread, dxfg_symbol_list *symbols, void *user_data);
-typedef void (*dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed)(graal_isolatethread_t *thread, void *user_data);
-
-dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChangeListener_new(
-    graal_isolatethread_t *thread,
-    dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded function_symbolsAdded,
-    dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved function_symbolsRemoved,
-    dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed function_subscriptionClosed,
-    void *user_data
-);
-*/
-
 #ifdef __cplusplus
 }
 #endif

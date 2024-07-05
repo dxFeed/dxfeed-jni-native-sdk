@@ -69,6 +69,7 @@ set(SOURCE_FILES
     src/events/UnderlyingMapping.cpp
     src/listeners/DxEventListener.cpp
     src/listeners/DxStateChangeListener.cpp
+    src/listeners/DxSubscriptionChangeListener.cpp
     src/utils/ByteReader.cpp
     src/utils/ByteWriter.cpp
     src/utils/JNIBridgeImpl.cpp

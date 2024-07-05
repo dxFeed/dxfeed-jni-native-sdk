@@ -13,6 +13,7 @@
 
 namespace dxfeed {
   struct DxEventListener;
+  struct DxSubscriptionChangeListener;
 
   struct DxSubscription final {
     constexpr static const char JAVA_SUBSCRIPTION_CLASS_NAME[] = "com.dxfeed.api.DXFeedSubscription";
@@ -35,6 +36,8 @@ namespace dxfeed {
     void close(JNIEnv* env);
     void addListener(JNIEnv* env, DxEventListener* listener);
     void removeListener(JNIEnv* env, DxEventListener* listener);
+    void addChangeListener(JNIEnv* env, DxSubscriptionChangeListener* listener);
+    void removeChangeListener(JNIEnv* env, DxSubscriptionChangeListener* listener);
     int32_t addSymbol(JNIEnv* env, dxfg_symbol_t* symbol);
     int32_t addSymbols(JNIEnv* env, dxfg_symbol_list* symbols);
     int32_t removeSymbol(JNIEnv* env, dxfg_symbol_t* pSymbol);
