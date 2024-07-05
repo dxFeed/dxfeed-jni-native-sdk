@@ -87,7 +87,7 @@ namespace internal {
       throw std::runtime_error(errMsg);
     }
     std::cout << "DxFeed JAR path: " << jarPath << std::endl;
-    return "-Djava.class.path=" + jarPath.string() + ":" + runtimePath.string();
+    return "-Djava.class.path=" + jarPath.string() + JAVA_CLASS_PATH_SEPARATOR + runtimePath.string();
   }
 
   void dumpJavaCmd(const JavaVMOption* javaVmOptions, int vmOptionsCount) {

@@ -26,6 +26,12 @@ namespace dxfeed::jni {
   };
 
   constexpr char JAVA_HOME[] = "JAVA_HOME";
+#if _WIN32 || _WIN64
+  constexpr char JAVA_CLASS_PATH_SEPARATOR[] = ";";
+#else
+  constexpr char JAVA_CLASS_PATH_SEPARATOR[] = ":";
+#endif
+
   const char* getJavaHomeFromEnv();
   extern const JavaLogger* javaLogger;
 
