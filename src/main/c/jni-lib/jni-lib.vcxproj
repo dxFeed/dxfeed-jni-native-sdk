@@ -57,7 +57,6 @@
     <ClInclude Include="include\dxfeed\utils\LoadJvmLib.hpp" />
     <ClInclude Include="include\dxfeed\utils\NativeEventsList.hpp" />
     <ClInclude Include="include\dxfeed\utils\UserDataSync.hpp" />
-    <ClInclude Include="include\dxfeed\utils\vm\CriticalSection.hpp" />
     <ClInclude Include="include\dxfeed\utils\vm\JavaVmInstance.hpp" />
     <ClInclude Include="include\javah\com_dxfeed_api_DxEndpointJni.h" />
     <ClInclude Include="include\javah\com_dxfeed_api_DxSubscriptionJni.h" />
@@ -108,7 +107,6 @@
     <ClCompile Include="src\utils\JNIUtils.cpp" />
     <ClCompile Include="src\utils\LoadJvmLib.cpp" />
     <ClCompile Include="src\utils\NativeEventsList.cpp" />
-    <ClCompile Include="src\utils\vm\CriticalSectionWindows.cpp" />
     <ClCompile Include="src\utils\vm\InitJavaVm.cpp" />
     <ClCompile Include="src\utils\vm\JavaVmInstance.cpp" />
   </ItemGroup>

@@ -28,9 +28,6 @@ if (WIN32)
   # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
   # endif()
-  set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionWindows.cpp)
-else ()
-  set(CRITICAL_SECTION_IMPL src/utils/vm/CriticalSectionMacOS.cpp)
 endif ()
 
 set(SOURCE_FILES
@@ -84,7 +81,6 @@ set(SOURCE_FILES
     src/utils/java/DxTimeFormat.cpp
     src/utils/vm/InitJavaVm.cpp
     src/utils/vm/JavaVmInstance.cpp
-    ${CRITICAL_SECTION_IMPL}
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

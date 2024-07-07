@@ -7,8 +7,7 @@
 
 #include <jni.h>
 #include <cstdint>
-
-#include "CriticalSection.hpp"
+#include <mutex>
 
 namespace dxfeed::jni::internal::vm {
   struct JavaVmInstance {
@@ -31,7 +30,7 @@ namespace dxfeed::jni::internal::vm {
 
     JavaVM* vm_ = nullptr;
     const jint jniVersion_;
-    CriticalSection criticalSection_;
+    std::mutex mutex_;
 
     struct DetachJniThreadOnExit {
       explicit DetachJniThreadOnExit(JavaVM* vm);

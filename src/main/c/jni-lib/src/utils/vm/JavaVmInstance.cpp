@@ -15,8 +15,7 @@ namespace dxfeed::jni::internal::vm {
 
   JavaVmInstance::JavaVmInstance(JavaVM* vmPtr, const int jniVersion) :
       vm_(vmPtr),
-      jniVersion_(jniVersion),
-      criticalSection_()
+      jniVersion_(jniVersion)
   {}
 
   JavaVmInstance::~JavaVmInstance() {
@@ -25,7 +24,7 @@ namespace dxfeed::jni::internal::vm {
   }
 
   JNIEnv* JavaVmInstance::getCurrenThread() {
-    criticalSection_.enter();
+    std::unique_lock lock(mutex_);
     JNIEnv* env = nullptr;
     jint hr = vm_->GetEnv((void**)&env, jniVersion_);
     if (hr != JNI_OK) {
@@ -39,26 +38,23 @@ namespace dxfeed::jni::internal::vm {
       }
     }
 //    printf("getCurrenThread, env = %p\n", env);
-    criticalSection_.leave();
     return env;
   }
 
   int32_t JavaVmInstance::attachCurrentThread(JNIEnv** env) {
-    criticalSection_.enter();
+    std::unique_lock lock(mutex_);
     jint hr = vm_->AttachCurrentThread((void**) env, nullptr);
     if (hr == JNI_OK) {
 //      printf("New thread is attached. Env = %p, tid: \n", *env); // todo: getPid cross-platform
     } else {
       logHRESULT(*env, hr);
     }
-    criticalSection_.leave();
     return hr;
   }
 
   void JavaVmInstance::detachCurrentThread() {
-    criticalSection_.enter();
+    std::unique_lock lock(mutex_);
     static thread_local DetachJniThreadOnExit onExit { vm_ };
-    criticalSection_.leave();
   }
 
   void JavaVmInstance::logErrMsg(JNIEnv* env, jint hr, const char* errMsg) {
