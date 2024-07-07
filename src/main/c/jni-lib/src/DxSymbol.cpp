@@ -248,19 +248,4 @@ namespace dxfeed {
 
     return resultSymbol;
   }
-
-  const char* DxSymbol::jStringToUTF8(JNIEnv* env, jstring jString) {
-    const char* jData = env->GetStringUTFChars(jString, 0);
-    const char* copiedData = copy(jData);
-    env->ReleaseStringUTFChars(jString, jData);
-    return copiedData;
-  }
-
-  const char* DxSymbol::copy(const char* str) {
-    auto len = static_cast<int32_t>(strlen(str));
-    char* copiedData = new char[len + 1];
-    copiedData[len] = 0;
-    memcpy(copiedData, str, len);
-    return copiedData;
-  }
 }

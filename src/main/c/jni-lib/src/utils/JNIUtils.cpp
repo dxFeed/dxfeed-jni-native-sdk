@@ -13,6 +13,24 @@
 #endif
 
 namespace dxfeed::jni {
+  typedef jmethodID (JNIEnv::*JMethodIdProvider)(jclass, const char*, const char*);
+  typedef jfieldID (JNIEnv::*JFieldIdProvider)(jclass, const char*, const char*);
+
+  const char* jStringToUTF8(JNIEnv* env, jstring jString) {
+    const char* jData = env->GetStringUTFChars(jString, 0);
+    const char* copiedData = copy(jData);
+    env->ReleaseStringUTFChars(jString, jData);
+    return copiedData;
+  }
+
+  const char* copy(const char* str) {
+    auto len = static_cast<int32_t>(strlen(str));
+    char* copiedData = new char[len + 1];
+    copiedData[len] = 0;
+    memcpy(copiedData, str, len);
+    return copiedData;
+  }
+
   const char* getJavaHomeFromEnv() {
     const char* javaHome = std::getenv(JAVA_HOME);
     if (!javaHome) {
@@ -54,13 +72,23 @@ namespace dxfeed::jni {
     return safeGetMethod(env, &JNIEnv::GetMethodID, clazz, methodName, signature);
   }
 
-  jfieldID safeGetFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature) {
-    jfieldID field = env->GetFieldID(clazz, fieldName, signature);
+  jfieldID safeGetField(JNIEnv* env, JFieldIdProvider provider, jclass clazz, const char* fieldName,
+                          const char* signature)
+  {
+    auto field = (env->*provider)(clazz, fieldName, signature);
     if (!field) {
-      auto errMsg = "Can't find method " + std::string(fieldName) + " with signature " + std::string(signature);
+      auto errMsg = "Can't find field " + std::string(fieldName) + " with signature " + std::string(signature);
       std::cerr << errMsg << std::endl;
       throw std::runtime_error(errMsg);
     }
     return field;
+  }
+
+  jfieldID safeGetStaticFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature) {
+    return safeGetField(env, &JNIEnv::GetStaticFieldID, clazz, fieldName, signature);
+  }
+
+  jfieldID safeGetFieldID(JNIEnv* env, jclass clazz, const char* fieldName, const char* signature) {
+    return safeGetField(env, &JNIEnv::GetFieldID, clazz, fieldName, signature);
   }
 }

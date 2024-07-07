@@ -18,14 +18,6 @@ namespace dxfeed::jni {
     getExceptionInfo_ = nullptr;
   }
 
-  const char* copy(const char* str) {
-    auto len = static_cast<int32_t>(strlen(str));
-    char* copiedData = new char[len + 1];
-    copiedData[len] = 0;
-    memcpy(copiedData, str, len);
-    return copiedData;
-  }
-
   // can be called from any Java thread, so dxThreadExceptionClass_ must be global reference
   dxfg_exception_t* DxThreadException::getAndClearThreadException(JNIEnv* env) {
     auto wasException = env->ExceptionCheck();

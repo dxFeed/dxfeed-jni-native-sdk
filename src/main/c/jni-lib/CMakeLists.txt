@@ -81,7 +81,7 @@ set(SOURCE_FILES
     src/utils/java/JavaLangClass.cpp
     src/utils/java/JavaLangSystem.cpp
     src/utils/java/JavaLogger.cpp
-    src/utils/java/JavaTimeFormat.cpp
+    src/utils/java/DxTimeFormat.cpp
     src/utils/vm/InitJavaVm.cpp
     src/utils/vm/JavaVmInstance.cpp
     ${CRITICAL_SECTION_IMPL}

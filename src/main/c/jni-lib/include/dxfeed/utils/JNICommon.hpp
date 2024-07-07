@@ -14,7 +14,7 @@
 #include "dxfeed/utils/java/JavaLangClass.hpp"
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/java/JavaLogger.hpp"
-#include "dxfeed/utils/java/JavaTimeFormat.hpp"
+#include "dxfeed/utils/java/DxTimeFormat.hpp"
 #include "dxfeed/utils/vm/JavaVmInstance.hpp"
 
 namespace dxfeed::jni {
@@ -40,7 +40,6 @@ namespace dxfeed::jni {
     extern JNIEnv* jniEnv;
     extern JVMInstance* javaVM;
     extern JavaLangSystem* javaLangSystem;
-    extern JavaTimeFormat* javaTimeFormat;
     extern DxThreadException* dxThreadException;
     extern const JavaLangClass* javaLangClass;
 
