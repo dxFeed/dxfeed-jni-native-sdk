@@ -16,6 +16,10 @@ namespace dxfeed::jni {
 
   std::string JavaLangClass::getName(JNIEnv* env, jobject jObject) const {
     auto clazzObject = env->GetObjectClass(jObject);
+    return getName(env, clazzObject);
+  }
+
+  std::string JavaLangClass::getName(JNIEnv* env, jclass clazzObject) const {
     std::string result;
     if (clazzObject) {
       auto name = checkedCallObjectMethodAndCastTo<jstring>(env, clazzObject, getNameMethodId);
