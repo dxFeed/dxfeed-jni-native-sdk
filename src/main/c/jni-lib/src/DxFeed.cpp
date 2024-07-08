@@ -192,18 +192,20 @@ namespace dxfeed {
   void DxFeed::attachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription) {
     auto jDxFeedClass = env->GetObjectClass(dxFeed_);
     const char* methodName = "attachSubscription";
-    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V";
     auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
-    checkedCallVoidMethod(env, dxFeed_, methodId, pSubscription);
+    auto jDxSubscription = r_cast<DxSubscription *>(pSubscription);
+    checkedCallVoidMethod(env, dxFeed_, methodId, jDxSubscription->getJavaObject());
     env->DeleteLocalRef(jDxFeedClass);
   }
 
   void DxFeed::detachSubscription(JNIEnv* env, dxfg_subscription_t* pSubscription) {
     auto jDxFeedClass = env->GetObjectClass(dxFeed_);
     const char* methodName = "detachSubscription";
-    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
+    const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V";
     auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
-    checkedCallVoidMethod(env, dxFeed_, methodId, pSubscription);
+    auto jDxSubscription = r_cast<DxSubscription*>(pSubscription);
+    checkedCallVoidMethod(env, dxFeed_, methodId, jDxSubscription->getJavaObject());
     env->DeleteLocalRef(jDxFeedClass);
   }
 
@@ -212,7 +214,8 @@ namespace dxfeed {
     const char* methodName = "detachSubscriptionAndClear";
     const char* methodSignature = "(Lcom/dxfeed/api/DXFeedSubscription;)V;";
     auto methodId = safeGetMethodID(env, jDxFeedClass, methodName, methodSignature);
-    checkedCallVoidMethod(env, dxFeed_, methodId, pSubscription);
+    auto jDxSubscription = r_cast<DxSubscription*>(pSubscription);
+    checkedCallVoidMethod(env, dxFeed_, methodId, jDxSubscription->getJavaObject());
     env->DeleteLocalRef(jDxFeedClass);
   }
 

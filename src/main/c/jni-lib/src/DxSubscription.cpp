@@ -207,6 +207,10 @@ namespace dxfeed {
     return JNI_OK;
   }
 
+  jobject DxSubscription::getJavaObject() {
+    return subscription_;
+  }
+
   void DxSubscription::close(JNIEnv* env) {
     auto jDxSubscriptionClass = env->GetObjectClass(subscription_);
     const char* methodName = "close";

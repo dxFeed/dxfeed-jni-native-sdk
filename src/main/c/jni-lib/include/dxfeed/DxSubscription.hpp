@@ -33,6 +33,7 @@ namespace dxfeed {
     DxSubscription& operator=(const DxSubscription& other) = delete;
     DxSubscription& operator=(DxSubscription&& other) = delete;
 
+    jobject getJavaObject();
     void close(JNIEnv* env);
     void addListener(JNIEnv* env, DxEventListener* listener);
     void removeListener(JNIEnv* env, DxEventListener* listener);
