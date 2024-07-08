@@ -32,6 +32,7 @@ namespace dxfeed::jni {
       auto javaDateClazz = safeFindClass(env, "java/util/Date");
       javaLogger->trace(env, "java.util.Date: %", javaDateClazz);
       dataGetTimeId_ = safeGetMethodID(env, javaDateClazz, "getTime", "()J");
+      env->DeleteLocalRef(javaDateClazz);
 
       DEFAULT_ = new DxTimeFormat(env, initDefault(env, dxTFClazz));
       GMT_ = new DxTimeFormat(env, initGMT(env, dxTFClazz));
