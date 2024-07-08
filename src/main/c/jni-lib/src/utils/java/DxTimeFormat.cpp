@@ -30,7 +30,7 @@ namespace dxfeed::jni {
 
       // long java.util.Date::getTime();
       auto javaDateClazz = safeFindClass(env, "java/util/Date");
-      javaLogger->trace(env, "java.util.Date: %", javaDataClazz);
+      javaLogger->trace(env, "java.util.Date: %", javaDateClazz);
       dataGetTimeId_ = safeGetMethodID(env, javaDateClazz, "getTime", "()J");
 
       DEFAULT_ = new DxTimeFormat(env, initDefault(env, dxTFClazz));
