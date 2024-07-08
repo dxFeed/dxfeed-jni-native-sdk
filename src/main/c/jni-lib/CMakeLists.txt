@@ -47,6 +47,7 @@ set(SOURCE_FILES
     src/api/dxfg_endpoint.cpp
     src/api/dxfg_events.cpp
     src/api/dxfg_publisher.cpp
+    src/api/dxfg_schedule.cpp
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp
     src/api/dxfg_time_format.cpp
