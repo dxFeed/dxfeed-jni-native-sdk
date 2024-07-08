@@ -29,9 +29,9 @@ namespace dxfeed::jni {
       formatMethodId_ = safeGetMethodID(env, dxTFClazz, "format", "(J)Ljava/lang/String;");
 
       // long java.util.Date::getTime();
-      auto javaDataClazz = safeFindClass(env, "java/util/Data");
-      javaLogger->trace(env, "java.util.Data: %", javaDataClazz);
-      dataGetTimeId_ = safeGetMethodID(env, javaDataClazz, "getTime", "()J");
+      auto javaDateClazz = safeFindClass(env, "java/util/Date");
+      javaLogger->trace(env, "java.util.Date: %", javaDataClazz);
+      dataGetTimeId_ = safeGetMethodID(env, javaDateClazz, "getTime", "()J");
 
       DEFAULT_ = new DxTimeFormat(env, initDefault(env, dxTFClazz));
       GMT_ = new DxTimeFormat(env, initGMT(env, dxTFClazz));
