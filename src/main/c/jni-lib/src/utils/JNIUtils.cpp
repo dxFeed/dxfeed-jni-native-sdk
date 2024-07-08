@@ -57,7 +57,9 @@ namespace dxfeed::jni {
   {
     auto method = (env->*provider)(clazz, methodName, signature);
     if (!method) {
-      auto errMsg = "Can't find method " + std::string(methodName) + " with signature " + std::string(signature);
+      auto className = dxfeed::jni::internal::javaLangClass->getName(env, clazz);
+      auto errMsg = "Can't find method " + std::string(methodName) + " with signature " + std::string(signature)
+          + " in class: " + className;
       std::cerr << errMsg << std::endl;
       throw std::runtime_error(errMsg);
     }

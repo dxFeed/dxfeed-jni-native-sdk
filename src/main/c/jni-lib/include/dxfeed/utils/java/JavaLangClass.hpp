@@ -13,6 +13,7 @@ namespace dxfeed::jni {
     explicit JavaLangClass(JNIEnv* env);
 
     std::string getName(JNIEnv* env, jobject jObject) const;
+    std::string getName(JNIEnv* env, jclass clazzObject) const;
   private:
     jmethodID getNameMethodId = nullptr;
   };
