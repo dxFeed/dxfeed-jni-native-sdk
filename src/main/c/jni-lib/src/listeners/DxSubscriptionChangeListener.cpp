@@ -18,8 +18,12 @@ namespace dxfeed {
     auto dxEndpointClass = jni::safeFindClass(env, "com/dxfeed/api/DxSubscriptionJni");
     auto newChangeListenerId =
       jni::safeGetStaticMethodID(env, dxEndpointClass, "newChangeListener", "(JJJJ)J");
+    auto pOnSymbolsAdded = dxfeed::r_cast<jlong>(fSymbolsAdded);
+    auto pOnSymbolsRemoved = dxfeed::r_cast<jlong>(fSymbolsRemoved);
+    auto pOnSubscriptionClosed = dxfeed::r_cast<jlong>(fSubscriptionClosed);
+    auto pUserData = dxfeed::r_cast<jlong>(userData);
     auto result = jni::checkedCallStaticLongMethod(env, dxEndpointClass, newChangeListenerId,
-                                                   fSymbolsAdded, fSymbolsRemoved, fSubscriptionClosed, userData);
+                                                   pOnSymbolsAdded, pOnSymbolsRemoved, pOnSubscriptionClosed, pUserData);
     env->DeleteLocalRef(dxEndpointClass);
     return new DxSubscriptionChangeListener(result);
   }

@@ -14,7 +14,9 @@ namespace dxfeed {
     auto dxEndpointClass = jni::safeFindClass(env, "com/dxfeed/api/DxEndpointJni");
     auto newStateChangeListenerId =
       jni::safeGetStaticMethodID(env, dxEndpointClass, "newStateChangeEventListener", "(JJ)J");
-    auto result = jni::checkedCallStaticLongMethod(env, dxEndpointClass, newStateChangeListenerId, callback, userData);
+    auto pCallback = dxfeed::r_cast<jlong>(callback);
+    auto pUserData = dxfeed::r_cast<jlong>(userData);
+    auto result = jni::checkedCallStaticLongMethod(env, dxEndpointClass, newStateChangeListenerId, pCallback, pUserData);
     env->DeleteLocalRef(dxEndpointClass);
     return new DxStateChangeListener(result);
   }
