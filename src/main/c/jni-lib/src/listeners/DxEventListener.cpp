@@ -11,7 +11,9 @@ namespace dxfeed {
   DxEventListener* DxEventListener::create(JNIEnv* env, dxfg_feed_event_listener_function callback, void* userData) {
     auto dxSubscriptionJniClass = jni::safeFindClass(env, "com/dxfeed/api/DxSubscriptionJni");
     auto newEventListenerId = jni::safeGetStaticMethodID(env, dxSubscriptionJniClass, "newEventListener", "(JJ)J");
-    auto result = jni::checkedCallStaticLongMethod(env, dxSubscriptionJniClass, newEventListenerId, callback, userData);
+    auto pCallback = dxfeed::r_cast<jlong>(callback);
+    auto pUserData = dxfeed::r_cast<jlong>(userData);
+    auto result = jni::checkedCallStaticLongMethod(env, dxSubscriptionJniClass, newEventListenerId, pCallback, pUserData);
     env->DeleteLocalRef(dxSubscriptionJniClass);
     return new DxEventListener(result);
   }
