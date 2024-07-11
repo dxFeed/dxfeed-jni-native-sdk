@@ -20,6 +20,9 @@ typedef void graal_create_isolate_params_t;
 extern "C" {
 #endif
 
+graal_isolatethread_t* create_thread();
+graal_isolatethread_t* create_thread_with_VMOptions(graal_create_isolate_params_t* javaVmOptions);
+
 int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t** isolate,
                          graal_isolatethread_t** thread);
 

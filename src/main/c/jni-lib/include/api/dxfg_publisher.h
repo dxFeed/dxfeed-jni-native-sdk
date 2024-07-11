@@ -2,12 +2,12 @@
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
-#define DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
+#ifndef DXFEED_JNI_NATIVE_API_PUBLISHER_H_
+#define DXFEED_JNI_NATIVE_API_PUBLISHER_H_
 
 #ifdef __cplusplus
 extern "C" {
-#    include <cstdint>
+#include <cstdint>
 #else
 #    include <stdint.h>
 #endif
@@ -56,4 +56,4 @@ int32_t                    dxfg_ObservableSubscription_removeChangeListener(graa
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
+#endif // DXFEED_JNI_NATIVE_API_PUBLISHER_H_

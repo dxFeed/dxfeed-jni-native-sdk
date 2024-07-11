@@ -92,6 +92,7 @@ typedef enum dxfg_event_clazz_t {
   DXFG_EVENT_ORDER_BASE,     // INDEXED
   DXFG_EVENT_ORDER,          // INDEXED -> ORDER_BASE
   DXFG_EVENT_ANALYTIC_ORDER, // INDEXED -> ORDER_BASE -> ORDER
+  DXFG_EVENT_OTC_MARKETS_ORDER, // INDEXED -> ORDER_BASE -> ORDER
   DXFG_EVENT_SPREAD_ORDER,   // INDEXED -> ORDER_BASE
   DXFG_EVENT_SERIES,         // INDEXED
   DXFG_EVENT_OPTION_SALE,    // INDEXED
@@ -141,6 +142,7 @@ typedef struct dxfg_market_event_t {
  */
 typedef struct dxfg_quote_t {
   dxfg_market_event_t market_event;
+  //    dxfg_lasting_event_t lasting_event;
   int32_t time_millis_sequence;
   int32_t time_nano_part;
   int64_t bid_time;
@@ -241,7 +243,7 @@ typedef struct dxfg_candle_t {
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/candle/DailyCandle.html">Javadoc</a>
  */
 typedef struct dxfg_daily_candle_t {
-    dxfg_candle_t candle;
+  dxfg_candle_t candle;
 } dxfg_daily_candle_t;
 
 /**
@@ -337,6 +339,7 @@ typedef struct dxfg_message_t {
  */
 typedef struct dxfg_time_and_sale_t {
   dxfg_market_event_t market_event;
+  //    dxfg_time_series_event_t time_series_event;
   int32_t event_flags;
   int64_t index;
   int32_t time_nano_part;
@@ -415,6 +418,15 @@ typedef struct dxfg_analytic_order_t {
   double iceberg_executed_size;
   int32_t iceberg_flags;
 } dxfg_analytic_order_t;
+
+/**
+ * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/OtcMarketsOrder.html">Javadoc</a>
+ */
+typedef struct dxfg_otc_markets_order_t {
+  dxfg_order_t order_base;
+  int32_t quote_access_payment;
+  int32_t otc_markets_flags;
+} dxfg_otc_markets_order_t;
 
 /**
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/event/market/SpreadOrder.html">Javadoc</a>

@@ -7,7 +7,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#    include <cstdint>
+#include <cstdint>
 #else
 #    include <stdint.h>
 #endif
@@ -33,26 +33,23 @@ typedef struct dxfg_string_list {
 } dxfg_string_list;
 
 /* todo: implement later
-  typedef struct dxfg_list {
-    int32_t size;
-    void** elements;
-  } dxfg_list;
-
-  typedef struct dxfg_executor_t {
-      dxfg_java_object_handler handler;
-  } dxfg_executor_t;
-
-  typedef struct dxfg_input_stream_t {
-      dxfg_java_object_handler handler;
-  } dxfg_input_stream_t;
+typedef struct dxfg_list {
+  int32_t size;
+  void **elements;
+} dxfg_list;
 */
 
-typedef struct dxfg_time_format_t {
+typedef struct dxfg_executor_t {
   dxfg_java_object_handler handler;
-} dxfg_time_format_t;
+} dxfg_executor_t;
 
-graal_isolatethread_t* create_thread();
-graal_isolatethread_t* create_thread_with_VMOptions(graal_create_isolate_params_t* javaVmOptions);
+typedef struct dxfg_input_stream_t {
+  dxfg_java_object_handler handler;
+} dxfg_input_stream_t;
+
+typedef struct dxfg_auth_token_t {
+  dxfg_java_object_handler handler;
+} dxfg_auth_token_t;
 
 typedef void (* dxfg_finalize_function)(graal_isolatethread_t* thread, void* user_data);
 
@@ -60,10 +57,14 @@ int32_t dxfg_Object_finalize(graal_isolatethread_t* thread, dxfg_java_object_han
                              dxfg_finalize_function finalize, void* user_data);
 
 // free the memory occupied by the с data structure and release the reference to the java object
-int dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler*);
+int32_t     dxfg_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler* handler);
+const char* dxfg_Object_toString(graal_isolatethread_t* thread, dxfg_java_object_handler* object);
+int32_t     dxfg_Object_equals(graal_isolatethread_t* thread, dxfg_java_object_handler* object, dxfg_java_object_handler* other);
+int32_t     dxfg_Object_hashCode(graal_isolatethread_t* thread, dxfg_java_object_handler* object);
+int32_t     dxfg_Comparable_compareTo(graal_isolatethread_t* thread, dxfg_java_object_handler* object, dxfg_java_object_handler* other);
 
 // free the memory occupied by the с data structure (list and all elements) and release the reference to the java object for all elements
-int dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler_list*);
+int32_t dxfg_CList_JavaObjectHandler_release(graal_isolatethread_t* thread, dxfg_java_object_handler_list*);
 
 int32_t dxfg_String_release(graal_isolatethread_t *thread, const char* string);
 int32_t dxfg_CList_String_release(graal_isolatethread_t *thread, dxfg_string_list* list);
@@ -79,6 +80,20 @@ dxfg_input_stream_t*   dxfg_ByteArrayInputStream_new(graal_isolatethread_t *thre
 
 int32_t           dxfg_gc(graal_isolatethread_t *thread); // only for testing
 dxfg_java_object_handler*  dxfg_throw_exception(graal_isolatethread_t *thread); // only for testing
+
+
+dxfg_auth_token_t*          dxfg_AuthToken_valueOf(graal_isolatethread_t *thread, const char* string);
+dxfg_auth_token_t*          dxfg_AuthToken_createBasicToken(graal_isolatethread_t *thread, const char* userPassword);
+dxfg_auth_token_t*          dxfg_AuthToken_createBasicToken2(graal_isolatethread_t *thread, const char* user, const char* password);
+dxfg_auth_token_t*          dxfg_AuthToken_createBasicTokenOrNull(graal_isolatethread_t *thread, const char* user, const char* password);
+dxfg_auth_token_t*          dxfg_AuthToken_createBearerToken(graal_isolatethread_t *thread, const char* token);
+dxfg_auth_token_t*          dxfg_AuthToken_createBearerTokenOrNull(graal_isolatethread_t *thread, const char* token);
+dxfg_auth_token_t*          dxfg_AuthToken_createCustomToken(graal_isolatethread_t *thread, const char* scheme, const char* value);
+const char*                 dxfg_AuthToken_getHttpAuthorization(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                 dxfg_AuthToken_getUser(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                 dxfg_AuthToken_getPassword(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                 dxfg_AuthToken_getScheme(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
+const char*                 dxfg_AuthToken_getValue(graal_isolatethread_t *thread, dxfg_auth_token_t* authToken);
 */
 
 /** @} */ // end of Javac

@@ -136,4 +136,4 @@ dxfg_endpoint_state_change_listener_t* dxfg_PropertyChangeListener_new(graal_iso
 }
 #endif
 
-#endif // DXFEED_GRAAL_NATIVE_SDK_ENDPOINT_H_
+#endif // DXFEED_JNI_NATIVE_API_ENDPOINT_H_
