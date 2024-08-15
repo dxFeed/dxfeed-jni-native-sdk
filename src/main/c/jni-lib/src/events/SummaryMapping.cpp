@@ -1,13 +1,12 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/SummaryMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_summary_t* SummaryMapping::toSummary(ByteReader& reader) {
+dxfg_summary_t *SummaryMapping::toSummary(ByteReader &reader) {
     auto summary = new dxfg_summary_t();
     summary->market_event.event_type.clazz = DXFG_EVENT_SUMMARY;
     summary->market_event.event_symbol = reader.readString();
@@ -24,9 +23,9 @@ namespace dxfeed::jni {
     summary->prev_day_close_price = reader.readDouble();
     summary->prev_day_volume = reader.readDouble();
     return summary;
-  }
+}
 
-  void SummaryMapping::fromSummary(dxfg_summary_t* summary, ByteWriter& writer) {
+void SummaryMapping::fromSummary(dxfg_summary_t *summary, ByteWriter &writer) {
     writer.writeString(summary->market_event.event_symbol);
     writer.writeInt64_t(summary->market_event.event_time);
     writer.writeInt32_t(summary->day_id);
@@ -40,5 +39,5 @@ namespace dxfeed::jni {
     writer.writeDouble(summary->day_close_price);
     writer.writeDouble(summary->prev_day_close_price);
     writer.writeDouble(summary->prev_day_volume);
-  }
 }
+} // namespace dxfeed::jni

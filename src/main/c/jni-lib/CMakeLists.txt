@@ -1,3 +1,5 @@
+# Copyright (c) 2024 Devexperts LLC.
+# SPDX-License-Identifier: MPL-2.0
 cmake_minimum_required(VERSION 3.15)
 project(DxFeedJniNativeSdk)
 enable_language(CXX)
@@ -47,9 +49,13 @@ set(SOURCE_FILES
     src/api/dxfg_api.cpp
     src/api/dxfg_catch_exception.cpp
     src/api/dxfg_dxfeed.cpp
+    src/api/dxfg_ipf.cpp
+    src/api/dxfg_ondemand.cpp
     src/api/dxfg_endpoint.cpp
+    src/api/dxfg_event_model.cpp
     src/api/dxfg_events.cpp
     src/api/dxfg_publisher.cpp
+    src/api/dxfg_qds.cpp
     src/api/dxfg_schedule.cpp
     src/api/dxfg_subscription.cpp
     src/api/dxfg_system.cpp

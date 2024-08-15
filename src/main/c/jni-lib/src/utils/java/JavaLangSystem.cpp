@@ -1,45 +1,44 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/utils/java/JavaLangSystem.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
 namespace dxfeed::jni {
-  JavaLangSystem::JavaLangSystem(JNIEnv* env) {
+JavaLangSystem::JavaLangSystem(JNIEnv *env) {
     auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     javaLogger->trace(env, "java.lang.System: %", javaLangSystemClazz);
     loadMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "load", "(Ljava/lang/String;)V");
     javaLogger->trace(env, "void System::load(String path): %", loadMethodId);
-    getPropMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "getProperty",
-                                                           "(Ljava/lang/String;)Ljava/lang/String;");
+    getPropMethodId =
+        safeGetStaticMethodID(env, javaLangSystemClazz, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
     javaLogger->trace(env, "void System::getProperty(String key): %", getPropMethodId);
     setPropMethodId = safeGetStaticMethodID(env, javaLangSystemClazz, "setProperty",
-                                                 "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
+                                            "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
     javaLogger->trace(env, "String System::setProperty(String key, String value): %", setPropMethodId);
     env->DeleteLocalRef(javaLangSystemClazz);
-  }
+}
 
-  const char* JavaLangSystem::getProperty(JNIEnv* env, const char* key) const {
+const char *JavaLangSystem::getProperty(JNIEnv *env, const char *key) const {
     auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     auto jKey = env->NewStringUTF(key);
     auto jValue = checkedCallStaticObjectMethodAndCastTo<jstring>(env, javaLangSystemClazz, getPropMethodId, jKey);
-    char* result = new char[1] { 0 };
+    char *result = new char[1]{0};
     if (jValue) {
-      auto tmp = env->GetStringUTFChars(jValue, nullptr);
-      jsize len = env->GetStringLength(jValue);
-      result = new char[len + 1];
-      result[len] = 0;
-      memcpy(result, tmp, len);
-      env->ReleaseStringUTFChars(jValue, nullptr);
-      env->DeleteLocalRef(jValue);
+        auto tmp = env->GetStringUTFChars(jValue, nullptr);
+        jsize len = env->GetStringLength(jValue);
+        result = new char[len + 1];
+        result[len] = 0;
+        memcpy(result, tmp, len);
+        env->ReleaseStringUTFChars(jValue, nullptr);
+        env->DeleteLocalRef(jValue);
     }
     env->DeleteLocalRef(jKey);
     env->DeleteLocalRef(javaLangSystemClazz);
     return result;
-  }
+}
 
-  void JavaLangSystem::setProperty(JNIEnv* env, const char* key, const char* value) {
+void JavaLangSystem::setProperty(JNIEnv *env, const char *key, const char *value) {
     auto javaLangSystemClazz = safeFindClass(env, "java/lang/System");
     auto jKey = env->NewStringUTF(key);
     auto jValue = env->NewStringUTF(value);
@@ -47,5 +46,5 @@ namespace dxfeed::jni {
     env->DeleteLocalRef(jValue);
     env->DeleteLocalRef(jKey);
     env->DeleteLocalRef(javaLangSystemClazz);
-  }
 }
+} // namespace dxfeed::jni

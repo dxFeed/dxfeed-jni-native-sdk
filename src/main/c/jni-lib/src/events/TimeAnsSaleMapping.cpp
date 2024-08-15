@@ -1,6 +1,5 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/TimeAndSaleMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
@@ -8,8 +7,8 @@
 
 namespace dxfeed::jni {
 
-  dxfg_time_and_sale_t* TimeAndSaleMapping::toTimeAndSale(ByteReader& reader) {
-    auto* tns = new dxfg_time_and_sale_t();
+dxfg_time_and_sale_t *TimeAndSaleMapping::toTimeAndSale(ByteReader &reader) {
+    auto *tns = new dxfg_time_and_sale_t();
     tns->market_event.event_type.clazz = DXFG_EVENT_TIME_AND_SALE;
     tns->market_event.event_symbol = reader.readString();
     tns->market_event.event_time = reader.readLong();
@@ -27,9 +26,9 @@ namespace dxfeed::jni {
     tns->bid_price = reader.readDouble();
     tns->ask_price = reader.readDouble();
     return tns;
-  }
+}
 
-  void TimeAndSaleMapping::fromTimeAndSale(dxfg_time_and_sale_t* tns, ByteWriter& writer) {
+void TimeAndSaleMapping::fromTimeAndSale(dxfg_time_and_sale_t *tns, ByteWriter &writer) {
     writer.writeString(tns->market_event.event_symbol);
     writer.writeInt64_t(tns->market_event.event_time);
     writer.writeInt32_t(tns->event_flags);
@@ -45,5 +44,5 @@ namespace dxfeed::jni {
     writer.writeDouble(tns->size);
     writer.writeDouble(tns->bid_price);
     writer.writeDouble(tns->ask_price);
-  }
 }
+} // namespace dxfeed::jni

@@ -1,171 +1,174 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "api/dxfg_subscription.h"
 #include "dxfeed/DxSubscription.hpp"
 #include "dxfeed/listeners/DxSubscriptionChangeListener.hpp"
 #include "dxfeed/utils/JNIUtils.hpp"
 
-dxfg_subscription_t* dxfg_DXFeedSubscription_new(graal_isolatethread_t* thread, dxfg_event_clazz_t eventClass) {
-  return dxfeed::r_cast<dxfg_subscription_t*>(dxfeed::DxSubscription::create(thread, eventClass));
+dxfg_subscription_t *dxfg_DXFeedSubscription_new(graal_isolatethread_t *thread, dxfg_event_clazz_t eventClass) {
+    return dxfeed::r_cast<dxfg_subscription_t *>(dxfeed::DxSubscription::create(thread, eventClass));
 }
 
-dxfg_subscription_t* dxfg_DXFeedSubscription_new2(graal_isolatethread_t* thread,
-                                                  dxfg_event_clazz_list_t* eventClasses)
-{
-  return dxfeed::r_cast<dxfg_subscription_t*>(dxfeed::DxSubscription::create(thread, eventClasses));
+dxfg_subscription_t *dxfg_DXFeedSubscription_new2(graal_isolatethread_t *thread,
+                                                  dxfg_event_clazz_list_t *eventClasses) {
+    return dxfeed::r_cast<dxfg_subscription_t *>(dxfeed::DxSubscription::create(thread, eventClasses));
 }
 
-int32_t dxfg_DXSubscription_release(graal_isolatethread_t*, dxfg_subscription_t* subscription) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(subscription);
-  delete pDxSubscription;
-  return JNI_OK;
+int32_t dxfg_DXSubscription_release(graal_isolatethread_t *, dxfg_subscription_t *subscription) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(subscription);
+    delete pDxSubscription;
+    return JNI_OK;
 }
 
-int32_t dxfg_DXFeedSubscription_close(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  pDxSubscription->close(thread);
-  return JNI_OK;
+int32_t dxfg_DXFeedSubscription_close(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    pDxSubscription->close(thread);
+    return JNI_OK;
 }
 
-int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t* thread,
-                                                 dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  auto* pDxEventListener =  dxfeed::r_cast<dxfeed::DxEventListener*>(listener);
-  pDxSubscription->addListener(thread, pDxEventListener);
-  return JNI_OK;
+int32_t dxfg_DXFeedSubscription_addEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                 dxfg_feed_event_listener_t *listener) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    auto *pDxEventListener = dxfeed::r_cast<dxfeed::DxEventListener *>(listener);
+    pDxSubscription->addListener(thread, pDxEventListener);
+    return JNI_OK;
 }
 
-int32_t dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t* thread,
-                                                 dxfg_subscription_t* sub, dxfg_feed_event_listener_t* listener)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  auto* pDxEventListener =  dxfeed::r_cast<dxfeed::DxEventListener*>(listener);
-  pDxSubscription->removeListener(thread, pDxEventListener);
-  return JNI_OK;
+int32_t dxfg_DXFeedSubscription_removeEventListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                    dxfg_feed_event_listener_t *listener) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    auto *pDxEventListener = dxfeed::r_cast<dxfeed::DxEventListener *>(listener);
+    pDxSubscription->removeListener(thread, pDxEventListener);
+    return JNI_OK;
 }
 
-int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                          dxfg_symbol_t* pSymbol)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->addSymbol(thread, pSymbol);
+int32_t dxfg_DXFeedSubscription_addSymbol(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                          dxfg_symbol_t *pSymbol) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->addSymbol(thread, pSymbol);
 }
 
-int32_t dxfg_DXFeedSubscription_addSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                           dxfg_symbol_list* symbols)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->addSymbols(thread, symbols);
+int32_t dxfg_DXFeedSubscription_addSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                           dxfg_symbol_list *symbols) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->addSymbols(thread, symbols);
 }
 
-int32_t dxfg_DXFeedSubscription_removeSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                             dxfg_symbol_t* symbol)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->removeSymbol(thread, symbol);
+int32_t dxfg_DXFeedSubscription_removeSymbol(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                             dxfg_symbol_t *symbol) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->removeSymbol(thread, symbol);
 }
 
-int32_t dxfg_DXFeedSubscription_removeSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                              dxfg_symbol_list* symbols)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->removeSymbols(thread, symbols);
+int32_t dxfg_DXFeedSubscription_removeSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                              dxfg_symbol_list *symbols) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->removeSymbols(thread, symbols);
 }
 
 int32_t dxfg_DXFeedSubscription_clear(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->clear(thread);
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->clear(thread);
 }
 
-int32_t dxfg_DXFeedSubscription_attach(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_t* feed) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
-  return pDxSubscription->attach(thread, pDxFeed);
+int32_t dxfg_DXFeedSubscription_attach(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_t *feed) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    auto *pDxFeed = dxfeed::r_cast<dxfeed::DxFeed *>(feed);
+    return pDxSubscription->attach(thread, pDxFeed);
 }
 
-int32_t dxfg_DXFeedSubscription_detach(graal_isolatethread_t* thread, dxfg_subscription_t* sub, dxfg_feed_t* feed) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  auto* pDxFeed = dxfeed::r_cast<dxfeed::DxFeed*>(feed);
-  return pDxSubscription->detach(thread, pDxFeed);
+int32_t dxfg_DXFeedSubscription_detach(graal_isolatethread_t *thread, dxfg_subscription_t *sub, dxfg_feed_t *feed) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    auto *pDxFeed = dxfeed::r_cast<dxfeed::DxFeed *>(feed);
+    return pDxSubscription->detach(thread, pDxFeed);
 }
 
-int32_t dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->isClosed(thread);
+int32_t dxfg_DXFeedSubscription_isClosed(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->isClosed(thread);
 }
 
-dxfg_event_clazz_list_t* dxfg_DXFeedSubscription_getEventTypes(graal_isolatethread_t* thread, dxfg_subscription_t* sub)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->getEventTypes(thread);
+dxfg_event_clazz_list_t *dxfg_DXFeedSubscription_getEventTypes(graal_isolatethread_t *thread,
+                                                               dxfg_subscription_t *sub) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->getEventTypes(thread);
 }
 
-int32_t dxfg_DXFeedSubscription_containsEventType(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                                  dxfg_event_clazz_t eventClazz)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->containsEventType(thread, eventClazz);
+int32_t dxfg_DXFeedSubscription_containsEventType(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                  dxfg_event_clazz_t eventClazz) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->containsEventType(thread, eventClazz);
 }
 
-dxfg_symbol_list* dxfg_DXFeedSubscription_getSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->getSymbols(thread);
+dxfg_symbol_list *dxfg_DXFeedSubscription_getSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->getSymbols(thread);
 }
 
-dxfg_symbol_list* dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->getDecoratedSymbols(thread);
+dxfg_symbol_list *dxfg_DXFeedSubscription_getDecoratedSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->getDecoratedSymbols(thread);
 }
 
-int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                          dxfg_symbol_t* pSymbol)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->setSymbol(thread, pSymbol);
+dxfg_executor_t *dxfg_DXFeedSubscription_getExecutor(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
+    return INVALID_PTR_RESULT_NULLPTR;
 }
 
-int32_t dxfg_DXFeedSubscription_setSymbols(graal_isolatethread_t* thread, dxfg_subscription_t* sub,
-                                           dxfg_symbol_list* symbols)
-{
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription*>(sub);
-  return pDxSubscription->setSymbols(thread, symbols);
+int32_t dxfg_DXFeedSubscription_setExecutor(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                            dxfg_executor_t *executor) {
+    return INVALID_INT_RESULT_MINUS_ONE;
 }
 
-int32_t dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t* thread,
-                                                      dxfg_time_series_subscription_t* sub, int64_t fromTime) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
-  return pDxSubscription->setTime(thread, fromTime);
+dxfg_time_period_t *dxfg_DXFeedSubscription_getAggregationPeriod(graal_isolatethread_t *thread,
+                                                                 dxfg_subscription_t *sub) {
+    return INVALID_PTR_RESULT_NULLPTR;
 }
 
-dxfg_observable_subscription_change_listener_t* dxfg_ObservableSubscriptionChangeListener_new(
-    graal_isolatethread_t *thread,
-    dxfg_ObservableSubscriptionChangeListener_function_symbolsAdded fSymbolsAdded,
-    dxfg_ObservableSubscriptionChangeListener_function_symbolsRemoved fSymbolsRemoved,
-    dxfg_ObservableSubscriptionChangeListener_function_subscriptionClosed fSubscriptionClosed,
-    void* userData
-) {
-  auto* pDxStateChangeListener = dxfeed::DxSubscriptionChangeListener::create(
-      thread, fSymbolsAdded, fSymbolsRemoved, fSubscriptionClosed, userData);
-  return dxfeed::r_cast<dxfg_observable_subscription_change_listener_t*>(pDxStateChangeListener);
+int32_t dxfg_DXFeedSubscription_setAggregationPeriod(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                     dxfg_time_period_t *period) {
+    return INVALID_INT_RESULT_MINUS_ONE;
 }
 
-int32_t dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t* thread,
-                                                  dxfg_subscription_t* sub,
-                                                  dxfg_observable_subscription_change_listener_t* listener) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
-  auto* subChangeListener = dxfeed::r_cast<dxfeed::DxSubscriptionChangeListener*>(listener);
-  pDxSubscription->addChangeListener(thread, subChangeListener);
-  return JNI_OK;
+int32_t dxfg_DXFeedSubscription_getEventsBatchLimit(graal_isolatethread_t *thread, dxfg_subscription_t *sub) {
+    return INVALID_INT_RESULT_MINUS_ONE;
 }
 
-int32_t dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t* thread,
-                                                     dxfg_subscription_t* sub,
-                                                     dxfg_observable_subscription_change_listener_t* listener) {
-  auto* pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription*>(sub);
-  auto* subChangeListener = dxfeed::r_cast<dxfeed::DxSubscriptionChangeListener*>(listener);
-  pDxSubscription->removeChangeListener(thread, subChangeListener);
-  return JNI_OK;
+int32_t dxfg_DXFeedSubscription_setEventsBatchLimit(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                    int32_t eventsBatchLimit) {
+    return INVALID_INT_RESULT_MINUS_ONE;
+}
+
+int32_t dxfg_DXFeedSubscription_setSymbol(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                          dxfg_symbol_t *pSymbol) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->setSymbol(thread, pSymbol);
+}
+
+int32_t dxfg_DXFeedSubscription_setSymbols(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                           dxfg_symbol_list *symbols) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxSubscription *>(sub);
+    return pDxSubscription->setSymbols(thread, symbols);
+}
+
+int32_t dxfg_DXFeedTimeSeriesSubscription_setFromTime(graal_isolatethread_t *thread,
+                                                      dxfg_time_series_subscription_t *sub, int64_t fromTime) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription *>(sub);
+    return pDxSubscription->setTime(thread, fromTime);
+}
+
+int32_t dxfg_DXFeedSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                  dxfg_observable_subscription_change_listener_t *listener) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription *>(sub);
+    auto *subChangeListener = dxfeed::r_cast<dxfeed::DxSubscriptionChangeListener *>(listener);
+    pDxSubscription->addChangeListener(thread, subChangeListener);
+    return JNI_OK;
+}
+
+int32_t dxfg_DXFeedSubscription_removeChangeListener(graal_isolatethread_t *thread, dxfg_subscription_t *sub,
+                                                     dxfg_observable_subscription_change_listener_t *listener) {
+    auto *pDxSubscription = dxfeed::r_cast<dxfeed::DxTimeSeriesSubscription *>(sub);
+    auto *subChangeListener = dxfeed::r_cast<dxfeed::DxSubscriptionChangeListener *>(listener);
+    pDxSubscription->removeChangeListener(thread, subChangeListener);
+    return JNI_OK;
 }

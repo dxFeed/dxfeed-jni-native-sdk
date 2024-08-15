@@ -1,11 +1,10 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
+#include <filesystem>
+#include <iostream>
 #include <jni.h>
 #include <string>
-#include <iostream>
-#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -13,94 +12,94 @@ namespace fs = std::filesystem;
 #include "dxfeed/utils/NativeEventsList.hpp"
 
 namespace dxfeed::jni {
-  const JavaLogger* javaLogger = nullptr;
+const JavaLogger *javaLogger = nullptr;
 
 namespace internal {
-  extern char dllFilePath[];
-  const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
+extern char dllFilePath[];
+const char MY_JAR[] = "dxfeed-jni-native-sdk-0.1.0.jar";
 
-  void loadJVMLibrary(const char*);
+void loadJVMLibrary(const char *);
 
-  JNIEnv* jniEnv = nullptr;
-  JVMInstance* javaVM = nullptr;
-  JavaLangSystem* javaLangSystem = nullptr;
-  DxThreadException* dxThreadException = nullptr;
-  const JavaLangClass* javaLangClass = nullptr;
+JNIEnv *jniEnv = nullptr;
+JVMInstance *javaVM = nullptr;
+JavaLangSystem *javaLangSystem = nullptr;
+DxThreadException *dxThreadException = nullptr;
+const JavaLangClass *javaLangClass = nullptr;
 
-  void addJavaVMArgs(JavaVMOption* vmOptions, const char* vmArgs[], int vmArgCount) {
+void addJavaVMArgs(JavaVMOption *vmOptions, const char *vmArgs[], int vmArgCount) {
     if (vmArgs) {
-      for (int i = 0; i < vmArgCount; ++i) {
-        auto arg = vmArgs[i];
-        if (arg[0] == '-') { // VM args starts from '-'
-          vmOptions[i].optionString = const_cast<char*>(arg);
-        } else {
-          std::cout << "unknown VM arg: " << arg << std::endl;
+        for (int i = 0; i < vmArgCount; ++i) {
+            auto arg = vmArgs[i];
+            if (arg[0] == '-') { // VM args starts from '-'
+                vmOptions[i].optionString = const_cast<char *>(arg);
+            } else {
+                std::cout << "unknown VM arg: " << arg << std::endl;
+            }
         }
-      }
     }
-  }
+}
 
-  void dumpJavaInfo(JNIEnv* env) {
-    auto vendor = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vendor"));
-    auto version = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.version"));
-    auto versionDate = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.version.date"));
-    auto runtimeName = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.runtime.name"));
-    auto runtimeVersion = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.runtime.version"));
-    auto vmName = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.name"));
-    auto vmVendor = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.vendor"));
-    auto vmVersion = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.version"));
-    auto vmInfo = std::make_unique <const char*>(javaLangSystem->getProperty(env, "java.vm.info"));
+void dumpJavaInfo(JNIEnv *env) {
+    auto vendor = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.vendor"));
+    auto version = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.version"));
+    auto versionDate = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.version.date"));
+    auto runtimeName = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.runtime.name"));
+    auto runtimeVersion = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.runtime.version"));
+    auto vmName = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.vm.name"));
+    auto vmVendor = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.vm.vendor"));
+    auto vmVersion = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.vm.version"));
+    auto vmInfo = std::make_unique<const char *>(javaLangSystem->getProperty(env, "java.vm.info"));
 
     javaLogger->trace(env, "JAVA_HOME info:");
     javaLogger->trace(env, "\t % version \"%\" %", *vendor, *version, *versionDate);
     javaLogger->trace(env, "\t %, (build %)", *runtimeName, *runtimeVersion);
     javaLogger->trace(env, "\t % %, (build %, %)", *vmName, *vmVendor, *vmVersion, *vmInfo);
-  }
+}
 
-  void loadLibrary(JNIEnv* env, const char* libPath) {
+void loadLibrary(JNIEnv *env, const char *libPath) {
     const auto jDxFeedJniClazz = safeFindClass(env, "com/dxfeed/api/DxFeedJni");
     auto loadMethodId = safeGetStaticMethodID(env, jDxFeedJniClazz, "loadLibrary", "(Ljava/lang/String;)V");
     auto pStr = env->NewStringUTF(libPath);
     checkedCallStaticVoidMethod(env, jDxFeedJniClazz, loadMethodId, pStr);
     env->DeleteLocalRef(pStr);
     env->DeleteLocalRef(jDxFeedJniClazz);
-  }
+}
 
-  void loadJNILibrary(JNIEnv* env) {
+void loadJNILibrary(JNIEnv *env) {
     dxThreadException = new DxThreadException(env);
     javaLangClass = new JavaLangClass(env);
     javaLangSystem = new JavaLangSystem(env);
     DxTimeFormat::init(env);
     loadLibrary(env, dllFilePath);
     javaLogger->trace(env, "Loaded DxFeed lib: %", dllFilePath);
-    auto property = std::make_unique<const char*>(
-      javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));
+    auto property = std::make_unique<const char *>(
+        javaLangSystem->getProperty(env, "com.devexperts.qd.impl.matrix.Agent.MaxBufferSize"));
     javaLogger->trace(env, " com.devexperts.qd.impl.matrix.Agent.MaxBufferSize = %", *property);
     dumpJavaInfo(env);
     initDxJni(env);
-  }
+}
 
-  std::string buildClassPath(const fs::path& runtimePath) {
+std::string buildClassPath(const fs::path &runtimePath) {
     fs::path jarPath = runtimePath / MY_JAR;
     if (!exists(jarPath)) {
-      auto errMsg = "Can't find java libs in " + jarPath.string();
-      std::cerr << errMsg << std::endl;
-      throw std::runtime_error(errMsg);
+        auto errMsg = "Can't find java libs in " + jarPath.string();
+        std::cerr << errMsg << std::endl;
+        throw std::runtime_error(errMsg);
     }
     std::cout << "DxFeed JAR path: " << jarPath << std::endl;
     return "-Djava.class.path=" + jarPath.string() + JAVA_CLASS_PATH_SEPARATOR + runtimePath.string();
-  }
+}
 
-  void dumpJavaCmd(const JavaVMOption* javaVmOptions, int vmOptionsCount) {
+void dumpJavaCmd(const JavaVMOption *javaVmOptions, int vmOptionsCount) {
     std::cout << "Run cmd \"java";
     for (int i = 0; i < vmOptionsCount; ++i) {
-      std::cout << " " << javaVmOptions[i].optionString;
+        std::cout << " " << javaVmOptions[i].optionString;
     }
     std::cout << "\"" << std::endl;
-  }
+}
 
-  void initJavaVM(VMOptions* params) {
-    const char* javaHome = params->javaHome ? params->javaHome : dxfeed::jni::getJavaHomeFromEnv();
+void initJavaVM(VMOptions *params) {
+    const char *javaHome = params->javaHome ? params->javaHome : dxfeed::jni::getJavaHomeFromEnv();
     loadJVMLibrary(javaHome);
 
     auto runtimePath = fs::current_path();
@@ -122,18 +121,18 @@ namespace internal {
     vmArgs.ignoreUnrecognized = JNI_FALSE;
 
     // Create the JVM
-    JavaVM* javaVmPtr;
-    jint flag = fCreateJavaVM(&javaVmPtr, (void**) &jniEnv, &vmArgs);
+    JavaVM *javaVmPtr;
+    jint flag = fCreateJavaVM(&javaVmPtr, (void **)&jniEnv, &vmArgs);
     if (flag == JNI_ERR) {
-      auto errMsg = "Error creating VM. Exiting...n";
-      std::cerr << errMsg << std::endl;
-      throw std::runtime_error(errMsg);
+        auto errMsg = "Error creating VM. Exiting...n";
+        std::cerr << errMsg << std::endl;
+        throw std::runtime_error(errMsg);
     }
     javaVM = vm::JavaVmInstance::getInstance(javaVmPtr, vmArgs.version);
     javaLogger = new JavaLogger(jniEnv);
     NativeEventsList::initToListMethod(jniEnv);
 
     loadJNILibrary(jniEnv);
-  }
-} // end of namespace dxfeed::jni::internal
+}
+} // namespace internal
 } // end of namespace dxfeed::jni

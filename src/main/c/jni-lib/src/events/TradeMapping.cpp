@@ -1,15 +1,13 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/TradeMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_trade_base_t* TradeMapping::toTradeBase(ByteReader& reader, dxfg_event_clazz_t dxfgEventClazz)
-  {
-    auto* trade = new dxfg_trade_base_t();
+dxfg_trade_base_t *TradeMapping::toTradeBase(ByteReader &reader, dxfg_event_clazz_t dxfgEventClazz) {
+    auto *trade = new dxfg_trade_base_t();
     trade->market_event.event_type.clazz = dxfgEventClazz;
     trade->market_event.event_symbol = reader.readString();
     trade->market_event.event_time = reader.readLong();
@@ -25,9 +23,9 @@ namespace dxfeed::jni {
     trade->day_volume = reader.readDouble();
     trade->day_turnover = reader.readDouble();
     return trade;
-  }
+}
 
-  void TradeMapping::fromTradeBase(dxfg_trade_base_t* trade, ByteWriter& writer) {
+void TradeMapping::fromTradeBase(dxfg_trade_base_t *trade, ByteWriter &writer) {
     writer.writeString(trade->market_event.event_symbol);
     writer.writeInt64_t(trade->market_event.event_time);
     writer.writeInt64_t(trade->time_sequence);
@@ -41,5 +39,5 @@ namespace dxfeed::jni {
     writer.writeDouble(trade->size);
     writer.writeDouble(trade->day_volume);
     writer.writeDouble(trade->day_turnover);
-  }
 }
+} // namespace dxfeed::jni

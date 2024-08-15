@@ -1,6 +1,5 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #ifndef DXFEED_JNI_NATIVE_SDK_DXLASTINGEVENT_H_
 #define DXFEED_JNI_NATIVE_SDK_DXLASTINGEVENT_H_
@@ -12,17 +11,17 @@
 
 namespace dxfeed {
 
-  struct DxEventT {
-    DxEventT(dxfg_event_type_t eventType, const char* nativeHandlerId);
+struct DxEventT {
+    DxEventT(dxfg_event_type_t eventType, const char *nativeHandlerId);
 
-    DxEventT(const DxEventT& other) = delete;
-    DxEventT(DxEventT&& other) = delete;
-    DxEventT& operator=(const DxEventT& other) = delete;
-    DxEventT& operator=(DxEventT&& other) = delete;
+    DxEventT(const DxEventT &other) = delete;
+    DxEventT(DxEventT &&other) = delete;
+    DxEventT &operator=(const DxEventT &other) = delete;
+    DxEventT &operator=(DxEventT &&other) = delete;
 
     dxfg_event_type_t eventType_;
-    const char* symbol_;
-  };
-}
+    const char *symbol_;
+};
+} // namespace dxfeed
 
-#endif //DXFEED_JNI_NATIVE_SDK_DXLASTINGEVENT_H_
+#endif // DXFEED_JNI_NATIVE_SDK_DXLASTINGEVENT_H_

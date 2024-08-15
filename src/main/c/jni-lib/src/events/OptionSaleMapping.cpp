@@ -1,14 +1,13 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/OptionSaleMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_option_sale_t* OptionSaleMapping::toOptionSale(ByteReader& reader) {
-    auto* optionSale = new dxfg_option_sale_t();
+dxfg_option_sale_t *OptionSaleMapping::toOptionSale(ByteReader &reader) {
+    auto *optionSale = new dxfg_option_sale_t();
     optionSale->market_event.event_type.clazz = DXFG_EVENT_OPTION_SALE;
     optionSale->market_event.event_symbol = reader.readString();
     optionSale->market_event.event_time = reader.readLong();
@@ -29,9 +28,9 @@ namespace dxfeed::jni {
     optionSale->volatility = reader.readDouble();
     optionSale->delta = reader.readDouble();
     return optionSale;
-  }
+}
 
-  void OptionSaleMapping::fromOptionSale(dxfg_option_sale_t* optionSale, ByteWriter& writer) {
+void OptionSaleMapping::fromOptionSale(dxfg_option_sale_t *optionSale, ByteWriter &writer) {
     writer.writeString(optionSale->market_event.event_symbol);
     writer.writeInt64_t(optionSale->market_event.event_time);
     writer.writeInt32_t(optionSale->event_flags);
@@ -50,5 +49,5 @@ namespace dxfeed::jni {
     writer.writeDouble(optionSale->underlying_price);
     writer.writeDouble(optionSale->volatility);
     writer.writeDouble(optionSale->delta);
-  }
 }
+} // namespace dxfeed::jni
