@@ -1,13 +1,12 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/GreeksMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_greeks_t* GreeksMapping::toGreeks(ByteReader& reader) {
+dxfg_greeks_t *GreeksMapping::toGreeks(ByteReader &reader) {
     auto greeks = new dxfg_greeks_t();
     greeks->market_event.event_type.clazz = DXFG_EVENT_GREEKS;
     greeks->market_event.event_symbol = reader.readString();
@@ -23,9 +22,9 @@ namespace dxfeed::jni {
     greeks->rho = reader.readDouble();
     greeks->vega = reader.readDouble();
     return greeks;
-  }
+}
 
-  void GreeksMapping::fromGreeks(dxfg_greeks_t* greeks, ByteWriter& writer) {
+void GreeksMapping::fromGreeks(dxfg_greeks_t *greeks, ByteWriter &writer) {
     writer.writeString(greeks->market_event.event_symbol);
     writer.writeInt64_t(greeks->market_event.event_time);
     writer.writeInt32_t(greeks->event_flags);
@@ -38,5 +37,5 @@ namespace dxfeed::jni {
     writer.writeDouble(greeks->theta);
     writer.writeDouble(greeks->rho);
     writer.writeDouble(greeks->vega);
-  }
 }
+} // namespace dxfeed::jni

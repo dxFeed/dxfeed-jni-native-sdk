@@ -1,68 +1,67 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/OrderMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_order_base_t* OrderMapping::toOrderBase(ByteReader& reader) {
-    auto* orderBase = new dxfg_order_base_t();
+dxfg_order_base_t *OrderMapping::toOrderBase(ByteReader &reader) {
+    auto *orderBase = new dxfg_order_base_t();
     readOrderBase(reader, orderBase, DXFG_EVENT_ORDER_BASE);
     return orderBase;
-  }
+}
 
-  void OrderMapping::fromOrderBase(dxfg_order_base_t* orderBase, ByteWriter& writer) {
+void OrderMapping::fromOrderBase(dxfg_order_base_t *orderBase, ByteWriter &writer) {
     writeOrderBase(orderBase, writer);
-  }
+}
 
-  dxfg_spread_order_t* OrderMapping::toSpreadOrder(ByteReader& reader) {
-    auto* order = new dxfg_spread_order_t();
+dxfg_spread_order_t *OrderMapping::toSpreadOrder(ByteReader &reader) {
+    auto *order = new dxfg_spread_order_t();
     readOrderBase(reader, &order->order_base, DXFG_EVENT_SPREAD_ORDER);
     order->spread_symbol = reader.readString();
     return order;
-  }
+}
 
-  void OrderMapping::fromSpreadOrder(dxfg_spread_order_t* order, ByteWriter& writer) {
+void OrderMapping::fromSpreadOrder(dxfg_spread_order_t *order, ByteWriter &writer) {
     fromOrderBase(&order->order_base, writer);
     writer.writeString(order->spread_symbol);
-  }
+}
 
-  dxfg_order_t* OrderMapping::toOrder(ByteReader& reader) {
-    auto* order = new dxfg_order_t();
+dxfg_order_t *OrderMapping::toOrder(ByteReader &reader) {
+    auto *order = new dxfg_order_t();
     readOrderBase(reader, &order->order_base, DXFG_EVENT_ORDER);
     order->market_maker = reader.readString();
     return order;
-  }
+}
 
-  void OrderMapping::fromOrder(dxfg_order_t* order, ByteWriter& writer) {
+void OrderMapping::fromOrder(dxfg_order_t *order, ByteWriter &writer) {
     fromOrderBase(&order->order_base, writer);
     writer.writeString(order->market_maker);
-  }
+}
 
-  dxfg_analytic_order_t* OrderMapping::toAnalyticsOrder(ByteReader& reader) {
-    auto* analyticsOrder = new dxfg_analytic_order_t();
-    dxfg_order_base_t& orderBase = analyticsOrder->order.order_base;
+dxfg_analytic_order_t *OrderMapping::toAnalyticsOrder(ByteReader &reader) {
+    auto *analyticsOrder = new dxfg_analytic_order_t();
+    dxfg_order_base_t &orderBase = analyticsOrder->order_base.order_base;
     readOrderBase(reader, &orderBase, DXFG_EVENT_ANALYTIC_ORDER);
 
-    analyticsOrder->order.market_maker = reader.readString();
+    analyticsOrder->order_base.market_maker = reader.readString();
     analyticsOrder->iceberg_flags = reader.readInt();
     analyticsOrder->iceberg_peak_size = reader.readDouble();
     analyticsOrder->iceberg_hidden_size = reader.readDouble();
     analyticsOrder->iceberg_executed_size = reader.readDouble();
     return analyticsOrder;
-  }
+}
 
-  void OrderMapping::fromAnalyticOrder(dxfg_analytic_order_t* analyticsOrder, ByteWriter& writer) {
-    fromOrder(&analyticsOrder->order, writer);
+void OrderMapping::fromAnalyticOrder(dxfg_analytic_order_t *analyticsOrder, ByteWriter &writer) {
+    fromOrder(&analyticsOrder->order_base, writer);
     writer.writeInt32_t(analyticsOrder->iceberg_flags);
     writer.writeDouble(analyticsOrder->iceberg_peak_size);
     writer.writeDouble(analyticsOrder->iceberg_hidden_size);
     writer.writeDouble(analyticsOrder->iceberg_executed_size);
-  }
+}
 
-  void OrderMapping::readOrderBase(ByteReader& reader, dxfg_order_base_t* const orderBase, dxfg_event_clazz_t eventType) {
+void OrderMapping::readOrderBase(ByteReader &reader, dxfg_order_base_t *const orderBase, dxfg_event_clazz_t eventType) {
     orderBase->market_event.event_type.clazz = eventType;
     orderBase->market_event.event_symbol = reader.readString();
     orderBase->market_event.event_time = reader.readLong();
@@ -82,9 +81,9 @@ namespace dxfeed::jni {
     orderBase->executed_size = reader.readDouble();
     orderBase->trade_price = reader.readDouble();
     orderBase->trade_size = reader.readDouble();
-  }
+}
 
-  void OrderMapping::writeOrderBase(dxfg_order_base_t* orderBase, ByteWriter& writer) {
+void OrderMapping::writeOrderBase(dxfg_order_base_t *orderBase, ByteWriter &writer) {
     writer.writeString(orderBase->market_event.event_symbol);
     writer.writeInt64_t(orderBase->market_event.event_time);
     writer.writeInt32_t(orderBase->event_flags);
@@ -103,5 +102,5 @@ namespace dxfeed::jni {
     writer.writeDouble(orderBase->executed_size);
     writer.writeDouble(orderBase->trade_price);
     writer.writeDouble(orderBase->trade_size);
-  }
 }
+} // namespace dxfeed::jni

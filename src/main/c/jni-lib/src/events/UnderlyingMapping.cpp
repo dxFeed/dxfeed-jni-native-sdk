@@ -1,14 +1,13 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/UnderlyingMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_underlying_t* UnderlyingMapping::toUnderlying(ByteReader& reader) {
-    auto* underlying = new dxfg_underlying_t();
+dxfg_underlying_t *UnderlyingMapping::toUnderlying(ByteReader &reader) {
+    auto *underlying = new dxfg_underlying_t();
     underlying->market_event.event_type.clazz = DXFG_EVENT_UNDERLYING;
     underlying->market_event.event_symbol = reader.readString();
     underlying->market_event.event_time = reader.readLong();
@@ -22,9 +21,9 @@ namespace dxfeed::jni {
     underlying->put_volume = reader.readDouble();
     underlying->put_call_ratio = reader.readDouble();
     return underlying;
-  }
+}
 
-  void UnderlyingMapping::fromUnderlying(dxfg_underlying_t* underlying, ByteWriter& writer) {
+void UnderlyingMapping::fromUnderlying(dxfg_underlying_t *underlying, ByteWriter &writer) {
     writer.writeString(underlying->market_event.event_symbol);
     writer.writeInt64_t(underlying->market_event.event_time);
     writer.writeInt32_t(underlying->event_flags);
@@ -36,5 +35,5 @@ namespace dxfeed::jni {
     writer.writeDouble(underlying->call_volume);
     writer.writeDouble(underlying->put_volume);
     writer.writeDouble(underlying->put_call_ratio);
-  }
 }
+} // namespace dxfeed::jni

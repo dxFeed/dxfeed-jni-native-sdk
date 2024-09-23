@@ -1,14 +1,13 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/TheoPriceMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_theo_price_t* TheoPriceMapping::toTheoPrice(ByteReader& reader) {
-    auto* theoPrice = new dxfg_theo_price_t();
+dxfg_theo_price_t *TheoPriceMapping::toTheoPrice(ByteReader &reader) {
+    auto *theoPrice = new dxfg_theo_price_t();
     theoPrice->market_event.event_type.clazz = DXFG_EVENT_THEO_PRICE;
     theoPrice->market_event.event_symbol = reader.readString();
     theoPrice->market_event.event_time = reader.readLong();
@@ -22,9 +21,9 @@ namespace dxfeed::jni {
     theoPrice->dividend = reader.readDouble();
     theoPrice->interest = reader.readDouble();
     return theoPrice;
-  }
+}
 
-  void TheoPriceMapping::fromTheoPrice(dxfg_theo_price_t* theoPrice, ByteWriter& writer) {
+void TheoPriceMapping::fromTheoPrice(dxfg_theo_price_t *theoPrice, ByteWriter &writer) {
     writer.writeString(theoPrice->market_event.event_symbol);
     writer.writeInt64_t(theoPrice->market_event.event_time);
     writer.writeInt32_t(theoPrice->event_flags);
@@ -36,5 +35,5 @@ namespace dxfeed::jni {
     writer.writeDouble(theoPrice->gamma);
     writer.writeDouble(theoPrice->dividend);
     writer.writeDouble(theoPrice->interest);
-  }
 }
+} // namespace dxfeed::jni

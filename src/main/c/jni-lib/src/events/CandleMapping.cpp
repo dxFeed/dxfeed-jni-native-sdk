@@ -1,14 +1,13 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #include "dxfeed/events/CandleMapping.hpp"
 #include "dxfeed/utils/ByteReader.hpp"
 #include "dxfeed/utils/ByteWriter.hpp"
 
 namespace dxfeed::jni {
-  dxfg_candle_t* CandleMapping::toCandle(ByteReader& reader) {
-    auto* candle = new dxfg_candle_t();
+dxfg_candle_t *CandleMapping::toCandle(ByteReader &reader) {
+    auto *candle = new dxfg_candle_t();
     candle->event_type.clazz = DXFG_EVENT_CANDLE;
     candle->event_symbol = reader.readString();
     candle->event_time = reader.readLong();
@@ -27,9 +26,9 @@ namespace dxfeed::jni {
     candle->imp_volatility = reader.readDouble();
     candle->open_interest = reader.readDouble();
     return candle;
-  }
+}
 
-  void CandleMapping::fromCandle(dxfg_candle_t* candle, ByteWriter& writer) {
+void CandleMapping::fromCandle(dxfg_candle_t *candle, ByteWriter &writer) {
     writer.writeString(candle->event_symbol);
     writer.writeInt64_t(candle->event_time);
     writer.writeInt32_t(candle->event_flags);
@@ -46,5 +45,5 @@ namespace dxfeed::jni {
     writer.writeDouble(candle->ask_volume);
     writer.writeDouble(candle->imp_volatility);
     writer.writeDouble(candle->open_interest);
-  }
 }
+} // namespace dxfeed::jni

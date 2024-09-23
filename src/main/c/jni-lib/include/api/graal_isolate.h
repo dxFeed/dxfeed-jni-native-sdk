@@ -1,6 +1,5 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #ifndef __GRAAL_ISOLATE_H
 #define __GRAAL_ISOLATE_H
@@ -20,14 +19,23 @@ typedef void graal_create_isolate_params_t;
 extern "C" {
 #endif
 
-int graal_create_isolate(graal_create_isolate_params_t* params, graal_isolate_t** isolate,
-                         graal_isolatethread_t** thread);
+int graal_create_isolate(graal_create_isolate_params_t *params, graal_isolate_t **isolate,
+                         graal_isolatethread_t **thread);
 
-graal_isolatethread_t* graal_get_current_thread(graal_isolate_t* isolate);
+graal_isolatethread_t *graal_get_current_thread(graal_isolate_t *isolate);
 
-int graal_attach_thread(graal_isolate_t* isolate, graal_isolatethread_t** env);
+int graal_attach_thread(graal_isolate_t *isolate, graal_isolatethread_t **env);
 
-int graal_detach_thread(graal_isolatethread_t*);
+// TODO: implement
+graal_isolate_t *graal_get_isolate(graal_isolatethread_t *thread);
+
+int graal_detach_thread(graal_isolatethread_t *);
+
+// TODO: implement
+int graal_tear_down_isolate(graal_isolatethread_t *isolateThread);
+
+// TODO: implement
+int graal_detach_all_threads_and_tear_down_isolate(graal_isolatethread_t *isolateThread);
 
 #if defined(__cplusplus)
 }

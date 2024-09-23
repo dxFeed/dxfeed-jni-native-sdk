@@ -1,6 +1,5 @@
-// Copyright © 2023 Devexperts LLC. All rights reserved.
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
 
 #ifndef DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
 #define DXFEED_GRAAL_NATIVE_SDK_PUBLISHER_H_
@@ -20,35 +19,37 @@ extern "C" {
  *  @{
  */
 
-/**
- * @brief Forward declarations.
- */
-typedef struct dxfg_java_object_handler dxfg_java_object_handler;
+  /**
+   * @brief Forward declarations.
+   */
+  typedef struct dxfg_java_object_handler dxfg_java_object_handler;
 
 /**
  * @brief The DXPublisher.
  * <a href="https://docs.dxfeed.com/dxfeed/api/com/dxfeed/api/DXPublisher.html">Javadoc</a>
  */
 typedef struct dxfg_publisher_t {
-    dxfg_java_object_handler handler;
+  dxfg_java_object_handler handler;
 } dxfg_publisher_t;
 
 typedef struct dxfg_observable_subscription_t {
-    dxfg_java_object_handler handler;
+  dxfg_java_object_handler handler;
 } dxfg_observable_subscription_t;
 
 dxfg_publisher_t*                   dxfg_DXPublisher_getInstance(graal_isolatethread_t *thread);
 int32_t                             dxfg_DXPublisher_publishEvents(graal_isolatethread_t *thread, dxfg_publisher_t *publisher, dxfg_event_type_list *events);
 dxfg_observable_subscription_t*     dxfg_DXPublisher_getSubscription(graal_isolatethread_t *thread, dxfg_publisher_t *publisher, dxfg_event_clazz_t eventClazz);
 
-
-/* todo: to implement later
+// TODO: implement
 int32_t                    dxfg_ObservableSubscription_isClosed(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub);
+// TODO: implement
 dxfg_event_clazz_list_t*   dxfg_ObservableSubscription_getEventTypes(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub);
+// TODO: implement
 int32_t                    dxfg_ObservableSubscription_containsEventType(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_event_clazz_t eventClazz);
+// TODO: implement
 int32_t                    dxfg_ObservableSubscription_addChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
+// TODO: implement
 int32_t                    dxfg_ObservableSubscription_removeChangeListener(graal_isolatethread_t *thread, dxfg_observable_subscription_t *sub, dxfg_observable_subscription_change_listener_t *listener);
-*/
 
 /** @} */ // end of Publisher
 
